@@ -7,6 +7,6 @@
 
 Game::Game() {}
 
-int Game::test() {
-	return 5;
+void Game::step(float dt) {
+	physics.Step(dt, 10, 10);
 }

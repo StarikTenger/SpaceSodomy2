@@ -3,6 +3,3 @@
 
 Ship::Ship() {}
 
-int Ship::test() {
-	return 4;
-}

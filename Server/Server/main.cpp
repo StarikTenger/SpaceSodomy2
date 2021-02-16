@@ -1,7 +1,6 @@
 #include <iostream>
-#include <Ship.h>
+#include <Game.h>
 
 int main() {
 	Ship game;
-	std::cout << game.test();
 }
