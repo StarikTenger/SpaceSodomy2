@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
-class Commands {
+class Command_Module {
 private:
-	std::vector<int> active; // Shows which commands are active
+	std::vector<int> active = std::vector<int>(16, 0); // Shows which commands are active
 
 public:
 	enum Command_Names {
@@ -16,7 +16,7 @@ public:
 		ENGINE_ANG_RIGHT
 	};
 	// Constructor
-	Commands();
+	Command_Module();
 
 	// Get methods
 	int get_command(int id);

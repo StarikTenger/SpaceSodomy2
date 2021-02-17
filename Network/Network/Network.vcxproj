@@ -84,11 +84,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;$(IncludePath);C:\libraries\rapidjson</IncludePath>
     <LibraryPath>C:\libraries\SFML-2.5.1\lib;$(LibraryPath);C:\libraries\rapidjson</LibraryPath>
+    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;$(IncludePath);C:\libraries\rapidjson</IncludePath>
     <LibraryPath>C:\libraries\SFML-2.5.1\lib;$(LibraryPath);C:\libraries\rapidjson</LibraryPath>
+    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

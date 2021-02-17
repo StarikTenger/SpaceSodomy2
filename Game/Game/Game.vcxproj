@@ -80,11 +80,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\libraries\box2d\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\box2d\build\bin\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\libraries\box2d\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\box2d\build\bin\Release;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,7 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Commands.h" />
+    <ClInclude Include="Command_Module.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
@@ -163,7 +165,7 @@
     <ClInclude Include="Ship.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Commands.cpp" />
+    <ClCompile Include="Command_Module.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="pch.cpp">
