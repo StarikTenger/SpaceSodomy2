@@ -16,25 +16,25 @@
 
 class Server_Network
 {
+private:
+	sf::UdpSocket socket;
+	char buffer[1024]; // receiving buffer
+	std::size_t received = 0; // receiving message size
+	sf::IpAddress sender; // player IP address
+	unsigned short port = 0; // receiving message port
+	std::set<sf::IpAddress> addresses; // all players IP addresses
+	std::map<sf::IpAddress, int> ports; // getting port by player IP address
+	std::deque<std::string> messages; // deque of received messages
 public:
 	Server_Network();
 	Server_Network(int port_);
 
-	std::deque<std::string> get_messages();
-	std::string get_last_message();
-	void del_last_message();
-	void clear_messages();
-	std::set<sf::IpAddress>get_addresses();
+	std::deque<std::string> get_messages(); // return deque of received messages
+	std::string get_last_message(); // return message on the top of deque (last message)
+	void del_last_message(); // delete message on the top of deque (last message)
+	void clear_messages(); // delete all messages from deque
+	std::set<sf::IpAddress>get_addresses(); // get all players IP addresses
 
-	void receive();
-	void send(std::string message);
-private:
-	sf::UdpSocket socket;
-	char buffer[1024];
-	std::size_t received = 0;
-	sf::IpAddress sender;
-	unsigned short port = 0;
-	std::set<sf::IpAddress> addresses;
-	std::map<sf::IpAddress, int> ports;
-	std::deque<std::string> messages;
+	void receive(); // push new message to the top of deque
+	void send(std::string message); // sending message to all players
 };

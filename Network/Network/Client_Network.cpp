@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Client_Network.h"
 
+//Getting local time
 int Client_Network::getMilliCount() {
 	timeb tb;
 	ftime(&tb);
@@ -8,6 +9,7 @@ int Client_Network::getMilliCount() {
 	return nCount;
 }
 
+//basic constructors
 Client_Network::Client_Network() {
 	socket.setBlocking(0);
 }
@@ -20,22 +22,24 @@ Client_Network::Client_Network(std::string serverIP_, int port_, int id_, std::s
 	socket.setBlocking(0);
 }
 
-void Client_Network::change_port(int port_) {
+//Set modules
+void Client_Network::set_port(int port_) {
 	port = port_;
 }
 
-void Client_Network::change_server(std::string serverIP_) {
+void Client_Network::set_server(std::string serverIP_) {
 	serverIP = serverIP_;
 }
 
-void Client_Network::change_id(int id_) {
+void Client_Network::set_id(int id_) {
 	id = id_;
 }
 
-void Client_Network::change_name(std::string name_) {
+void Client_Network::set_name(std::string name_) {
 	name = name_;
 }
 
+//Get modules
 int Client_Network::get_port() {
 	return port;
 }
@@ -53,19 +57,24 @@ std::string Client_Network::get_name() {
 }
 
 void Client_Network::send(std::string data) {
+	//Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(getMilliCount()) + " " +
 		name + " #" +
 		data;
+	//Sending
 	socket.send(data.c_str(), data.size() + 1, serverIP, port);
 }
 
 std::string Client_Network::receive() {
+	//Cycle used to keep network stack empty
 	for (int i = 0; i < 10; i++) {
 		std::size_t received = 0;
 		sf::IpAddress sender;
 		unsigned short port_ = 0;
+		//buffer saves only last message
 		socket.receive(buffer, sizeof(buffer), received, sender, port_);
 	}
+	// return basic string converted to string
 	return std::string(buffer);
 }
