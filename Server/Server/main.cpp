@@ -4,6 +4,6 @@
 #include <Server_Network.h>
 
 int main() {
-	Client_Network client;
-	Server_Network server;
+	Ship ship;
+	//Server_Network server;
 }
