@@ -4,6 +4,12 @@
 #include <Server_Network.h>
 
 int main() {
-	Ship ship;
-	//Server_Network server;
+	Ship game;
+
+	//Network expample
+	Client_Network client;
+	Server_Network server;
+	client.send("Hello");
+	server.receive();
+	std::cout << server.get_last_message();
 }

@@ -22,11 +22,12 @@ public:
 
 	std::deque<std::string> get_messages();
 	std::string get_last_message();
+	void del_last_message();
 	void clear_messages();
 	std::set<sf::IpAddress>get_addresses();
 
 	void receive();
-	void send(std::string);
+	void send(std::string message);
 private:
 	sf::UdpSocket socket;
 	char buffer[1024];
