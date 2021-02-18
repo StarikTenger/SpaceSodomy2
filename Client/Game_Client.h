@@ -7,6 +7,6 @@ class Game_Client : Game {
 private:
 	
 public:
-	void Draw();
+	void draw();
 };
 

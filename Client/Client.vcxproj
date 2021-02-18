@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\libraries\box2d\include;C:\libraries\SFML-2.5.1\include;$(SolutionDir)\..\Network\Network;$(SolutionDir)\..\Game\Game;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libraries\box2d\build\bin\Debug;$(SolutionDir)\..\Game\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(SolutionDir)\..\Network\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -123,6 +125,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Network.lib;Game.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-network.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
