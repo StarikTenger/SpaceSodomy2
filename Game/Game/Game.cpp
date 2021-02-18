@@ -52,7 +52,11 @@ void Game::process_engines() {
 	}
 }
 
-void Game::step1(float dt) {
+void Game::apply_command(int id, int command, int val) {
+	command_modules[id]->set_command(command, val);
+}
+
+void Game::step(float dt) {
 	process_engines();
 	physics.Step(dt, 10, 10);
 }

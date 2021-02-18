@@ -16,8 +16,12 @@ public:
 	~Ship();
 
 	// Get methods
+	int get_id();
 	Command_Module* get_command_module();
 	Engine* get_engine();
 	b2Body* get_body();
+
+	// Set methods
+	void set_id(int val);
 };
 

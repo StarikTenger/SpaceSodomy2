@@ -14,12 +14,13 @@ private:
 	b2World physics = b2World(b2Vec2_zero);
 
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
-	Ship* create_ship(b2Vec2 pos, float angle, int team);
+	Ship* create_ship(b2Vec2 pos, float angle, int id);
 
 	 // Processing functions
 	void process_engines();
 public:
 	Game();
-	void step1(float dt);
+	void apply_command(int id, int command, int val);
+	void step(float dt);
 };
 
