@@ -13,30 +13,29 @@
 
 class Client_Network
 {
+private:
+	char buffer[2048]; // receiving buffer
+	std::string serverIP = "localhost"; // Server IP address
+	int port = 8001; // sending port
+	sf::UdpSocket socket;
+	int id = 1; // player id
+	std::string name = "UnknownPlayer";
+
+	int getMilliCount(); // local time (required to send it with messages)
 public:
 	Client_Network();
 	Client_Network(std::string serverIP_, int port_, int id_, std::string name_);
 
-	void change_port(int port_ = 8001);
-	void change_server(std::string serverIP_ = "localhost");
-	void change_id(int id_ = 1);
-	void change_name(std::string name_ = "UnknownPlayer");
+	void set_port(int port_ = 8001); // setting a new sending port
+	void set_server(std::string serverIP_ = "localhost"); // setting a new server IP address
+	void set_id(int id_ = 1); // setting a new id for player
+	void set_name(std::string name_ = "UnknownPlayer"); // setting a new name for player
 
-	int get_port();
-	std::string get_serverIP();
-	int get_id();
-	std::string get_name();
+	int get_port(); // getting sending port
+	std::string get_serverIP(); // getting server IP address
+	int get_id(); // getting player id
+	std::string get_name(); // getting player name
 
-	void send(std::string data);
-	std::string receive();
-private:
-	char buffer[2048];
-	std::string serverIP = "localhost";
-	int port = 8001;
-	sf::UdpSocket socket;
-	int id = 1;
-	std::string name = "UnknownPlayer";
-	int PrevTime = 0;
-
-	int getMilliCount();
+	void send(std::string data); // seding data in format: "PlayerId LocalTime PlayerName #data"
+	std::string receive(); // retrun received string
 };
