@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "framework.h"
+#include "AuxLib.h"
 
 // Converts color from hsv to rgb
 sf::Color aux::from_hsv(float H, float S, float V) {

@@ -1,15 +1,16 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_NONSTDC_NO_DEPRECATE
+#include <SFML/Network.hpp>
 #include <fstream>
 #include <cstdio>
 #include <windows.h>
 #include <vector>
-#include <SFML/Network.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <sys/timeb.h>
+#include <AuxLib/AuxLib.h>
 
 class Client_Network
 {
@@ -21,7 +22,6 @@ private:
 	int id = 1; // player id
 	std::string name = "UnknownPlayer";
 
-	int get_milli_count(); // local time (required to send it with messages)
 public:
 	Client_Network();
 	Client_Network(std::string serverIP_, int port_, int id_, std::string name_);

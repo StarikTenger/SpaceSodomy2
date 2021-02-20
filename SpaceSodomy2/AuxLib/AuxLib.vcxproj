@@ -80,13 +80,13 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,6 +136,9 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AuxLib.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

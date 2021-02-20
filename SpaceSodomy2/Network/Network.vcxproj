@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -82,15 +83,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\..\Aux\Aux;C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
-    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>$(SolutionDir)\..\Aux\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\..\Aux\Aux;C:\libraries\SFML-2.5.1\include;$(IncludePath);C:\libraries\rapidjson</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\Aux\x64\Release;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(ProjectDir)..\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\x64\Release;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
