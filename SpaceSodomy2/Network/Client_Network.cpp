@@ -2,7 +2,7 @@
 #include "Client_Network.h"
 
 //Getting local time
-int Client_Network::getMilliCount() {
+int Client_Network::get_milli_count() {
 	timeb tb;
 	ftime(&tb);
 	int nCount = tb.millitm + (tb.time & 0xfffff) * 1000;
@@ -59,7 +59,7 @@ std::string Client_Network::get_name() {
 void Client_Network::send(std::string data) {
 	//Client message constructor
 	data = std::to_string(id) + " " +
-		std::to_string(getMilliCount()) + " " +
+		std::to_string(get_milli_count()) + " " +
 		name + " #" +
 		data;
 	//Sending

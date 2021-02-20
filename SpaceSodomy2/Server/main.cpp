@@ -1,7 +1,7 @@
 #include <iostream>
-#include <Game.h>
-#include <Client_Network.h>
-#include <Server_Network.h>
+#include <Game\Game.h>
+#include <Network\Client_Network.h>
+#include <Network\Server_Network.h>
 
 int main() {
 	Ship game;

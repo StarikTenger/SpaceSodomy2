@@ -21,7 +21,7 @@ private:
 	int id = 1; // player id
 	std::string name = "UnknownPlayer";
 
-	int getMilliCount(); // local time (required to send it with messages)
+	int get_milli_count(); // local time (required to send it with messages)
 public:
 	Client_Network();
 	Client_Network(std::string serverIP_, int port_, int id_, std::string name_);
