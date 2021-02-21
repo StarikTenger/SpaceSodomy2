@@ -36,7 +36,7 @@ public:
 	int get_id(); // getting player id
 	std::string get_name(); // getting player name
 
-	// Sends data in format: "PlayerId LocalTime PlayerName #data"
+	// Sends data in format: "PlayerId LocalTime PlayerName # data"
 	void send(std::string data);
 	// Retruns received string
 	void receive(); 

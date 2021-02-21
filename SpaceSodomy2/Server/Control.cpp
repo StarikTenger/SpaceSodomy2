@@ -33,7 +33,7 @@ void Control::receive() {
 void Control::step() {
 	receive();
 	if (last_step_time - aux::get_milli_count() >= delay) {
-		game.step();
+		game.step(delay * 0.01);
 		network.send(game.encode());
 	}
 }
