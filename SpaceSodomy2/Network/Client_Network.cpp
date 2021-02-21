@@ -58,7 +58,7 @@ void Client_Network::send(std::string data) {
 	socket.send(data.c_str(), data.size() + 1, serverIP, port);
 }
 
-std::string Client_Network::receive() {
+void Client_Network::receive() {
 	//Cycle used to keep network stack empty
 	for (int i = 0; i < 10; i++) {
 		std::size_t received = 0;
@@ -66,7 +66,9 @@ std::string Client_Network::receive() {
 		unsigned short port_ = 0;
 		//buffer saves only last message
 		socket.receive(buffer, sizeof(buffer), received, sender, port_);
-	}
-	// return basic string converted to string
+	}	
+}
+
+std::string Client_Network::get_message() {
 	return std::string(buffer);
 }
