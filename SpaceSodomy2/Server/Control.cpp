@@ -1,11 +1,15 @@
 #include "Control.h"
 
 Control::Control() {
-	//load data from config
+	//loading data from config
+	//***************************
+	//TODO: load data from config
+	//***************************
 }
 
 void Control::receive() {
 	network.receive();
+	// Splitting message
 	std::stringstream message;
 	message << network.get_last_message();
 	network.del_last_message();
@@ -16,6 +20,7 @@ void Control::receive() {
 	message >> local_;
 	message >> name_;
 	message >> local_;
+	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_by_id[id_])) {
 		addresses.insert(IP_adress_);
 		IP_by_id[id_] = IP_adress_;
@@ -24,6 +29,7 @@ void Control::receive() {
 		//TODO: add new player to the game
 		//********************************
 	}
+	// Applying commands
 	if (IP_by_id[id_] == IP_adress_)
 		for (int i = 0; message >> local_; i++) {
 			game.apply_command(id_, i, atoi(local_.c_str()));
@@ -31,9 +37,23 @@ void Control::receive() {
 }
 
 void Control::step() {
+	// Receiving data
 	receive();
-	if (last_step_time - aux::get_milli_count() >= delay) {
+	// Check if the time for the next update has come
+	if (aux::get_milli_count() - last_step_time >= delay) {
+		// Banning disconnected players
+		std::set <std::string> banned;
+		for (auto it = addresses.begin(); it != addresses.end(); it++) {
+			if (aux::get_milli_count() - time_by_IP[*it] >= ban)
+				banned.insert(*it);
+		}
+		for (auto address : banned) {
+			addresses.erase(address);
+			network.del_address(address);
+		}
+		// Release next game step 
 		game.step(delay * 0.01);
+		// Send encoded info
 		network.send(game.encode());
 	}
 }

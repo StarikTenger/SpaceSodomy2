@@ -48,7 +48,7 @@ void Server_Network::receive() {
 		IPconvert[sender.toString()] = sender;
 
 		// Applying received info
-		std::string message_ = sender.toString() + std::string(buffer); // adding IP address to message
+		std::string message_ = sender.toString() + " " + std::string(buffer); // adding IP address to message
 		messages.push_back(message_);
 		received = 0;
 	}
