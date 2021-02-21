@@ -12,8 +12,7 @@
 #include <sys/timeb.h>
 #include <AuxLib/AuxLib.h>
 
-class Client_Network
-{
+class Client_Network {
 private:
 	char buffer[2048]; // receiving buffer
 	std::string serverIP = "localhost"; // Server IP address

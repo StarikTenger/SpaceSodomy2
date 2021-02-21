@@ -23,5 +23,9 @@ public:
 
 	// Set methods
 	void set_id(int val);
+	void set_command_module(Command_Module*);
+	void set_engine(Engine*);
+	void set_body(b2Body*);
+
 };
 

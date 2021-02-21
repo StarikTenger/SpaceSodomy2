@@ -24,3 +24,15 @@ b2Body* Ship::get_body() {
 void Ship::set_id(int val) {
 	id = val;
 }
+
+void Ship::set_command_module(Command_Module* val) {
+	command_module = val;
+}
+
+void Ship::set_engine(Engine* val) {
+	engine = val;
+}
+
+void Ship::set_body(b2Body* val) {
+	body = val;
+}

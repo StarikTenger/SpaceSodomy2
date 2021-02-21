@@ -1,12 +1,12 @@
 #pragma once
+#include <AuxLib/AuxLib.h>
+#include <Game\Game.h>
+#include <Network\Server_Network.h>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <map>
 #include <set>
-#include <Game\Game.h>
-#include <Network\Server_Network.h>
-#include <AuxLib/AuxLib.h>
 
 class Control {
 private:

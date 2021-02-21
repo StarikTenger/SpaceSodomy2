@@ -6,7 +6,7 @@
 int main() {
 	Ship game;
 
-	//Network expample
+	// Network expample
 	Client_Network client;
 	Server_Network server;
 	client.send("Hello");

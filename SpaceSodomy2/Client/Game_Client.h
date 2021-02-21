@@ -1,10 +1,14 @@
 #pragma once
 #include <Game/Game.h>
+#include <Draw/Draw.h>
 
-class Game_Client : Game {
+class Game_Client : public Game {
 private:
-	
+	Draw* draw = nullptr;
 public:
-	void draw();
+	// Set methods
+	void set_draw(Draw* _draw);
+
+	void display();
 };
 

@@ -7,7 +7,7 @@
 #include <box2d/box2d.h>
 
 class Game {
-private:
+protected:
 	// Objects' systems
 	std::vector<Ship*> ships;
 	std::vector<Engine*> engines;

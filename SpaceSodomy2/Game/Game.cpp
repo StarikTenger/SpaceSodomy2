@@ -40,6 +40,11 @@ Ship* Game::create_ship(b2Vec2 pos, float angle, int team) {
 	auto command_module = new Command_Module();
 	auto engine = new Engine(body, command_module);
 
+	// Matching modules to ship
+	ship->set_command_module(command_module);
+	ship->set_engine(engine);
+	ship->set_body(body);
+
 	ships.push_back(ship);
 	engines.push_back(engine);
 	command_modules.insert({team, command_module });
