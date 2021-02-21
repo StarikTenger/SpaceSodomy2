@@ -23,10 +23,6 @@ std::string Server_Network::get_last_message() {
 	return messages.back();
 }
 
-std::set<sf::IpAddress> Server_Network::get_addresses() {
-	return addresses;
-}
-
 //Delete modules
 void Server_Network::del_last_message() {
 	if (!messages.empty())
@@ -37,6 +33,10 @@ void Server_Network::clear_messages() {
 	messages.clear();
 }
 
+void Server_Network::del_address(std::string address_) {
+	addresses.erase(IPconvert[address_]);
+}
+
 void Server_Network::receive() {
 	// Receiving
 	socket.receive(buffer, sizeof(buffer), received, sender, port);
@@ -45,9 +45,11 @@ void Server_Network::receive() {
 		// Applying sender info
 		addresses.insert(sender);
 		ports[sender] = port;
+		IPconvert[sender.toString()] = sender;
 
 		// Applying received info
-		messages.push_back(std::string(buffer));
+		std::string message_ = sender.toString() + std::string(buffer); // adding IP address to message
+		messages.push_back(message_);
 		received = 0;
 	}
 }

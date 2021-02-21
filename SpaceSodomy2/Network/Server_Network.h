@@ -25,6 +25,7 @@ private:
 	unsigned short port = 0; // receiving message port
 	std::set<sf::IpAddress> addresses; // all players IP addresses
 	std::map<sf::IpAddress, int> ports; // getting port by player IP address
+	std::map<std::string, sf::IpAddress> IPconvert; // getting IP address by it's string form
 	std::deque<std::string> messages; // deque of received messages
 public:
 	Server_Network();
@@ -34,7 +35,7 @@ public:
 	std::string get_last_message(); // return message on the top of deque (last message)
 	void del_last_message(); // delete message on the top of deque (last message)
 	void clear_messages(); // delete all messages from deque
-	std::set<sf::IpAddress>get_addresses(); // get all players IP addresses
+	void del_address(std::string address_); // delete address from set
 
 	void receive(); // push new message to the top of deque
 	void send(std::string message); // sending message to all players
