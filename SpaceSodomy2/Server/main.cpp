@@ -1,15 +1,10 @@
 #include <iostream>
-#include <Game\Game.h>
-#include <Network\Client_Network.h>
-#include <Network\Server_Network.h>
+#include "Control.h"
 
 int main() {
-	Ship game;
+	Control control;
 
-	//Network expample
-	Client_Network client;
-	Server_Network server;
-	client.send("Hello");
-	server.receive();
-	std::cout << server.get_last_message();
+	while (1) {
+		control.step();
+	}
 }
