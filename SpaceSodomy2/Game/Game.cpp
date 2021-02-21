@@ -60,3 +60,12 @@ void Game::step(float dt) {
 	process_engines();
 	physics.Step(dt, 10, 10);
 }
+
+std::string Game::encode() {
+	// TODO: write encoder here
+	return "biba"; // Temporary solution
+}
+
+void Game::decode(std::string source) {
+	// TODO: write decoder here
+}

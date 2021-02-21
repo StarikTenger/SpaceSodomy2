@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <string>
 #include "Ship.h"
 #include "Engine.h"
 #include <box2d/box2d.h>
@@ -20,7 +21,12 @@ private:
 	void process_engines();
 public:
 	Game();
+	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
+	// Encodes class into string
+	std::string encode();
+	// Decodes class from string
+	void decode(std::string source);
 };
 
