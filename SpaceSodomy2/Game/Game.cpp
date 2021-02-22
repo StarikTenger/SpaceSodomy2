@@ -32,7 +32,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 
 }
 
-Ship* Game::create_ship(b2Vec2 pos, float angle, int team) {
+Ship* Game::create_ship(b2Vec2 pos, float angle, int id) {
 	// Creating body
 	auto body = create_round_body(pos, angle, 0.4, 1);
 
@@ -47,7 +47,7 @@ Ship* Game::create_ship(b2Vec2 pos, float angle, int team) {
 
 	ships.push_back(ship);
 	engines.push_back(engine);
-	command_modules.insert({team, command_module });
+	command_modules.insert({id, command_module });
 	return ship;
 }
 
@@ -70,6 +70,10 @@ void Game::clear() {
 	// Clear ships
 	for (auto ship : ships)
 		delete ship;
+	ships = {};
+	// Clear players
+	for (auto player : players)
+		delete player;
 	ships = {};
 	// Clear command_modules
 	for (auto command_module : command_modules)
@@ -111,7 +115,13 @@ void Game::decode(std::string source) {
 	while (stream >> symbol) {
 		// Ship
 		if (symbol == "S") {
-			
+			int id;
+			stream >> id;
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			float angle;
+			stream >> angle;
+			Ship* ship = create_ship(pos, angle, id);
 		}
 	}
 

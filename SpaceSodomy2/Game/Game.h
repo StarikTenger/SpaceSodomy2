@@ -11,6 +11,7 @@ class Game {
 protected:
 	// Objects' systems
 	std::vector<Ship*> ships;
+	std::vector<Player*> players;
 	std::vector<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
 	b2World physics = b2World(b2Vec2_zero);
