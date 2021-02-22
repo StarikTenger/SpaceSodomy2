@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <sstream>
 #include "Ship.h"
 #include "Engine.h"
 #include <box2d/box2d.h>
@@ -24,6 +25,8 @@ public:
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
+	// Clears everyrhing
+	void clear();
 	// Encodes class into string
 	std::string encode();
 	// Decodes class from string
