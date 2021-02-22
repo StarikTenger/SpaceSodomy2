@@ -93,7 +93,7 @@ std::string Game::encode() {
 	for (auto ship : ships) {
 		message += "S ";
 		// Id (wait for player class)
-		//message += std::to_string(ship->get_id()) + " ";
+		message += std::to_string(ship->get_player()->get_id()) + " ";
 		// Pos
 		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
 		message += std::to_string(ship->get_body()->GetPosition().y) + " ";

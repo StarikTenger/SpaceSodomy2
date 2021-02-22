@@ -36,6 +36,17 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
 }
 
+std::string Control::commands_to_string() {
+	std::string message = "";
+	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
+		if (command_module.get_command(i))
+			message += "1";
+		else
+			message += "0";
+	}
+	return message;
+}
+
 Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
@@ -56,23 +67,20 @@ void Control::step() {
 		time_prev = time_current;
 
 		// Pass message to game object
-		game.decode(network.get_message());
+		//game.decode(network.get_message());
+		game.decode("S 0 1 1 0");
 
 		// Event processing
 		process_events(draw.get_window());
 		process_commands();
 
 		// Draw
-		for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
-			game.apply_command(0, i, command_module.get_command(i));
-			std::cout << command_module.get_command(i);
-		}
 		std::cout << "\n";
 		
-		game.step(delay * 0.001);
 		game.display();
 
 
 		// Sending
+		network.send(commands_to_string());
 	}
 }

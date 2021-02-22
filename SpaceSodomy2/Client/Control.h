@@ -33,6 +33,8 @@ private:
 	void process_events(sf::Window*);
 	// Turns keyboard & mouse into the command module state
 	void process_commands();
+	// Converts commands into single string
+	std::string commands_to_string();
 public:
 	// Default constructor
 	Control();
