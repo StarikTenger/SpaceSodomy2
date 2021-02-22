@@ -67,13 +67,65 @@ void Game::step(float dt) {
 	physics.Step(dt, 10, 10);
 }
 
+void Game::clear() {
+	// Clear ships
+	for (auto ship : ships)
+		delete ship;
+	ships = {};
+	// Clear players
+	for (auto player : players)
+		delete player;
+	ships = {};
+	// Clear command_modules
+	for (auto command_module : command_modules)
+		delete command_module.second;
+	command_modules = {};
+	// Clear engines
+	for (auto engine : engines)
+		delete engine;
+	engines = {};
+	// Clear physics
+	b2World physics = b2World(b2Vec2_zero);
+}
+
 std::string Game::encode() {
-	// TODO: write encoder here
-	return "biba"; // Temporary solution
+	// Encoding ships
+	std::string message = "";
+	for (auto ship : ships) {
+		message += "S ";
+		// Id (wait for player class)
+		//message += std::to_string(ship->get_id()) + " ";
+		// Pos
+		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
+		message += std::to_string(ship->get_body()->GetPosition().y) + " ";
+		// Angle
+		message += std::to_string(ship->get_body()->GetAngle()) + " ";
+	}
+	return message;
 }
 
 void Game::decode(std::string source) {
-	// TODO: write decoder here
+	// First clear
+	clear();
+
+	// Creating stringstream
+	std::stringstream stream;
+	stream << source;
+
+	std::string symbol;
+	while (stream >> symbol) {
+		// Ship
+		if (symbol == "S") {
+			int id;
+			stream >> id;
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			float angle;
+			stream >> angle;
+			Ship* ship = create_ship(pos, angle, id);
+		}
+	}
+
 }
 
 void Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
