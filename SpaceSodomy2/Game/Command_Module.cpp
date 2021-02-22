@@ -17,3 +17,8 @@ void Command_Module::set_command(int id, int value) {
 		return;
 	active[id] = value;
 }
+
+void Command_Module::reset() {
+	for (auto& command : active)
+		command = 0;
+}

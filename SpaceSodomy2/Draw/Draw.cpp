@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "Draw.h"
+#include <iostream>
 
 // PRIVATE //
 
@@ -15,6 +16,10 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 
 Draw::Draw() {}
 
+sf::RenderWindow* Draw::get_window() {
+	return window;
+}
+
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
@@ -23,12 +28,15 @@ sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
 }
 
 void Draw::load_textures(std::string path) {
+	std::cout << "Start loading\n";
 	std::ifstream file(path);
 	while (file) {
 		std::string name, path;
 		file >> name >> path;
+		std::cout << "loaded: " << name << " " << path << "\n";
 		load_texture(name, path);
 	}
+	std::cout << "Finish loading\n";
 }
 
 void Draw::display() {

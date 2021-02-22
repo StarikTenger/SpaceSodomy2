@@ -3,7 +3,7 @@
 
 class Command_Module {
 private:
-	std::vector<int> active = std::vector<int>(16, 0); // Shows which commands are active
+	std::vector<int> active = std::vector<int>(COMMAND_COUNT, 0); // Shows which commands are active
 
 public:
 	enum Command_Names {
@@ -13,7 +13,9 @@ public:
 		ENGINE_LIN_LEFT,
 		ENGINE_LIN_RIGHT,
 		ENGINE_ANG_LEFT,
-		ENGINE_ANG_RIGHT
+		ENGINE_ANG_RIGHT,
+
+		COMMAND_COUNT
 	};
 	// Constructor
 	Command_Module();
@@ -23,5 +25,8 @@ public:
 
 	// Set methods
 	void set_command(int id, int value);
+
+	// Resets all commands to 0
+	void reset();
 };
 

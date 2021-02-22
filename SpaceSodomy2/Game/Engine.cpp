@@ -42,7 +42,6 @@ void Engine::set_force_angular(float value) {
 
 // Step
 void Engine::step() {
-	std::cout << body->GetPosition().x << "\n";
 	// Command processing
 	if (command_module->get_command(Command_Module::ENGINE_LIN_FORWARD))
 		apply_force_linear(b2Vec2(1, 0));
@@ -52,4 +51,8 @@ void Engine::step() {
 		apply_force_linear(b2Vec2(0, -1));
 	if (command_module->get_command(Command_Module::ENGINE_LIN_RIGHT))
 		apply_force_linear(b2Vec2(0, 1));
+	if (command_module->get_command(Command_Module::ENGINE_ANG_LEFT))
+		apply_force_angular(-1);
+	if (command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
+		apply_force_angular(1);
 }

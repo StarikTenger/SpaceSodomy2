@@ -2,7 +2,7 @@
 
 int main() {
 	Control control;
-	while (1) {
+	while (control.get_is_running()) {
 		control.step();
 	}
 }

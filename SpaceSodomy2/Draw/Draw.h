@@ -17,6 +17,9 @@ private:
 public:
 	Draw();
 
+	// Get methods
+	sf::RenderWindow* get_window();
+
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
 
