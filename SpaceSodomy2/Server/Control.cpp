@@ -25,9 +25,11 @@ void Control::receive() {
 		addresses.insert(IP_adress_);
 		IP_by_id[id_] = IP_adress_;
 		time_by_IP[IP_adress_] = aux::get_milli_count();
-		//********************************
-		//TODO: add new player to the game
-		//********************************
+		sf::Color new_color;
+		new_color.r = rand() % 256;
+		new_color.g = rand() % 256;
+		new_color.b = rand() % 256;
+		game.create_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands
 	if (IP_by_id[id_] == IP_adress_)

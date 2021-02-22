@@ -6,7 +6,7 @@
 class Ship {
 private:
 	// Entities
-	Player* player;
+	Player* player = nullptr;
 	Command_Module* command_module = nullptr;
 	Engine* engine = nullptr;
 	b2Body* body = nullptr;
