@@ -6,8 +6,8 @@ Ship::Ship() {}
 Ship::~Ship() {}
 
 // Get methods
-int Ship::get_id() {
-	return id;
+Player* Ship::get_player() {
+	return player;
 }
 
 Command_Module* Ship::get_command_module() {
@@ -21,8 +21,8 @@ b2Body* Ship::get_body() {
 }
 
 // Set methods
-void Ship::set_id(int val) {
-	id = val;
+void Ship::set_player(Player* val) {
+	player = val;
 }
 
 void Ship::set_command_module(Command_Module* val) {
