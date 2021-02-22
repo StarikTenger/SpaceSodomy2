@@ -6,7 +6,7 @@
 #include "Game.h"
 
 Game::Game() {
-	create_ship(nullptr, b2Vec2(0, 0), 0, 0);
+	create_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -122,7 +122,7 @@ void Game::decode(std::string source) {
 			stream >> pos.x >> pos.y;
 			float angle;
 			stream >> angle;
-			Ship* ship = create_ship(pos, angle, id);
+			create_player(id, {255, 0, 0}, "_name_", pos, angle);
 		}
 	}
 

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Player.h"
 
 Player::Player() {}
@@ -7,22 +8,22 @@ Player::Player(int id_, sf::Color color_, std::string name_) {
 	name = name_;
 }
 
-int get_id() {
+int Player::get_id() {
 	return id;
 }
-sf::Color get_color() {
+sf::Color Player::get_color() {
 	return color;
 }
-std::string get_name() {
+std::string Player::get_name() {
 	return name;
 }
 
-void set_id(int id_) {
+void Player::set_id(int id_) {
 	id = id_;
 }
-void set_color(sf::Color color_) {
+void Player::set_color(sf::Color color_) {
 	color = color_;
 }
-void set_name(std::string name_) {
+void Player::set_name(std::string name_) {
 	name = name_;
 }
