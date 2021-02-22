@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include <iostream>
 #include "framework.h"
 #include "Game.h"
 
@@ -13,6 +14,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = pos;
+	bodyDef.angle = angle;
 	bodyDef.gravityScale = 1;
 
 	b2CircleShape circle;
@@ -75,7 +77,7 @@ void Game::clear() {
 	// Clear players
 	for (auto player : players)
 		delete player;
-	ships = {};
+	players = {};
 	// Clear command_modules
 	for (auto command_module : command_modules)
 		delete command_module.second;
@@ -107,6 +109,7 @@ std::string Game::encode() {
 void Game::decode(std::string source) {
 	// First clear
 	clear();
+	std::cout << source << "\n";
 
 	// Creating stringstream
 	std::stringstream stream;
@@ -129,6 +132,8 @@ void Game::decode(std::string source) {
 }
 
 void Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
-	Player player(id, color, name);
-	create_ship(&player, pos, angle);
+	std::cout << "New Player\n";
+	Player* player = new Player(id, color, name);
+	players.push_back(player);
+	create_ship(player, pos, angle);
 }

@@ -1,4 +1,4 @@
-#include "Control.h"
+#include "Control.h"	
 
 Control::Control() {
 	//loading data from config
@@ -9,17 +9,19 @@ Control::Control() {
 
 void Control::receive() {
 	network.receive();
+	if (network.get_last_message() == "")
+		return;
 	// Splitting message
 	std::stringstream message;
 	message << network.get_last_message();
 	network.del_last_message();
 	std::string IP_adress_, local_, name_;
 	message >> IP_adress_;
-	message >> local_;
-	int id_ = atoi(local_.c_str());
+	int id_;
+	message >> id_;
 	message >> local_;
 	message >> name_;
-	message >> local_;
+	//std::cout << IP_adress_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_by_id[id_])) {
 		addresses.insert(IP_adress_);
@@ -32,10 +34,13 @@ void Control::receive() {
 		game.create_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands
-	if (IP_by_id[id_] == IP_adress_)
-		for (int i = 0; message >> local_; i++) {
-			game.apply_command(id_, i, atoi(local_.c_str()));
+	if (IP_by_id[id_] == IP_adress_) {
+		std::string command_string;
+		message >> command_string;
+		for (int i = 1; i < command_string.size(); i++) {
+			game.apply_command(id_, i - 1, command_string[i] == '1');
 		}
+	}
 }
 
 void Control::step() {
@@ -43,6 +48,8 @@ void Control::step() {
 	receive();
 	// Check if the time for the next update has come
 	if (aux::get_milli_count() - last_step_time >= delay) {
+		last_step_time += delay;
+
 		// Banning disconnected players
 		std::set <std::string> banned;
 		for (auto it = addresses.begin(); it != addresses.end(); it++) {
@@ -54,8 +61,8 @@ void Control::step() {
 			network.del_address(address);
 		}
 		// Release next game step 
-		game.step(delay * 0.01);
-		// Send encoded info
+		game.step(delay * 0.001);
+		// Send encoded info;
 		network.send(game.encode());
 	}
 }

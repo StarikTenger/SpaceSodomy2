@@ -48,6 +48,7 @@ std::string Control::commands_to_string() {
 }
 
 Control::Control() {
+	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
 	game.set_draw(&draw);
@@ -67,18 +68,14 @@ void Control::step() {
 		time_prev = time_current;
 
 		// Pass message to game object
-		//game.decode(network.get_message());
-		game.decode("S 0 1 1 0");
+		game.decode(network.get_message());
+
+		// Draw		
+		game.display();
 
 		// Event processing
 		process_events(draw.get_window());
 		process_commands();
-
-		// Draw
-		std::cout << "\n";
-		
-		game.display();
-
 
 		// Sending
 		network.send(commands_to_string());
