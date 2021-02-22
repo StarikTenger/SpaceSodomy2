@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <random>
 
 class Control {
 private:

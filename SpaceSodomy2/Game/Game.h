@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Ship.h"
 #include "Engine.h"
+#include "Player.h"
 #include <box2d/box2d.h>
 
 class Game {
@@ -17,7 +18,7 @@ protected:
 	b2World physics = b2World(b2Vec2_zero);
 
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
-	Ship* create_ship(b2Vec2 pos, float angle, int id);
+	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 
 	 // Processing functions
 	void process_engines();
@@ -32,5 +33,7 @@ public:
 	std::string encode();
 	// Decodes class from string
 	void decode(std::string source);
+	// Creates new player
+	void create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
 };
 

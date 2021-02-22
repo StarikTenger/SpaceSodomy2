@@ -6,7 +6,7 @@
 #include "Game.h"
 
 Game::Game() {
-	create_ship(b2Vec2(0, 0), 0, 0);
+	create_ship(nullptr, b2Vec2(0, 0), 0, 0);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -32,7 +32,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 
 }
 
-Ship* Game::create_ship(b2Vec2 pos, float angle, int id) {
+Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Creating body
 	auto body = create_round_body(pos, angle, 0.4, 1);
 
@@ -41,13 +41,14 @@ Ship* Game::create_ship(b2Vec2 pos, float angle, int id) {
 	auto engine = new Engine(body, command_module);
 
 	// Matching modules to ship
+	ship->set_player(player);
 	ship->set_command_module(command_module);
 	ship->set_engine(engine);
 	ship->set_body(body);
 
 	ships.push_back(ship);
 	engines.push_back(engine);
-	command_modules.insert({id, command_module });
+	command_modules.insert({player->get_id(), command_module });
 	return ship;
 }
 
@@ -127,3 +128,7 @@ void Game::decode(std::string source) {
 
 }
 
+void Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
+	Player player(id, color, name);
+	create_ship(&player, pos, angle);
+}
