@@ -56,9 +56,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	return ship;
 }
 
-Wall* Game::create_wall(std::vector<b2Vec2> verticies) {
+Wall* Game::create_wall(std::vector<b2Vec2> vertices) {
 	Wall* wall = new Wall();
-	wall->set(&physics, verticies);
+	wall->set(&physics, vertices);
 	walls.push_back(wall);
 	return wall;
 }

@@ -21,10 +21,10 @@ void Game_Client::display(int id) {
 
 	// Walls
 	for (auto wall : walls) {
-		auto verticies = wall->get_verticies();
-		for (int i = 0; i < verticies.size(); i++) {
-			int j = (i + 1) % verticies.size();
-			draw->line(verticies[i], verticies[j], {255, 255, 255});
+		auto vertices = wall->get_vertices();
+		for (int i = 0; i < vertices.size(); i++) {
+			int j = (i + 1) % vertices.size();
+			draw->line(vertices[i], vertices[j], {255, 255, 255});
 		}
 	}
 
