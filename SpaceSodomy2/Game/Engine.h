@@ -7,7 +7,7 @@ class Engine {
 private:
 	// Properties
 	float force_linear = 1;
-	float force_angular = 1;
+	float force_angular = 0.5;
 
 	// Command interface
 	Command_Module* command_module = nullptr;

@@ -39,8 +39,20 @@ void Draw::load_textures(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
+void Draw::apply_camera(b2Vec2 pos, float scale, float angle) {
+	cam.set_pos(pos);
+	cam.set_borders(b2Vec2(window->getSize().x, window->getSize().y));
+	cam.set_scale(scale);
+	cam.set_angle(angle);
+	cam.apply(window);
+}
+
 void Draw::display() {
 	window->display();
+}
+
+void Draw::clear() {
+	window->clear();
 }
 
 void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color) {
@@ -84,7 +96,7 @@ void Draw::line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 	float angle, sf::Color color)
-{
+	{
 	if (textures.find(name) == textures.end())
 		return;
 	sf::Texture& tex = *textures[name];

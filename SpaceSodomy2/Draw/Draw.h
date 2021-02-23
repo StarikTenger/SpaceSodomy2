@@ -26,10 +26,14 @@ public:
 	// Load textures from file
 	void load_textures(std::string path = "textures.conf");
 
+	// Applies cameraborders
+	void apply_camera(b2Vec2 pos, float scale, float angle);
+
 	// Displays the render
 	void display();
 
 	// Primirives
+	void clear();
 	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void fill_circle(b2Vec2 pos, float r, sf::Color color);
