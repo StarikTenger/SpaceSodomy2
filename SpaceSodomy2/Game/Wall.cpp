@@ -23,4 +23,7 @@ void Wall::set(b2World* world, std::vector<b2Vec2> _verticies) {
 	b2ChainShape shape;
 	shape.CreateLoop(_verticies.data(), _verticies.size());
 	body->CreateFixture(&shape, 0);
+	body->GetFixtureList()->SetFriction(0);
+	body->GetFixtureList()->SetRestitutionThreshold(0);
+	body->GetFixtureList()->SetRestitution(0.5);
 }
