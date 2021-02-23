@@ -1,12 +1,105 @@
-#include "Control.h"	
+#include "Control.h"
+
+void Control::load_config(std::string path) {
+	std::ifstream fileInput(path);
+	std::stringstream file = aux::comment(fileInput);
+
+	std::string command; // Current command
+	while (file >> command) {
+		if (command == "END") // End of file
+			break;
+
+		if (command == "PORT") {
+			int port_;
+			file >> port_;
+			network.set_port(port_);
+		}
+
+		if (command == "MAP") {
+			std::string name;
+			file >> name;
+			//sys.currentMap = name;
+			game.load_walls("maps/" + name + ".lvl");	
+		}
+
+		/* TODO:
+		if (command == "TEAM") {
+			int id;
+			file >> id;
+			sys.teams.insert({ id, {} });
+			std::string command1;
+			while (file >> command1) {
+				if (command1 == "END")
+					break;
+
+
+				if (command1 == "S") {
+					Vec2 pos;
+					file >> pos.x >> pos.y;
+					sys.teams[id].spawnpoints.push_back(pos);
+				}
+				if (command1 == "COL") {
+					Color col;
+					file >> col.r >> col.g >> col.b;
+					col.a = 255;
+					sys.teams[id].color = col;
+				}
+			}
+		}
+		if (command == "PLAYER") {
+			int id, team;
+			file >> id >> team;
+			sys.setPlayer({ id, team, {},{0, 0}, 1, 0 });
+		}
+		if (command == "PARAMETERS") {
+			std::string command1;
+			while (file >> command1) {
+				if (command1 == "END")
+					break;
+
+				if (command1 == "PLAYER_HP")
+					file >> sys.parameters.player_hp;
+				if (command1 == "PLAYER_ENERGY")
+					file >> sys.parameters.player_energy;
+				if (command1 == "PLAYER_STAMINA")
+					file >> sys.parameters.player_stamina;
+				if (command1 == "PLAYER_RECOVERY")
+					file >> sys.parameters.player_stamina_recovery;
+
+			}
+		}
+		if (command == "BONUSINFO") {
+			std::string command1;
+			while (file >> command1) {
+				if (command1 == "END")
+					break;
+
+
+				int type = System::bonusNames[command1];
+				file >> sys.bonusInfo[type].limit;
+				file >> sys.bonusInfo[type].countdownTime;
+			}
+		}
+		if (command == "MODULEINFO") {
+			std::string command1;
+			while (file >> command1) {
+				if (command1 == "END")
+					break;
+
+
+				int type = System::moduleNames[command1];
+				;
+				file >> sys.moduleInfo[type].cooldownTime; // Period
+				file >> sys.moduleInfo[type].energy; // Energy consumption
+				file >> sys.moduleInfo[type].stamina; // Stamina consumption
+			}
+		}*/
+	}
+}
 
 Control::Control() {
 	//loading data from config
-	game.load_walls("level.lvl");
-
-	//***************************
-	//TODO: load data from config
-	//***************************
+	load_config("config.conf");
 }
 
 void Control::receive() {
@@ -34,6 +127,7 @@ void Control::receive() {
 		new_color.r = rand() % 256;
 		new_color.g = rand() % 256;
 		new_color.b = rand() % 256;
+		new_color.a = 255;
 		game.create_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands

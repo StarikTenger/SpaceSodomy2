@@ -12,7 +12,13 @@ Server_Network::Server_Network(int port_) {
 	socket.setBlocking(0);
 }
 
-//Get modules
+//Set methods
+void Server_Network::set_port(int port_) {
+	socket.bind(port_);
+	socket.setBlocking(0);
+}
+
+//Get methods
 std::deque<std::string> Server_Network::get_messages() {
 	return messages;
 }
@@ -23,7 +29,7 @@ std::string Server_Network::get_last_message() {
 	return messages.back();
 }
 
-//Delete modules
+//Delete methods
 void Server_Network::del_last_message() {
 	if (!messages.empty())
 		messages.pop_back();
