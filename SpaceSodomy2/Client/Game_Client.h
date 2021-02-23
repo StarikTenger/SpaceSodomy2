@@ -9,6 +9,6 @@ public:
 	// Set methods
 	void set_draw(Draw* _draw);
 
-	void display();
+	void display(int id);
 };
 

@@ -71,7 +71,7 @@ void Control::step() {
 		game.decode(network.get_message());
 
 		// Draw		
-		game.display();
+		game.display(network.get_id());
 
 		// Event processing
 		process_events(draw.get_window());

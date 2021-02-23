@@ -30,6 +30,9 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	b2Body* body = physics.CreateBody(&bodyDef);
 	body->SetSleepingAllowed(0);
 	body->CreateFixture(&fixtureDef);
+	body->GetFixtureList()->SetFriction(0);
+	body->GetFixtureList()->SetRestitutionThreshold(0);
+	body->GetFixtureList()->SetRestitution(0.5);
 	return body;
 }
 
@@ -53,9 +56,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	return ship;
 }
 
-Wall* Game::create_wall(std::vector<b2Vec2> verticies) {
+Wall* Game::create_wall(std::vector<b2Vec2> vertices) {
 	Wall* wall = new Wall();
-	wall->set(&physics, verticies);
+	wall->set(&physics, vertices);
 	walls.push_back(wall);
 	return wall;
 }

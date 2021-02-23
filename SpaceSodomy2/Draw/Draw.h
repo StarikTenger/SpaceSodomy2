@@ -19,6 +19,7 @@ public:
 
 	// Get methods
 	sf::RenderWindow* get_window();
+	Camera* get_camera();
 
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
@@ -27,6 +28,7 @@ public:
 	void load_textures(std::string path = "textures.conf");
 
 	// Applies cameraborders
+	void apply_camera();
 	void apply_camera(b2Vec2 pos, float scale, float angle);
 
 	// Displays the render
