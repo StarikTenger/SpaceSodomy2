@@ -22,7 +22,7 @@ private:
 	std::map <std::string, int> id_by_IP; // getting id by IP
 	std::map <std::string, int> time_by_IP; // getting last connection time by IP
 
-	void load_config(std::string path);
+	void load_config(std::string path); // loading configurations from .conf file
 public:
 	Control();
 
