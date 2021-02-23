@@ -20,6 +20,10 @@ sf::RenderWindow* Draw::get_window() {
 	return window;
 }
 
+Camera* Draw::get_camera() {
+	return &cam;
+}
+
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
@@ -37,6 +41,10 @@ void Draw::load_textures(std::string path) {
 		load_texture(name, path);
 	}
 	std::cout << "Finish loading\n";
+}
+
+void Draw::apply_camera() {
+	cam.apply(window);
 }
 
 void Draw::apply_camera(b2Vec2 pos, float scale, float angle) {
