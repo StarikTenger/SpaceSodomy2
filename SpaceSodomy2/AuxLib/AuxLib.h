@@ -20,5 +20,10 @@ public:
 	static void random_seed(int seed);
 	static int random_int(int min, int max);
 	static float random_float(float min, float max, int digits);
+	// Erases commented strings
 	static std::stringstream comment(std::ifstream& file);
+	// Converts bit mask to string
+	static std::string mask_to_string(std::vector<int>, int digit = 16, char start = '0');
+	// Converts string to bit max
+	static std::vector<int> string_to_mask(std::string, int digit = 16, char start = '0');
 };

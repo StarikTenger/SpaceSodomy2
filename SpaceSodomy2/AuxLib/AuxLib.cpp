@@ -104,3 +104,30 @@ std::stringstream aux::comment(std::ifstream& file) {
 
 	return newFile;
 }
+
+std::string aux::mask_to_string(std::vector<int> vec, int digit, char start) {
+	int val = 0;
+	for (int i = 0, d = 1; i < vec.size(); i++, d *= 2) {
+		val += vec[i] * d;
+	}
+	//std::cout << "VAL " << val << "\n";
+	std::string str = "#";
+	for (; val; val /= digit) {
+		str += (char)(start + val % digit);
+	}
+	return str;
+}
+
+std::vector<int> aux::string_to_mask(std::string str, int digit, char start) {
+	int val = 0;
+	for (int i = 1, d = 1; i < str.size(); i++, d *= digit) {
+		val += (str[i] - start) * d;
+	}
+
+	std::vector<int> vec;
+	for (; val; val /= 2) {
+		vec.push_back(val % 2);
+	}
+	return vec;
+}
+
