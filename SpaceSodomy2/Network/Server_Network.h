@@ -18,7 +18,7 @@
 class Server_Network
 {
 private:
-	sf::UdpSocket socket;
+	sf::UdpSocket socket; // socket
 	char buffer[1024]; // receiving buffer
 	std::size_t received = 0; // receiving message size
 	sf::IpAddress sender; // player IP address
@@ -33,6 +33,7 @@ public:
 
 	std::deque<std::string> get_messages(); // return deque of received messages
 	std::string get_last_message(); // return message on the top of deque (last message)
+	void set_port(int port_); // set receiving message port
 	void del_last_message(); // delete message on the top of deque (last message)
 	void clear_messages(); // delete all messages from deque
 	void del_address(std::string address_); // delete address from set
