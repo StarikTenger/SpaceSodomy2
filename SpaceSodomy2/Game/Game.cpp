@@ -97,6 +97,7 @@ void Game::clear() {
 }
 
 int Game::load_walls(std::string path) {
+	map_path = path;
 	std::ifstream input(path);
 	//std::stringstream input;
 	// Parsing
@@ -137,6 +138,9 @@ int Game::load_walls(std::string path) {
 std::string Game::encode() {
 	// Encoding ships
 	std::string message = "";
+	// Map path
+	message += "M " + map_path + " ";
+	// Ships
 	for (auto ship : ships) {
 		message += "S ";
 		// Id (wait for player class)
@@ -161,6 +165,15 @@ void Game::decode(std::string source) {
 
 	std::string symbol;
 	while (stream >> symbol) {
+		// Map
+		if (symbol == "M") {
+			std::string path;
+			stream >> path;
+			if (map_path != path) {
+				map_path = path;
+				load_walls(map_path);
+			}
+		}
 		// Ship
 		if (symbol == "S") {
 			int id;

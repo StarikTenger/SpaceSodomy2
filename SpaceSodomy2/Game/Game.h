@@ -20,6 +20,9 @@ protected:
 	std::vector<Wall*> walls;
 	b2World physics = b2World(b2Vec2_zero);
 
+	// Path to the map
+	std::string map_path = "";
+
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall* create_wall(std::vector<b2Vec2> verticies);
