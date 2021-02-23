@@ -18,7 +18,7 @@
 class Server_Network
 {
 private:
-	sf::UdpSocket socket;
+	sf::UdpSocket socket; // socket
 	char buffer[1024]; // receiving buffer
 	std::size_t received = 0; // receiving message size
 	sf::IpAddress sender; // player IP address
