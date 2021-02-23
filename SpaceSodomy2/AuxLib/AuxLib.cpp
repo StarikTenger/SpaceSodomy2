@@ -87,3 +87,20 @@ float aux::random_float(float min, float max, int digits) {
 	float k = pow(10, (float)digits);
 	return random_int(int(min * k), int(max * k)) / k;
 }
+
+std::stringstream aux::comment(std::ifstream& file) {
+	std::stringstream newFile; // file without comments
+	std::string elem; // current input
+
+	while (file >> elem) {
+		if (elem == "#") { // Comment
+			std::string input = "";
+			std::getline(file, input);
+		}
+		else {
+			newFile << elem << " ";
+		}
+	}
+
+	return newFile;
+}

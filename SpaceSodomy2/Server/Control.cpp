@@ -17,18 +17,19 @@ void Control::receive() {
 	std::stringstream message;
 	message << network.get_last_message();
 	network.del_last_message();
-	std::string IP_adress_, local_, name_;
-	message >> IP_adress_;
+	std::string IP_address_, local_, name_;
+	message >> IP_address_;
 	int id_;
 	message >> id_;
 	message >> local_;
 	message >> name_;
-	//std::cout << IP_adress_ << " " << local_ << "\n";
+	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_by_id[id_])) {
-		addresses.insert(IP_adress_);
-		IP_by_id[id_] = IP_adress_;
-		time_by_IP[IP_adress_] = aux::get_milli_count();
+		addresses.insert(IP_address_);
+		IP_by_id[id_] = IP_address_;
+		id_by_IP[IP_address_] = id_;
+		time_by_IP[IP_address_] = aux::get_milli_count();
 		sf::Color new_color;
 		new_color.r = rand() % 256;
 		new_color.g = rand() % 256;
@@ -36,7 +37,7 @@ void Control::receive() {
 		game.create_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands
-	if (IP_by_id[id_] == IP_adress_) {
+	if (IP_by_id[id_] == IP_address_) {
 		std::string command_string;
 		message >> command_string;
 		for (int i = 1; i < command_string.size(); i++) {
@@ -59,6 +60,7 @@ void Control::step() {
 				banned.insert(*it);
 		}
 		for (auto address : banned) {
+			game.del_player(id_by_IP[address]);
 			addresses.erase(address);
 			network.del_address(address);
 		}

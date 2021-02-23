@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Player.h"
 
 Player::Player() {}
@@ -8,6 +7,7 @@ Player::Player(int id_, sf::Color color_, std::string name_) {
 	name = name_;
 }
 
+//Get methods
 int Player::get_id() {
 	return id;
 }
@@ -18,6 +18,7 @@ std::string Player::get_name() {
 	return name;
 }
 
+//Set methods
 void Player::set_id(int id_) {
 	id = id_;
 }

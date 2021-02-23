@@ -194,3 +194,34 @@ void Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, 
 	players.push_back(player);
 	create_ship(player, pos, angle);
 }
+
+void Game::del_player(int id) {
+	for (auto ship : ships) {
+		if (ship->get_player()->get_id() == id) {
+			for (auto it = players.begin(); it != players.end(); it++)
+				if (ship->get_player() == *it) {
+					players.erase(it);
+					break;
+				}
+			delete ship->get_player();
+			for (auto it = command_modules.begin(); it != command_modules.end(); it++)
+				if (ship->get_command_module() == it->second) {
+					command_modules.erase(it);
+					break;
+				}
+			delete ship->get_command_module();
+			for (auto it = engines.begin(); it != engines.end(); it++)
+				if (ship->get_engine() == *it) {
+					engines.erase(it);
+					break;
+				}
+			delete ship->get_engine();
+			for (auto it = ships.begin(); it != ships.end(); it++)
+				if (ship == *it) {
+					ships.erase(it);
+					break;
+				}
+			delete ship;
+		}
+	}
+}

@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <string>
 #include <sys/timeb.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 class aux {
 public:
@@ -17,4 +20,5 @@ public:
 	static void random_seed(int seed);
 	static int random_int(int min, int max);
 	static float random_float(float min, float max, int digits);
+	static std::stringstream comment(std::ifstream& file);
 };
