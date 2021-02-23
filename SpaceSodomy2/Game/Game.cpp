@@ -31,7 +31,6 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	body->SetSleepingAllowed(0);
 	body->CreateFixture(&fixtureDef);
 	return body;
-
 }
 
 Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
@@ -52,6 +51,13 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	engines.push_back(engine);
 	command_modules.insert({player->get_id(), command_module });
 	return ship;
+}
+
+Wall* Game::create_wall(std::vector<b2Vec2> verticies) {
+	Wall* wall = new Wall();
+	wall->set(&physics, verticies);
+	walls.push_back(wall);
+	return wall;
 }
 
 void Game::process_engines() {
@@ -88,6 +94,44 @@ void Game::clear() {
 	engines = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
+}
+
+int Game::load_walls(std::string path) {
+	std::ifstream input(path);
+	//std::stringstream input;
+	// Parsing
+	std::string symbol;
+	while (input >> symbol) {
+		if (symbol == "END")
+			break;
+		// Wall
+		if (symbol == "WALL") {
+			std::string symbol_1;
+			std::vector<b2Vec2> points;
+;			while (input >> symbol_1) {
+				if (symbol_1 == "END")
+					break;
+				if (symbol_1 == "POINT") {
+					b2Vec2 point;
+					if (!(input >> point.x >> point.y)) { // Error
+						std::cerr << "Game::load_walls: failed to read point";
+						return false;
+					}
+					// Point loaded successfully
+					points.push_back(point);
+					continue;
+				}
+				std::cerr << "Game::load_walls: unknown symbol " << symbol_1 << "\n";
+				return false;
+			}
+			// Wall loaded successfully
+			create_wall(points);
+			continue;
+		}
+		std::cerr << "Game::load_walls: unknown symbol " << symbol << "\n";
+		return false;
+	}
+	return true;
 }
 
 std::string Game::encode() {

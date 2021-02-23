@@ -2,10 +2,12 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <fstream>
 #include <sstream>
 #include "Ship.h"
 #include "Engine.h"
 #include "Player.h"
+#include "Wall.h"
 #include <box2d/box2d.h>
 
 class Game {
@@ -15,10 +17,12 @@ protected:
 	std::vector<Player*> players;
 	std::vector<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
+	std::vector<Wall*> walls;
 	b2World physics = b2World(b2Vec2_zero);
 
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
+	Wall* create_wall(std::vector<b2Vec2> verticies);
 
 	 // Processing functions
 	void process_engines();
@@ -27,6 +31,8 @@ public:
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
+	// Loads walls from file (returns 1 if everything is correct)
+	int load_walls(std::string path);
 	// Clears everyrhing
 	void clear();
 	// Encodes class into string

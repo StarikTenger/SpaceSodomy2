@@ -2,6 +2,8 @@
 
 Control::Control() {
 	//loading data from config
+	game.load_walls("level.lvl");
+
 	//***************************
 	//TODO: load data from config
 	//***************************
