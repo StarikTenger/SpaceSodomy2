@@ -38,6 +38,7 @@ void Control::receive() {
 	}
 	// Applying commands
 	if (IP_by_id[id_] == IP_address_) {
+		time_by_IP[IP_address_] = aux::get_milli_count();
 		std::string command_string;
 		message >> command_string;
 		for (int i = 1; i < command_string.size(); i++) {

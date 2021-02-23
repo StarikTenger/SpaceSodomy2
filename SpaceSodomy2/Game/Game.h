@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Wall.h"
 #include <box2d/box2d.h>
+#include <AuxLib/AuxLib.h>
 
 class Game {
 protected:

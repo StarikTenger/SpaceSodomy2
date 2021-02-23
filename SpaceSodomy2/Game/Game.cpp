@@ -101,8 +101,8 @@ void Game::clear() {
 
 int Game::load_walls(std::string path) {
 	map_path = path;
-	std::ifstream input(path);
-	//std::stringstream input;
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
 	// Parsing
 	std::string symbol;
 	while (input >> symbol) {
