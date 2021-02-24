@@ -74,6 +74,26 @@ Control::Control() {
 	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
 	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
 	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
+	// SFML key names
+	std::vector<std::string> names = { "A", "B", "C", "D", "E", "F", "G", "H", 
+		"I", "J", "K", "L", "M", "N", "O", "P", "Q", 
+		"R", "S", "T", "U", "V", "W", "X", "Y", "Z", 
+		"Num0", "Num1", "Num2", "Num3", "Num4", "Num5", 
+		"Num6", "Num7", "Num8", "Num9", "Escape", "LControl", 
+		"LShift", "LAlt", "LSystem", "RControl", "RShift", 
+		"RAlt", "RSystem", "Menu", "LBracket", "RBracket", 
+		"Semicolon", "Comma", "Period", "Quote", "Slash", 
+		"Backslash", "Tilde", "Equal", "Hyphen", "Space", 
+		"Enter", "Backspace", "Tab", "PageUp", "PageDown", 
+		"End", "Home", "Insert", "Delete", "Add", "Subtract", 
+		"Multiply", "Divide", "Left", "Right", "Up", "Down", 
+		"Numpad0", "Numpad1", "Numpad2", "Numpad3", "Numpad4", 
+		"Numpad5", "Numpad6", "Numpad7", "Numpad8", "Numpad9", 
+		"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", 
+		"F10", "F11", "F12", "F13", "F14", "F15", "Pause" };
+	for (int i = 0; i < names.size(); i++) {
+		key_names.insert({names[i], i});
+	}
 }
 
 int Control::get_is_running() {
@@ -104,6 +124,34 @@ void Control::step() {
 	}
 }
 
+int Control::load_keys(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::string symbol;
+	while (config >> symbol) {
+		if (key_matches.find(symbol) != key_matches.end()) {
+			// Command with such a name exists
+			std::string symbol_1;
+			std::vector<int> keys;
+			while (config >> symbol_1) {
+				if (symbol_1 == "END")
+					break;
+				if (key_names.find(symbol_1) != key_names.end()) {
+					keys.push_back(key_names[symbol_1]);
+					continue;
+				}
+				std::cerr << "Control::load_keys: unknown symbol " << symbol << "\n";
+				return false;
+			}
+			key_matches[symbol] = keys;
+			continue;
+		}
+		std::cerr << "Control::load_keys: unknown symbol " << symbol << "\n";
+		return false;
+	}
+	return true;
+}
+
 void Control::load_config(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -117,8 +165,12 @@ void Control::load_config(std::string path) {
 	config >> id_;
 	network.set_id(id_);
 	std::string name_;
+	config >> name_;
 	network.set_name(name_);
+	// Key config
+	load_keys("keys.conf");
 }
+
 void Control::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);

@@ -33,11 +33,14 @@ private:
 		std::vector<int> state_prev = state_current;
 	} keyboard;
 
+	// SFML keys names
+	std::map<std::string, int> key_names;
 	// Matches keys to name (command)
 	std::map<std::string, std::vector<int>> key_matches;
 
 	// Gets key by name
 	int key_by_name(std::string name);
+	
 
 	// Events -> keyboard
 	void process_events(sf::Window*);
@@ -52,6 +55,8 @@ public:
 	int get_is_running();
 	// Func to call regulary
 	void step();
+	// Loading keys
+	int load_keys(std::string path);
 	// Config
 	void load_config(std::string path);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
