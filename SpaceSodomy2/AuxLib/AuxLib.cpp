@@ -131,3 +131,13 @@ std::vector<int> aux::string_to_mask(std::string str, int digit, char start) {
 	return vec;
 }
 
+float aux::area(std::vector<b2Vec2> vertices) {
+	float val = 0;
+	for (int i = 0; i < vertices.size(); i++) {
+		int j = (i + 1) % vertices.size();
+		val += vertices[i].x * vertices[j].y;
+		val -= vertices[i].y * vertices[j].x;
+	}
+	return val / 2;
+}
+

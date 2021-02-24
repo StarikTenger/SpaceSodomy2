@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/graphics.hpp>
+#include <box2d/box2d.h>
 #include <cmath>
 #include <cstdlib>
 #include <string>
@@ -26,4 +27,6 @@ public:
 	static std::string mask_to_string(std::vector<int>, int digit = 16, char start = '0');
 	// Converts string to bit max
 	static std::vector<int> string_to_mask(std::string, int digit = 16, char start = '0');
+	// Calculates polygon signed area 
+	static float area(std::vector<b2Vec2>);
 };
