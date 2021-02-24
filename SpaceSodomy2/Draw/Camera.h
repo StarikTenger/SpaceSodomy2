@@ -22,6 +22,7 @@ public:
 	void set_angle(float val);
 	void set_scale(float val);
 	// Apply camera to scene
+	void modify_scale(float val);
 	void apply(sf::RenderWindow* window);
 };
 

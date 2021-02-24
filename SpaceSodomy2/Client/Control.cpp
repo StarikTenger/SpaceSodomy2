@@ -34,6 +34,12 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
 	if (keyboard.state_current[sf::Keyboard::D])
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+
+	// Zoom out
+	if (keyboard.state_current[sf::Keyboard::Q])
+		draw.get_camera()->modify_scale(pow(2, -delay * 0.001 * zoom_vel));
+	if (keyboard.state_current[sf::Keyboard::E])
+		draw.get_camera()->modify_scale(pow(2, delay * 0.001 * zoom_vel));
 }
 
 std::string Control::commands_to_string() {

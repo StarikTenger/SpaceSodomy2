@@ -3,10 +3,11 @@
 
 void Game_Client::set_draw(Draw* _draw) {
 	draw = _draw;
+	draw->apply_camera({ 0, 0 }, 100, 0);
 }
 
 void Game_Client::display(int id) {
-	draw->apply_camera({0, 0}, 100, 0);
+	//draw->apply_camera({0, 0}, 100, 0);
 	// Finding cam target
 	for (auto ship : ships) {
 		if (ship->get_player()->get_id() == id) {

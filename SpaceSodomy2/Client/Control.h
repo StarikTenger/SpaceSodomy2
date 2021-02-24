@@ -14,6 +14,8 @@ private:
 	int delay = 20;
 	// Last time of activity
 	int time_prev = 0;
+	// Zoom velocity
+	float zoom_vel = 2;
 	// Current player's commands
 	Command_Module command_module;
 	// Connection to server, contains id, name, server adress & port

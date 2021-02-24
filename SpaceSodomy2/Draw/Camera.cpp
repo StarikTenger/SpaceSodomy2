@@ -32,6 +32,10 @@ void Camera::set_scale(float val) {
 	scale = val;
 }
 
+void Camera::modify_scale(float val) {
+	scale *= val;
+}
+
 void Camera::apply(sf::RenderWindow* window) {
 	// Relative view
 	sf::View view(sf::FloatRect(
