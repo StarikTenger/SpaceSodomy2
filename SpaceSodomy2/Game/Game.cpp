@@ -8,6 +8,7 @@
 
 Game::Game() {
 	create_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
+	
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -56,9 +57,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	return ship;
 }
 
-Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation) {
+Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float restitution) {
 	Wall* wall = new Wall();
 	wall->set(&physics, vertices, orientation);
+	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	walls.push_back(wall);
 	return wall;
 }
@@ -75,6 +77,11 @@ void Game::apply_command(int id, int command, int val) {
 
 void Game::step(float dt) {
 	process_engines();
+
+	// Physics
+	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext())
+		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() * 
+			contact->GetFixtureB()->GetRestitution());
 	physics.Step(dt, 10, 10);
 }
 
@@ -113,13 +120,14 @@ int Game::load_map(std::string path) {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
 			int orientation = Wall::OUTER;
+			float restitution = 0.5;
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;
 				if (symbol_1 == "POINT") {
 					b2Vec2 point;
 					if (!(input >> point.x >> point.y)) { // Error
-						std::cerr << "Game::load_walls: failed to read point";
+						std::cerr << "Game::load_map: failed to read point";
 						return false;
 					}
 					// Point loaded successfully
@@ -134,14 +142,21 @@ int Game::load_map(std::string path) {
 					orientation = Wall::OUTER;
 					continue;
 				}
-				std::cerr << "Game::load_walls: unknown symbol " << symbol_1 << "\n";
+				if (symbol_1 == "RESTITUTION") {
+					if (!(input >> restitution)) {
+						std::cerr << "Game::load_map: failed to read restitution";
+						return false;
+					}
+					continue;
+				}
+				std::cerr << "Game::load_map: unknown symbol " << symbol_1 << "\n";
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points, orientation);
+			create_wall(points, orientation, restitution);
 			continue;
 		}
-		std::cerr << "Game::load_walls: unknown symbol " << symbol << "\n";
+		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
 		return false;
 	}
 	return true;
@@ -171,7 +186,6 @@ std::string Game::encode() {
 void Game::decode(std::string source) {
 	// First clear
 	clear();
-	std::cout << source << "\n";
 
 	// Creating stringstream
 	std::stringstream stream;
@@ -208,7 +222,6 @@ void Game::decode(std::string source) {
 }
 
 Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
-	std::cout << "New Player\n";
 	Player* player = new Player(id, color, name);
 	players.push_back(player);
 	return create_ship(player, pos, angle);
