@@ -5,6 +5,8 @@
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
 #include "Game_Client.h"
+#include <string>
+#include <fstream>
 
 class Control {
 private:
@@ -42,5 +44,8 @@ public:
 	int get_is_running();
 	// Func to call regulary
 	void step();
+	// Config
+	void load_config(std::string path);
+	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 };
 

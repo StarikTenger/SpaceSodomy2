@@ -81,3 +81,25 @@ void Control::step() {
 		network.send(commands_to_string());
 	}
 }
+
+void Control::load_config(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::string address;
+	config >> address;
+	network.set_server(address);
+	int port_;
+	config >> port_;
+	network.set_port(port_);
+	int id_;
+	config >> id_;
+	network.set_id(id_);
+	std::string name_;
+	network.set_name(name_);
+}
+void Control::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+	std::ofstream fout;
+	fout.open(path);
+	fout << address_ << " " << port_ << " " << id_ << " " << name_;
+	fout.close();
+}
