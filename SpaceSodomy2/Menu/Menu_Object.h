@@ -35,6 +35,6 @@ public:
 	void set_scale_x(int scale_x_);
 	void set_scale_y(int scale_y_);
 
-	void step();
+	void primitive_step();
 };
 

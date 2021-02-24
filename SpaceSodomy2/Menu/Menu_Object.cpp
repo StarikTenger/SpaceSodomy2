@@ -61,7 +61,7 @@ void Menu_Object::set_scale_y(int scale_y_) {
 	scale_y = scale_y_;
 }
 
-void Menu_Object::step()
+void Menu_Object::primitive_step()
 {
 	if (sf::IntRect(pos_x, pos_y, scale_x, scale_y).contains(sf::Mouse::getPosition(*window)))
 		active = 1;
