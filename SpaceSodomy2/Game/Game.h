@@ -36,7 +36,7 @@ public:
 	void apply_command(int id, int command, int val);
 	void step(float dt);
 	// Loads walls from file (returns 1 if everything is correct)
-	int load_walls(std::string path);
+	int load_map(std::string path);
 	// Clears everyrhing
 	void clear();
 	// Encodes class into string

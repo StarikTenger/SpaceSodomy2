@@ -99,7 +99,7 @@ void Game::clear() {
 	b2World physics = b2World(b2Vec2_zero);
 }
 
-int Game::load_walls(std::string path) {
+int Game::load_map(std::string path) {
 	map_path = path;
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
@@ -185,7 +185,7 @@ void Game::decode(std::string source) {
 			stream >> path;
 			if (map_path != path) {
 				map_path = path;
-				load_walls(map_path);
+				load_map(map_path);
 			}
 		}
 		// Ship

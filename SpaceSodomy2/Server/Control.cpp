@@ -19,7 +19,7 @@ void Control::load_config(std::string path) {
 			std::string name;
 			file >> name;
 			//sys.currentMap = name;
-			game.load_walls(name);	
+			game.load_map(name);	
 		}
 	}
 }
