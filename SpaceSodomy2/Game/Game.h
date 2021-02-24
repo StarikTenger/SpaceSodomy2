@@ -26,7 +26,7 @@ protected:
 
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
-	Wall* create_wall(std::vector<b2Vec2> vertices);
+	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER);
 
 	 // Processing functions
 	void process_engines();

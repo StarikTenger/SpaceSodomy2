@@ -83,13 +83,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libraries\box2d\include;$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>$(SolutionDir)\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libraries\box2d\include;$(SolutionDir);C:\libraries\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\x64\Release;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>

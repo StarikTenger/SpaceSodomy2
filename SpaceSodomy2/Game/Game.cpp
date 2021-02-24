@@ -56,9 +56,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	return ship;
 }
 
-Wall* Game::create_wall(std::vector<b2Vec2> vertices) {
+Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation) {
 	Wall* wall = new Wall();
-	wall->set(&physics, vertices);
+	wall->set(&physics, vertices, orientation);
 	walls.push_back(wall);
 	return wall;
 }
@@ -112,6 +112,7 @@ int Game::load_walls(std::string path) {
 		if (symbol == "WALL") {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
+			int orientation = Wall::OUTER;
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;
@@ -125,11 +126,19 @@ int Game::load_walls(std::string path) {
 					points.push_back(point);
 					continue;
 				}
+				if (symbol_1 == "INNER") {
+					orientation = Wall::INNER;
+					continue;
+				}
+				if (symbol_1 == "OUTER") {
+					orientation = Wall::OUTER;
+					continue;
+				}
 				std::cerr << "Game::load_walls: unknown symbol " << symbol_1 << "\n";
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points);
+			create_wall(points, orientation);
 			continue;
 		}
 		std::cerr << "Game::load_walls: unknown symbol " << symbol << "\n";
