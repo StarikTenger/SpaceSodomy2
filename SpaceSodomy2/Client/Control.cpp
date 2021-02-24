@@ -1,5 +1,12 @@
 #include "Control.h"
 
+int Control::key_by_name(std::string name) {
+	int sum = 0;
+	for (auto k : key_matches[name])
+		sum += keyboard.state_current[k];
+	return sum;
+}
+
 void Control::process_events(sf::Window* window) {
 	window->setKeyRepeatEnabled(false);
 	sf::Event event;
@@ -22,23 +29,23 @@ void Control::process_events(sf::Window* window) {
 
 void Control::process_commands() {
 	command_module.reset();
-	if (keyboard.state_current[sf::Keyboard::W] || keyboard.state_current[sf::Keyboard::Up])
+	if (key_by_name("ENGINE_LIN_FORWARD"))
 		command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
-	if (keyboard.state_current[sf::Keyboard::S] || keyboard.state_current[sf::Keyboard::Down])
+	if (key_by_name("ENGINE_LIN_BACKWARD"))
 		command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
-	if (keyboard.state_current[sf::Keyboard::Left])
+	if (key_by_name("ENGINE_LIN_LEFT"))
 		command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
-	if (keyboard.state_current[sf::Keyboard::Right])
+	if (key_by_name("ENGINE_LIN_RIGHT"))
 		command_module.set_command(Command_Module::ENGINE_LIN_RIGHT, 1);
-	if (keyboard.state_current[sf::Keyboard::A])
+	if (key_by_name("ENGINE_ANG_LEFT"))
 		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
-	if (keyboard.state_current[sf::Keyboard::D])
+	if (key_by_name("ENGINE_ANG_RIGHT"))
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
 
 	// Zoom out
-	if (keyboard.state_current[sf::Keyboard::Q])
+	if (key_by_name("ZOOM_OUT"))
 		draw.get_camera()->modify_scale(pow(2, -delay * 0.001 * zoom_vel));
-	if (keyboard.state_current[sf::Keyboard::E])
+	if (key_by_name("ZOOM_IN"))
 		draw.get_camera()->modify_scale(pow(2, delay * 0.001 * zoom_vel));
 }
 
@@ -58,6 +65,15 @@ Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
 	game.set_draw(&draw);
+	// Default key matches
+	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
+	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
+	key_matches["ENGINE_LIN_LEFT"] = { sf::Keyboard::Left};
+	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right};
+	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A};
+	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
+	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
+	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
 }
 
 int Control::get_is_running() {
