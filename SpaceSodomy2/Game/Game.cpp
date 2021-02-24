@@ -153,6 +153,8 @@ std::string Game::encode() {
 		message += std::to_string(ship->get_body()->GetPosition().y) + " ";
 		// Angle
 		message += std::to_string(ship->get_body()->GetAngle()) + " ";
+		// Commands
+		message += aux::mask_to_string(ship->get_command_module()->get_active()) + " ";
 	}
 	return message;
 }
@@ -185,17 +187,22 @@ void Game::decode(std::string source) {
 			stream >> pos.x >> pos.y;
 			float angle;
 			stream >> angle;
-			create_player(id, {255, 0, 0}, "_name_", pos, angle);
+			std::string commands_stringed;
+			stream >> commands_stringed;
+			std::vector<int> commands = aux::string_to_mask(commands_stringed);
+			auto ship = create_player(id, {255, 0, 0}, "_name_", pos, angle);
+			for (int i = 0; i < commands.size(); i++)
+				ship->get_command_module()->set_command(i, commands[i]);
 		}
 	}
 
 }
 
-void Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
+Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	std::cout << "New Player\n";
 	Player* player = new Player(id, color, name);
 	players.push_back(player);
-	create_ship(player, pos, angle);
+	return create_ship(player, pos, angle);
 }
 
 void Game::del_player(int id) {

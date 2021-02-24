@@ -36,6 +36,22 @@ void Game_Client::display(int id) {
 			continue;
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
+		// Engines
+		std::vector<std::string> textures = {
+			"engine_lin_forward",
+			"engine_lin_backward",
+			"engine_lin_left",
+			"engine_lin_right",
+			"engine_turn_left",
+			"engine_turn_right"
+		};
+		radius *= 2;
+		for (int i = 0; i < textures.size(); i++) {
+			if (ship->get_command_module()->get_command(i))
+				draw->image(textures[i], ship->get_body()->GetPosition(), 
+					{ radius, radius }, ship->get_body()->GetAngle());
+		}
+
 	}
 	
 	draw->display();

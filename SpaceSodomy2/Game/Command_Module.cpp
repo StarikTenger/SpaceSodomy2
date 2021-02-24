@@ -4,6 +4,10 @@
 // Constructor
 Command_Module::Command_Module() {}
 
+std::vector<int> Command_Module::get_active() {
+	return active;
+}
+
 // Get methods
 int Command_Module::get_command(int id) {
 	if (id < 0 || id >= active.size()) // vector out of range

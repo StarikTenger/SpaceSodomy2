@@ -44,7 +44,7 @@ public:
 	// Decodes class from string
 	void decode(std::string source);
 	// Creates new player
-	void create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
+	Ship* create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
 	//Deletes player
 	void del_player(int id);
 };

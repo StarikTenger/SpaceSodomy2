@@ -21,6 +21,7 @@ public:
 	Command_Module();
 
 	// Get methods
+	std::vector<int> get_active();
 	int get_command(int id);
 
 	// Set methods

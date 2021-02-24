@@ -4,7 +4,7 @@
 int main() {
 	Control control;
 
-	while (1) {
+	while (1) {  
 		control.step();
 	}
 }
