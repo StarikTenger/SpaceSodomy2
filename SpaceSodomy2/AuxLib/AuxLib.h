@@ -29,4 +29,6 @@ public:
 	static std::vector<int> string_to_mask(std::string, int digit = 16, char start = '0');
 	// Calculates polygon signed area 
 	static float area(std::vector<b2Vec2>);
+	static b2Vec2 to_b2vec2(sf::Vector2f);
+	static sf::Vector2f to_vector2f(b2Vec2);
 };
