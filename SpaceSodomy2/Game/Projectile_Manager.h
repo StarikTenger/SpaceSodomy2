@@ -4,12 +4,18 @@
 
 class Projectile_Manager {
 private:
-	std::vector<Projectile*> projectiles;
-	friend std::vector<Projectile*>& get_projectiles(Projectile_Manager& pm);
+	std::vector<Projectile*>* projectiles;
+
 public:
 	// Constructor
 	Projectile_Manager();
+	Projectile_Manager(std::vector<Projectile*>*);
 
-	// TODO: Func thts create projectile
+	// Set methods
+	void set_projectiles(std::vector<Projectile*>*);
+
+	// Create projectile
+	void create_projectile();
+
 };
 

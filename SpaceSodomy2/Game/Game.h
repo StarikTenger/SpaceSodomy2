@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Wall.h"
 #include "Gun.h"
+#include "Projectile.h"
 #include "Projectile_Manager.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
@@ -23,7 +24,8 @@ protected:
 	std::vector<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
 	std::vector<Wall*> walls;
-	Projectile_Manager projectile_manager;
+	std::vector<Projectile*> projectiles;
+	Projectile_Manager projectile_manager();
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Path to the map
