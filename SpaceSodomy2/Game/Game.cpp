@@ -77,6 +77,7 @@ void Game::apply_command(int id, int command, int val) {
 
 void Game::step(float dt) {
 	process_engines();
+	get_projectiles(projectile_manager);
 
 	// Physics
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext())

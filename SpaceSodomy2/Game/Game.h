@@ -8,17 +8,22 @@
 #include "Engine.h"
 #include "Player.h"
 #include "Wall.h"
+#include "Gun.h"
+#include "Projectile_Manager.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 
 class Game {
 protected:
+	//friend class Projectile_Manager;
+
 	// Objects' systems
 	std::vector<Ship*> ships;
 	std::vector<Player*> players;
 	std::vector<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
 	std::vector<Wall*> walls;
+	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Path to the map
