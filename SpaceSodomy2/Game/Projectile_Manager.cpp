@@ -4,10 +4,6 @@
 Projectile_Manager::Projectile_Manager() {
 }
 
-Projectile_Manager::Projectile_Manager(std::vector<Projectile*>* _projectiles) {
-	projectiles = _projectiles;
-}
-
-void Projectile_Manager::set_projectiles(std::vector<Projectile*>* val) {
-	projectiles = val;
+void Projectile_Manager::create_projectile(Projectile_Def projectile_def) {
+	projectiles_to_create.push_back(projectile_def);
 }

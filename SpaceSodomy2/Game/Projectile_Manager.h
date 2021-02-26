@@ -1,21 +1,18 @@
 #pragma once
 #include <vector>
-#include "Projectile.h"
+#include <deque>
+#include "Projectile_Def.h"
 
 class Projectile_Manager {
 private:
-	std::vector<Projectile*>* projectiles;
+	std::deque<Projectile_Def> projectiles_to_create;
 
 public:
 	// Constructor
 	Projectile_Manager();
-	Projectile_Manager(std::vector<Projectile*>*);
-
-	// Set methods
-	void set_projectiles(std::vector<Projectile*>*);
 
 	// Create projectile
-	void create_projectile();
+	void create_projectile(Projectile_Def projectile_def);
 
 };
 

@@ -16,6 +16,7 @@
 
 class Game {
 protected:
+	float dt = 0;
 	//friend class Projectile_Manager;
 
 	// Objects' systems
@@ -24,6 +25,7 @@ protected:
 	std::vector<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
 	std::vector<Wall*> walls;
+	std::vector<Active_Module*> active_modules;
 	std::vector<Projectile*> projectiles;
 	Projectile_Manager projectile_manager();
 	b2World physics = b2World(b2Vec2_zero);
@@ -37,6 +39,7 @@ protected:
 
 	 // Processing functions
 	void process_engines();
+	void process_active_modules();
 public:
 	Game();
 	// Sets command to player with id=id

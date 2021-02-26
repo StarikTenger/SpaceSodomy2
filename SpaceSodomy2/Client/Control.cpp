@@ -29,6 +29,7 @@ void Control::process_events(sf::Window* window) {
 
 void Control::process_commands() {
 	command_module.reset();
+	// TODO: do it in one std::map
 	if (key_by_name("ENGINE_LIN_FORWARD"))
 		command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 	if (key_by_name("ENGINE_LIN_BACKWARD"))
@@ -41,6 +42,8 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
 	if (key_by_name("ENGINE_ANG_RIGHT"))
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+	if (key_by_name("SHOOT"))
+		command_module.set_command(Command_Module::SHOOT, 1);
 
 	// Zoom out
 	if (key_by_name("ZOOM_OUT"))
@@ -74,6 +77,7 @@ Control::Control() {
 	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
 	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
 	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
+	key_matches["SHOOT"] = { sf::Keyboard::Space};
 	// SFML key names
 	std::vector<std::string> names = { "A", "B", "C", "D", "E", "F", "G", "H", 
 		"I", "J", "K", "L", "M", "N", "O", "P", "Q", 

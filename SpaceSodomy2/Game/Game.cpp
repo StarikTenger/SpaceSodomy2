@@ -8,7 +8,6 @@
 
 Game::Game() {
 	create_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
-	
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -44,16 +43,20 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto ship = new Ship();
 	auto command_module = new Command_Module();
 	auto engine = new Engine(body, command_module);
+	auto gun = new Gun();
+	gun->set(body, player, command_module);
 
-	// Matching modules to ship
+	// Matching entities to ship
 	ship->set_player(player);
 	ship->set_command_module(command_module);
 	ship->set_engine(engine);
 	ship->set_body(body);
+	ship->set_gun(gun);
 
 	ships.push_back(ship);
 	engines.push_back(engine);
 	command_modules.insert({player->get_id(), command_module });
+	active_modules.push_back(gun);
 	return ship;
 }
 
@@ -66,18 +69,23 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 }
 
 void Game::process_engines() {
-	for (auto engine : engines) {
+	for (auto engine : engines)
 		engine->step();
-	}
+}
+
+void Game::process_active_modules() {
+	for (auto active_module : active_modules)
+		active_module->step(dt);
 }
 
 void Game::apply_command(int id, int command, int val) {
 	command_modules[id]->set_command(command, val);
 }
 
-void Game::step(float dt) {
-	process_engines();
-	get_projectiles(projectile_manager);
+void Game::step(float _dt) {
+	dt = _dt;
+	process_engines();	
+	process_active_modules();
 
 	// Physics
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext())

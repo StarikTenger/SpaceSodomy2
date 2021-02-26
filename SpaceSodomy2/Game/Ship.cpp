@@ -13,11 +13,17 @@ Player* Ship::get_player() {
 Command_Module* Ship::get_command_module() {
 	return command_module;
 }
+
 Engine* Ship::get_engine() {
 	return engine;
 }
+
 b2Body* Ship::get_body() {
 	return body;
+}
+
+Gun* Ship::get_gun() {
+	return gun;
 }
 
 // Set methods
@@ -35,4 +41,8 @@ void Ship::set_engine(Engine* val) {
 
 void Ship::set_body(b2Body* val) {
 	body = val;
+}
+
+void Ship::set_gun(Gun* val) {
+	gun = val;
 }

@@ -166,6 +166,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Wall.h" />
@@ -184,6 +185,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Projectile_Def.cpp" />
     <ClCompile Include="Projectile_Manager.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Wall.cpp" />
