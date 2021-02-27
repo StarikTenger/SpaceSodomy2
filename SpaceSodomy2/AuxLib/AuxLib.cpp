@@ -141,3 +141,7 @@ float aux::area(std::vector<b2Vec2> vertices) {
 	return val / 2;
 }
 
+b2Vec2 aux::angle_to_vec(float angle) {
+	return b2Vec2(cos(angle), sin(angle));
+}
+
