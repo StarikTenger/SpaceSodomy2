@@ -14,5 +14,7 @@ public:
 	// Create projectile
 	void create_projectile(Projectile_Def projectile_def);
 
+	// Get another projectile
+	int get_next(Projectile_Def&);
 };
 

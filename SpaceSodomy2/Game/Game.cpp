@@ -45,6 +45,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto engine = new Engine(body, command_module);
 	auto gun = new Gun();
 	gun->set(body, player, command_module);
+	gun->set_projectile_manager(&projectile_manager);
 
 	// Matching entities to ship
 	ship->set_player(player);
@@ -68,6 +69,23 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	return wall;
 }
 
+Projectile* Game::create_projectile(Projectile_Def projectile_def) {
+	// Creating body
+	auto body = create_round_body(projectile_def.pos, projectile_def.angle, 0.2, 0.1);
+	body->SetLinearVelocity(projectile_def.vel);
+
+	// Creating projectile
+	auto projectile = new Projectile();
+	projectile->set_body(body);
+	projectile->set_player(projectile_def.player);
+	projectile->set_damage(projectile_def.damage);
+
+	// Adding to vectors
+	projectiles.push_back(projectile);
+
+	return projectile;
+}
+
 void Game::process_engines() {
 	for (auto engine : engines)
 		engine->step();
@@ -78,14 +96,22 @@ void Game::process_active_modules() {
 		active_module->step(dt);
 }
 
+void Game::process_projectlie_manager() {
+	Projectile_Def projectile_def;
+	while (projectile_manager.get_next(projectile_def)) {
+		create_projectile(projectile_def);
+	}
+}
+
 void Game::apply_command(int id, int command, int val) {
 	command_modules[id]->set_command(command, val);
 }
 
 void Game::step(float _dt) {
 	dt = _dt;
-	process_engines();	
+	process_engines();
 	process_active_modules();
+	process_projectlie_manager();
 
 	// Physics
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext())
@@ -111,6 +137,10 @@ void Game::clear() {
 	for (auto engine : engines)
 		delete engine;
 	engines = {};
+	// Clear projectiles
+	for (auto projectile : projectiles)
+		delete projectile;
+	projectiles = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
 }
@@ -174,12 +204,14 @@ int Game::load_map(std::string path) {
 std::string Game::encode() {
 	// Encoding ships
 	std::string message = "";
+
 	// Map path
 	message += "M " + map_path + " ";
+
 	// Ships
 	for (auto ship : ships) {
 		message += "S ";
-		// Id (wait for player class)
+		// Id
 		message += std::to_string(ship->get_player()->get_id()) + " ";
 		// Pos
 		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
@@ -189,6 +221,19 @@ std::string Game::encode() {
 		// Commands
 		message += aux::mask_to_string(ship->get_command_module()->get_active()) + " ";
 	}
+
+	// Projectiles
+	for (auto projectile : projectiles) {
+		message += "P ";
+		// Id
+		message += std::to_string(projectile->get_player()->get_id()) + " ";
+		// Pos
+		message += std::to_string(projectile->get_body()->GetPosition().x) + " ";
+		message += std::to_string(projectile->get_body()->GetPosition().y) + " ";
+		// Angle
+		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
+	}
+
 	return message;
 }
 
@@ -225,6 +270,20 @@ void Game::decode(std::string source) {
 			auto ship = create_player(id, {255, 0, 0}, "_name_", pos, angle);
 			for (int i = 0; i < commands.size(); i++)
 				ship->get_command_module()->set_command(i, commands[i]);
+		}
+		// Projectile
+		if (symbol == "P") {
+			int id;
+			stream >> id;
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			float angle;
+			stream >> angle;
+
+			Projectile_Def projectile_def;
+			projectile_def.pos = pos;
+
+			auto projectile = create_projectile(projectile_def);
 		}
 	}
 

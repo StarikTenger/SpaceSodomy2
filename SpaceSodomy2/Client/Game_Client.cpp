@@ -54,6 +54,13 @@ void Game_Client::display(int id) {
 		}
 
 	}
+
+	// Projectiles
+	for (auto projectile : projectiles) {
+		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, projectile->get_body()->GetAngle());
+
+	}
 	
 	draw->display();
 }

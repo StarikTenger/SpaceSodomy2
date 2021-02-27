@@ -16,8 +16,8 @@
 
 class Game {
 protected:
+	// Time step
 	float dt = 0;
-	//friend class Projectile_Manager;
 
 	// Objects' systems
 	std::vector<Ship*> ships;
@@ -27,19 +27,22 @@ protected:
 	std::vector<Wall*> walls;
 	std::vector<Active_Module*> active_modules;
 	std::vector<Projectile*> projectiles;
-	Projectile_Manager projectile_manager();
+	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Path to the map
 	std::string map_path = "";
 
+	// Create functions
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
+	Projectile* create_projectile(Projectile_Def);
 
 	 // Processing functions
 	void process_engines();
 	void process_active_modules();
+	void process_projectlie_manager();
 public:
 	Game();
 	// Sets command to player with id=id

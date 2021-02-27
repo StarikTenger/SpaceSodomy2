@@ -1,10 +1,14 @@
 #pragma once
+#include <AuxLib/AuxLib.h>
 #include "Active_Module.h"
+#include "Projectile_Manager.h"
 
 class Gun : public Active_Module {
-private:
+protected:
 	float damage = 1;
+	Projectile_Manager* projectile_manager = nullptr;
 public:
-	void activate();
+	void set_projectile_manager(Projectile_Manager*);
+	void activate() override;
 };
 

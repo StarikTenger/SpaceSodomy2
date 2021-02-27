@@ -44,6 +44,7 @@ void Draw::load_textures(std::string path) {
 }
 
 void Draw::apply_camera() {
+	cam.set_borders(b2Vec2(window->getSize().x, window->getSize().y));
 	cam.apply(window);
 }
 
