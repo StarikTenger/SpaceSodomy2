@@ -11,11 +11,15 @@
 #include "Gun.h"
 #include "Projectile.h"
 #include "Projectile_Manager.h"
+#include "Collision_Filter.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 
 class Game {
 protected:
+	// Collision control
+	Collision_Filter collision_filter;
+
 	// Time step
 	float dt = 0;
 

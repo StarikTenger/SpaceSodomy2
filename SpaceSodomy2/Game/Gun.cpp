@@ -14,7 +14,7 @@ void Gun::activate() {
 	projectile_def.pos = body->GetPosition();
 	projectile_def.vel = body->GetLinearVelocity();
 	projectile_def.angle = body->GetAngle();
-	b2Vec2 delta_vel = aux::angle_to_vec(projectile_def.angle);
+	b2Vec2 delta_vel = vel_val * aux::angle_to_vec(projectile_def.angle);
 	projectile_def.vel += delta_vel;
 	projectile_def.player = player;
 

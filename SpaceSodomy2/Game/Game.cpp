@@ -8,6 +8,8 @@
 
 Game::Game() {
 	create_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
+	// Contact filter
+	physics.SetContactFilter(&collision_filter);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -65,6 +67,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	Wall* wall = new Wall();
 	wall->set(&physics, vertices, orientation);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
+	collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
 	walls.push_back(wall);
 	return wall;
 }
@@ -73,6 +76,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	// Creating body
 	auto body = create_round_body(projectile_def.pos, projectile_def.angle, 0.2, 0.1);
 	body->SetLinearVelocity(projectile_def.vel);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE);
 
 	// Creating projectile
 	auto projectile = new Projectile();
