@@ -52,6 +52,7 @@ Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
 	game.set_draw(&draw);
+	menu_processing.init("menu.conf", &draw);
 }
 
 int Control::get_is_running() {
@@ -61,6 +62,8 @@ int Control::get_is_running() {
 void Control::step() {
 	// Receiving
 	network.receive();
+	// Menu processing
+	menu_processing.step();
 
 	// Delay check
 	int time_current = aux::get_milli_count();

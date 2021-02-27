@@ -126,7 +126,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>AuxLib.lib;Draw.lib;Network.lib;Game.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-network-d.lib;box2d.lib</AdditionalDependencies>
+      <AdditionalDependencies>Menu.lib;AuxLib.lib;Draw.lib;Network.lib;Game.lib;sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-network-d.lib;box2d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -150,10 +150,12 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Game_Client.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu_Processing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control.h" />
     <ClInclude Include="Game_Client.h" />
+    <ClInclude Include="Menu_Processing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

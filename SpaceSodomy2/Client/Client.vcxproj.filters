@@ -24,12 +24,18 @@
     <ClCompile Include="Game_Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Menu_Processing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game_Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu_Processing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

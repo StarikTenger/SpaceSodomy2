@@ -4,6 +4,7 @@
 #include <Network/Client_Network.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
+#include "Menu_Processing.h"
 #include "Game_Client.h"
 #include <string>
 #include <fstream>
@@ -24,6 +25,9 @@ private:
 	Game_Client game;
 	// Contains window 7 other drawing stuff
 	Draw draw;
+	// Contains menu objects
+	Menu_Processing menu_processing;
+	
 
 	// Keyboard structure
 	struct Keyboard {
