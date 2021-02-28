@@ -36,6 +36,7 @@ void Menu::add_button(int id, std::string texture_name, float pos_x, float pos_y
 	buttons.back()->set_pos(b2Vec2(pos_x, pos_y));
 	buttons.back()->set_scale(b2Vec2(scale_x, scale_y));
 	buttons.back()->set_color(color);
+	buttons.back()->set_draw(draw);
 }
 
 void Menu::step() {

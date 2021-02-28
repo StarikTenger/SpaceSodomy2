@@ -62,8 +62,6 @@ int Control::get_is_running() {
 void Control::step() {
 	// Receiving
 	network.receive();
-	// Menu processing
-	menu_processing.step();
 
 	// Delay check
 	int time_current = aux::get_milli_count();
@@ -75,6 +73,8 @@ void Control::step() {
 
 		// Draw		
 		game.display(network.get_id());
+		menu_processing.step();
+		game.get_draw()->display();
 
 		// Event processing
 		process_events(draw.get_window());
@@ -83,6 +83,7 @@ void Control::step() {
 		// Sending
 		network.send(commands_to_string());
 	}
+	// Menu processing
 }
 
 void Control::load_config(std::string path) {

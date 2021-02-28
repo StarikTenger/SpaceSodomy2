@@ -8,6 +8,9 @@ private:
 public:
 	// Set methods
 	void set_draw(Draw* _draw);
+	
+	// Get methods
+	Draw* get_draw();
 
 	void display(int id);
 };
