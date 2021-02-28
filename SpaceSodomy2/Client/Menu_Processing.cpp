@@ -16,6 +16,7 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_) {
 		file >> pos_x >> pos_y >> scale_x >> scale_y;
 		main_menu.add_button(i, texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White);
 	}
+	return;
 }
 
 void Menu_Processing::step() {
