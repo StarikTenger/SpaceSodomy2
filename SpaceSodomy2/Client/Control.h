@@ -27,6 +27,8 @@ private:
 	Draw draw;
 	// Contains menu objects
 	Menu_Processing menu_processing;
+	// Contains mouse position
+	b2Vec2 mouse_pos;
 	
 
 	// Keyboard structure

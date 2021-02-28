@@ -147,3 +147,10 @@ b2Vec2 aux::to_b2vec2(sf::Vector2f val) {
 sf::Vector2f aux::to_vector2f(b2Vec2 val) {
 	return sf::Vector2f(val.x, val.y);
 }
+
+bool aux::rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point) {
+	scale.x /= 2;
+	scale.y /= 2;
+	b2Vec2 begin = center - scale, end = center + scale;
+	return ((point.y > begin.y) && (point.x > begin.x) && (point.y < end.y) && (point.x < end.x));
+}
