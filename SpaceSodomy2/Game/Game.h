@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -14,6 +15,7 @@
 #include "Collision_Filter.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
+#include <memory>
 
 class Game {
 protected:
@@ -24,13 +26,13 @@ protected:
 	float dt = 0;
 
 	// Objects' systems
-	std::vector<Ship*> ships;
-	std::vector<Player*> players;
-	std::vector<Engine*> engines;
+	std::set<Ship*> ships;
+	std::set<Player*> players;
+	std::set<Engine*> engines;
 	std::map<int, Command_Module*> command_modules;
-	std::vector<Wall*> walls;
-	std::vector<Active_Module*> active_modules;
-	std::vector<Projectile*> projectiles;
+	std::set<Wall*> walls;
+	std::set<Active_Module*> active_modules;
+	std::set<Projectile*> projectiles;
 	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -43,8 +45,12 @@ protected:
 	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile* create_projectile(Projectile_Def);
 
+	// Delete functions
+	void delete_projectile(Projectile*);
+
 	 // Processing functions
 	void process_engines();
+	void process_projectiles();
 	void process_active_modules();
 	void process_projectlie_manager();
 public:

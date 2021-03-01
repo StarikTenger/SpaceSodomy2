@@ -56,10 +56,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_body(body);
 	ship->set_gun(gun);
 
-	ships.push_back(ship);
-	engines.push_back(engine);
+	ships.insert(ship);
+	engines.insert(engine);
 	command_modules.insert({player->get_id(), command_module });
-	active_modules.push_back(gun);
+	active_modules.insert(gun);
 	return ship;
 }
 
@@ -68,7 +68,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	wall->set(&physics, vertices, orientation);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
-	walls.push_back(wall);
+	walls.insert(wall);
 	return wall;
 }
 
@@ -85,14 +85,30 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_damage(projectile_def.damage);
 
 	// Adding to vectors
-	projectiles.push_back(projectile);
+	projectiles.insert(projectile);
 
 	return projectile;
+}
+
+void Game::delete_projectile(Projectile* projectile) {
+	auto body = projectile->get_body();
+	physics.DestroyBody(body);
+	projectiles.erase(projectile);
 }
 
 void Game::process_engines() {
 	for (auto engine : engines)
 		engine->step();
+}
+
+void Game::process_projectiles() {
+	std::set<Projectile*> projectiles_to_delete;
+	for (auto projectile : projectiles) {
+		if (projectile->get_body()->GetPosition().x > 0)
+			projectiles_to_delete.insert(projectile);
+	}
+	for (auto projectile : projectiles_to_delete)
+		delete_projectile(projectile);
 }
 
 void Game::process_active_modules() {
@@ -114,6 +130,7 @@ void Game::apply_command(int id, int command, int val) {
 void Game::step(float _dt) {
 	dt = _dt;
 	process_engines();
+	process_projectiles();
 	process_active_modules();
 	process_projectlie_manager();
 
@@ -295,7 +312,7 @@ void Game::decode(std::string source) {
 
 Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	Player* player = new Player(id, color, name);
-	players.push_back(player);
+	players.insert(player);
 	return create_ship(player, pos, angle);
 }
 
