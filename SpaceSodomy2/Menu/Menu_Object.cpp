@@ -3,7 +3,7 @@
 #define PI 3.14159265358979323846
 
 Menu_Object::Menu_Object() {}
-Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_) {
+Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_) {
 	id = id_;
 	texture_name = texture_name_;
 	draw = draw_;
@@ -11,6 +11,7 @@ Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2
 	scale = scale_;
 	color = color_;
 	mouse_pos = mouse_pos_;
+	keyboard = keyboard_;
 }
 
 // Get methods
@@ -37,6 +38,9 @@ sf::Color Menu_Object::get_color() {
 }
 b2Vec2* Menu_Object::get_mouse_pos() {
 	return mouse_pos;
+}
+aux::Keyboard* Menu_Object::get_keyboard() {
+	return keyboard;
 }
 bool Menu_Object::get_active() {
 	return active;
@@ -66,6 +70,9 @@ void Menu_Object::set_color(sf::Color color_) {
 }
 void Menu_Object::set_mouse_pos(b2Vec2* mouse_pos_) {
 	mouse_pos = mouse_pos_;
+}
+void Menu_Object::set_keyboard(aux::Keyboard* keyboard_) {
+	keyboard = keyboard_;
 }
 
 void Menu_Object::primitive_step()

@@ -13,8 +13,12 @@ void Control::process_events(sf::Window* window) {
 		case sf::Event::MouseMoved:
 			mouse_pos.x = event.mouseMove.x;
 			mouse_pos.y = event.mouseMove.y;
+			break;
+		case sf::Event::TextEntered:
+			text_entered.push(wchar_t(event.text.unicode));
+			break;
 		}
-}
+	}
 
 	// Processing keyboard
 	keyboard.state_prev = keyboard.state_current;
@@ -54,9 +58,9 @@ Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
-	draw.load_fonts("fonts.conf");
 	game.set_draw(&draw);
-	menu_processing.init("menu.conf", &draw, &mouse_pos);
+	keyboard.text_entered = &text_entered;
+	menu_processing.init("menu.conf", &draw, &mouse_pos, &keyboard);
 }
 
 int Control::get_is_running() {

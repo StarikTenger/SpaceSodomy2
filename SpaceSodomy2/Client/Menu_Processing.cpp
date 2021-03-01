@@ -2,7 +2,7 @@
 
 Menu_Processing::Menu_Processing() {}
 
-void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mouse_pos_) {
+void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard) {
 	draw = draw_;
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -15,7 +15,7 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 		float pos_x, pos_y, scale_x, scale_y;
 		file >> texture_name;
 		file >> pos_x >> pos_y >> scale_x >> scale_y;
-		main_menu.add_button(i, texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
+		main_menu.add_button(i, texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_, );
 	}
 	for (int i = 4; i < 5; i++)
 	{

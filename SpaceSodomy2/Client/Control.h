@@ -8,6 +8,7 @@
 #include "Game_Client.h"
 #include <string>
 #include <fstream>
+$include <queue>
 
 class Control {
 private:
@@ -29,13 +30,10 @@ private:
 	Menu_Processing menu_processing;
 	// Contains mouse position
 	b2Vec2 mouse_pos;
-	
-
 	// Keyboard structure
-	struct Keyboard {
-		std::vector<int> state_current = std::vector<int>(sf::Keyboard::KeyCount);
-		std::vector<int> state_prev = state_current;
-	} keyboard;
+	aux::Keyboard keyboard;
+	// Text entered
+	std::queue<wchar_t> text_entered;
 
 	// Events -> keyboard
 	void process_events(sf::Window*);

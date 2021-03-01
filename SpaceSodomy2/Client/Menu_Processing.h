@@ -11,7 +11,7 @@ private:
 	Draw* draw;
 public:
 	Menu_Processing();
-	void init(std::string menu_config_path, Draw* draw, b2Vec2* mouse_pos_);
+	void init(std::string menu_config_path, Draw* draw, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
 	void step();
 };
 

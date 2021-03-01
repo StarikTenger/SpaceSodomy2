@@ -3,7 +3,7 @@
 
 Text_Field::Text_Field() {
 	set_use_picture_scale(0);
-	text.setString("None");
+	text.setString(L"None");
 	text.setFillColor(sf::Color::White);
 	text.setCharacterSize(10);
 }
@@ -24,6 +24,9 @@ unsigned int Text_Field::get_text_character_pixels_size() {
 b2Vec2 Text_Field::get_indent() {
 	return indent;
 }
+bool Text_Field::get_keyboard_active() {
+	return keyboard_active;
+}
 
 // Set methods
 void Text_Field::set_text(const wchar_t* text_) {
@@ -41,8 +44,25 @@ void Text_Field::set_text_character_pixel_size(unsigned int size_) {
 void Text_Field::set_indent(b2Vec2 indent_) {
 	indent = indent_;
 }
+void Text_Field::set_keyboard_active(bool keyboard_active_) {
+	keyboard_active = keyboard_active_;
+}
 
 void Text_Field::step() {
+	if (keyboard_active)
+	{
+		std::string str = text.getString();
+		while (!get_keyboard()->text_entered->empty())
+		{
+			wchar_t symbol = get_keyboard()->text_entered->front();
+			get_keyboard()->text_entered->pop();
+			if (symbol == 8)
+				str.pop_back();
+			if (symbol >= 32)
+				str.push_back(symbol);
+		}
+		text.setString(str);
+	}
 	set_scale(aux::to_b2vec2(sf::Vector2f(text.getScale())));
 	set_scale(get_scale() + indent);
 	primitive_step();

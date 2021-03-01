@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <queue>
 
 class aux {
 public:
@@ -35,4 +36,10 @@ public:
 	static sf::Vector2f to_vector2f(b2Vec2);
 	// Check if rectangle contains point
 	static bool rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point);
+	// Keyboard
+	struct Keyboard {
+		std::vector<int> state_current = std::vector<int>(sf::Keyboard::KeyCount);
+		std::vector<int> state_prev = state_current;
+		std::queue<wchar_t>* text_entered;
+	}
 };
