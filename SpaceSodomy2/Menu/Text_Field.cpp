@@ -43,9 +43,8 @@ void Text_Field::set_indent(b2Vec2 indent_) {
 }
 
 void Text_Field::step() {
-	b2Vec2 addition = { 5, 5 };
 	set_scale(aux::to_b2vec2(sf::Vector2f(text.getScale())));
-	set_scale(get_scale() + addition);
+	set_scale(get_scale() + indent);
 	primitive_step();
 	text.setPosition(aux::to_vector2f(get_pos()));
 	get_draw()->display_text(&text);

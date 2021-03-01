@@ -17,6 +17,14 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 		file >> pos_x >> pos_y >> scale_x >> scale_y;
 		main_menu.add_button(i, texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
 	}
+	for (int i = 4; i < 5; i++)
+	{
+		std::string texture_name;
+		float pos_x, pos_y, scale_x, scale_y;
+		file >> texture_name;
+		file >> pos_x >> pos_y >> scale_x >> scale_y;
+		main_menu.add_text_field(i, "Hello", texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
+	}
 	return;
 }
 
@@ -33,6 +41,7 @@ void Menu_Processing::step() {
 			break;
 		case 3:
 			draw->get_window()->close();
+			break;
 		default:
 			break;
 		}

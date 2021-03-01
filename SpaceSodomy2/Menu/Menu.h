@@ -25,7 +25,7 @@ public:
 	bool get_active();
 	std::queue<int>* get_events();
 
-	void add_text_field(int id, std::string text, float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos);
+	void add_text_field(int id, std::string text, std::string texture_name, float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos);
 	void add_button(int id, std::string texture_name, float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos);
 	void step();
 };
