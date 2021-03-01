@@ -13,6 +13,11 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 	textures.insert(std::make_pair(name, tex));
 	textures[name]->loadFromFile(path_to_texture);
 }
+void Draw::load_font(std::string name, std::string path_to_font) {
+	sf::Font* font = new sf::Font();
+	fonts.insert(std::make_pair(name, font));
+	fonts[name]->loadFromFile(path_to_font);
+}
 
 Draw::Draw() {}
 
@@ -26,6 +31,10 @@ Camera* Draw::get_camera() {
 
 sf::Texture* Draw::get_texture(std::string name) {
 	return textures[name];
+}
+
+sf::Font* Draw::get_font(std::string name) {
+	return fonts[name];
 }
 
 // PUBLIC //
@@ -43,6 +52,18 @@ void Draw::load_textures(std::string path) {
 		file >> name >> path;
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_texture(name, path);
+	}
+	std::cout << "Finish loading\n";
+}
+
+void Draw::load_fonts(std::string path) {
+	std::cout << "Start loading\n";
+	std::ifstream file(path);
+	while (file) {
+		std::string name, path;
+		file >> name >> path;
+		std::cout << "loaded: " << name << " " << path << "\n";
+		load_font(name, path);
 	}
 	std::cout << "Finish loading\n";
 }
@@ -128,5 +149,5 @@ void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 }
 
 void Draw::display_text(sf::Text* text) {
-	window->draw(text);
+	window->draw(*text);
 }

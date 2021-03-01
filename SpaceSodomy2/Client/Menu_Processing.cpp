@@ -23,7 +23,7 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 		float pos_x, pos_y, scale_x, scale_y;
 		file >> texture_name;
 		file >> pos_x >> pos_y >> scale_x >> scale_y;
-		main_menu.add_text_field(i, "Hello", texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
+		main_menu.add_text_field(i, L"Hello", texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
 	}
 	return;
 }

@@ -10,10 +10,13 @@ class Draw {
 private:
 	sf::RenderWindow* window = nullptr;
 	Camera cam;
-	// Mathcehs textures and names
+	// Matches textures and names
 	std::map<std::string, sf::Texture*> textures;
+	// Matches fonts and names
+	std::map<std::string, sf::Font*> fonts;
 	// Load single texture
 	void load_texture(std::string name, std::string path_to_texture);
+	void load_font(std::string name, std::string path_to_font);
 public:
 	Draw();
 
@@ -21,12 +24,15 @@ public:
 	sf::RenderWindow* get_window();
 	Camera* get_camera();
 	sf::Texture* get_texture(std::string name);
+	sf::Font* get_font(std::string name);
 
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
 
 	// Load textures from file
 	void load_textures(std::string path = "textures.conf");
+	// Load fonts from file
+	void load_fonts(std::string path = "fonts.conf");
 
 	// Applies cameraborders
 	void apply_camera();

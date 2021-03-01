@@ -48,7 +48,7 @@ void Menu::add_button(int id, std::string texture_name, float pos_x, float pos_y
 	buttons.back()->set_mouse_pos(mouse_pos);
 }
 
-void Menu::add_text_field(int id, std::string text, std::string texture_name,float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos) {
+void Menu::add_text_field(int id, const wchar_t* text, std::string texture_name,float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos) {
 	text_fields.push_back(new Text_Field);
 	text_fields.back()->set_id(id);
 	text_fields.back()->set_text(text);
