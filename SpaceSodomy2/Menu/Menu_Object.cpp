@@ -26,6 +26,9 @@ Draw* Menu_Object::get_draw() {
 b2Vec2 Menu_Object::get_pos() {
 	return pos;
 }
+bool Menu_Object::get_use_picture_scale() {
+	return use_picture_scale;
+}
 b2Vec2 Menu_Object::get_scale() {
 	return scale;
 }
@@ -52,6 +55,9 @@ void Menu_Object::set_draw(Draw* draw_) {
 void Menu_Object::set_pos(b2Vec2 pos_) {
 	pos = pos_;
 }
+void Menu_Object::set_use_picture_scale(bool use_picture_scale_) {
+	use_picture_scale = use_picture_scale_;
+}
 void Menu_Object::set_scale(b2Vec2 scale_) {
 	scale = scale_;
 }
@@ -68,8 +74,8 @@ void Menu_Object::primitive_step()
 	mid.x /= 2;
 	mid.y /= 2;
 	b2Vec2 rect_pos = pos;
-	rect_pos.x *= -1;
-	std::swap(rect_pos.x, rect_pos.y);
+	if (use_picture_scale)
+		scale = aux::to_b2vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
 	//std::cout << "Mouse: " << mouse_pos->x << " " << mouse_pos->y << " " 
 	//	<< aux::rect_contains(rect_pos + mid, scale, *mouse_pos) << "\n";
 	if (aux::rect_contains(rect_pos + mid, scale, *mouse_pos))
@@ -80,7 +86,7 @@ void Menu_Object::primitive_step()
 	b2Vec2 camera_pos = camera_settings->get_pos();
 	float camera_scale = camera_settings->get_scale();
 	float camera_angle = camera_settings->get_angle();
-	draw->apply_camera(b2Vec2(0, 0), 1, 0.0);
-	draw->image(texture_name, pos, scale, 0.5 * PI, color);
+	draw->apply_camera(b2Vec2(0, 0), 1, 1.5*PI);
+	draw->image(texture_name, pos, scale, 0, color);
 	draw->apply_camera(camera_pos, camera_scale, camera_angle);
 }

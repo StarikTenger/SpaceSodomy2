@@ -30,6 +30,7 @@ void Menu_Processing::step() {
 			break;
 		case 2:
 			std::cout << "well, it works";
+			break;
 		case 3:
 			draw->get_window()->close();
 		default:

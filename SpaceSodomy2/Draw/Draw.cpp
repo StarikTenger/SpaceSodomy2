@@ -24,6 +24,10 @@ Camera* Draw::get_camera() {
 	return &cam;
 }
 
+sf::Texture* Draw::get_texture(std::string name) {
+	return textures[name];
+}
+
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
@@ -121,4 +125,8 @@ void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 		std::min(255, (int)color.a)));
 	sprite.setRotation(angle * 180 / b2_pi);
 	window->draw(sprite);
+}
+
+void Draw::display_text(sf::Text* text) {
+	window->draw(text);
 }

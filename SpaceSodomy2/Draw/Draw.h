@@ -20,6 +20,7 @@ public:
 	// Get methods
 	sf::RenderWindow* get_window();
 	Camera* get_camera();
+	sf::Texture* get_texture(std::string name);
 
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
@@ -42,5 +43,6 @@ public:
 	void line(b2Vec2 start, b2Vec2 finish, sf::Color color);
 	void image(std::string name, b2Vec2 pos, b2Vec2 box,
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
+	void display_text(sf::Text* text);
 };
 
