@@ -72,6 +72,9 @@
     <ClInclude Include="Contact_Table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Counter.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="Contact_Table.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Counter.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

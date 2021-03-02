@@ -161,6 +161,7 @@
     <ClInclude Include="Collision_Filter.h" />
     <ClInclude Include="Command_Module.h" />
     <ClInclude Include="Contact_Table.h" />
+    <ClInclude Include="Counter.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Collision_Filter.cpp" />
     <ClCompile Include="Command_Module.cpp" />
     <ClCompile Include="Contact_Table.cpp" />
+    <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gun.cpp" />
