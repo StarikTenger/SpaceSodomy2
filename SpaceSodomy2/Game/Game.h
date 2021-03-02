@@ -5,12 +5,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Ship.h"
-#include "Engine.h"
-#include "Player.h"
-#include "Wall.h"
-#include "Gun.h"
-#include "Projectile.h"
+#include "entities.h"
 #include "Projectile_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
@@ -34,6 +29,7 @@ protected:
 	std::set<Wall*> walls;
 	std::set<Active_Module*> active_modules;
 	std::set<Projectile*> projectiles;
+	std::set<Counter*> counters;
 	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -58,6 +54,7 @@ protected:
 	void process_active_modules();
 	void process_projectlie_manager();
 	void process_physics();
+	void process_counters();
 public:
 	Game();
 	// Sets command to player with id=id

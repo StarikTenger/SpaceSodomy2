@@ -48,6 +48,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto gun = new Gun();
 	gun->set(body, player, command_module);
 	gun->set_projectile_manager(&projectile_manager);
+	// Counter
+	auto counter = new Counter();
+	counter->set_change_vel(-1);
+	gun->set_recharge_counter(counter);
 
 	// Matching entities to ship
 	ship->set_player(player);
@@ -58,6 +62,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	ships.insert(ship);
 	engines.insert(engine);
+	counters.insert(counter);
 	command_modules.insert({player->get_id(), command_module });
 	active_modules.insert(gun);
 	return ship;
@@ -139,6 +144,11 @@ void Game::process_physics() {
 	physics.Step(dt, 10, 10);
 }
 
+void Game::process_counters() {
+	for (auto counter : counters)
+		counter->step(dt);
+}
+
 void Game::apply_command(int id, int command, int val) {
 	command_modules[id]->set_command(command, val);
 }
@@ -150,6 +160,7 @@ void Game::step(float _dt) {
 	process_projectiles();
 	process_active_modules();
 	process_projectlie_manager();
+	process_counters();
 }
 
 void Game::clear() {

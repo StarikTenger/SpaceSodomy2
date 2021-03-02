@@ -28,16 +28,18 @@ void Active_Module::set_body(b2Body* val) {
 	body = val;
 }
 
+void Active_Module::set_recharge_counter(Counter* _counter) {
+	recharge_counter = _counter;
+}
+
 void Active_Module::set_bind(int val) {
 	bind = val;
 }
 
 void Active_Module::step(float dt) {
-	time_to_recharge -= dt;
-
-	if (command_module->get_command(bind) && time_to_recharge < 0) { // TODO: Add here energy & stamina check
+	if (command_module->get_command(bind) && recharge_counter->get() < 0) { // TODO: Add here energy & stamina check
 		std::cout << "AM activate\n";
 		activate();
-		time_to_recharge = recharge_time;
+		recharge_counter->set(recharge_time);
 	}
 }

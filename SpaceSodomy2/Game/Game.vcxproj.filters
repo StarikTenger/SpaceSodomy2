@@ -75,6 +75,9 @@
     <ClInclude Include="Counter.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="entities.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
