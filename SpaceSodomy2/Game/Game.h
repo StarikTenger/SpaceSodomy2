@@ -13,6 +13,7 @@
 #include "Projectile.h"
 #include "Projectile_Manager.h"
 #include "Collision_Filter.h"
+#include "Contact_Table.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
@@ -36,6 +37,9 @@ protected:
 	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
+	// Contact table (stores pairs which are in contact)
+	Contact_Table contact_table;
+
 	// Path to the map
 	std::string map_path = "";
 
@@ -53,6 +57,7 @@ protected:
 	void process_projectiles();
 	void process_active_modules();
 	void process_projectlie_manager();
+	void process_physics();
 public:
 	Game();
 	// Sets command to player with id=id

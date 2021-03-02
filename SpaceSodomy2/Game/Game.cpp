@@ -103,9 +103,13 @@ void Game::process_engines() {
 
 void Game::process_projectiles() {
 	std::set<Projectile*> projectiles_to_delete;
+
 	for (auto projectile : projectiles) {
-		if (projectile->get_body()->GetPosition().x > 0)
-			projectiles_to_delete.insert(projectile);
+		// Checking for wall collision
+		for (auto wall : walls) {
+			if (contact_table.check(projectile->get_body(), wall->get_body()))
+				projectiles_to_delete.insert(projectile);
+		}
 	}
 	for (auto projectile : projectiles_to_delete)
 		delete_projectile(projectile);
@@ -123,22 +127,29 @@ void Game::process_projectlie_manager() {
 	}
 }
 
+void Game::process_physics() {
+	contact_table.reset();
+	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
+		if (contact->IsTouching())
+			contact_table.add(contact->GetFixtureA()->GetBody(), 
+				contact->GetFixtureB()->GetBody());
+		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() *
+			contact->GetFixtureB()->GetRestitution());
+	}
+	physics.Step(dt, 10, 10);
+}
+
 void Game::apply_command(int id, int command, int val) {
 	command_modules[id]->set_command(command, val);
 }
 
 void Game::step(float _dt) {
 	dt = _dt;
+	process_physics();
 	process_engines();
 	process_projectiles();
 	process_active_modules();
 	process_projectlie_manager();
-
-	// Physics
-	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext())
-		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() * 
-			contact->GetFixtureB()->GetRestitution());
-	physics.Step(dt, 10, 10);
 }
 
 void Game::clear() {
