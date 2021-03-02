@@ -8,7 +8,7 @@
 #include "Game_Client.h"
 #include <string>
 #include <fstream>
-$include <queue>
+#include <queue>
 
 class Control {
 private:

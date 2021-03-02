@@ -6,6 +6,7 @@ private:
 	sf::Text text;
 	b2Vec2 indent = { 5, 5 };
 	bool keyboard_active = 0;
+	bool font_setted = 0;
 public:
 	Text_Field();
 	

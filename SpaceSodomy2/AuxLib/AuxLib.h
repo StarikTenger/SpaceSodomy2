@@ -41,5 +41,6 @@ public:
 		std::vector<int> state_current = std::vector<int>(sf::Keyboard::KeyCount);
 		std::vector<int> state_prev = state_current;
 		std::queue<wchar_t>* text_entered;
-	}
+	};
+
 };

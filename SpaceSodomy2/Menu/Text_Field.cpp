@@ -5,7 +5,7 @@ Text_Field::Text_Field() {
 	set_use_picture_scale(0);
 	text.setString(L"None");
 	text.setFillColor(sf::Color::White);
-	text.setCharacterSize(10);
+	text.setCharacterSize(100);
 }
 
 // Get methods
@@ -33,6 +33,7 @@ void Text_Field::set_text(const wchar_t* text_) {
 	text.setString(text_);
 }
 void Text_Field::set_font(sf::Font font_) {
+	font_setted = 1;
 	text.setFont(font_);
 }
 void Text_Field::set_text_color(sf::Color color_) {
@@ -49,6 +50,10 @@ void Text_Field::set_keyboard_active(bool keyboard_active_) {
 }
 
 void Text_Field::step() {
+	if (!font_setted) {
+		font_setted = 1;
+		text.setFont(*(get_draw()->get_font("font")));
+	}
 	if (keyboard_active)
 	{
 		std::string str = text.getString();
@@ -56,7 +61,7 @@ void Text_Field::step() {
 		{
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			get_keyboard()->text_entered->pop();
-			if (symbol == 8)
+			if (symbol == 8 && !str.empty());
 				str.pop_back();
 			if (symbol >= 32)
 				str.push_back(symbol);
@@ -66,7 +71,7 @@ void Text_Field::step() {
 	set_scale(aux::to_b2vec2(sf::Vector2f(text.getScale())));
 	set_scale(get_scale() + indent);
 	primitive_step();
-	text.setPosition(aux::to_vector2f(get_pos()));
-	text.setFont(*get_draw()->get_font("font"));
+	std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
+	text.setPosition(0, 0);//aux::to_vector2f(get_pos()));
 	get_draw()->display_text(&text);
 }

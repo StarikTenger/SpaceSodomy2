@@ -58,6 +58,7 @@ Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
+	draw.load_fonts("fonts.conf");
 	game.set_draw(&draw);
 	keyboard.text_entered = &text_entered;
 	menu_processing.init("menu.conf", &draw, &mouse_pos, &keyboard);
