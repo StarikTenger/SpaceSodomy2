@@ -65,6 +65,4 @@ void Game_Client::display(int id) {
 		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, projectile->get_body()->GetAngle());
 
 	}
-	
-	draw->display();
 }
