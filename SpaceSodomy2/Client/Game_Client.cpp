@@ -6,6 +6,10 @@ void Game_Client::set_draw(Draw* _draw) {
 	draw->apply_camera({ 0, 0 }, 100, 0);
 }
 
+Draw* Game_Client::get_draw() {
+	return draw;
+}
+
 void Game_Client::display(int id) {
 	//draw->apply_camera({0, 0}, 100, 0);
 	// Finding cam target

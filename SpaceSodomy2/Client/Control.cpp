@@ -17,6 +17,13 @@ void Control::process_events(sf::Window* window) {
 			is_running = 1;
 			window->close();
 			break;
+		case sf::Event::MouseMoved:
+			mouse_pos.x = event.mouseMove.x;
+			mouse_pos.y = event.mouseMove.y;
+			break;
+		case sf::Event::TextEntered:
+			text_entered.push(wchar_t(event.text.unicode));
+			break;
 		}
 	}
 
@@ -67,6 +74,7 @@ Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
+	draw.load_fonts("fonts.conf");
 	game.set_draw(&draw);
 	// Default key matches
 	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
@@ -98,6 +106,8 @@ Control::Control() {
 	for (int i = 0; i < names.size(); i++) {
 		key_names.insert({names[i], i});
 	}
+	keyboard.text_entered = &text_entered;
+	menu_processing.init("menu.conf", &draw, &mouse_pos, &keyboard);
 }
 
 int Control::get_is_running() {
@@ -118,6 +128,8 @@ void Control::step() {
 
 		// Draw		
 		game.display(network.get_id());
+		menu_processing.step();
+		game.get_draw()->display();
 
 		// Event processing
 		process_events(draw.get_window());

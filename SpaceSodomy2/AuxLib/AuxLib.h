@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <queue>
 
 class aux {
 public:
@@ -31,4 +32,17 @@ public:
 	static float area(std::vector<b2Vec2>);
 	// Returns normalized vector by angle
 	static b2Vec2 angle_to_vec(float angle);
+	// Transform Vector2f to b2vec2
+	static b2Vec2 to_b2vec2(sf::Vector2f);
+	// Transform b2vec2 to Vector2f
+	static sf::Vector2f to_vector2f(b2Vec2);
+	// Check if rectangle contains point
+	static bool rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point);
+	// Keyboard
+	struct Keyboard {
+		std::vector<int> state_current = std::vector<int>(sf::Keyboard::KeyCount);
+		std::vector<int> state_prev = state_current;
+		std::queue<wchar_t>* text_entered;
+	};
+
 };
