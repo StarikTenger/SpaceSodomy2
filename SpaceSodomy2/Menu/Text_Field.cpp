@@ -61,7 +61,7 @@ void Text_Field::step() {
 		{
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			get_keyboard()->text_entered->pop();
-			if (symbol == 8 && !str.empty());
+			if (symbol == 8 && !str.empty())
 				str.pop_back();
 			if (symbol >= 32)
 				str.push_back(symbol);
