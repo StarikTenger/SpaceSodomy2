@@ -189,6 +189,7 @@ void Game::clear() {
 	// Clear projectiles
 	for (auto projectile : projectiles)
 		delete projectile;
+	projectiles = {};
 	// Clear counters
 	for (auto counter : counters)
 		delete counter;
