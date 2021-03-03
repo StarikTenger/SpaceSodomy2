@@ -52,6 +52,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto counter = new Counter();
 	counter->set_change_vel(-1);
 	gun->set_recharge_counter(counter);
+	// Hp
+	auto hp = new Counter();
+	hp->set(100);
 
 	// Matching entities to ship
 	ship->set_player(player);
@@ -59,10 +62,13 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_engine(engine);
 	ship->set_body(body);
 	ship->set_gun(gun);
+	ship->set_hp(hp);
 
+	// Adding entities to sets
 	ships.insert(ship);
 	engines.insert(engine);
 	counters.insert(counter);
+	counters.insert(hp);
 	command_modules.insert({player->get_id(), command_module });
 	active_modules.insert(gun);
 	return ship;
@@ -183,7 +189,10 @@ void Game::clear() {
 	// Clear projectiles
 	for (auto projectile : projectiles)
 		delete projectile;
-	projectiles = {};
+	// Clear counters
+	for (auto counter : counters)
+		delete counter;
+	counters = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
 }

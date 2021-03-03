@@ -55,6 +55,9 @@ protected:
 	void process_projectlie_manager();
 	void process_physics();
 	void process_counters();
+
+	// Misc
+	//void deal_damage(); TODO: damage receiver
 public:
 	Game();
 	// Sets command to player with id=id

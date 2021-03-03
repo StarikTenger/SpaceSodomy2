@@ -26,6 +26,10 @@ Gun* Ship::get_gun() {
 	return gun;
 }
 
+Counter* Ship::get_hp() {
+	return hp;
+}
+
 // Set methods
 void Ship::set_player(Player* val) {
 	player = val;
@@ -45,4 +49,8 @@ void Ship::set_body(b2Body* val) {
 
 void Ship::set_gun(Gun* val) {
 	gun = val;
+}
+
+void Ship::set_hp(Counter* val) {
+	hp = val;
 }

@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "Player.h"
 #include "Gun.h"
+#include "Counter.h"
 
 class Ship {
 private:
@@ -12,6 +13,7 @@ private:
 	Engine* engine = nullptr;
 	b2Body* body = nullptr;
 	Gun* gun = nullptr;
+	Counter* hp = nullptr;
 
 public:
 	Ship();
@@ -23,6 +25,7 @@ public:
 	Engine* get_engine();
 	b2Body* get_body();
 	Gun* get_gun();
+	Counter* get_hp();
 
 	// Set methods
 	void set_player(Player*);
@@ -30,6 +33,6 @@ public:
 	void set_engine(Engine*);
 	void set_body(b2Body*);
 	void set_gun(Gun*);
-
+	void set_hp(Counter*);
 };
 
