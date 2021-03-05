@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
+#include <AuxLib/AuxLib.h>
 #include <string>
 #include <map>
 #include <fstream>
@@ -26,6 +27,9 @@ public:
 	sf::Texture* get_texture(std::string name);
 	sf::Font* get_font(std::string name);
 
+	// Set methods
+	void set_camera(Camera _cam);
+
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
 
@@ -37,6 +41,7 @@ public:
 	// Applies cameraborders
 	void apply_camera();
 	void apply_camera(b2Vec2 pos, float scale, float angle);
+	void camera_to_screen();
 
 	// Displays the render
 	void display();
@@ -50,5 +55,6 @@ public:
 	void image(std::string name, b2Vec2 pos, b2Vec2 box,
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
 	void display_text(sf::Text* text);
+	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
 };
 

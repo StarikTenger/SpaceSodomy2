@@ -65,6 +65,11 @@ void Menu::step() {
 	if (!active)
 		return;
 	bool pressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	
+	// Camera backup
+	Camera camera_backup = *draw->get_camera();
+	draw->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
+
 	for (auto button : buttons) {
 		button->step();
 		if (pressed && button->get_active())
@@ -87,4 +92,7 @@ void Menu::step() {
 			pressed = 0;
 		}
 	}
+
+	// Restore camera
+	draw->set_camera(camera_backup);
 }

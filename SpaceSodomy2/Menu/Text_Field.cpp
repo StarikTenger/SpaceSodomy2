@@ -68,7 +68,9 @@ void Text_Field::step() {
 		}
 		text.setString(str);
 	}
-	set_scale(aux::to_b2vec2(sf::Vector2f(text.getScale())));
+	get_draw()->fill_circle({ 1, 1 }, 0.5, {100, 100, 100});
+	//get_draw()->text(text.getString(), "font", b2Vec2(50, 50), 100, {255, 255, 255});
+	set_scale(aux::to_b2Vec2(sf::Vector2f(text.getScale())));
 	set_scale(get_scale() + indent);
 	primitive_step();
 	std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";

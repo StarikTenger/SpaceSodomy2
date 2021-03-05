@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Menu_Object.h"
-#define PI 3.14159265358979323846
 
 Menu_Object::Menu_Object() {}
 Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_) {
@@ -77,23 +76,17 @@ void Menu_Object::set_keyboard(aux::Keyboard* keyboard_) {
 
 void Menu_Object::primitive_step()
 {
-	b2Vec2 mid = aux::to_b2vec2(sf::Vector2f(draw->get_window()->getSize()));
+	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;
 	b2Vec2 rect_pos = pos;
 	if (use_picture_scale)
-		scale = aux::to_b2vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
+		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
 	//std::cout << "Mouse: " << mouse_pos->x << " " << mouse_pos->y << " " 
 	//	<< aux::rect_contains(rect_pos + mid, scale, *mouse_pos) << "\n";
 	if (aux::rect_contains(rect_pos + mid, scale, *mouse_pos))
 		active = 1;
 	else
 		active = 0;
-	auto camera_settings = draw->get_camera();
-	b2Vec2 camera_pos = camera_settings->get_pos();
-	float camera_scale = camera_settings->get_scale();
-	float camera_angle = camera_settings->get_angle();
-	draw->apply_camera(b2Vec2(0, 0), 1, 1.5*PI);
 	draw->image(texture_name, pos, scale, 0, color);
-	draw->apply_camera(camera_pos, camera_scale, camera_angle);
 }

@@ -37,6 +37,10 @@ sf::Font* Draw::get_font(std::string name) {
 	return fonts[name];
 }
 
+void Draw::set_camera(Camera _cam) {
+	cam = _cam;
+}
+
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
@@ -79,6 +83,11 @@ void Draw::apply_camera(b2Vec2 pos, float scale, float angle) {
 	cam.set_scale(scale);
 	cam.set_angle(angle);
 	cam.apply(window);
+}
+
+void Draw::camera_to_screen() {
+	cam.fit_to_screen(window);
+	apply_camera();
 }
 
 void Draw::display() {
@@ -151,4 +160,15 @@ void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 
 void Draw::display_text(sf::Text* text) {
 	window->draw(*text);
+}
+
+void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color) {
+	sf::Text drawnText;
+	drawnText.setFont(*fonts[font_name]);
+	drawnText.setString(text);
+	drawnText.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+	drawnText.setCharacterSize(size);
+	drawnText.setOrigin(floor(drawnText.getLocalBounds().width / 2), floor(drawnText.getLocalBounds().height));
+	drawnText.setPosition(aux::to_Vector2f(pos));
+	window->draw(drawnText);
 }

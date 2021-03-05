@@ -45,3 +45,10 @@ void Camera::apply(sf::RenderWindow* window) {
 	view.setRotation((angle * 180 / b2_pi) + 90);
 	window->setView(view);
 }
+
+void Camera::fit_to_screen(sf::RenderWindow* window) {
+	pos = b2Vec2(0, 0);
+	scale = 1;
+	angle = 1.5 * b2_pi;
+	borders = b2Vec2(aux::to_b2Vec2(sf::Vector2f(window->getSize())));
+}

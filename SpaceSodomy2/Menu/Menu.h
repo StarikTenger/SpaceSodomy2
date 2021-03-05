@@ -15,12 +15,12 @@ public:
 	Menu();
 	Menu(Draw* draw_);
 
-	//Set methods
+	// Set methods
 	void set_draw(Draw* draw_);
 	void set_active(bool active_);
 	void set_events(std::queue<int>* events_);
 	
-	//Get methods
+	// Get methods
 	Draw* get_draw();
 	bool get_active();
 	std::queue<int>* get_events();

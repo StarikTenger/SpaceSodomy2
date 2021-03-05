@@ -1,6 +1,7 @@
 #pragma once
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
+#include <AuxLib/AuxLib.h>
 
 class Camera {
 private:
@@ -23,6 +24,8 @@ public:
 	void set_scale(float val);
 	// Apply camera to scene
 	void modify_scale(float val);
-	void apply(sf::RenderWindow* window);
+	void apply(sf::RenderWindow*);
+	// Fits to screen
+	void fit_to_screen(sf::RenderWindow*);
 };
 

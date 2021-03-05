@@ -33,9 +33,9 @@ public:
 	// Returns normalized vector by angle
 	static b2Vec2 angle_to_vec(float angle);
 	// Transform Vector2f to b2vec2
-	static b2Vec2 to_b2vec2(sf::Vector2f);
+	static b2Vec2 to_b2Vec2(sf::Vector2f);
 	// Transform b2vec2 to Vector2f
-	static sf::Vector2f to_vector2f(b2Vec2);
+	static sf::Vector2f to_Vector2f(b2Vec2);
 	// Check if rectangle contains point
 	static bool rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point);
 	// Keyboard

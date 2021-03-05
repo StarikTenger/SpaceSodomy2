@@ -141,10 +141,10 @@ float aux::area(std::vector<b2Vec2> vertices) {
 	return val / 2;
 }
 
-b2Vec2 aux::to_b2vec2(sf::Vector2f val) {
+b2Vec2 aux::to_b2Vec2(sf::Vector2f val) {
 	return b2Vec2(val.x, val.y);
 }
-sf::Vector2f aux::to_vector2f(b2Vec2 val) {
+sf::Vector2f aux::to_Vector2f(b2Vec2 val) {
 	return sf::Vector2f(val.x, val.y);
 }
 
