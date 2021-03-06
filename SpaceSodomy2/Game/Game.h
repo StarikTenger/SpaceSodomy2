@@ -22,10 +22,10 @@ protected:
 	float dt = 0;
 
 	// Objects' systems
+	std::map<int, Player*> players;
 	std::set<Ship*> ships;
-	std::set<Player*> players;
 	std::set<Engine*> engines;
-	std::map<int, Command_Module*> command_modules;
+	std::set<Command_Module*> command_modules;
 	std::set<Wall*> walls;
 	std::set<Active_Module*> active_modules;
 	std::set<Projectile*> projectiles;
@@ -46,7 +46,11 @@ protected:
 	Projectile* create_projectile(Projectile_Def);
 
 	// Delete functions
+	void delete_body(b2Body*);
 	void delete_projectile(Projectile*);
+	void delete_engine(Engine*);
+	void delete_active_module(Active_Module*);
+	void delete_ship(Ship*);
 
 	 // Processing functions
 	void process_engines();
@@ -73,7 +77,7 @@ public:
 	void decode(std::string source);
 	// Creates new player
 	Ship* create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
-	//Deletes player
-	void del_player(int id);
+	// Deletes player
+	void delete_player(int id);
 };
 

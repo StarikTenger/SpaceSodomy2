@@ -69,7 +69,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	engines.insert(engine);
 	counters.insert(counter);
 	counters.insert(hp);
-	command_modules.insert({player->get_id(), command_module });
+	command_modules.insert(command_module);
 	active_modules.insert(gun);
 	return ship;
 }
@@ -101,10 +101,28 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-void Game::delete_projectile(Projectile* projectile) {
-	auto body = projectile->get_body();
+void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
+}
+
+void Game::delete_projectile(Projectile* projectile) {
+	delete_body(projectile->get_body());
 	projectiles.erase(projectile);
+}
+
+void Game::delete_engine(Engine* engine) {
+	engines.erase(engine);
+}
+
+void Game::delete_active_module(Active_Module* active_module) {
+	active_modules.erase(active_module);
+}
+
+void Game::delete_ship(Ship* ship) {
+	delete_body(ship->get_body());
+	delete_engine(ship->get_engine());
+	delete_active_module(ship->get_gun());
+	ships.erase(ship);
 }
 
 void Game::process_engines() {
@@ -156,7 +174,7 @@ void Game::process_counters() {
 }
 
 void Game::apply_command(int id, int command, int val) {
-	command_modules[id]->set_command(command, val);
+	players[id]->get_command_module()->set_command(command, val);
 }
 
 void Game::step(float _dt) {
@@ -176,11 +194,11 @@ void Game::clear() {
 	ships = {};
 	// Clear players
 	for (auto player : players)
-		delete player;
+		delete player.second;
 	players = {};
 	// Clear command_modules
 	for (auto command_module : command_modules)
-		delete command_module.second;
+		delete command_module;
 	command_modules = {};
 	// Clear engines
 	for (auto engine : engines)
@@ -344,37 +362,23 @@ void Game::decode(std::string source) {
 
 Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	Player* player = new Player(id, color, name);
-	players.insert(player);
-	return create_ship(player, pos, angle);
+	players.insert({ player->get_id(), player });
+	auto ship = create_ship(player, pos, angle);
+	player->set_command_module(ship->get_command_module());
+	return ship;
 }
 
-void Game::del_player(int id) {
-	for (auto ship : ships) {
-		if (ship->get_player()->get_id() == id) {
-			for (auto it = players.begin(); it != players.end(); it++)
-				if (ship->get_player() == *it) {
-					players.erase(it);
-					break;
-				}
-			delete ship->get_player();
-			for (auto it = command_modules.begin(); it != command_modules.end(); it++)
-				if (ship->get_command_module() == it->second) {
-					command_modules.erase(it);
-					break;
-				}
-			delete ship->get_command_module();
-			for (auto it = engines.begin(); it != engines.end(); it++)
-				if (ship->get_engine() == *it) {
-					engines.erase(it);
-					break;
-				}
-			delete ship->get_engine();
-			for (auto it = ships.begin(); it != ships.end(); it++)
-				if (ship == *it) {
-					ships.erase(it);
-					break;
-				}
-			delete ship;
-		}
-	}
+void Game::delete_player(int id) {
+	// Deleting ship
+	std::deque<Ship*> ships_to_delete;
+
+	for (auto ship : ships)
+		if (ship->get_player() == players[id])
+			ships_to_delete.push_back(ship);
+
+	for (auto ship : ships_to_delete)
+		delete_ship(ship);
+
+	// Deleting player
+	players.erase(id);
 }

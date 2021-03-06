@@ -82,7 +82,7 @@ void Control::step() {
 				banned.insert(*it);
 		}
 		for (auto address : banned) {
-			game.del_player(id_by_IP[address]);
+			game.delete_player(id_by_IP[address]);
 			addresses.erase(address);
 			network.del_address(address);
 		}
