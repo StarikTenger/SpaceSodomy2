@@ -29,6 +29,9 @@ b2Vec2 Menu_Object::get_pos() {
 bool Menu_Object::get_use_picture_scale() {
 	return use_picture_scale;
 }
+bool Menu_Object::get_image_active() {
+	return image_active;
+}
 b2Vec2 Menu_Object::get_scale() {
 	return scale;
 }
@@ -61,6 +64,9 @@ void Menu_Object::set_pos(b2Vec2 pos_) {
 void Menu_Object::set_use_picture_scale(bool use_picture_scale_) {
 	use_picture_scale = use_picture_scale_;
 }
+void Menu_Object::set_image_active(bool image_active_) {
+	image_active = image_active_;
+}
 void Menu_Object::set_scale(b2Vec2 scale_) {
 	scale = scale_;
 }
@@ -82,11 +88,10 @@ void Menu_Object::primitive_step()
 	b2Vec2 rect_pos = pos;
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
-	//std::cout << "Mouse: " << mouse_pos->x << " " << mouse_pos->y << " " 
-	//	<< aux::rect_contains(rect_pos + mid, scale, *mouse_pos) << "\n";
 	if (aux::rect_contains(rect_pos + mid, scale, *mouse_pos))
 		active = 1;
 	else
 		active = 0;
-	draw->image(texture_name, pos, scale, 0, color);
+	if (image_active)
+		draw->image(texture_name, pos, scale, 0, color);
 }

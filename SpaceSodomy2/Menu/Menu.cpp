@@ -61,6 +61,19 @@ void Menu::add_text_field(int id, const wchar_t* text, std::string texture_name,
 	text_fields.back()->set_keyboard(keyboard);
 }
 
+void Menu::add_slider(int id, float pos_x, float pos_y, float axis_width, float axis_height, float slider_width, float slider_height, b2Vec2* mouse_pos) {
+	sliders.push_back(new Slider);
+	sliders.back()->set_id(id);
+	sliders.back()->set_pos(b2Vec2(pos_x, pos_y));
+	sliders.back()->set_draw(draw);
+	sliders.back()->set_mouse_pos(mouse_pos);
+	sliders.back()->setAxisWidth(axis_width);
+	sliders.back()->setAxisHeight(axis_height);
+	sliders.back()->setSliderWidth(slider_width);
+	sliders.back()->setSliderHeight(slider_height);
+	sliders.back()->init();
+}
+
 void Menu::step() {
 	if (!active)
 		return;
@@ -91,6 +104,9 @@ void Menu::step() {
 			text_field->set_keyboard_active(1);
 			pressed = 0;
 		}
+	}
+	for (auto slider : sliders) {
+		slider->step();
 	}
 
 	// Restore camera
