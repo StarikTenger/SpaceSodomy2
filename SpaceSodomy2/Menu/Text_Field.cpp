@@ -5,7 +5,7 @@ Text_Field::Text_Field() {
 	set_use_picture_scale(0);
 	text.setString(L"None");
 	text.setFillColor(sf::Color::White);
-	text.setCharacterSize(100);
+	text.setCharacterSize(10);
 }
 
 // Get methods
@@ -68,12 +68,12 @@ void Text_Field::step() {
 		}
 		text.setString(str);
 	}
-	get_draw()->fill_circle({ 1, 1 }, 0.5, {100, 100, 100});
-	//get_draw()->text(text.getString(), "font", b2Vec2(50, 50), 100, {255, 255, 255});
-	set_scale(aux::to_b2Vec2(sf::Vector2f(text.getScale())));
+	set_scale(b2Vec2(text.getLocalBounds().width, text.getLocalBounds().height));
 	set_scale(get_scale() + indent);
+	set_color(sf::Color(40, 40, 40, 255));
 	primitive_step();
 	std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
-	text.setPosition(0, 0);//aux::to_vector2f(get_pos()));
+	text.setPosition(aux::to_Vector2f(get_pos()) - sf::Vector2f(text.getLocalBounds().width / 2.0,
+		text.getLocalBounds().height / 2.0));
 	get_draw()->display_text(&text);
 }

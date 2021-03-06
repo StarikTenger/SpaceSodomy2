@@ -44,5 +44,6 @@ public:
 		std::vector<int> state_prev = state_current;
 		std::queue<wchar_t>* text_entered;
 	};
-
+	// Get text scale
+	static b2Vec2 get_text_size(sf::Text text);
 };

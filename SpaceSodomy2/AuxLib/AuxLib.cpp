@@ -158,3 +158,23 @@ b2Vec2 aux::angle_to_vec(float angle) {
 	return b2Vec2(cos(angle), sin(angle));
 }
 
+b2Vec2 aux::get_text_size(sf::Text text) {
+	size_t character_size = text.getCharacterSize();
+	sf::Font font = *text.getFont();
+	std::string text_string = text.getString().toAnsiString();
+	bool bold = (text.getStyle() & sf::Text::Bold);
+	size_t width = 0;
+	size_t max_height = 0;
+
+	for (size_t x = 0; x < text.getString().getSize(); x++)
+	{
+		sf::Uint32 character = text_string.at(x);
+
+		const sf::Glyph& current_glyph = font.getGlyph(character, character_size, bold);
+				size_t height = current_glyph.bounds.height;
+		width += current_glyph.bounds.width;
+		if (max_height < height)
+			max_height = height;
+	}
+	return b2Vec2(width, max_height);
+}
