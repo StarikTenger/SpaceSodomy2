@@ -149,7 +149,7 @@ void Slider::step() {
 	std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
 		slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
 		slider.getGlobalBounds().contains(mouse_pos_) << " " <<
-		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << "\n";
+		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
 	primitive_step();
 	if (!font_active) {
 		text.setFont(*(get_draw()->get_font("neon")));
