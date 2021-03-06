@@ -17,6 +17,7 @@ private:
 	aux::Keyboard* keyboard;
 	bool use_picture_scale = 1;
 	bool image_active = 1;
+	bool* clicked = 0;
 public:
 	Menu_Object();
 	Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
@@ -33,6 +34,7 @@ public:
 	b2Vec2* get_mouse_pos();
 	aux::Keyboard* get_keyboard();
 	bool get_active();
+	bool* get_clicked();
 
 	// Set methods
 	void set_id(int id_);
@@ -45,6 +47,7 @@ public:
 	void set_color(sf::Color color_);
 	void set_mouse_pos(b2Vec2* mouse_pos_);
 	void set_keyboard(aux::Keyboard* keyboard);
+	void set_clicked(bool* clicked_);
 
 	void primitive_step();
 };

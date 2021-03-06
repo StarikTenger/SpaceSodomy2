@@ -46,6 +46,7 @@ void Menu::add_button(int id, std::string texture_name, float pos_x, float pos_y
 	buttons.back()->set_color(color);
 	buttons.back()->set_draw(draw);
 	buttons.back()->set_mouse_pos(mouse_pos);
+	buttons.back()->set_clicked(&clicked);
 }
 
 void Menu::add_text_field(int id, const wchar_t* text, std::string texture_name,float pos_x, float pos_y, float scale_x, float scale_y, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
@@ -59,6 +60,7 @@ void Menu::add_text_field(int id, const wchar_t* text, std::string texture_name,
 	text_fields.back()->set_draw(draw);
 	text_fields.back()->set_mouse_pos(mouse_pos);
 	text_fields.back()->set_keyboard(keyboard);
+	text_fields.back()->set_clicked(&clicked);
 }
 
 void Menu::add_slider(int id, float pos_x, float pos_y, float axis_width, float axis_height, float slider_width, float slider_height, b2Vec2* mouse_pos) {
@@ -71,6 +73,7 @@ void Menu::add_slider(int id, float pos_x, float pos_y, float axis_width, float 
 	sliders.back()->setAxisHeight(axis_height);
 	sliders.back()->setSliderWidth(slider_width);
 	sliders.back()->setSliderHeight(slider_height);
+	sliders.back()->set_clicked(&clicked);
 	sliders.back()->create(0, 100);
 	sliders.back()->init();
 }
@@ -78,32 +81,32 @@ void Menu::add_slider(int id, float pos_x, float pos_y, float axis_width, float 
 void Menu::step() {
 	if (!active)
 		return;
-	bool pressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	
+	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
+	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+
 	// Camera backup
 	Camera camera_backup = *draw->get_camera();
 	draw->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 
 	for (auto button : buttons) {
 		button->step();
-		if (pressed && button->get_active())
+		if (clicked && button->get_active())
 		{
 			events->push(button->get_id());
-			pressed = 0;
+			clicked = 0;
 		}
 	}
 	for (auto text_field : text_fields) {
 		text_field->step();
-		if (pressed && !text_field->get_active() && text_field->get_keyboard_active())
+		if (clicked && !text_field->get_active() && text_field->get_keyboard_active())
 			text_field->set_keyboard_active(0);
 	}
 	for (auto text_field : text_fields) {
-		if (pressed && text_field->get_active())
+		if (clicked && text_field->get_active())
 		{
 			while (!text_field->get_keyboard()->text_entered->empty())
 				text_field->get_keyboard()->text_entered->pop();
 			text_field->set_keyboard_active(1);
-			pressed = 0;
 		}
 	}
 	for (auto slider : sliders) {

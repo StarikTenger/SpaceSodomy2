@@ -47,6 +47,9 @@ aux::Keyboard* Menu_Object::get_keyboard() {
 bool Menu_Object::get_active() {
 	return active;
 }
+bool* Menu_Object::get_clicked() {
+	return clicked;
+}
 
 // Set methods
 void Menu_Object::set_id(int id_) {
@@ -78,6 +81,9 @@ void Menu_Object::set_mouse_pos(b2Vec2* mouse_pos_) {
 }
 void Menu_Object::set_keyboard(aux::Keyboard* keyboard_) {
 	keyboard = keyboard_;
+}
+void Menu_Object::set_clicked(bool* clicked_) {
+	clicked = clicked_;
 }
 
 void Menu_Object::primitive_step()

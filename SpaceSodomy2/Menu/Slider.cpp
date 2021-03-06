@@ -48,8 +48,7 @@ void Slider::logic(sf::RenderWindow& window)
 	sf::FloatRect SliderRect = axis.getGlobalBounds();
 	if (SliderRect.height < slider.getGlobalBounds().height)
 		SliderRect.height = slider.getGlobalBounds().height;
-	if (SliderRect.contains(mouse_pos_)
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	if (SliderRect.contains(mouse_pos_) && *get_clicked())
 		slider_active = 1;
 	if (slider_active
 		&& !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
