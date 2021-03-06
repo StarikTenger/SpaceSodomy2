@@ -54,16 +54,13 @@ void Slider::logic(sf::RenderWindow& window)
 		&& !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		slider_active = 0;
 	if (slider_active) {
-		if (mouse_pos_.x >= xCord && mouse_pos_.x <= xCord + axisWidth)
-		{
-			auto new_pos_x = mouse_pos_.x;
-			if (new_pos_x < xCord)
-				new_pos_x = xCord;
-			if (new_pos_x > xCord + axisWidth)
-				new_pos_x = xCord + axisWidth;
-			slider.setPosition(new_pos_x, yCord);
-			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
-		}
+		auto new_pos_x = mouse_pos_.x;
+		if (new_pos_x < xCord)
+			new_pos_x = xCord;
+		if (new_pos_x > xCord + axisWidth)
+			new_pos_x = xCord + axisWidth;
+		slider.setPosition(new_pos_x, yCord);
+		sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
 	}
 }
 
