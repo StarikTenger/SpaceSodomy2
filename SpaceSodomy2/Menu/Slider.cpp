@@ -7,7 +7,6 @@ Slider::Slider() {
 	sliderWidth = 20;
 	sliderHeight = 30;
 
-	text.setFont(*get_draw()->get_font("neon"));
 	text.setFillColor(sf::Color::White);
 
 	set_image_active(0);
@@ -16,6 +15,8 @@ Slider::Slider() {
 void Slider::init() {
 	float x = get_pos().x;
 	float y = get_pos().y;
+	xCord = x;
+	yCord = y;
 
 	axis.setPosition(x, y);
 	axis.setOrigin(0, axisHeight / 2);
@@ -44,12 +45,12 @@ void Slider::create(int min, int max)
 
 void Slider::logic(sf::RenderWindow& window)
 {
-	if (slider.getGlobalBounds().contains(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y)
+	if (slider.getGlobalBounds().contains(mouse_pos_)
 		&& sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
-		if (sf::Mouse::getPosition(window).x >= xCord && sf::Mouse::getPosition(window).x <= xCord + axisWidth)
+		if (mouse_pos_.x >= xCord && mouse_pos_.x <= xCord + axisWidth)
 		{
-			slider.setPosition(sf::Mouse::getPosition(window).x, yCord);
+			slider.setPosition(mouse_pos_.x, yCord);
 			sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
 		}
 	}
@@ -128,7 +129,20 @@ int Slider::getSliderHeight() {
 }
 
 void Slider::step() {
+	set_scale(b2Vec2(sliderWidth, sliderHeight));
+	set_pos(aux::to_b2Vec2(slider.getPosition()));
+	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
+	mid.x /= 2;
+	mid.y /= 2;
+	mouse_pos_ = aux::to_Vector2f(*get_mouse_pos() - mid);
+	std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
+		slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
+		slider.getGlobalBounds().contains(mouse_pos_) << " " <<
+		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << "\n";
 	primitive_step();
-
+	if (!font_active) {
+		text.setFont(*(get_draw()->get_font("neon")));
+		font_active = 1;
+	}
 	draw(*get_draw()->get_window());
 }

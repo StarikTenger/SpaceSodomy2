@@ -71,6 +71,7 @@ void Menu::add_slider(int id, float pos_x, float pos_y, float axis_width, float 
 	sliders.back()->setAxisHeight(axis_height);
 	sliders.back()->setSliderWidth(slider_width);
 	sliders.back()->setSliderHeight(slider_height);
+	sliders.back()->create(0, 100);
 	sliders.back()->init();
 }
 
