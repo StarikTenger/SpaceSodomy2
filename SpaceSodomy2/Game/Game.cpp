@@ -101,10 +101,28 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-void Game::delete_projectile(Projectile* projectile) {
-	auto body = projectile->get_body();
+void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
+}
+
+void Game::delete_projectile(Projectile* projectile) {
+	delete_body(projectile->get_body());
 	projectiles.erase(projectile);
+}
+
+void Game::delete_engine(Engine* engine) {
+	engines.erase(engine);
+}
+
+void Game::delete_active_module(Active_Module* active_module) {
+	active_modules.erase(active_module);
+}
+
+void Game::delete_ship(Ship* ship) {
+	delete_body(ship->get_body());
+	delete_engine(ship->get_engine());
+	delete_active_module(ship->get_gun());
+	ships.erase(ship);
 }
 
 void Game::process_engines() {
@@ -350,36 +368,17 @@ Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos,
 	return ship;
 }
 
-void Game::del_player(int id) {
-	for (auto ship : ships) {
-		if (ship->get_player()->get_id() == id) {
-			for (auto it = players.begin(); it != players.end(); it++)
-				if (ship->get_player() == it->second) {
-					players.erase(it);
-					break;
-				}
-			delete ship->get_player();
+void Game::delete_player(int id) {
+	// Deleting ship
+	std::deque<Ship*> ships_to_delete;
 
-			for (auto it = command_modules.begin(); it != command_modules.end(); it++)
-				if (ship->get_command_module() == *it) {
-					command_modules.erase(it);
-					break;
-				}
-			delete ship->get_command_module();
+	for (auto ship : ships)
+		if (ship->get_player() == players[id])
+			ships_to_delete.push_back(ship);
 
-			for (auto it = engines.begin(); it != engines.end(); it++)
-				if (ship->get_engine() == *it) {
-					engines.erase(it);
-					break;
-				}
-			delete ship->get_engine();
+	for (auto ship : ships_to_delete)
+		delete_ship(ship);
 
-			for (auto it = ships.begin(); it != ships.end(); it++)
-				if (ship == *it) {
-					ships.erase(it);
-					break;
-				}
-			delete ship;
-		}
-	}
+	// Deleting player
+	players.erase(id);
 }

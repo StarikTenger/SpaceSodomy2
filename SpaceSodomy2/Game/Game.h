@@ -46,7 +46,11 @@ protected:
 	Projectile* create_projectile(Projectile_Def);
 
 	// Delete functions
+	void delete_body(b2Body*);
 	void delete_projectile(Projectile*);
+	void delete_engine(Engine*);
+	void delete_active_module(Active_Module*);
+	void delete_ship(Ship*);
 
 	 // Processing functions
 	void process_engines();
@@ -74,6 +78,6 @@ public:
 	// Creates new player
 	Ship* create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
 	// Deletes player
-	void del_player(int id);
+	void delete_player(int id);
 };
 
