@@ -13,6 +13,8 @@ private:
 	Draw* draw;
 	std::queue<int>* events;
 	bool active = 0;
+	bool last_mouse_status = 0;
+	bool clicked = 0;
 public:
 	Menu();
 	Menu(Draw* draw_);
