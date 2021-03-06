@@ -69,7 +69,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	engines.insert(engine);
 	counters.insert(counter);
 	counters.insert(hp);
-	command_modules.insert({player->get_id(), command_module });
+	command_modules.insert(command_module);
 	active_modules.insert(gun);
 	return ship;
 }
@@ -156,7 +156,7 @@ void Game::process_counters() {
 }
 
 void Game::apply_command(int id, int command, int val) {
-	command_modules[id]->set_command(command, val);
+	players[id]->get_command_module()->set_command(command, val);
 }
 
 void Game::step(float _dt) {
@@ -176,11 +176,11 @@ void Game::clear() {
 	ships = {};
 	// Clear players
 	for (auto player : players)
-		delete player;
+		delete player.second;
 	players = {};
 	// Clear command_modules
 	for (auto command_module : command_modules)
-		delete command_module.second;
+		delete command_module;
 	command_modules = {};
 	// Clear engines
 	for (auto engine : engines)
@@ -344,31 +344,36 @@ void Game::decode(std::string source) {
 
 Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	Player* player = new Player(id, color, name);
-	players.insert(player);
-	return create_ship(player, pos, angle);
+	players.insert({ player->get_id(), player });
+	auto ship = create_ship(player, pos, angle);
+	player->set_command_module(ship->get_command_module());
+	return ship;
 }
 
 void Game::del_player(int id) {
 	for (auto ship : ships) {
 		if (ship->get_player()->get_id() == id) {
 			for (auto it = players.begin(); it != players.end(); it++)
-				if (ship->get_player() == *it) {
+				if (ship->get_player() == it->second) {
 					players.erase(it);
 					break;
 				}
 			delete ship->get_player();
+
 			for (auto it = command_modules.begin(); it != command_modules.end(); it++)
-				if (ship->get_command_module() == it->second) {
+				if (ship->get_command_module() == *it) {
 					command_modules.erase(it);
 					break;
 				}
 			delete ship->get_command_module();
+
 			for (auto it = engines.begin(); it != engines.end(); it++)
 				if (ship->get_engine() == *it) {
 					engines.erase(it);
 					break;
 				}
 			delete ship->get_engine();
+
 			for (auto it = ships.begin(); it != ships.end(); it++)
 				if (ship == *it) {
 					ships.erase(it);
