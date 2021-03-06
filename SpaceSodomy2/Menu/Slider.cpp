@@ -45,7 +45,10 @@ void Slider::create(int min, int max)
 
 void Slider::logic(sf::RenderWindow& window)
 {
-	if (slider.getGlobalBounds().contains(mouse_pos_)
+	sf::FloatRect SliderRect = axis.getGlobalBounds();
+	if (SliderRect.height < slider.getGlobalBounds().height)
+		SliderRect.height = slider.getGlobalBounds().height;
+	if (SliderRect.contains(mouse_pos_)
 		&& sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		if (mouse_pos_.x >= xCord && mouse_pos_.x <= xCord + axisWidth)
