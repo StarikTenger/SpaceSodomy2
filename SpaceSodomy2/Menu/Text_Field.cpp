@@ -29,7 +29,7 @@ bool Text_Field::get_keyboard_active() {
 }
 
 // Set methods
-void Text_Field::set_text(const wchar_t* text_) {
+void Text_Field::set_text(std::string text_) {
 	text.setString(text_);
 }
 void Text_Field::set_font(sf::Font font_) {

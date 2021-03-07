@@ -6,13 +6,21 @@
 class Menu_Processing {
 private:
 	Menu main_menu; // main menu object
+	Menu config_menu; // config menu object
+	Menu keys_menu; // keys menu object
+	aux::Keyboard* keyboard;
+	b2Vec2* mouse_pos;
+	int current_id = 1;
+	void (*load_config_ptr)(std::string); // load config pointer
 	std::queue<int> events; // menu events
 	std::map<int, std::string> text_fields_strings; // texts from text fields
 	std::map<int, int> sliders_vals; // vals from sliders
+	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
 public:
 	Menu_Processing();
-	void init(std::string menu_config_path, Draw* draw, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
+	void init(Draw* draw, b2Vec2* mouse_pos_,
+		aux::Keyboard* keyboard_, void(Control::*ptr)(std::string));
 	void step();
 };
 

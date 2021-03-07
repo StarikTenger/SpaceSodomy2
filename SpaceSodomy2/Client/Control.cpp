@@ -107,7 +107,7 @@ Control::Control() {
 		key_names.insert({names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init("menu.conf", &draw, &mouse_pos, &keyboard);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, Control::load_config);
 }
 
 int Control::get_is_running() {

@@ -19,7 +19,7 @@ public:
 	bool get_keyboard_active();
 
 	// Set methods
-	void set_text(const wchar_t* text_);
+	void set_text(std::string text_);
 	void set_font(sf::Font font_);
 	void set_text_color(sf::Color);
 	void set_text_character_pixel_size(unsigned int size_);
