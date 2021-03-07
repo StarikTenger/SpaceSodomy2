@@ -20,7 +20,8 @@ private:
 	bool* clicked = 0;
 public:
 	Menu_Object();
-	Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
+	Menu_Object(int id_, std::string texture_name_, Draw* draw_, 
+		b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
 
 	// Get methods
 	int get_id();

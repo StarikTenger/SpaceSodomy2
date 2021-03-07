@@ -9,13 +9,12 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 	main_menu.set_events(&events);
 	std::ifstream comment_file(menu_config_path);
 	std::stringstream file = aux::comment(comment_file);
-	for (int i = 1; i < 6; i++)
-	{
+	for (int i = 1; i < 6; i++)	{
 		std::string type;
 		int typenum = 0;
 		std::string texture_name;
-		float pos_x, pos_y, scale_x, scale_y;
-		float axis_width, axis_height, slider_width, slider_height;
+		b2Vec2 pos, scale;
+		b2Vec2 axis_scale, slider_scale;
 		file >> type;
 		if (type == "Button")
 			typenum = 1;
@@ -26,18 +25,19 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 		switch (typenum) {
 		case 1:
 			file >> texture_name;
-			file >> pos_x >> pos_y >> scale_x >> scale_y;
-			main_menu.add_button(i, texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_);
+			file >> pos.x >> pos.y >> scale.x >> scale.y;
+			main_menu.add_button(i, texture_name, pos, scale, sf::Color::White, mouse_pos_);
 			break;
 		case 2:
 			file >> texture_name;
-			file >> pos_x >> pos_y >> scale_x >> scale_y;
-			main_menu.add_text_field(i, L"Hello", texture_name, pos_x, pos_y, scale_x, scale_y, sf::Color::White, mouse_pos_, keyboard);
+			file >> pos.x >> pos.y >> scale.x >> scale.y;
+			main_menu.add_text_field(i, L"Hello", texture_name, pos, scale, sf::Color::White,
+				mouse_pos_, keyboard);
 			break;
 		case 3:
-			file >> pos_x >> pos_y;
-			file >> axis_width >>  axis_height >> slider_width >> slider_height;
-			main_menu.add_slider(i, pos_x, pos_y, axis_width, axis_height, slider_width, slider_height, mouse_pos_);
+			file >> pos.x >> pos.y;
+			file >> axis_scale.x >>  axis_scale.y >> slider_scale.x >> slider_scale.y;
+			main_menu.add_slider(i, pos, axis_scale, slider_scale, mouse_pos_);
 			break;
 		default:
 			break;
@@ -50,8 +50,7 @@ void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mo
 void Menu_Processing::step() {
 	main_menu.step();
 	while (!events.empty()){
-		switch (events.front())
-		{
+		switch (events.front()) {
 		case 1:
 			main_menu.set_active(0);
 			break;

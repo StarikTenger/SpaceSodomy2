@@ -2,7 +2,8 @@
 #include "Menu_Object.h"
 
 Menu_Object::Menu_Object() {}
-Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_) {
+Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_,
+	b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_) {
 	id = id_;
 	texture_name = texture_name_;
 	draw = draw_;
@@ -86,8 +87,7 @@ void Menu_Object::set_clicked(bool* clicked_) {
 	clicked = clicked_;
 }
 
-void Menu_Object::primitive_step()
-{
+void Menu_Object::primitive_step() {
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;

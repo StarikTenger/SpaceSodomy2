@@ -54,11 +54,9 @@ void Text_Field::step() {
 		font_setted = 1;
 		text.setFont(*(get_draw()->get_font("font")));
 	}
-	if (keyboard_active)
-	{
+	if (keyboard_active) {
 		std::string str = text.getString();
-		while (!get_keyboard()->text_entered->empty())
-		{
+		while (!get_keyboard()->text_entered->empty()) {
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			get_keyboard()->text_entered->pop();
 			if (symbol == 8 && !str.empty())
