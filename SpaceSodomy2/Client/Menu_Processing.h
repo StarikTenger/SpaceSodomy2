@@ -3,11 +3,12 @@
 #include<AuxLib/AuxLib.h>
 #include<string>
 
-class Menu_Processing
-{
+class Menu_Processing {
 private:
-	Menu main_menu;
-	std::queue<int> events;
+	Menu main_menu; // main menu object
+	std::queue<int> events; // menu events
+	std::map<int, std::string> text_fields_strings; // texts from text fields
+	std::map<int, int> sliders_vals; // vals from sliders
 	Draw* draw;
 public:
 	Menu_Processing();

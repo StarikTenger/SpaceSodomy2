@@ -4,19 +4,23 @@
 #include <Draw/Draw.h>
 #include <AuxLib/AuxLib.h>
 
-class Menu_Object
-{
+class Menu_Object {
 private:
+	// Object global menu id
 	int id;
 	std::string texture_name;
 	sf::Color color;
 	Draw* draw;
 	b2Vec2 pos, scale;
+	// Is object active (mouse pointed on it)
 	bool active = 0;
 	b2Vec2* mouse_pos;
 	aux::Keyboard* keyboard;
+	// Use image scale in pixels
 	bool use_picture_scale = 1;
+	// Rendering active
 	bool image_active = 1;
+	// Mouse clicked
 	bool* clicked = 0;
 public:
 	Menu_Object();
@@ -50,6 +54,6 @@ public:
 	void set_keyboard(aux::Keyboard* keyboard);
 	void set_clicked(bool* clicked_);
 
-	void primitive_step();
+	void primitive_step(); // Rendering & active check
 };
 

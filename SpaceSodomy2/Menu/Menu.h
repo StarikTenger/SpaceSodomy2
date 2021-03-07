@@ -12,6 +12,8 @@ private:
 	std::vector<Slider*> sliders;
 	Draw* draw;
 	std::queue<int>* events;
+	std::map<int, std::string>* text_fields_strings;
+	std::map<int, int>* sliders_vals;
 	bool active = 0;
 	bool last_mouse_status = 0;
 	bool clicked = 0;
@@ -23,6 +25,8 @@ public:
 	void set_draw(Draw* draw_);
 	void set_active(bool active_);
 	void set_events(std::queue<int>* events_);
+	void set_text_fields_strings(std::map<int, std::string>*);
+	void set_sliders_vals(std::map<int, int>*);
 	
 	// Get methods
 	Draw* get_draw();

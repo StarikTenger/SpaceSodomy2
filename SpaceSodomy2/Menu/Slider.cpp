@@ -7,16 +7,18 @@ Slider::Slider() {
 
 	text.setFillColor(sf::Color::White);
 
-	set_image_active(0);
+	set_image_active(0); // Menu_Object won't be rendered
 }
 
 void Slider::init() {
 	cord = { get_pos().x , get_pos().y };
 
+	// set axis params
 	axis.setPosition(cord.x, cord.y);
 	axis.setOrigin(0, axis_scale.y / 2);
 	axis.setSize(aux::to_Vector2f(axis_scale));
 	axis.setFillColor(sf::Color(63, 63, 63));
+	// set slider params
 	slider.setPosition(cord.x, cord.y);
 	slider.setOrigin(slider_scale.x / 2, slider_scale.y / 2);
 	slider.setSize(sf::Vector2f(slider_scale.x, slider_scale.y));
@@ -40,15 +42,20 @@ void Slider::create(int min, int max)
 
 void Slider::logic(sf::RenderWindow* window)
 {
+	// Creating a new slider rect for logic
 	sf::FloatRect SliderRect = axis.getGlobalBounds();
 	if (SliderRect.height < slider.getGlobalBounds().height)
 		SliderRect.height = slider.getGlobalBounds().height;
+	// if slider was clicked -> slider active
 	if (SliderRect.contains(mouse_pos_) && *get_clicked())
 		slider_active = 1;
+	// if slider has been deactivated -> slider inactive
 	if (slider_active
 		&& !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		slider_active = 0;
+	// if slider active -> move slider pointer
 	if (slider_active) {
+		// Creating a new slider pointer pos_x
 		auto new_pos_x = mouse_pos_.x;
 		if (new_pos_x < cord.x)
 			new_pos_x = cord.x;

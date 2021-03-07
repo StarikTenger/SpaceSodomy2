@@ -50,10 +50,11 @@ void Text_Field::set_keyboard_active(bool keyboard_active_) {
 }
 
 void Text_Field::step() {
-	if (!font_setted) {
+	if (!font_setted) { // if font isn't setted -> set standart font
 		font_setted = 1;
 		text.setFont(*(get_draw()->get_font("font")));
 	}
+	// Text entering
 	if (keyboard_active) {
 		std::string str = text.getString();
 		while (!get_keyboard()->text_entered->empty()) {
@@ -66,6 +67,7 @@ void Text_Field::step() {
 		}
 		text.setString(str);
 	}
+	// Set background params
 	set_scale(b2Vec2(text.getLocalBounds().width, text.getLocalBounds().height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));

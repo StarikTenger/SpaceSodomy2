@@ -4,9 +4,13 @@ Menu_Processing::Menu_Processing() {}
 
 void Menu_Processing::init(std::string menu_config_path, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard) {
 	draw = draw_;
+	// set menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
 	main_menu.set_events(&events);
+	main_menu.set_sliders_vals(&sliders_vals);
+	main_menu.set_text_fields_strings(&text_fields_strings);
+	// uncomment config file
 	std::ifstream comment_file(menu_config_path);
 	std::stringstream file = aux::comment(comment_file);
 	for (int i = 1; i < 6; i++)	{
@@ -51,13 +55,13 @@ void Menu_Processing::step() {
 	main_menu.step();
 	while (!events.empty()){
 		switch (events.front()) {
-		case 1:
+		case 1: // New game button
 			main_menu.set_active(0);
 			break;
-		case 2:
+		case 2: // About button
 			std::cout << "well, it works";
 			break;
-		case 3:
+		case 3: // Exit button
 			draw->get_window()->close();
 			break;
 		default:

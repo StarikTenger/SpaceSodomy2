@@ -4,7 +4,7 @@ class Text_Field : public Menu_Object
 {
 private:
 	sf::Text text;
-	b2Vec2 indent = { 5, 5 };
+	b2Vec2 indent = { 5, 5 }; // indent above text size
 	bool keyboard_active = 0;
 	bool font_setted = 0;
 public:
@@ -25,7 +25,6 @@ public:
 	void set_text_character_pixel_size(unsigned int size_);
 	void set_indent(b2Vec2 indent_);
 	void set_keyboard_active(bool keyboard_active_);
-
 
 	void step();
 };

@@ -23,6 +23,12 @@ void Menu::set_active(bool active_) {
 void Menu::set_events(std::queue<int>* events_) {
 	events = events_;
 }
+void Menu::set_text_fields_strings(std::map<int, std::string>* text_fields_strings_) {
+	text_fields_strings = text_fields_strings_;
+}
+void Menu::set_sliders_vals(std::map<int, int>* sliders_vals_) {
+	sliders_vals = sliders_vals_;
+}
 
 //Get_methods
 Draw* Menu::get_draw() {
@@ -81,6 +87,7 @@ void Menu::add_slider(int id, b2Vec2 pos, b2Vec2 axis_scale, b2Vec2 slider_scale
 void Menu::step() {
 	if (!active)
 		return;
+	// set clicked val
 	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 
@@ -88,6 +95,7 @@ void Menu::step() {
 	Camera camera_backup = *draw->get_camera();
 	draw->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 
+	// buttons handling
 	for (auto button : buttons) {
 		button->step();
 		if (clicked && button->get_active()) {
@@ -95,8 +103,11 @@ void Menu::step() {
 			clicked = 0;
 		}
 	}
+
+	// text fields handling
 	for (auto text_field : text_fields) {
 		text_field->step();
+		text_fields_strings->operator[](text_field->get_id()) = text_field->get_text();
 		if (clicked && !text_field->get_active() && text_field->get_keyboard_active())
 			text_field->set_keyboard_active(0);
 	}
@@ -107,8 +118,11 @@ void Menu::step() {
 			text_field->set_keyboard_active(1);
 		}
 	}
+
+	// sliders handling
 	for (auto slider : sliders) {
 		slider->step();
+		sliders_vals->operator[](slider->get_id()) = slider->get_slider_value();
 	}
 
 	// Restore camera

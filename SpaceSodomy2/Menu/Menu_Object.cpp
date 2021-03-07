@@ -88,7 +88,7 @@ void Menu_Object::set_clicked(bool* clicked_) {
 }
 
 void Menu_Object::primitive_step() {
-	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
+	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize())); // Mid screen indent
 	mid.x /= 2;
 	mid.y /= 2;
 	b2Vec2 rect_pos = pos;
