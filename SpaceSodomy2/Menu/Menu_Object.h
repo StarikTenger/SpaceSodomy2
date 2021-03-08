@@ -4,23 +4,29 @@
 #include <Draw/Draw.h>
 #include <AuxLib/AuxLib.h>
 
-class Menu_Object
-{
+class Menu_Object {
 private:
+	// Object global menu id
 	int id;
 	std::string texture_name;
 	sf::Color color;
 	Draw* draw;
 	b2Vec2 pos, scale;
+	// Is object active (mouse pointed on it)
 	bool active = 0;
 	b2Vec2* mouse_pos;
 	aux::Keyboard* keyboard;
+	// Use image scale in pixels
 	bool use_picture_scale = 1;
+	// Rendering active
 	bool image_active = 1;
+	// Mouse clicked
 	bool* clicked = 0;
+	int use_window_cords = 0;
 public:
 	Menu_Object();
-	Menu_Object(int id_, std::string texture_name_, Draw* draw_, b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
+	Menu_Object(int id_, std::string texture_name_, Draw* draw_, 
+		b2Vec2 pos_, b2Vec2 scale_, sf::Color color_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_);
 
 	// Get methods
 	int get_id();
@@ -35,6 +41,7 @@ public:
 	aux::Keyboard* get_keyboard();
 	bool get_active();
 	bool* get_clicked();
+	int get_use_window_cords();
 
 	// Set methods
 	void set_id(int id_);
@@ -48,7 +55,8 @@ public:
 	void set_mouse_pos(b2Vec2* mouse_pos_);
 	void set_keyboard(aux::Keyboard* keyboard);
 	void set_clicked(bool* clicked_);
+	void set_use_window_cords(int use_window_cords_);
 
-	void primitive_step();
+	void primitive_step(); // Rendering & active check
 };
 

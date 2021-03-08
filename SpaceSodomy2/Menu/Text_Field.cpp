@@ -29,7 +29,7 @@ bool Text_Field::get_keyboard_active() {
 }
 
 // Set methods
-void Text_Field::set_text(const wchar_t* text_) {
+void Text_Field::set_text(std::string text_) {
 	text.setString(text_);
 }
 void Text_Field::set_font(sf::Font font_) {
@@ -50,15 +50,14 @@ void Text_Field::set_keyboard_active(bool keyboard_active_) {
 }
 
 void Text_Field::step() {
-	if (!font_setted) {
+	if (!font_setted) { // if font isn't setted -> set standart font
 		font_setted = 1;
 		text.setFont(*(get_draw()->get_font("font")));
 	}
-	if (keyboard_active)
-	{
+	// Text entering
+	if (keyboard_active) {
 		std::string str = text.getString();
-		while (!get_keyboard()->text_entered->empty())
-		{
+		while (!get_keyboard()->text_entered->empty()) {
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			get_keyboard()->text_entered->pop();
 			if (symbol == 8 && !str.empty())
@@ -68,6 +67,7 @@ void Text_Field::step() {
 		}
 		text.setString(str);
 	}
+	// Set background params
 	set_scale(b2Vec2(text.getLocalBounds().width, text.getLocalBounds().height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));

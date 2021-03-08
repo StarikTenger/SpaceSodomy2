@@ -2,142 +2,127 @@
 #include "Slider.h"
 
 Slider::Slider() {
-	axisWidth = 200;
-	axisHeight = 10;
-	sliderWidth = 20;
-	sliderHeight = 30;
+	axis_scale = { 200, 10 };
+	slider_scale = { 20, 30 };
 
 	text.setFillColor(sf::Color::White);
 
-	set_image_active(0);
+	set_image_active(0); // Menu_Object won't be rendered
 }
 
 void Slider::init() {
-	float x = get_pos().x;
-	float y = get_pos().y;
-	xCord = x;
-	yCord = y;
+	cord = { get_pos().x , get_pos().y };
 
-	axis.setPosition(x, y);
-	axis.setOrigin(0, axisHeight / 2);
-	axis.setSize(sf::Vector2f(axisWidth, axisHeight));
+	// set axis params
+	axis.setPosition(cord.x, cord.y);
+	axis.setOrigin(0, axis_scale.y / 2);
+	axis.setSize(aux::to_Vector2f(axis_scale));
 	axis.setFillColor(sf::Color(63, 63, 63));
-	slider.setPosition(x, y);
-	slider.setOrigin(sliderWidth / 2, sliderHeight / 2);
-	slider.setSize(sf::Vector2f(sliderWidth, sliderHeight));
+	// set slider params
+	slider.setPosition(cord.x, cord.y);
+	slider.setOrigin(slider_scale.x / 2, slider_scale.y / 2);
+	slider.setSize(sf::Vector2f(slider_scale.x, slider_scale.y));
 	slider.setFillColor(sf::Color(192, 192, 192));
 }
 
-sf::Text Slider::returnText(int x, int y, std::string z, int fontSize)
+sf::Text Slider::returnText(b2Vec2 pos_, std::string z, int fontSize)
 {
 	text.setCharacterSize(fontSize);
-	text.setPosition(x, y);
+	text.setPosition(pos_.x, pos_.y);
 	text.setString(z);
 	return text;
 }
 
 void Slider::create(int min, int max)
 {
-	sliderValue = min;
-	minValue = min;
-	maxValue = max;
+	slider_value = min;
+	min_value = min;
+	max_value = max;
 }
 
-void Slider::logic(sf::RenderWindow& window)
+void Slider::logic(sf::RenderWindow* window)
 {
+	// Creating a new slider rect for logic
 	sf::FloatRect SliderRect = axis.getGlobalBounds();
 	if (SliderRect.height < slider.getGlobalBounds().height)
 		SliderRect.height = slider.getGlobalBounds().height;
+	// if slider was clicked -> slider active
 	if (SliderRect.contains(mouse_pos_) && *get_clicked())
 		slider_active = 1;
+	// if slider has been deactivated -> slider inactive
 	if (slider_active
 		&& !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 		slider_active = 0;
+	// if slider active -> move slider pointer
 	if (slider_active) {
+		// Creating a new slider pointer pos_x
 		auto new_pos_x = mouse_pos_.x;
-		if (new_pos_x < xCord)
-			new_pos_x = xCord;
-		if (new_pos_x > xCord + axisWidth)
-			new_pos_x = xCord + axisWidth;
-		slider.setPosition(new_pos_x, yCord);
-		sliderValue = (minValue + ((slider.getPosition().x - xCord) / axisWidth * (maxValue - minValue)));
+		if (new_pos_x < cord.x)
+			new_pos_x = cord.x;
+		if (new_pos_x > cord.x + axis_scale.x)
+			new_pos_x = cord.x + axis_scale.x;
+		slider.setPosition(new_pos_x, cord.y);
+		slider_value = (min_value + ((slider.getPosition().x - cord.x) / axis_scale.x * (max_value - min_value)));
 	}
 }
 
-float Slider::getSliderValue()
-{
-	return sliderValue;
+float Slider::get_slider_value() {
+	return slider_value;
 }
 
-void Slider::setSliderValue(float newValue)
+void Slider::set_slider_value(float value_)
 {
-	if (newValue >= minValue && newValue <= maxValue)
+	if (value_ >= min_value && value_ <= max_value)
 	{
-		sliderValue = newValue;
-		float diff = maxValue - minValue;
-		float diff2 = newValue - minValue;
-		float zzz = axisWidth / diff;
-		float posX = zzz * diff2;
-		posX += xCord;
-		slider.setPosition(posX, yCord);
+		slider_value = value_;
+		float diff = max_value - min_value;
+		float diff2 = value_ - min_value;
+		float zzz = axis_scale.x / diff;
+		float pos_x = zzz * diff2;
+		pos_x += cord.x;
+		slider.setPosition(pos_x, cord.y);
 	}
 }
 
-void Slider::setSliderPercentValue(float newPercentValue)
+void Slider::set_slider_percent_value(float percent_value_)
 {
-	if (newPercentValue >= 0 && newPercentValue <= 100)
-	{
-		sliderValue = newPercentValue / 100 * maxValue;
-		slider.setPosition(xCord + (axisWidth * newPercentValue / 100), yCord);
+	if (percent_value_ >= 0 && percent_value_ <= 100) {
+		slider_value = percent_value_ / 100 * max_value;
+		slider.setPosition(cord.x + (axis_scale.x * percent_value_ / 100), cord.y);
 	}
 }
 
-void Slider::draw(sf::RenderWindow& window)
+void Slider::draw(sf::RenderWindow* window)
 {
 	logic(window);
-	window.draw(returnText(xCord - 10, yCord + 5, std::to_string(minValue), 20));
-	window.draw(axis);
-	window.draw(returnText(xCord + axisWidth - 10, yCord + 5, std::to_string(maxValue), 20));
-	window.draw(slider);
-	window.draw(returnText(slider.getPosition().x - sliderWidth, slider.getPosition().y - sliderHeight,
-		std::to_string((int)sliderValue), 15));
+	window->draw(returnText({ cord.x - 10, cord.y + 5 }, std::to_string(min_value), 20));
+	window->draw(axis);
+	window->draw(returnText({ cord.x + axis_scale.x - 10, cord.y + 5 }, std::to_string(max_value), 20));
+	window->draw(slider);
+	window->draw(returnText({ slider.getPosition().x - slider_scale.x, 
+		slider.getPosition().y - slider_scale.y }, std::to_string((int)slider_value), 15));
 }
 
-void Slider::setAxisWidth(int newAxisWidth) {
-	axisWidth = newAxisWidth;
-	axis.setSize(sf::Vector2f(axisWidth, axisHeight));
+void Slider::set_axis_scale(b2Vec2 axis_scale_) {
+	axis_scale = axis_scale_;
+	axis.setOrigin(0, axis_scale.y / 2);
+	axis.setSize(aux::to_Vector2f(axis_scale));
 }
-void Slider::setAxisHeight(int newAxisHeight) {
-	axisHeight = newAxisHeight;
-	axis.setOrigin(0, axisHeight / 2);
-	axis.setSize(sf::Vector2f(axisWidth, axisHeight));
-}
-void Slider::setSliderWidth(int newSliderWidth) {
-	sliderWidth = newSliderWidth;
-	slider.setOrigin(sliderWidth / 2, sliderHeight / 2);
-	slider.setSize(sf::Vector2f(sliderWidth, sliderHeight));
-}
-void Slider::setSliderHeight(int newSliderHeight) {
-	sliderHeight = newSliderHeight;
-	slider.setOrigin(sliderWidth / 2, sliderHeight / 2);
-	slider.setSize(sf::Vector2f(sliderWidth, sliderHeight));
+void Slider::set_slider_scale(b2Vec2 slider_scale_) {
+	slider_scale = slider_scale_;
+	slider.setOrigin(slider_scale.x / 2, slider_scale.y / 2);
+	slider.setSize(aux::to_Vector2f(slider_scale));
 }
 
-int Slider::getAxisWidth() {
-	return axisWidth;
+b2Vec2 Slider::get_axis_scale() {
+	return axis_scale;
 }
-int Slider::getAxisHeight() {
-	return axisHeight;
-}
-int Slider::getSliderWidth() {
-	return sliderWidth;
-}
-int Slider::getSliderHeight() {
-	return sliderHeight;
+b2Vec2 Slider::get_slider_scale() {
+	return slider_scale;
 }
 
 void Slider::step() {
-	set_scale(b2Vec2(sliderWidth, sliderHeight));
+	set_scale(slider_scale);
 	set_pos(aux::to_b2Vec2(slider.getPosition()));
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
 	mid.x /= 2;
@@ -152,5 +137,5 @@ void Slider::step() {
 		text.setFont(*(get_draw()->get_font("neon")));
 		font_active = 1;
 	}
-	draw(*get_draw()->get_window());
+	draw(get_draw()->get_window());
 }

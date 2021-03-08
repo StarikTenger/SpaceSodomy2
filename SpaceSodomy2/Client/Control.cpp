@@ -8,7 +8,7 @@ int Control::key_by_name(std::string name) {
 }
 
 void Control::process_events(sf::Window* window) {
-	window->setKeyRepeatEnabled(false);
+	window->setKeyRepeatEnabled(true);
 	sf::Event event;
 
 	while (window->pollEvent(event)) {
@@ -22,10 +22,13 @@ void Control::process_events(sf::Window* window) {
 			mouse_pos.y = event.mouseMove.y;
 			break;
 		case sf::Event::TextEntered:
+			
 			text_entered.push(wchar_t(event.text.unicode));
 			break;
 		}
 	}
+
+	window->setKeyRepeatEnabled(false);
 
 	// Processing keyboard
 	keyboard.state_prev = keyboard.state_current;
@@ -107,7 +110,7 @@ Control::Control() {
 		key_names.insert({names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init("menu.conf", &draw, &mouse_pos, &keyboard);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload);
 }
 
 int Control::get_is_running() {
@@ -115,6 +118,11 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
+	// load configs
+	if (reload) {
+		load_config("client_config.conf");
+		reload = 0;
+	}
 	// Receiving
 	network.receive();
 
@@ -185,11 +193,4 @@ void Control::load_config(std::string path) {
 	network.set_name(name_);
 	// Key config
 	load_keys("keys.conf");
-}
-
-void Control::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
-	std::ofstream fout;
-	fout.open(path);
-	fout << address_ << " " << port_ << " " << id_ << " " << name_;
-	fout.close();
 }
