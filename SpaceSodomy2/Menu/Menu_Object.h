@@ -22,7 +22,7 @@ private:
 	bool image_active = 1;
 	// Mouse clicked
 	bool* clicked = 0;
-	bool use_window_cords = 0;
+	int use_window_cords = 0;
 public:
 	Menu_Object();
 	Menu_Object(int id_, std::string texture_name_, Draw* draw_, 
@@ -41,7 +41,7 @@ public:
 	aux::Keyboard* get_keyboard();
 	bool get_active();
 	bool* get_clicked();
-	bool get_use_window_cords();
+	int get_use_window_cords();
 
 	// Set methods
 	void set_id(int id_);
@@ -55,7 +55,7 @@ public:
 	void set_mouse_pos(b2Vec2* mouse_pos_);
 	void set_keyboard(aux::Keyboard* keyboard);
 	void set_clicked(bool* clicked_);
-	void set_use_window_cords(bool use_window_cords_);
+	void set_use_window_cords(int use_window_cords_);
 
 	void primitive_step(); // Rendering & active check
 };

@@ -51,7 +51,7 @@ bool Menu_Object::get_active() {
 bool* Menu_Object::get_clicked() {
 	return clicked;
 }
-bool Menu_Object::get_use_window_cords() {
+int Menu_Object::get_use_window_cords() {
 	return use_window_cords;
 }
 
@@ -89,7 +89,7 @@ void Menu_Object::set_keyboard(aux::Keyboard* keyboard_) {
 void Menu_Object::set_clicked(bool* clicked_) {
 	clicked = clicked_;
 }
-void Menu_Object::set_use_window_cords(bool use_window_cords_) {
+void Menu_Object::set_use_window_cords(int use_window_cords_) {
 	use_window_cords = use_window_cords_;
 }
 
@@ -101,14 +101,24 @@ void Menu_Object::primitive_step() {
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
 	if ((!use_window_cords && aux::rect_contains(rect_pos + mid, scale, *mouse_pos)) || 
-		(use_window_cords && aux::rect_contains(rect_pos, scale, *mouse_pos)))
+		((use_window_cords == 1) && aux::rect_contains(rect_pos, scale, *mouse_pos)) ||
+		((use_window_cords == 3) && aux::rect_contains(rect_pos + mid + mid, scale, *mouse_pos)))
 		active = 1;
 	else
 		active = 0;
 	if (image_active) {
-		if (use_window_cords)
-			draw->image(texture_name, pos - mid, scale, 0, color);
-		else
+		switch (use_window_cords) {
+		case 0:
 			draw->image(texture_name, pos, scale, 0, color);
+			break;
+		case 1:
+			draw->image(texture_name, pos - mid, scale, 0, color);
+			break;
+		case 3:
+			draw->image(texture_name, pos + mid, scale, 0, color);
+			break;
+		default:
+			break;
+		}
 	}
 }

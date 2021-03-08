@@ -43,7 +43,7 @@ std::queue<int>* Menu::get_events() {
 	return events;
 }
 
-void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, bool use_window_cords, b2Vec2 scale,
+void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 	sf::Color color, b2Vec2* mouse_pos) {
 	buttons.push_back(new Button);
 	buttons.back()->set_id(id);
@@ -57,7 +57,7 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, bool use_win
 	buttons.back()->set_clicked(&clicked);
 }
 
-void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, bool use_window_cords,
+void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
 	b2Vec2 scale, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	text_fields.push_back(new Text_Field);
 	text_fields.back()->set_id(id);
@@ -73,7 +73,7 @@ void Menu::add_text_field(int id, std::string text, std::string texture_name, b2
 	text_fields.back()->set_clicked(&clicked);
 }
 
-void Menu::add_slider(int id, b2Vec2 pos, bool use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
+void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 	int min, int max, int val, b2Vec2* mouse_pos) {
 	sliders.push_back(new Slider);
 	sliders.back()->set_id(id);

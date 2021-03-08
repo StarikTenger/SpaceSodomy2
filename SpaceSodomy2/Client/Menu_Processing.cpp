@@ -15,7 +15,6 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	config >> *(address_);
 	config >> *(port_);
 	config >> *(id_);
-	config >> *(port_);
 	config >> *(name_);
 }
 
@@ -128,17 +127,21 @@ void Menu_Processing::step() {
 		case 4: // Exit button
 			draw->get_window()->close();
 			break;
-		case 9: // Back button
+		case 9: // Apply button
+			save_config("client_config.conf", text_fields_strings[5], atoi(text_fields_strings[6].c_str()),
+				atoi(text_fields_strings[7].c_str()), text_fields_strings[8]);
+			*reload = 1;
+		case 10: // Back button
 			main_menu.set_active(1);
 			settings_menu.set_active(0);
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
 			break;
-		case 10: // Main button
+		case 11: // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
 			break;
-		case 11: // Control button
+		case 12: // Control button
 			config_menu.set_active(0);
 			keys_menu.set_active(1);
 			break;
