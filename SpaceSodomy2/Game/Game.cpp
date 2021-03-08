@@ -146,7 +146,7 @@ void Game::process_engines() {
 }
 
 void Game::process_projectiles() {
-	std::deque<Projectile*> projectiles_to_delete;
+	std::set<Projectile*> projectiles_to_delete;
 	// Dealing damage
 	for (auto projectile : projectiles) {
 		for (auto damage_receiver : damage_receivers) {
@@ -154,7 +154,7 @@ void Game::process_projectiles() {
 				damage_receiver->get_body())) {
 				std::cout << "damage\n";
 				damage_receiver->damage(projectile->get_damage());
-				projectiles_to_delete.push_back(projectile);
+				projectiles_to_delete.insert(projectile);
 			}
 		}
 	}
@@ -164,7 +164,7 @@ void Game::process_projectiles() {
 		// Checking for wall collision
 		for (auto wall : walls) {
 			if (contact_table.check(projectile->get_body(), wall->get_body()))
-				projectiles_to_delete.push_back(projectile);
+				projectiles_to_delete.insert(projectile);
 		}
 	}
 	for (auto projectile : projectiles_to_delete)
