@@ -13,7 +13,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		std::string texture_name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
-		int min_val, int max_val, int val;
+		int min_val, max_val, val;
 		file >> type;
 		if (type == "Button")
 			typenum = 1;
@@ -47,30 +47,39 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 }
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
-	aux::Keyboard* keyboard_, void(*ptr)(std::string)) {
+	aux::Keyboard* keyboard_, bool* reload_) {
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
-	load_config_ptr = ptr;
+	reload = reload_;
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
 	main_menu.set_events(&events);
 	main_menu.set_sliders_vals(&sliders_vals);
 	main_menu.set_text_fields_strings(&text_fields_strings);
+	init_menu("menu_configs/main.conf", &main_menu);
 	// set client config menu fields
 	config_menu.set_draw(draw);
 	config_menu.set_active(0);
 	config_menu.set_events(&events);
 	config_menu.set_sliders_vals(&sliders_vals);
 	config_menu.set_text_fields_strings(&text_fields_strings);
+	init_menu("menu_configs/client_config.conf", &config_menu);
 	// set keys menu fields
 	keys_menu.set_draw(draw);
 	keys_menu.set_active(0);
 	keys_menu.set_events(&events);
 	keys_menu.set_sliders_vals(&sliders_vals);
 	keys_menu.set_text_fields_strings(&text_fields_strings);
-	return;
+	init_menu("menu_configs/keys.conf", &keys_menu);
+	// set settigs menu 
+	settings_menu.set_draw(draw);
+	settings_menu.set_active(0);
+	settings_menu.set_events(&events);
+	settings_menu.set_sliders_vals(&sliders_vals);
+	settings_menu.set_text_fields_strings(&text_fields_strings);
+	init_menu("menu_configs/settings.conf", &settings_menu);
 }
 
 void Menu_Processing::step() {

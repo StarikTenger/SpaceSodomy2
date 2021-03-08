@@ -64,5 +64,6 @@ public:
 	// Config
 	void load_config(std::string path);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
+	bool reload = 1; // need to reload configs
 };
 

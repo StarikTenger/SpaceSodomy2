@@ -107,7 +107,7 @@ Control::Control() {
 		key_names.insert({names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, Control::load_config);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload);
 }
 
 int Control::get_is_running() {
@@ -115,6 +115,11 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
+	// load configs
+	if (reload) {
+		load_config("client_config.conf");
+		reload = 0;
+	}
 	// Receiving
 	network.receive();
 
