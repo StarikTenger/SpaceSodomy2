@@ -8,7 +8,7 @@ int Control::key_by_name(std::string name) {
 }
 
 void Control::process_events(sf::Window* window) {
-	window->setKeyRepeatEnabled(false);
+	window->setKeyRepeatEnabled(true);
 	sf::Event event;
 
 	while (window->pollEvent(event)) {
@@ -22,10 +22,13 @@ void Control::process_events(sf::Window* window) {
 			mouse_pos.y = event.mouseMove.y;
 			break;
 		case sf::Event::TextEntered:
+			
 			text_entered.push(wchar_t(event.text.unicode));
 			break;
 		}
 	}
+
+	window->setKeyRepeatEnabled(false);
 
 	// Processing keyboard
 	keyboard.state_prev = keyboard.state_current;
