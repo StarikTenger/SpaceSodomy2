@@ -55,6 +55,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Hp
 	auto hp = new Counter();
 	hp->set(100);
+	// Damage receiver
+	auto damage_receiver = new Damage_Receiver(body, hp);
 
 	// Matching entities to ship
 	ship->set_player(player);
@@ -63,6 +65,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_body(body);
 	ship->set_gun(gun);
 	ship->set_hp(hp);
+	ship->set_damage_receiver(damage_receiver);
 
 	// Adding entities to sets
 	ships.insert(ship);
@@ -71,6 +74,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	counters.insert(hp);
 	command_modules.insert(command_module);
 	active_modules.insert(gun);
+	damage_receivers.insert(damage_receiver);
+
+	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	return ship;
 }
 
@@ -87,7 +93,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	// Creating body
 	auto body = create_round_body(projectile_def.pos, projectile_def.angle, 0.2, 0.1);
 	body->SetLinearVelocity(projectile_def.vel);
-	collision_filter.add_body(body, Collision_Filter::PROJECTILE);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE, projectile_def.player->get_id());
 
 	// Creating projectile
 	auto projectile = new Projectile();
@@ -108,14 +114,17 @@ void Game::delete_body(b2Body* body) {
 void Game::delete_projectile(Projectile* projectile) {
 	delete_body(projectile->get_body());
 	projectiles.erase(projectile);
+	delete projectile;
 }
 
 void Game::delete_engine(Engine* engine) {
 	engines.erase(engine);
+	delete engine;
 }
 
 void Game::delete_active_module(Active_Module* active_module) {
 	active_modules.erase(active_module);
+	delete active_module;
 }
 
 void Game::delete_ship(Ship* ship) {
@@ -123,6 +132,12 @@ void Game::delete_ship(Ship* ship) {
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
 	ships.erase(ship);
+	delete ship;
+}
+
+void Game::delete_damage_receiver(Damage_Receiver* damage_receiver) {
+	damage_receivers.erase(damage_receiver);
+	delete damage_receiver;
 }
 
 void Game::process_engines() {
@@ -131,13 +146,25 @@ void Game::process_engines() {
 }
 
 void Game::process_projectiles() {
-	std::set<Projectile*> projectiles_to_delete;
+	std::deque<Projectile*> projectiles_to_delete;
+	// Dealing damage
+	for (auto projectile : projectiles) {
+		for (auto damage_receiver : damage_receivers) {
+			if (contact_table.check(projectile->get_body(),
+				damage_receiver->get_body())) {
+				std::cout << "damage\n";
+				damage_receiver->damage(projectile->get_damage());
+				projectiles_to_delete.push_back(projectile);
+			}
+		}
+	}
 
+	// Deleting
 	for (auto projectile : projectiles) {
 		// Checking for wall collision
 		for (auto wall : walls) {
 			if (contact_table.check(projectile->get_body(), wall->get_body()))
-				projectiles_to_delete.insert(projectile);
+				projectiles_to_delete.push_back(projectile);
 		}
 	}
 	for (auto projectile : projectiles_to_delete)
@@ -353,6 +380,7 @@ void Game::decode(std::string source) {
 
 			Projectile_Def projectile_def;
 			projectile_def.pos = pos;
+			projectile_def.player = players[id];
 
 			auto projectile = create_projectile(projectile_def);
 		}

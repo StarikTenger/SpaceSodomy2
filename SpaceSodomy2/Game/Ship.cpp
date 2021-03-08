@@ -30,6 +30,10 @@ Counter* Ship::get_hp() {
 	return hp;
 }
 
+Damage_Receiver* Ship::get_damage_receiver() {
+	return damage_receiver;
+}
+
 // Set methods
 void Ship::set_player(Player* val) {
 	player = val;
@@ -53,4 +57,8 @@ void Ship::set_gun(Gun* val) {
 
 void Ship::set_hp(Counter* val) {
 	hp = val;
+}
+
+void Ship::set_damage_receiver(Damage_Receiver* val) {
+	damage_receiver = val;
 }

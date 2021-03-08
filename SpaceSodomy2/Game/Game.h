@@ -30,6 +30,8 @@ protected:
 	std::set<Active_Module*> active_modules;
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
+	std::set<Damage_Receiver*> damage_receivers;
+
 	Projectile_Manager projectile_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -51,6 +53,7 @@ protected:
 	void delete_engine(Engine*);
 	void delete_active_module(Active_Module*);
 	void delete_ship(Ship*);
+	void delete_damage_receiver(Damage_Receiver*);
 
 	 // Processing functions
 	void process_engines();

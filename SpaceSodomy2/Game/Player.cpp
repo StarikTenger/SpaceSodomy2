@@ -8,7 +8,7 @@ Player::Player(int id_, sf::Color color_, std::string name_) {
 	name = name_;
 }
 
-//Get methods
+// Get methods
 int Player::get_id() {
 	return id;
 }
@@ -23,7 +23,7 @@ Command_Module* Player::get_command_module() {
 	return command_module;
 }
 
-//Set methods
+// Set methods
 void Player::set_id(int id_) {
 	id = id_;
 }

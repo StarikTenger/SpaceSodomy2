@@ -6,3 +6,4 @@
 #include "Gun.h"
 #include "Projectile.h"
 #include "Counter.h"
+#include "Damage_Receiver.h"

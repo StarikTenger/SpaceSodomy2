@@ -15,8 +15,7 @@
 #include <deque>
 
 
-class Server_Network
-{
+class Server_Network {
 private:
 	sf::UdpSocket socket; // socket
 	char buffer[1024]; // receiving buffer
