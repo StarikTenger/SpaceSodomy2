@@ -9,6 +9,7 @@ private:
 	Menu config_menu; // config menu object
 	Menu keys_menu; // keys menu object
 	Menu settings_menu; // settings menu object
+	std::vector<Menu*> menus;
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
@@ -16,6 +17,9 @@ private:
 	std::queue<int> events; // menu events
 	std::map<int, std::string> text_fields_strings; // texts from text fields
 	std::map<int, int> sliders_vals; // vals from sliders
+	static void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
+	static void load_config(std::string path, std::string* address_, std::string* port_,
+		std::string* id_, std::string* name_);
 	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
 public:

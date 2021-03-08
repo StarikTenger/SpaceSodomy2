@@ -191,10 +191,3 @@ void Control::load_config(std::string path) {
 	// Key config
 	load_keys("keys.conf");
 }
-
-void Control::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
-	std::ofstream fout;
-	fout.open(path);
-	fout << address_ << " " << port_ << " " << id_ << " " << name_;
-	fout.close();
-}

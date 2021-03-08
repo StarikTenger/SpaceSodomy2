@@ -33,11 +33,11 @@ public:
 	bool get_active();
 	std::queue<int>* get_events();
 
-	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos,
+	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, bool use_window_cords,
 		b2Vec2 scale, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
-	void add_button(int id, std::string texture_name, b2Vec2 pos, b2Vec2 scale,
+	void add_button(int id, std::string texture_name, b2Vec2 pos, bool use_window_cords, b2Vec2 scale,
 		sf::Color color, b2Vec2* mouse_pos);
-	void add_slider(int id, b2Vec2 pos, b2Vec2 axis_scale, b2Vec2 slider_scale,
+	void add_slider(int id, b2Vec2 pos, bool use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 		int min, int max, int val, b2Vec2* mouse_pos);
 	void step();
 };

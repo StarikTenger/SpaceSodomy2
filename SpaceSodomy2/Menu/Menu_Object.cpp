@@ -51,6 +51,9 @@ bool Menu_Object::get_active() {
 bool* Menu_Object::get_clicked() {
 	return clicked;
 }
+bool Menu_Object::get_use_window_cords() {
+	return use_window_cords;
+}
 
 // Set methods
 void Menu_Object::set_id(int id_) {
@@ -86,6 +89,9 @@ void Menu_Object::set_keyboard(aux::Keyboard* keyboard_) {
 void Menu_Object::set_clicked(bool* clicked_) {
 	clicked = clicked_;
 }
+void Menu_Object::set_use_window_cords(bool use_window_cords_) {
+	use_window_cords = use_window_cords_;
+}
 
 void Menu_Object::primitive_step() {
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize())); // Mid screen indent
@@ -94,10 +100,15 @@ void Menu_Object::primitive_step() {
 	b2Vec2 rect_pos = pos;
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
-	if (aux::rect_contains(rect_pos + mid, scale, *mouse_pos))
+	if ((!use_window_cords && aux::rect_contains(rect_pos + mid, scale, *mouse_pos)) || 
+		(use_window_cords && aux::rect_contains(rect_pos, scale, *mouse_pos)))
 		active = 1;
 	else
 		active = 0;
-	if (image_active)
-		draw->image(texture_name, pos, scale, 0, color);
+	if (image_active) {
+		if (use_window_cords)
+			draw->image(texture_name, pos - mid, scale, 0, color);
+		else
+			draw->image(texture_name, pos, scale, 0, color);
+	}
 }
