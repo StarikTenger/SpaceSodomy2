@@ -31,6 +31,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
 		int use_window_cords;
+		int character_size;
 		file >> type;
 		if (type == "Button")
 			typenum = 1;
@@ -46,8 +47,9 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			break;
 		case 2:
 			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y;
-			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, scale, sf::Color::White,
+			file >> use_window_cords >> pos.x >> pos.y;
+			file >> character_size;
+ 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				mouse_pos, keyboard);
 			break;
 		case 3:

@@ -68,12 +68,15 @@ void Text_Field::step() {
 		text.setString(str);
 	}
 	// Set background params
-	set_scale(b2Vec2(text.getLocalBounds().width, text.getLocalBounds().height));
+	float height = text.getLocalBounds().height;
+	if (height < aux::get_text_max_height(text))
+		height = aux::get_text_max_height(text);
+	set_scale(b2Vec2(text.getLocalBounds().width, height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));
 	primitive_step();
 	//std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
 	text.setPosition(aux::to_Vector2f(get_pos()) - sf::Vector2f(text.getLocalBounds().width / 2.0,
-		text.getLocalBounds().height / 2.0));
+		height / 2.0));
 	get_draw()->display_text(&text);
 }

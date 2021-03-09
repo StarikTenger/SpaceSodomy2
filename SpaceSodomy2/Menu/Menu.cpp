@@ -58,14 +58,14 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_wind
 }
 
 void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
-	b2Vec2 scale, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
+	int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	text_fields.push_back(new Text_Field);
 	text_fields.back()->set_id(id);
 	text_fields.back()->set_text(text);
 	text_fields.back()->set_texture_name(texture_name);
 	text_fields.back()->set_pos(pos);
 	text_fields.back()->set_use_window_cords(use_window_cords);
-	text_fields.back()->set_scale(scale);
+	text_fields.back()->set_text_character_pixel_size(character_size);
 	text_fields.back()->set_color(color);
 	text_fields.back()->set_draw(draw);
 	text_fields.back()->set_mouse_pos(mouse_pos);
