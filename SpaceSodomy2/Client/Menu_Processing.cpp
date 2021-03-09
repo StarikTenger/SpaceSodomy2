@@ -10,13 +10,15 @@ void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::s
 		std::string cur;
 		config >> cur;
 		names.push_back(cur);
-		while (cur != "END") {
+		while (!config.eof() && (cur != "END")) {
 			config >> cur;
 		}
 	}
+	if (names.back() == "")
+		names.pop_back();
 	std::ofstream fout;
 	fout.open(path);
-	for (int i = 0; i < keys.size(); i++) {
+	for (int i = 0; i < names.size(); i++) {
 		fout << names[i] << " ";
 		for (int j = 0; j < keys[i].size(); j++)
 			fout << *keys[i][j] << " ";
@@ -163,8 +165,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	keys_menu.set_sliders_vals(&sliders_vals);
 	keys_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&keys_menu);
+	init_menu("menu_configs/keys.conf", &keys_menu);
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -125 }, { 50, 50 }, 20);
-	//init_menu("menu_configs/keys.conf", &keys_menu);
 }
 
 void Menu_Processing::step() {
@@ -191,6 +193,7 @@ void Menu_Processing::step() {
 			save_config("client_config.conf", text_fields_strings[5], atoi(text_fields_strings[6].c_str()),
 				atoi(text_fields_strings[7].c_str()), text_fields_strings[8]);
 			*reload = 1;
+			break;
 		case 10: // Back button
 			main_menu.set_active(1);
 			settings_menu.set_active(0);
@@ -204,6 +207,10 @@ void Menu_Processing::step() {
 		case 12: // Control button
 			config_menu.set_active(0);
 			keys_menu.set_active(1);
+			break;
+		case 13: // Apply button
+			save_keys("keys.conf", keys_menu_vec);
+			*reload = 1;
 			break;
 		default:
 			break;
