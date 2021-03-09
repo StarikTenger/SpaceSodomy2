@@ -73,6 +73,22 @@ void Menu::add_text_field(int id, std::string text, std::string texture_name, b2
 	text_fields.back()->set_clicked(&clicked);
 }
 
+void Menu::add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
+	int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
+	keyboard_fields.push_back(new Keyboard_Field);
+	keyboard_fields.back()->set_id(id);
+	keyboard_fields.back()->set_text(text);
+	keyboard_fields.back()->set_texture_name(texture_name);
+	keyboard_fields.back()->set_pos(pos);
+	keyboard_fields.back()->set_use_window_cords(use_window_cords);
+	keyboard_fields.back()->set_text_character_pixel_size(character_size);
+	keyboard_fields.back()->set_color(color);
+	keyboard_fields.back()->set_draw(draw);
+	keyboard_fields.back()->set_mouse_pos(mouse_pos);
+	keyboard_fields.back()->set_keyboard(keyboard);
+	keyboard_fields.back()->set_clicked(&clicked);
+}
+
 void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 	int min, int max, int val, b2Vec2* mouse_pos) {
 	sliders.push_back(new Slider);
@@ -121,6 +137,17 @@ void Menu::step() {
 			while (!text_field->get_keyboard()->text_entered->empty())
 				text_field->get_keyboard()->text_entered->pop();
 			text_field->set_keyboard_active(1);
+		}
+	}
+
+	// keyboard fields handling
+	for (auto keyboard_field : keyboard_fields) {
+		keyboard_field->step();
+		text_fields_strings->operator[](keyboard_field->get_id()) = keyboard_field->get_text();
+	}
+	for (auto keyboard_field : keyboard_fields) {
+		if (clicked && keyboard_field->get_active()) {
+			keyboard_field->set_keyboard_active(1);
 		}
 	}
 

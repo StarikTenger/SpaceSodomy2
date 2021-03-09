@@ -2,6 +2,54 @@
 
 Menu_Processing::Menu_Processing() {}
 
+void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::vector<std::string> names;
+	while (!config.eof()) {
+		std::string cur;
+		config >> cur;
+		names.push_back(cur);
+		while (cur != "END") {
+			config >> cur;
+		}
+	}
+	std::ofstream fout;
+	fout.open(path);
+	for (int i = 0; i < keys.size(); i++) {
+		fout << names[i] << " ";
+		for (int j = 0; j < keys[i].size(); j++)
+			fout << *keys[i][j] << " ";
+		fout << "END\n";
+	}
+	fout.close();
+}
+void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
+	b2Vec2 pos, b2Vec2 indent, int character_size) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	for (int i = 0; !config.eof(); i++) {
+		if (keys->size() == i)
+			keys->push_back(std::vector<std::string*>());
+		std::string cur;
+		config >> cur >> cur;
+		for (int j = 0; !config.eof() && (cur != "END"); j++) {
+			if (j == keys->operator[](i).size()) {
+				keys->operator[](i).push_back(&text_fields_strings[current_id]);
+				text_fields_strings[current_id] = cur;
+				menu->add_keyboard_field(current_id, text_fields_strings[current_id], "TextField",
+					b2Vec2(pos.x + indent.x * (j + 1), pos.y + indent.y * i), 0, character_size, sf::Color::White,
+					mouse_pos, keyboard);
+				current_id++;
+			}
+			else
+				*(keys->operator[](i)[j]) = cur;
+			config >> cur;
+		}
+	}
+
+}
+
 void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);
@@ -39,6 +87,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 2;
 		if (type == "Slider")
 			typenum = 3;
+		if (type == "KeyboardField")
+			typenum = 4;
 		switch (typenum) {
 		case 1:
 			file >> texture_name;
@@ -58,6 +108,13 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			file >> min_val >> max_val >> val;
 			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
 				min_val, max_val, val, mouse_pos);
+			break;
+		case 4:
+			file >> texture_name;
+			file >> use_window_cords >> pos.x >> pos.y;
+			file >> character_size;
+			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
+				mouse_pos, keyboard);
 			break;
 		default:
 			i--;
@@ -91,14 +148,6 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 		&text_fields_strings[7], &text_fields_strings[8]);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
-	// set keys menu fields
-	keys_menu.set_draw(draw);
-	keys_menu.set_active(0);
-	keys_menu.set_events(&events);
-	keys_menu.set_sliders_vals(&sliders_vals);
-	keys_menu.set_text_fields_strings(&text_fields_strings);
-	menus.push_back(&keys_menu);
-	init_menu("menu_configs/keys.conf", &keys_menu);
 	// set settigs menu 
 	settings_menu.set_draw(draw);
 	settings_menu.set_active(0);
@@ -107,6 +156,15 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	settings_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&settings_menu);
 	init_menu("menu_configs/settings.conf", &settings_menu);
+	// set keys menu fields
+	keys_menu.set_draw(draw);
+	keys_menu.set_active(0);
+	keys_menu.set_events(&events);
+	keys_menu.set_sliders_vals(&sliders_vals);
+	keys_menu.set_text_fields_strings(&text_fields_strings);
+	menus.push_back(&keys_menu);
+	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -125 }, { 50, 50 }, 20);
+	//init_menu("menu_configs/keys.conf", &keys_menu);
 }
 
 void Menu_Processing::step() {

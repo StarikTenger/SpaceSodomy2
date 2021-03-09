@@ -1,7 +1,6 @@
 #pragma once
 #include "Menu_Object.h"
-class Text_Field : public Menu_Object
-{
+class Keyboard_Field : public Menu_Object {
 private:
 	sf::Text text;
 	b2Vec2 indent = { 5, 5 }; // indent above text size
@@ -9,8 +8,8 @@ private:
 	bool font_setted = 0;
 	float height;
 public:
-	Text_Field();
-	
+	Keyboard_Field();
+
 	// Get methods
 	std::string get_text();
 	sf::Font get_font();

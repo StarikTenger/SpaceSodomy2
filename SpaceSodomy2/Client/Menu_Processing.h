@@ -17,9 +17,13 @@ private:
 	std::queue<int> events; // menu events
 	std::map<int, std::string> text_fields_strings; // texts from text fields
 	std::map<int, int> sliders_vals; // vals from sliders
-	static void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
-	static void load_config(std::string path, std::string* address_, std::string* port_,
+	std::vector<std::vector<std::string*>> keys_menu_vec;
+	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
+	void load_config(std::string path, std::string* address_, std::string* port_,
 		std::string* id_, std::string* name_);
+	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
+	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
+		b2Vec2 pos, b2Vec2 indent, int character_size);
 	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
 public:

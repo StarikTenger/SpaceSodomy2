@@ -35,6 +35,7 @@ void Text_Field::set_text(std::string text_) {
 void Text_Field::set_font(sf::Font font_) {
 	font_setted = 1;
 	text.setFont(font_);
+	height = aux::get_text_max_height(text);
 }
 void Text_Field::set_text_color(sf::Color color_) {
 	text.setFillColor(color_);
@@ -53,6 +54,7 @@ void Text_Field::step() {
 	if (!font_setted) { // if font isn't setted -> set standart font
 		font_setted = 1;
 		text.setFont(*(get_draw()->get_font("font")));
+		height = aux::get_text_max_height(text);
 	}
 	// Text entering
 	if (keyboard_active) {
@@ -68,9 +70,8 @@ void Text_Field::step() {
 		text.setString(str);
 	}
 	// Set background params
-	float height = text.getLocalBounds().height;
-	if (height < aux::get_text_max_height(text))
-		height = aux::get_text_max_height(text);
+	if (height < text.getGlobalBounds().height)
+		height = text.getLocalBounds().height;;
 	set_scale(b2Vec2(text.getLocalBounds().width, height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));
