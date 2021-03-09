@@ -33,9 +33,15 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	for (int i = 0; !config.eof(); i++) {
 		if (keys->size() == i)
 			keys->push_back(std::vector<std::string*>());
-		std::string cur;
-		config >> cur >> cur;
+		std::string cur, cur_name;
+		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
+			if (j == 0) {
+				menu->add_constant_text(current_id, cur_name,
+					b2Vec2(pos.x - 2 * indent.x, pos.y + indent.y * i), 0, character_size, sf::Color::White,
+					mouse_pos, keyboard);
+				current_id++;
+			}
 			if (j == keys->operator[](i).size()) {
 				keys->operator[](i).push_back(&text_fields_strings[current_id]);
 				text_fields_strings[current_id] = cur;
