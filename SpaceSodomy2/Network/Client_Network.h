@@ -18,6 +18,7 @@ private:
 	std::string serverIP = "localhost"; // Server IP address
 	int port = 8001; // sending port
 	sf::UdpSocket socket;
+	sf::UdpSocket socket_receiving;
 	int id = 1; // player id
 	std::string name = "UnknownPlayer";
 
