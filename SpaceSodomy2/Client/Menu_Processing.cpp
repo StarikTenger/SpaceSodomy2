@@ -91,6 +91,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 3;
 		if (type == "KeyboardField")
 			typenum = 4;
+		if (type == "ConstantText")
+			typenum = 5;
 		switch (typenum) {
 		case 1:
 			file >> texture_name;
@@ -116,6 +118,12 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
+				mouse_pos, keyboard);
+			break;
+		case 5:
+			file >> use_window_cords >> pos.x >> pos.y;
+			file >> character_size;
+			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				mouse_pos, keyboard);
 			break;
 		default:
@@ -146,8 +154,12 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	config_menu.set_events(&events);
 	config_menu.set_sliders_vals(&sliders_vals);
 	config_menu.set_text_fields_strings(&text_fields_strings);
-	load_config("client_config.conf", &text_fields_strings[5], &text_fields_strings[6],
-		&text_fields_strings[7], &text_fields_strings[8]);
+	text_fields_strings[5] = "Server IP:";
+	text_fields_strings[7] = "Port:";
+	text_fields_strings[9] = "ID:";
+	text_fields_strings[11] = "Name:";
+	load_config("client_config.conf", &text_fields_strings[6], &text_fields_strings[8],
+		&text_fields_strings[10], &text_fields_strings[12]);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
 	// set settigs menu 
@@ -189,26 +201,26 @@ void Menu_Processing::step() {
 		case 4: // Exit button
 			draw->get_window()->close();
 			break;
-		case 9: // Apply button
-			save_config("client_config.conf", text_fields_strings[5], atoi(text_fields_strings[6].c_str()),
-				atoi(text_fields_strings[7].c_str()), text_fields_strings[8]);
+		case 13: // Apply button
+			save_config("client_config.conf", text_fields_strings[6], atoi(text_fields_strings[8].c_str()),
+				atoi(text_fields_strings[10].c_str()), text_fields_strings[12]);
 			*reload = 1;
 			break;
-		case 10: // Back button
+		case 14: // Back button
 			main_menu.set_active(1);
 			settings_menu.set_active(0);
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
 			break;
-		case 11: // Main button
+		case 15: // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
 			break;
-		case 12: // Control button
+		case 16: // Control button
 			config_menu.set_active(0);
 			keys_menu.set_active(1);
 			break;
-		case 13: // Apply button
+		case 17: // Apply button
 			save_keys("keys.conf", keys_menu_vec);
 			*reload = 1;
 			break;

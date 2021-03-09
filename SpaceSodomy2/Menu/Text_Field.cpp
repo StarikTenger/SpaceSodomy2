@@ -76,7 +76,7 @@ void Text_Field::step() {
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));
 	primitive_step();
-	//std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
+	std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
 	text.setPosition(aux::to_Vector2f(get_pos()) - sf::Vector2f(text.getLocalBounds().width / 2.0,
 		height / 2.0));
 	get_draw()->display_text(&text);

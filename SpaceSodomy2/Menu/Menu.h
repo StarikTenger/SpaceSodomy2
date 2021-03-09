@@ -2,6 +2,7 @@
 #include "Button.h"
 #include "Text_Field.h"
 #include "Keyboard_Field.h"
+#include "Constant_Text.h"
 #include "Slider.h"
 #include <vector>
 #include <queue>
@@ -11,6 +12,7 @@ private:
 	std::vector<Button*> buttons;
 	std::vector<Text_Field*> text_fields;
 	std::vector<Keyboard_Field*> keyboard_fields;
+	std::vector<Constant_Text*> constant_texts;
 	std::vector<Slider*> sliders;
 	Draw* draw;
 	std::queue<int>* events;
@@ -38,6 +40,8 @@ public:
 	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
 		int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
 	void add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
+		int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
+	void add_constant_text(int id, std::string text, b2Vec2 pos, int use_window_cords,
 		int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
 	void add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 		sf::Color color, b2Vec2* mouse_pos);
