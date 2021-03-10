@@ -30,6 +30,7 @@ private:
 	Draw* draw;
 public:
 	Menu_Processing();
+	bool active = 1;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, bool* reload_);
 	void step();
