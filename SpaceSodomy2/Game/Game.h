@@ -7,6 +7,7 @@
 #include <sstream>
 #include "entities.h"
 #include "Projectile_Manager.h"
+#include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
 #include <box2d/box2d.h>
@@ -33,6 +34,7 @@ protected:
 	std::set<Damage_Receiver*> damage_receivers;
 
 	Projectile_Manager projectile_manager;
+	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Contact table (stores pairs which are in contact)
@@ -43,6 +45,11 @@ protected:
 
 	// Create functions
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
+	Gun* create_gun();
+	Command_Module* create_command_module();
+	Engine* create_engine(b2Body* = nullptr, Command_Module* = nullptr);
+	Counter* create_counter(float val = 0, float change_vel = 0);
+	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr);
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile* create_projectile(Projectile_Def);

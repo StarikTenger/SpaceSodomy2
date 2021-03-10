@@ -96,6 +96,9 @@
     <ClInclude Include="iId.h">
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="Id_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="iId.cpp">
       <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Id_Manager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
