@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
+#include "iId.h"
 
-class Command_Module {
+class Command_Module : public iId {
 private:
 	std::vector<int> active = std::vector<int>(COMMAND_COUNT, 0); // Shows which commands are active
 

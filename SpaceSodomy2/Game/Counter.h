@@ -1,5 +1,7 @@
 #pragma once
-class Counter {
+#include "iId.h"
+
+class Counter : public iId{
 private:
 	float value = 0;
 	float change_vel = 0;

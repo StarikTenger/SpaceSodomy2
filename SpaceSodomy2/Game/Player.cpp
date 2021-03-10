@@ -3,15 +3,12 @@
 
 Player::Player() {}
 Player::Player(int id_, sf::Color color_, std::string name_) {
-	id = id_;
+	set_id(id_);
 	color = color_;
 	name = name_;
 }
 
 // Get methods
-int Player::get_id() {
-	return id;
-}
 sf::Color Player::get_color() {
 	return color;
 }
@@ -24,9 +21,6 @@ Command_Module* Player::get_command_module() {
 }
 
 // Set methods
-void Player::set_id(int id_) {
-	id = id_;
-}
 void Player::set_color(sf::Color color_) {
 	color = color_;
 }

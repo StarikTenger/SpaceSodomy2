@@ -2,9 +2,10 @@
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <vector>
+#include "iId.h"
 
 // A polygon wall
-class Wall {
+class Wall : public iId{
 private:
 	int orientation = OUTER;
 	std::vector<b2Vec2> vertices;

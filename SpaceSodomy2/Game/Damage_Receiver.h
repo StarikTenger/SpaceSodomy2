@@ -1,8 +1,9 @@
 #pragma once
 #include <box2d/box2d.h>
 #include "Counter.h"
+#include "iId.h"
 
-class Damage_Receiver {
+class Damage_Receiver : public iId {
 private:
 	b2Body* body = nullptr;
 	Counter* hp = nullptr;

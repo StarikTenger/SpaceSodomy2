@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{138e803c-e6f7-4948-8cdc-cee650a3faaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\interfaces">
+      <UniqueIdentifier>{1d4c0926-c174-4954-8a35-d022e9c78e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{d7ee7678-f84b-40bc-b541-acceaae0c676}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -87,6 +93,9 @@
     <ClInclude Include="Damage_Receiver.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="iId.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -136,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="Damage_Receiver.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="iId.cpp">
+      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
