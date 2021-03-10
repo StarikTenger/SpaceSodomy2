@@ -159,6 +159,8 @@ void Menu::step() {
 	for (auto keyboard_field : keyboard_fields) {
 		keyboard_field->step();
 		text_fields_strings->operator[](keyboard_field->get_id()) = keyboard_field->get_text();
+		if (clicked && !keyboard_field->get_active() && keyboard_field->get_keyboard_active())
+			keyboard_field->set_keyboard_active(0);
 	}
 	for (auto keyboard_field : keyboard_fields) {
 		if (clicked && keyboard_field->get_active()) {
