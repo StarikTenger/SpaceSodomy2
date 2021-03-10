@@ -208,7 +208,7 @@ void Menu_Processing::step() {
 		if (name_to_id["Exit"] == events.front()) { // Exit button
 			draw->get_window()->close();
 		}
-		if (name_to_id["ApplyCientConfig"] == events.front()) { // Apply button
+		if (name_to_id["ApplyClientConfig"] == events.front()) { // Apply button
 			save_config("client_config.conf", text_fields_strings[6], atoi(text_fields_strings[8].c_str()),
 				atoi(text_fields_strings[10].c_str()), text_fields_strings[12]);
 			*reload = 1;
