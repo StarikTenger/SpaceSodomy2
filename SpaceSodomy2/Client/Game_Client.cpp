@@ -52,7 +52,7 @@ void Game_Client::display(int id) {
 		};
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
-			if (ship->get_command_module()->get_command(i))
+			if (ship->get_player()->get_command_module()->get_command(i))
 				draw->image(textures[i], ship->get_body()->GetPosition(), 
 					{ radius, radius }, ship->get_body()->GetAngle());
 		}

@@ -97,7 +97,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Command module
 	auto command_module = new Command_Module();
-	ship->set_command_module(command_module);
+	player->set_command_module(command_module);
 
 	// Engine
 	auto engine = create_engine(body, command_module);
@@ -105,7 +105,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Gun
 	auto gun = create_gun();
-	gun->set(body, player, command_module);
+	gun->set(body, player);
 	gun->set_projectile_manager(&projectile_manager);
 	ship->set_gun(gun);
 
@@ -360,7 +360,7 @@ std::string Game::encode() {
 		// Angle
 		message += std::to_string(ship->get_body()->GetAngle()) + " ";
 		// Commands
-		message += aux::mask_to_string(ship->get_command_module()->get_active()) + " ";
+		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 	}
 
 	// Projectiles
@@ -412,7 +412,7 @@ void Game::decode(std::string source) {
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			auto ship = create_player(player_id, {255, 0, 0}, "_name_", pos, angle);
 			for (int i = 0; i < commands.size(); i++)
-				ship->get_command_module()->set_command(i, commands[i]);
+				ship->get_player()->get_command_module()->set_command(i, commands[i]);
 		}
 		// Projectile
 		if (symbol == "P") {
@@ -435,9 +435,10 @@ void Game::decode(std::string source) {
 
 Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	Player* player = new Player(id, color, name);
-	players.insert({ player->get_id(), player });
+	players[id] = player;
+	player_active_ids.insert(id);
 	auto ship = create_ship(player, pos, angle);
-	player->set_command_module(ship->get_command_module());
+	player->set_command_module(ship->get_player()->get_command_module());
 	return ship;
 }
 
@@ -453,5 +454,6 @@ void Game::delete_player(int id) {
 		delete_ship(ship);
 
 	// Deleting player
-	players.erase(id);
+	players.erase(players.find(id));
+	player_active_ids.erase(id);
 }

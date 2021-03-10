@@ -4,9 +4,8 @@
 
 Active_Module::Active_Module() {}
 
-void Active_Module::set(b2Body* _body, Player* _player, Command_Module* _command_module) {
+void Active_Module::set(b2Body* _body, Player* _player) {
 	body = _body;
-	command_module = _command_module;
 	player = _player;
 }
 
@@ -37,7 +36,7 @@ void Active_Module::set_bind(int val) {
 }
 
 void Active_Module::step(float dt) {
-	if (command_module->get_command(bind) && recharge_counter->get() < 0) { // TODO: Add here energy & stamina check
+	if (player->get_command_module()->get_command(bind) && recharge_counter->get() < 0) { // TODO: Add here energy & stamina check
 		std::cout << "AM activate\n";
 		activate();
 		recharge_counter->set(recharge_time);

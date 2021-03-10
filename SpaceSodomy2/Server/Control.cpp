@@ -49,7 +49,7 @@ void Control::receive() {
 		addresses.insert(IP_address_);
 		IP_by_id[id_] = IP_address_;
 		id_by_IP[IP_address_] = id_;
-		time_by_IP[IP_address_] = aux::get_milli_count();
+		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color;
 		new_color.r = rand() % 256;
 		new_color.g = rand() % 256;
@@ -59,7 +59,7 @@ void Control::receive() {
 	}
 	// Applying commands
 	if (IP_by_id[id_] == IP_address_) {
-		time_by_IP[IP_address_] = aux::get_milli_count();
+		time_by_id[id_] = aux::get_milli_count();
 		std::string command_string;
 		message >> command_string;
 		for (int i = 1; i < command_string.size(); i++) {
@@ -76,15 +76,16 @@ void Control::step() {
 		last_step_time += delay;
 
 		// Banning disconnected players
-		std::set <std::string> banned;
-		for (auto it = addresses.begin(); it != addresses.end(); it++) {
-			if (aux::get_milli_count() - time_by_IP[*it] >= ban)
-				banned.insert(*it);
+		std::set <int> banned;
+		for (auto id : IP_by_id) {
+			if (aux::get_milli_count() - time_by_id[id.first] >= disconnect_timeout)
+				banned.insert(id.first);
 		}
-		for (auto address : banned) {
-			game.delete_player(id_by_IP[address]);
-			addresses.erase(address);
-			network.del_address(address);
+		for (auto id : banned) {
+			game.delete_player(id);
+			IP_by_id.erase(IP_by_id.find(id));
+			//addresses.erase(IP_by_id[id]);
+			//network.del_address(IP_by_id[id]);
 		}
 		// Release next game step 
 		game.step(delay * 0.001);
