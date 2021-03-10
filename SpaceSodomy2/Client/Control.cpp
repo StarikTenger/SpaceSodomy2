@@ -7,6 +7,14 @@ int Control::key_by_name(std::string name) {
 	return sum;
 }
 
+int Control::key_prev_by_name(std::string name) {
+	int sum = 0;
+	for (auto k : key_matches[name])
+		sum += keyboard.state_prev[k];
+	return sum;
+
+}
+
 void Control::process_events(sf::Window* window) {
 	window->setKeyRepeatEnabled(true);
 	sf::Event event;
@@ -60,6 +68,10 @@ void Control::process_commands() {
 		draw.get_camera()->modify_scale(pow(2, -delay * 0.001 * zoom_vel));
 	if (key_by_name("ZOOM_IN"))
 		draw.get_camera()->modify_scale(pow(2, delay * 0.001 * zoom_vel));
+
+	// Menu
+	if (key_by_name("MENU") && !key_prev_by_name("MENU"))
+		menu_processing.active = !menu_processing.active;
 }
 
 std::string Control::commands_to_string() {
@@ -89,6 +101,7 @@ Control::Control() {
 	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
 	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
 	key_matches["SHOOT"] = { sf::Keyboard::Space};
+	key_matches["MENU"] = { sf::Keyboard::Escape };
 	// SFML key names
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});

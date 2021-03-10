@@ -190,6 +190,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 }
 
 void Menu_Processing::step() {
+	if (!active)
+		return;
 	for (auto menu : menus) {
 		menu->step();
 	}

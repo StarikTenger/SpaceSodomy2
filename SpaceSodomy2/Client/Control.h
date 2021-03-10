@@ -44,6 +44,7 @@ private:
 
 	// Gets key by name
 	int key_by_name(std::string name);
+	int key_prev_by_name(std::string name);
 	
 
 	// Events -> keyboard
