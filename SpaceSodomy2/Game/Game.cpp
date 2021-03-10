@@ -351,6 +351,8 @@ std::string Game::encode() {
 	for (auto ship : ships) {
 		message += "S ";
 		// Id
+		message += std::to_string(ship->get_id()) + " ";
+		// Player id
 		message += std::to_string(ship->get_player()->get_id()) + " ";
 		// Pos
 		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
@@ -365,6 +367,8 @@ std::string Game::encode() {
 	for (auto projectile : projectiles) {
 		message += "P ";
 		// Id
+		message += std::to_string(projectile->get_id()) + " ";
+		// Player id
 		message += std::to_string(projectile->get_player()->get_id()) + " ";
 		// Pos
 		message += std::to_string(projectile->get_body()->GetPosition().x) + " ";
@@ -397,8 +401,8 @@ void Game::decode(std::string source) {
 		}
 		// Ship
 		if (symbol == "S") {
-			int id;
-			stream >> id;
+			int id, player_id;
+			stream >> id >> player_id;
 			b2Vec2 pos;
 			stream >> pos.x >> pos.y;
 			float angle;
@@ -406,14 +410,14 @@ void Game::decode(std::string source) {
 			std::string commands_stringed;
 			stream >> commands_stringed;
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
-			auto ship = create_player(id, {255, 0, 0}, "_name_", pos, angle);
+			auto ship = create_player(player_id, {255, 0, 0}, "_name_", pos, angle);
 			for (int i = 0; i < commands.size(); i++)
 				ship->get_command_module()->set_command(i, commands[i]);
 		}
 		// Projectile
 		if (symbol == "P") {
-			int id;
-			stream >> id;
+			int id, player_id;
+			stream >> id >> player_id;
 			b2Vec2 pos;
 			stream >> pos.x >> pos.y;
 			float angle;
@@ -421,7 +425,7 @@ void Game::decode(std::string source) {
 
 			Projectile_Def projectile_def;
 			projectile_def.pos = pos;
-			projectile_def.player = players[id];
+			projectile_def.player = players[player_id];
 
 			auto projectile = create_projectile(projectile_def);
 		}
