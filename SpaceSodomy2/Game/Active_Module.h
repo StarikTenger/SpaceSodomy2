@@ -13,8 +13,6 @@ protected:
 	b2Body* body = nullptr;
 	// Related player
 	Player* player = nullptr;
-	// Command module
-	Command_Module* command_module = nullptr;
 	// Related command
 	int bind = Command_Module::SHOOT;
 	// Time left
@@ -22,7 +20,7 @@ protected:
 
 public:
 	Active_Module();
-	void set(b2Body*, Player*, Command_Module*);
+	void set(b2Body*, Player*);
 
 	// Get methods
 	float get_recharge_time();

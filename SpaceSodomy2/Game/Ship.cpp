@@ -10,10 +10,6 @@ Player* Ship::get_player() {
 	return player;
 }
 
-Command_Module* Ship::get_command_module() {
-	return command_module;
-}
-
 Engine* Ship::get_engine() {
 	return engine;
 }
@@ -37,10 +33,6 @@ Damage_Receiver* Ship::get_damage_receiver() {
 // Set methods
 void Ship::set_player(Player* val) {
 	player = val;
-}
-
-void Ship::set_command_module(Command_Module* val) {
-	command_module = val;
 }
 
 void Ship::set_engine(Engine* val) {

@@ -24,6 +24,7 @@ protected:
 
 	// Objects' systems
 	std::map<int, Player*> players;
+	std::set<int> player_active_ids;
 	std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<Command_Module*> command_modules;
