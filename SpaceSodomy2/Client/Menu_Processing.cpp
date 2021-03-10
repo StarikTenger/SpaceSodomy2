@@ -82,7 +82,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		current_id++;
 		std::string type;
 		int typenum = 0;
-		std::string texture_name;
+		std::string texture_name, button_name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
@@ -101,9 +101,11 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 5;
 		switch (typenum) {
 		case 1:
+			file >> button_name;
 			file >> texture_name;
 			file >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y;
 			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos);
+			name_to_id[button_name] = i;
 			break;
 		case 2:
 			file >> texture_name;
@@ -192,46 +194,42 @@ void Menu_Processing::step() {
 		menu->step();
 	}
 	while (!events.empty()){
-		switch (events.front()) {
-		case 1: // New game button
+		if (name_to_id["NewGame"] == events.front()) { // New game button
 			main_menu.set_active(0);
-			break;
-		case 2: // About button
+		}
+		if (name_to_id["About"] == events.front()) { // About button
 			std::cout << "well, it works";
-			break;
-		case 3:
+		}
+		if (name_to_id["Settings"] == events.front()) { // Settings button
 			main_menu.set_active(0);
 			settings_menu.set_active(1);
 			config_menu.set_active(1);
-			break;
-		case 4: // Exit button
+		}
+		if (name_to_id["Exit"] == events.front()) { // Exit button
 			draw->get_window()->close();
-			break;
-		case 13: // Apply button
+		}
+		if (name_to_id["ApplyCientConfig"] == events.front()) { // Apply button
 			save_config("client_config.conf", text_fields_strings[6], atoi(text_fields_strings[8].c_str()),
 				atoi(text_fields_strings[10].c_str()), text_fields_strings[12]);
 			*reload = 1;
-			break;
-		case 14: // Back button
+		}
+		if (name_to_id["Back"] == events.front()) { // Back button
 			main_menu.set_active(1);
 			settings_menu.set_active(0);
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
-			break;
-		case 15: // Main button
+		}
+		if (name_to_id["Main"] == events.front()) { // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
-			break;
-		case 16: // Control button
+		}
+		if (name_to_id["Control"] == events.front()) { // Control button
 			config_menu.set_active(0);
 			keys_menu.set_active(1);
-			break;
-		case 17: // Apply button
+		}
+		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
 			save_keys("keys.conf", keys_menu_vec);
 			*reload = 1;
-			break;
-		default:
-			break;
 		}
 		events.pop();
 	}
