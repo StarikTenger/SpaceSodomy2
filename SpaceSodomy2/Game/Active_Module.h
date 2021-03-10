@@ -3,8 +3,9 @@
 #include "Player.h"
 #include "Command_Module.h"
 #include "Counter.h"
+#include "iId.h"
 
-class Active_Module {
+class Active_Module : public iId {
 protected:
 	// Common for all modules
 	float recharge_time = 1;

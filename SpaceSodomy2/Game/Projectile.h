@@ -1,8 +1,9 @@
 #pragma once
 #include <box2d/box2d.h>
 #include "Player.h"
+#include "iId.h"
 
-class Projectile {
+class Projectile : public iId {
 private:
 	// Related entities
 	b2Body* body = nullptr;

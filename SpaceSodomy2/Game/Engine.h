@@ -2,8 +2,9 @@
 #include <vector>
 #include <box2d/box2d.h>
 #include "Command_Module.h"
+#include "iId.h"
 
-class Engine {
+class Engine : public iId{
 private:
 	// Properties
 	float force_linear = 1;

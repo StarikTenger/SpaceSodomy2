@@ -35,48 +35,88 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	body->GetFixtureList()->SetFriction(0);
 	body->GetFixtureList()->SetRestitutionThreshold(0);
 	body->GetFixtureList()->SetRestitution(0.5);
+
 	return body;
 }
 
-Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
-	// Creating body
-	auto body = create_round_body(pos, angle, 0.4, 1);
-
-	auto ship = new Ship();
-	auto command_module = new Command_Module();
-	auto engine = new Engine(body, command_module);
+Gun* Game::create_gun() {
 	auto gun = new Gun();
-	gun->set(body, player, command_module);
-	gun->set_projectile_manager(&projectile_manager);
+	active_modules.insert(gun);
 	// Counter
-	auto counter = new Counter();
+	auto counter = create_counter();
 	counter->set_change_vel(-1);
 	gun->set_recharge_counter(counter);
-	// Hp
-	auto hp = new Counter();
-	hp->set(100);
-	// Damage receiver
-	auto damage_receiver = new Damage_Receiver(body, hp);
+	// Id
+	id_manager.set_id(gun);
+	return gun;
+}
 
-	// Matching entities to ship
+Command_Module* Game::create_command_module() {
+	auto command_module = new Command_Module();
+	command_modules.insert(command_module);
+	id_manager.set_id(command_module);
+	return command_module;
+}
+
+Engine* Game::create_engine(b2Body* body, Command_Module* command_module) {
+	auto engine = new Engine(body, command_module);
+	engines.insert(engine);
+	id_manager.set_id(engine);
+	return engine;
+}
+
+Counter* Game::create_counter(float val, float change_vel) {
+	auto counter = new Counter();
+	counter->set(val);
+	counter->set_change_vel(change_vel);
+	counters.insert(counter);
+	id_manager.set_id(counter);
+	return counter;
+}
+
+Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp) {
+	auto damage_receiver = new Damage_Receiver(body, hp);
+	damage_receivers.insert(damage_receiver);
+	id_manager.set_id(damage_receiver);
+	return damage_receiver;
+}
+
+Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
+	// Creating ship
+	auto ship = new Ship();
+	ships.insert(ship);
+	id_manager.set_id(ship);
+
+	// Player
 	ship->set_player(player);
-	ship->set_command_module(command_module);
-	ship->set_engine(engine);
+
+	// Body
+	auto body = create_round_body(pos, angle, 0.4, 1);
+	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	ship->set_body(body);
+
+	// Command module
+	auto command_module = new Command_Module();
+	ship->set_command_module(command_module);
+
+	// Engine
+	auto engine = create_engine(body, command_module);
+	ship->set_engine(engine);
+
+	// Gun
+	auto gun = create_gun();
+	gun->set(body, player, command_module);
+	gun->set_projectile_manager(&projectile_manager);
 	ship->set_gun(gun);
+
+	// Hp
+	auto hp = create_counter(100);
 	ship->set_hp(hp);
+
+	// Damage receiver
+	auto damage_receiver = create_damage_receiver(body, hp);
 	ship->set_damage_receiver(damage_receiver);
 
-	// Adding entities to sets
-	ships.insert(ship);
-	engines.insert(engine);
-	counters.insert(counter);
-	counters.insert(hp);
-	command_modules.insert(command_module);
-	active_modules.insert(gun);
-	damage_receivers.insert(damage_receiver);
-
-	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	return ship;
 }
 
@@ -103,6 +143,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 
 	// Adding to vectors
 	projectiles.insert(projectile);
+	id_manager.set_id(projectile);
 
 	return projectile;
 }

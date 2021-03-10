@@ -5,8 +5,9 @@
 #include "Gun.h"
 #include "Counter.h"
 #include "Damage_Receiver.h"
+#include "iId.h"
 
-class Ship {
+class Ship : public iId{
 private:
 	// Entities
 	Player* player = nullptr;
