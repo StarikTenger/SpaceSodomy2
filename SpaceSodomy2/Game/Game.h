@@ -24,16 +24,17 @@ protected:
 
 	// Objects' systems
 	std::map<int, Player*> players;
-	std::set<int> player_active_ids;
-	std::set<Ship*> ships;
-	std::set<Engine*> engines;
-	std::set<Command_Module*> command_modules;
-	std::set<Wall*> walls;
-	std::set<Active_Module*> active_modules;
-	std::set<Projectile*> projectiles;
-	std::set<Counter*> counters;
-	std::set<Damage_Receiver*> damage_receivers;
+	std::map<int, Ship*> ships;
+	std::map<int, Engine*> engines;
+	std::map<int, Command_Module*> command_modules;
+	std::map<int, Wall*> walls;
+	std::map<int, Active_Module*> active_modules;
+	std::map<int, Projectile*> projectiles;
+	std::map<int, Counter*> counters;
+	std::map<int, Damage_Receiver*> damage_receivers;
 
+
+	// Managers
 	Projectile_Manager projectile_manager;
 	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);

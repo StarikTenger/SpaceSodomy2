@@ -2,8 +2,10 @@
 #include "Id_Manager.h"
 #include <iostream>
 
-void Id_Manager::set_id(iId* entity) {
-    entity->set_id(get_new_id());
+int Id_Manager::set_id(iId* entity) {
+    int id = get_new_id();
+    entity->set_id(id);
+    return id;
 }
 
 int Id_Manager::get_new_id() {

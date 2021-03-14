@@ -7,7 +7,7 @@
 #include "Damage_Receiver.h"
 #include "iId.h"
 
-class Ship : public iId{
+class Ship : public iId {
 private:
 	// Entities
 	Player* player = nullptr;
