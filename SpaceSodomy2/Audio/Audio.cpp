@@ -35,7 +35,7 @@ void Audio::load_sounds(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
-void Audio::play(std::string name, b2Vec2 pos, double z, double volume) {
+void Audio::play(std::string name, b2Vec2 pos, double z, double volume, sf::Sound* sound) {
 	for (int i = 0; i < activeSounds.size(); i++) {
 		if (activeSounds[i]->getStatus() != sf::Sound::Playing) {
 			//std::cout << activeSounds.size() << " deleted\n";
@@ -45,7 +45,6 @@ void Audio::play(std::string name, b2Vec2 pos, double z, double volume) {
 		}
 	}
 	sf::Listener::setDirection(1.f, 0.f, 0.f);
-	sf::Sound* sound = new sf::Sound();
 	*sound = *sounds[name];
 	sound->setPosition(z, pos.x, pos.y);
 	sound->setVolume(volume);
@@ -53,8 +52,8 @@ void Audio::play(std::string name, b2Vec2 pos, double z, double volume) {
 	activeSounds.push_back(sound);
 }
 
-void Audio::play(std::string name, b2Vec2 pos, double volume) {
+void Audio::play(std::string name, b2Vec2 pos, double volume, sf::Sound* sound) {
 	pos -= draw->get_camera()->get_pos();
-	pos = geom::rotate(pos, -cam.dir);
-	play(name, pos, -5, volume);
+	pos = aux::rotate(draw->get_camera()->get_pos(), pos, draw->get_camera()->get_angle());
+	play(name, pos, -5, volume, sound);
 }

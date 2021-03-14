@@ -154,9 +154,20 @@ bool aux::rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point) {
 	b2Vec2 begin = center - scale, end = center + scale;
 	return ((point.y > begin.y) && (point.x > begin.x) && (point.y < end.y) && (point.x < end.x));
 }
+
+b2Vec2 aux::rotate(b2Vec2 center, b2Vec2 point, float angle) {
+	b2Vec2 point1;
+	point -= center;
+	point1.x = point.x * cos(angle) - point.y * sin(angle);
+	point1.y = point.x * sin(angle) + point.y * cos(angle);
+	point1 += center;
+	return point1;
+}
+
 b2Vec2 aux::angle_to_vec(float angle) {
 	return b2Vec2(cos(angle), sin(angle));
 }
+
 
 float aux::get_text_max_height(sf::Text text) {
 	size_t character_size = text.getCharacterSize();

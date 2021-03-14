@@ -23,6 +23,6 @@ public:
 
 	void load_sounds(std::string path = "sounds.conf");
 
-	void play(std::string name, b2Vec2 pos, double z, double volume);
-	void play(std::string name, b2Vec2 pos, double volume);
+	void play(std::string name, b2Vec2 pos, double z, double volume, sf::Sound* sound);
+	void play(std::string name, b2Vec2 pos, double volume, sf::Sound* sound);
 };
