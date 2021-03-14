@@ -46,7 +46,7 @@ public:
 	// Displays the render
 	void display();
 
-	// Primitives
+	// Primirives
 	void clear();
 	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);

@@ -14,9 +14,9 @@ void Game_Client::display(int id) {
 	//draw->apply_camera({0, 0}, 100, 0);
 	// Finding cam target
 	for (auto ship : ships) {
-		if (ship.second->get_player()->get_id() == id) {
-			draw->get_camera()->set_pos(ship.second->get_body()->GetPosition());
-			draw->get_camera()->set_angle(ship.second->get_body()->GetAngle());
+		if (ship->get_player()->get_id() == id) {
+			draw->get_camera()->set_pos(ship->get_body()->GetPosition());
+			draw->get_camera()->set_angle(ship->get_body()->GetAngle());
 		}
 	}
 	draw->apply_camera();
@@ -26,7 +26,7 @@ void Game_Client::display(int id) {
 
 	// Walls
 	for (auto wall : walls) {
-		auto vertices = wall.second->get_vertices();
+		auto vertices = wall->get_vertices();
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
 			draw->line(vertices[i], vertices[j], {255, 255, 255});
@@ -35,12 +35,12 @@ void Game_Client::display(int id) {
 
 	// Ships
 	for (auto ship : ships) {
-		if (!ship.second->get_body() ||
-			!ship.second->get_body()->GetFixtureList() ||
-			!ship.second->get_body()->GetFixtureList()->GetShape())
+		if (!ship->get_body() ||
+			!ship->get_body()->GetFixtureList() ||
+			!ship->get_body()->GetFixtureList()->GetShape())
 			continue;
-		float radius = ship.second->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
-		draw->image("ship", ship.second->get_body()->GetPosition(), {radius, radius}, ship.second->get_body()->GetAngle());
+		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
@@ -52,18 +52,17 @@ void Game_Client::display(int id) {
 		};
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
-			if (ship.second->get_player()->get_command_module()->get_command(i))
-				draw->image(textures[i], ship.second->get_body()->GetPosition(),
-					{ radius, radius }, ship.second->get_body()->GetAngle());
+			if (ship->get_player()->get_command_module()->get_command(i))
+				draw->image(textures[i], ship->get_body()->GetPosition(), 
+					{ radius, radius }, ship->get_body()->GetAngle());
 		}
 
 	}
 
 	// Projectiles
 	for (auto projectile : projectiles) {
-		float radius = projectile.second->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
-		draw->image("bullet", projectile.second->get_body()->GetPosition(), { radius, radius }, 
-			projectile.second->get_body()->GetAngle());
+		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, projectile->get_body()->GetAngle());
 
 	}
 }
