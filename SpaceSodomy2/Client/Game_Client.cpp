@@ -68,8 +68,6 @@ void Game_Client::display(int id) {
 }
 
 void Game_Client::decode(std::string source) {
-	std::cout << source << "\n";
-
 	// First clear
 	clear();
 

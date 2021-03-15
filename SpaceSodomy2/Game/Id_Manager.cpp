@@ -7,7 +7,6 @@ void Id_Manager::set_id(iId* entity) {
 }
 
 int Id_Manager::get_new_id() {
-    std::cout << id_current << "\n";
     return id_current++;
 }
 
