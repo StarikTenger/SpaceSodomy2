@@ -190,14 +190,20 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 }
 
 void Menu_Processing::step() {
-	if (!active)
-		return;
-	for (auto menu : menus) {
-		menu->step();
+	if (active) {
+		for (auto menu : menus) {
+			menu->step();
+		}
+	}
+	if (!active) {
+		events.push(name_to_id["ApplyClientConfig"]);
+		events.push(name_to_id["ApplyKeys"]);
+		while (keyboard->text_entered->size())
+			keyboard->text_entered->pop();
 	}
 	while (!events.empty()){
 		if (name_to_id["NewGame"] == events.front()) { // New game button
-			main_menu.set_active(0);
+			active = 0;
 		}
 		if (name_to_id["About"] == events.front()) { // About button
 			std::cout << "well, it works";
@@ -220,14 +226,18 @@ void Menu_Processing::step() {
 			settings_menu.set_active(0);
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
+			events.push(name_to_id["ApplyClientConfig"]);
+			events.push(name_to_id["ApplyKeys"]);
 		}
 		if (name_to_id["Main"] == events.front()) { // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
+			events.push(name_to_id["ApplyKeys"]);
 		}
 		if (name_to_id["Control"] == events.front()) { // Control button
 			config_menu.set_active(0);
 			keys_menu.set_active(1);
+			events.push(name_to_id["ApplyClientConfig"]);
 		}
 		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
 			save_keys("keys.conf", keys_menu_vec);
