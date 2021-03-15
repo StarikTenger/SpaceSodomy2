@@ -161,6 +161,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
+	collision_filter.delete_body(body);
 }
 
 void Game::delete_projectile(Projectile* projectile) {

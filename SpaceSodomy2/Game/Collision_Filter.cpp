@@ -20,6 +20,10 @@ void Collision_Filter::add_body(b2Body* body, int type, int id) {
 	collision_table.insert({ body, {type, id} });
 }
 
+void Collision_Filter::delete_body(b2Body* body) {
+	collision_table.erase(body);
+}
+
 bool Collision_Filter::ShouldCollide(b2Fixture* fixture_a, b2Fixture* fixture_b) {
 	int type_a = get_type(fixture_a);
 	int type_b = get_type(fixture_b);
