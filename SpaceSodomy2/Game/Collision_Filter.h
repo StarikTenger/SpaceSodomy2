@@ -30,6 +30,7 @@ public:
 
 	Collision_Filter();
 	void add_body(b2Body*, int type = STANDART, int id = 0);
+	void delete_body(b2Body*);
 	bool ShouldCollide(b2Fixture*, b2Fixture*) override;
 };
 
