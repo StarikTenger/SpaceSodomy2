@@ -55,6 +55,6 @@ void Audio::play(std::string name, b2Vec2 pos, double z, double volume) {
 
 void Audio::play(std::string name, b2Vec2 pos, double volume) {
 	pos -= draw->get_camera()->get_pos();
-	pos = geom::rotate(pos, -cam.dir);
+	//pos = geom::rotate(pos, -cam.dir);
 	play(name, pos, -5, volume);
 }

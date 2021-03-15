@@ -55,7 +55,7 @@ void Control::receive() {
 		new_color.g = rand() % 256;
 		new_color.b = rand() % 256;
 		new_color.a = 255;
-		game.create_player(id_, new_color, name_, b2Vec2_zero, 0);
+		game.new_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands
 	if (IP_by_id[id_] == IP_address_) {

@@ -7,7 +7,7 @@
 #include "Game.h"
 
 Game::Game() {
-	create_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
+	new_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
 	// Contact filter
 	physics.SetContactFilter(&collision_filter);
 }
@@ -49,6 +49,17 @@ Gun* Game::create_gun() {
 	// Id
 	id_manager.set_id(gun);
 	return gun;
+}
+
+Player* Game::create_player(int id, sf::Color color, std::string name) {
+	auto player = new Player();
+	player->set_color(color);
+	player->set_name(name);
+	player->set_command_module(create_command_module());
+	// Id
+	player->set_id(id);
+	players[player->get_id()] = player;
+	return player;
 }
 
 Command_Module* Game::create_command_module() {
@@ -347,6 +358,19 @@ std::string Game::encode() {
 	// Map path
 	message += "M " + map_path + " ";
 
+	// Players
+	for (auto player : players) {
+		message += "P ";
+		// Id
+		message += std::to_string(player.first) + " ";
+		// Color
+		message += std::to_string(player.second->get_color().r) + " ";
+		message += std::to_string(player.second->get_color().g) + " ";
+		message += std::to_string(player.second->get_color().b) + " ";
+		// Name
+		message += player.second->get_name() + " ";
+	}
+
 	// Ships
 	for (auto ship : ships) {
 		message += "S ";
@@ -365,7 +389,7 @@ std::string Game::encode() {
 
 	// Projectiles
 	for (auto projectile : projectiles) {
-		message += "P ";
+		message += "p ";
 		// Id
 		message += std::to_string(projectile->get_id()) + " ";
 		// Player id
@@ -380,63 +404,9 @@ std::string Game::encode() {
 	return message;
 }
 
-void Game::decode(std::string source) {
-	// First clear
-	clear();
-
-	// Creating stringstream
-	std::stringstream stream;
-	stream << source;
-
-	std::string symbol;
-	while (stream >> symbol) {
-		// Map
-		if (symbol == "M") {
-			std::string path;
-			stream >> path;
-			if (map_path != path) {
-				map_path = path;
-				load_map(map_path);
-			}
-		}
-		// Ship
-		if (symbol == "S") {
-			int id, player_id;
-			stream >> id >> player_id;
-			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
-			float angle;
-			stream >> angle;
-			std::string commands_stringed;
-			stream >> commands_stringed;
-			std::vector<int> commands = aux::string_to_mask(commands_stringed);
-			auto ship = create_player(player_id, {255, 0, 0}, "_name_", pos, angle);
-			for (int i = 0; i < commands.size(); i++)
-				ship->get_player()->get_command_module()->set_command(i, commands[i]);
-		}
-		// Projectile
-		if (symbol == "P") {
-			int id, player_id;
-			stream >> id >> player_id;
-			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
-			float angle;
-			stream >> angle;
-
-			Projectile_Def projectile_def;
-			projectile_def.pos = pos;
-			projectile_def.player = players[player_id];
-
-			auto projectile = create_projectile(projectile_def);
-		}
-	}
-
-}
-
-Ship* Game::create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
+Ship* Game::new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
 	Player* player = new Player(id, color, name);
 	players[id] = player;
-	player_active_ids.insert(id);
 	auto ship = create_ship(player, pos, angle);
 	player->set_command_module(ship->get_player()->get_command_module());
 	return ship;
@@ -455,5 +425,4 @@ void Game::delete_player(int id) {
 
 	// Deleting player
 	players.erase(players.find(id));
-	player_active_ids.erase(id);
 }

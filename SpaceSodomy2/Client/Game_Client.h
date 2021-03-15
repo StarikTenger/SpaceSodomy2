@@ -13,5 +13,8 @@ public:
 	Draw* get_draw();
 
 	void display(int id);
+
+	// Decodes class from string
+	void decode(std::string source);
 };
 

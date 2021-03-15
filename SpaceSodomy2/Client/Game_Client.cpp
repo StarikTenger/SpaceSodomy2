@@ -66,3 +66,75 @@ void Game_Client::display(int id) {
 
 	}
 }
+
+void Game_Client::decode(std::string source) {
+	std::cout << source << "\n";
+
+	// First clear
+	clear();
+
+	// Creating stringstream
+	std::stringstream stream;
+	stream << source;
+
+	std::string symbol;
+	while (stream >> symbol) {
+		// Map
+		if (symbol == "M") {
+			std::string path;
+			stream >> path;
+			if (map_path != path) {
+				map_path = path;
+				load_map(map_path);
+			}
+		}
+		// Player
+		if (symbol == "P") {
+			int id;
+			stream >> id;
+			sf::Color color;
+			int r, g, b;
+			stream >> r >> g >> b;
+			color = sf::Color(r, g, b);
+			std::string name;
+			stream >> name;
+			Player* player = create_player(id);
+			player->set_color(color);
+			player->set_name(name);
+		}
+		// Ship
+		if (symbol == "S") {
+			int id, player_id;
+			stream >> id >> player_id;
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			float angle;
+			stream >> angle;
+			std::string commands_stringed;
+			stream >> commands_stringed;
+			std::vector<int> commands = aux::string_to_mask(commands_stringed);
+			//auto ship = new_player(player_id, { 255, 0, 0 }, "_name_", pos, angle);
+			//if (players.at(player_id))
+			auto ship = create_ship(players[player_id], pos, angle);
+
+			for (int i = 0; i < commands.size(); i++)
+				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+		}
+		// Projectile
+		if (symbol == "p") {
+			int id, player_id;
+			stream >> id >> player_id;
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			float angle;
+			stream >> angle;
+
+			Projectile_Def projectile_def;
+			projectile_def.pos = pos;
+			projectile_def.player = players[player_id];
+
+			auto projectile = create_projectile(projectile_def);
+		}
+	}
+
+}

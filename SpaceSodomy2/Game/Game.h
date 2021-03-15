@@ -24,7 +24,6 @@ protected:
 
 	// Objects' systems
 	std::map<int, Player*> players;
-	std::set<int> player_active_ids;
 	std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<Command_Module*> command_modules;
@@ -45,6 +44,7 @@ protected:
 	std::string map_path = "";
 
 	// Create functions
+	Player* create_player(int id, sf::Color color = {}, std::string name = "_");
 	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun* create_gun();
 	Command_Module* create_command_module();
@@ -84,10 +84,8 @@ public:
 	void clear();
 	// Encodes class into string
 	std::string encode();
-	// Decodes class from string
-	void decode(std::string source);
 	// Creates new player
-	Ship* create_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
+	Ship* new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
 	// Deletes player
 	void delete_player(int id);
 };
