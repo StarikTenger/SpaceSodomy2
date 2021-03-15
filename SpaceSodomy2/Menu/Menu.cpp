@@ -136,7 +136,6 @@ void Menu::step() {
 		button->step();
 		if (clicked && button->get_active()) {
 			events->push(button->get_id());
-			clicked = 0;
 		}
 	}
 
