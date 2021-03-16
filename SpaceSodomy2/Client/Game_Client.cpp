@@ -102,19 +102,27 @@ void Game_Client::decode(std::string source) {
 		}
 		// Ship
 		if (symbol == "S") {
+			// Ids
 			int id, player_id;
 			stream >> id >> player_id;
+			// Pos
 			b2Vec2 pos;
 			stream >> pos.x >> pos.y;
+			// Angle
 			float angle;
 			stream >> angle;
+			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
-			std::vector<int> commands = aux::string_to_mask(commands_stringed);
-			//auto ship = new_player(player_id, { 255, 0, 0 }, "_name_", pos, angle);
-			//if (players.at(player_id))
-			auto ship = create_ship(players[player_id], pos, angle);
+			// Hp
+			float hp;
+			stream >> hp;
 
+			auto ship = create_ship(players[player_id], pos, angle);
+			ship->get_hp()->set(hp);
+
+			// Decoding commands
+			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++)
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
 		}
