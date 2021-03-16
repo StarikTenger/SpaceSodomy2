@@ -386,6 +386,8 @@ std::string Game::encode() {
 		message += std::to_string(ship->get_body()->GetAngle()) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
+		// Hp
+		message += std::to_string(ship->get_hp()->get());
 	}
 
 	// Projectiles
