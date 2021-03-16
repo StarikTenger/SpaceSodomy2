@@ -127,10 +127,6 @@ void Menu::step() {
 	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 
-	// Camera backup
-	Camera camera_backup = *draw->get_camera();
-	draw->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
-
 	// buttons handling
 	for (auto button : buttons) {
 		button->step();
@@ -177,7 +173,4 @@ void Menu::step() {
 		slider->step();
 		sliders_vals->operator[](slider->get_id()) = slider->get_slider_value();
 	}
-
-	// Restore camera
-	draw->set_camera(camera_backup);
 }

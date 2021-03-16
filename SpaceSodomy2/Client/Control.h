@@ -4,6 +4,7 @@
 #include <Network/Client_Network.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
+#include <Menu/Bar.h>
 #include "Menu_Processing.h"
 #include "Game_Client.h"
 #include <string>
@@ -53,6 +54,8 @@ private:
 	void process_commands();
 	// Converts commands into single string
 	std::string commands_to_string();
+	// HP bar;
+	Bar HP_bar;
 public:
 	// Default constructor
 	Control();

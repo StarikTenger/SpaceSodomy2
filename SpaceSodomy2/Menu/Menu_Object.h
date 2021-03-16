@@ -23,6 +23,9 @@ private:
 	// Mouse clicked
 	bool* clicked = 0;
 	int use_window_cords = 0;
+
+	b2Vec2 window_cords_pos();
+	b2Vec2 mid;
 public:
 	Menu_Object();
 	Menu_Object(int id_, std::string texture_name_, Draw* draw_, 

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bar.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Constant_Text.h" />
     <ClInclude Include="framework.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Text_Field.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bar.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Constant_Text.cpp" />
     <ClCompile Include="Keyboard_Field.cpp" />
