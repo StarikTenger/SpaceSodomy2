@@ -27,3 +27,8 @@ void Sound::set_playing_offset(Counter* val) {
 void Sound::set_body(b2Body* val) {
 	body = val;
 }
+
+bool Sound::is_alive() {
+	// Sounds lasts for one second (temporary solution)
+	return playing_offset->get() < 1;
+}

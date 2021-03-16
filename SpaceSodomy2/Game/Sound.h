@@ -21,5 +21,9 @@ public:
 	void set_name(std::string);
 	void set_playing_offset(Counter*);
 	void set_body(b2Body*);
+
+	// Is alive?
+	bool is_alive();
+
 };
 

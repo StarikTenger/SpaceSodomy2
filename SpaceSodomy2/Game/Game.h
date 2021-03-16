@@ -74,6 +74,7 @@ protected:
 	void process_projectlie_manager();
 	void process_physics();
 	void process_counters();
+	void process_sounds();
 
 	// Misc
 	//void deal_damage(); TODO: damage receiver

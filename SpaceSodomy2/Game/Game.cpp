@@ -274,6 +274,16 @@ void Game::process_counters() {
 		counter->step(dt);
 }
 
+void Game::process_sounds() {
+	std::set<Sound*> sounds_to_delete;
+	for (auto sound : sounds) {
+		if (!sound->is_alive())
+			sounds_to_delete.insert(sound);
+	}
+	for (auto sound : sounds_to_delete)
+		delete_sound(sound);
+}
+
 void Game::apply_command(int id, int command, int val) {
 	players[id]->get_command_module()->set_command(command, val);
 }
@@ -286,6 +296,7 @@ void Game::step(float _dt) {
 	process_active_modules();
 	process_projectlie_manager();
 	process_counters();
+	process_sounds();
 }
 
 void Game::clear() {
