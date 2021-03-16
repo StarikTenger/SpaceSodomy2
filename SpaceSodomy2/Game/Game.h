@@ -32,6 +32,7 @@ protected:
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
+	std::set<Sound*> sounds;
 
 	Projectile_Manager projectile_manager;
 	Id_Manager id_manager;
@@ -54,6 +55,7 @@ protected:
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile* create_projectile(Projectile_Def);
+	Sound* create_sound(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
 
 	// Delete functions
 	void delete_body(b2Body*);
@@ -62,6 +64,8 @@ protected:
 	void delete_active_module(Active_Module*);
 	void delete_ship(Ship*);
 	void delete_damage_receiver(Damage_Receiver*);
+	void delete_counter(Counter*);
+	void delete_sound(Sound*);
 
 	 // Processing functions
 	void process_engines();

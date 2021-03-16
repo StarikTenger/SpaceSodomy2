@@ -159,6 +159,14 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
+Sound* Game::create_sound(std::string name, b2Body* body, float playing_offset) {
+	auto sound = new Sound();
+	sound->set_body(body);
+	sound->set_playing_offset(create_counter(playing_offset, 1));
+	sounds.insert(sound);
+	return sound;
+}
+
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
 	collision_filter.delete_body(body);
@@ -177,6 +185,7 @@ void Game::delete_engine(Engine* engine) {
 
 void Game::delete_active_module(Active_Module* active_module) {
 	active_modules.erase(active_module);
+	delete_counter(active_module->get_recharge_counter());
 	delete active_module;
 }
 
@@ -184,6 +193,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_body(ship->get_body());
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
+	delete_counter(ship->get_hp());
 	ships.erase(ship);
 	delete ship;
 }
@@ -191,6 +201,17 @@ void Game::delete_ship(Ship* ship) {
 void Game::delete_damage_receiver(Damage_Receiver* damage_receiver) {
 	damage_receivers.erase(damage_receiver);
 	delete damage_receiver;
+}
+
+void Game::delete_counter(Counter* counter) {
+	counters.erase(counter);
+	delete counter;
+}
+
+void Game::delete_sound(Sound* sound) {
+	delete_counter(sound->get_playing_offset());
+	sounds.erase(sound);
+	delete sound;
 }
 
 void Game::process_engines() {
@@ -292,6 +313,10 @@ void Game::clear() {
 	for (auto counter : counters)
 		delete counter;
 	counters = {};
+	// Clear sounds
+	for (auto sound : sounds)
+		delete sound;
+	sounds = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
 }
@@ -402,6 +427,18 @@ std::string Game::encode() {
 		message += std::to_string(projectile->get_body()->GetPosition().y) + " ";
 		// Angle
 		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
+	}
+
+	// Sounds
+	for (auto sound : sounds) {
+		message += "s ";
+		// Id
+		message += std::to_string(sound->get_id()) + " ";
+		// Name
+		message += sound->get_name() + " ";
+		// Pos
+		message += std::to_string(sound->get_body()->GetPosition().x) + " ";
+		message += std::to_string(sound->get_body()->GetPosition().y) + " ";
 	}
 
 	return message;
