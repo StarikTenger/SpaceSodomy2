@@ -117,7 +117,7 @@ void Menu_Object::set_use_window_cords(int use_window_cords_) {
 void Menu_Object::primitive_step() {
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
-	std::cout << pos.x  << " " << pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
+	//std::cout << pos.x  << " " << pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
 	if (aux::rect_contains(window_cords_pos() + mid, scale, *mouse_pos))
 		active = 1;
 	else

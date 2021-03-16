@@ -112,9 +112,9 @@ Control::Control() {
 	// HP bar
 	HP_bar.set_draw(&draw);
 	HP_bar.set_mouse_pos(&mouse_pos);
-	HP_bar.set_pos(b2Vec2(100, -50));
+	HP_bar.set_pos(b2Vec2(150, -50));
 	HP_bar.set_use_window_cords(2);
-	HP_bar.set_scale(b2Vec2(100, 50));
+	HP_bar.set_scale(b2Vec2(200, 40));
 }
 
 int Control::get_is_running() {
