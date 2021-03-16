@@ -14,6 +14,27 @@ Menu_Object::Menu_Object(int id_, std::string texture_name_, Draw* draw_,
 	keyboard = keyboard_;
 }
 
+b2Vec2 Menu_Object::window_cords_pos() {
+	mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize())); // Mid screen indent
+	mid.x /= 2;
+	mid.y /= 2;
+	switch (use_window_cords)
+	{
+	case 0:
+		return pos;
+	case 1:
+		return pos - b2Vec2(mid.x, mid.y);
+	case 2:
+		return pos + b2Vec2(-mid.x, mid.y);
+	case 3:
+		return pos + mid;
+	case 4:
+		return pos + b2Vec2(mid.x, - mid.y);
+	default:
+		return pos;
+	}
+}
+
 // Get methods
 int Menu_Object::get_id() {
 	return id;
@@ -25,7 +46,7 @@ Draw* Menu_Object::get_draw() {
 	return draw;
 }
 b2Vec2 Menu_Object::get_pos() {
-	return pos;
+	return window_cords_pos();
 }
 bool Menu_Object::get_use_picture_scale() {
 	return use_picture_scale;
@@ -94,31 +115,13 @@ void Menu_Object::set_use_window_cords(int use_window_cords_) {
 }
 
 void Menu_Object::primitive_step() {
-	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize())); // Mid screen indent
-	mid.x /= 2;
-	mid.y /= 2;
-	b2Vec2 rect_pos = pos;
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
-	if ((!use_window_cords && aux::rect_contains(rect_pos + mid, scale, *mouse_pos)) || 
-		((use_window_cords == 1) && aux::rect_contains(rect_pos, scale, *mouse_pos)) ||
-		((use_window_cords == 3) && aux::rect_contains(rect_pos + mid + mid, scale, *mouse_pos)))
+	std::cout << pos.x  << " " << pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
+	if (aux::rect_contains(window_cords_pos() + mid, scale, *mouse_pos))
 		active = 1;
 	else
 		active = 0;
-	if (image_active) {
-		switch (use_window_cords) {
-		case 0:
-			draw->image(texture_name, pos, scale, 0, color);
-			break;
-		case 1:
-			draw->image(texture_name, pos - mid, scale, 0, color);
-			break;
-		case 3:
-			draw->image(texture_name, pos + mid, scale, 0, color);
-			break;
-		default:
-			break;
-		}
-	}
+	if (image_active)
+		draw->image(texture_name, window_cords_pos(), scale, 0, color);
 }

@@ -108,6 +108,13 @@ Control::Control() {
 	}
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload);
+
+	// HP bar
+	HP_bar.set_draw(&draw);
+	HP_bar.set_mouse_pos(&mouse_pos);
+	HP_bar.set_pos(b2Vec2(100, -50));
+	HP_bar.set_use_window_cords(2);
+	HP_bar.set_scale(b2Vec2(100, 50));
 }
 
 int Control::get_is_running() {
@@ -133,7 +140,14 @@ void Control::step() {
 
 		// Draw		
 		game.display(network.get_id());
+		// Camera backup
+		Camera camera_backup = *game.get_draw()->get_camera();
+		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 		menu_processing.step();
+		if (!menu_processing.active)
+			HP_bar.step();
+		// Restore camera
+		game.get_draw()->set_camera(camera_backup);
 		game.get_draw()->display();
 
 		// Event processing

@@ -65,4 +65,6 @@ public:
 	};
 	// Get text scale
 	static float get_text_max_height(sf::Text text);
+
+	static std::string to_string(float value);
 };
