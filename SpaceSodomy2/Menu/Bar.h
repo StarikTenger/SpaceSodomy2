@@ -10,7 +10,7 @@ public:
 
 	unsigned int character_size = 10;
 	float max_value = 100;
-	float *value = new float(50);
+	float value = 50;
 	sf::Color back_color = sf::Color(60, 60, 60, 190);
 	sf::Color front_color = sf::Color::Red;
 	sf::Color text_color = sf::Color::White;
