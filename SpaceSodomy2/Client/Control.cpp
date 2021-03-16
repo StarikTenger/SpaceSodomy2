@@ -144,8 +144,10 @@ void Control::step() {
 		Camera camera_backup = *game.get_draw()->get_camera();
 		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 		menu_processing.step();
-		if (!menu_processing.active)
+		if (!menu_processing.active) {
 			HP_bar.step();
+			HP_bar.value = game.get_hp(network.get_id());
+		}
 		// Restore camera
 		game.get_draw()->set_camera(camera_backup);
 		game.get_draw()->display();
