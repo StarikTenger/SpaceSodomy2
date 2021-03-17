@@ -143,7 +143,11 @@ void Game_Client::decode(std::string source) {
 		}
 		// Sound
 		if (symbol == "s") {
+			int id;
+			std::string name;
+			b2Vec2 pos;
 			
+			stream >> id >> name >> pos.x >> pos.y;
 		}
 	}
 
