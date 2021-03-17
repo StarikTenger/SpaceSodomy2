@@ -60,6 +60,8 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
 	if (key_by_name("ENGINE_ANG_RIGHT"))
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+	if (key_by_name("STABILIZE_ROTATION"))
+		command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
 	if (key_by_name("SHOOT"))
 		command_module.set_command(Command_Module::SHOOT, 1);
 
@@ -98,6 +100,7 @@ Control::Control() {
 	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right};
 	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A};
 	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
+	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D};
 	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
 	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
 	key_matches["SHOOT"] = { sf::Keyboard::Space};

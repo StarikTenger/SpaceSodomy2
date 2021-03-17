@@ -17,6 +17,7 @@ void Gun::activate() {
 	b2Vec2 delta_vel = vel_val * aux::angle_to_vec(projectile_def.angle);
 	projectile_def.vel += delta_vel;
 	projectile_def.player = player;
+	projectile_def.damage = damage;
 
 	projectile_manager->create_projectile(projectile_def);
 }

@@ -18,6 +18,7 @@ private:
 	// Forces' methods
 	void apply_force_linear(b2Vec2 direction);
 	void apply_force_angular(float dir);
+	void stabilize_rotation();
 public:
 	// Constructor
 	Engine();
