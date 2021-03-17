@@ -89,6 +89,6 @@ public:
 	// Deletes player
 	void delete_player(int id);
 	// Get hp
-	float get_hp(int id);
+	Ship* get_ship(int id);
 };
 

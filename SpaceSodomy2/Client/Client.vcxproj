@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Game_Client.cpp" />
+    <ClCompile Include="HUD_Processing.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu_Processing.cpp" />
     <ClCompile Include="Sound_Processing.cpp" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Control.h" />
     <ClInclude Include="Game_Client.h" />
+    <ClInclude Include="HUD_Processing.h" />
     <ClInclude Include="Menu_Processing.h" />
     <ClInclude Include="Sound_Processing.h" />
   </ItemGroup>

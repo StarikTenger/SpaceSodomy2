@@ -4,7 +4,7 @@
 #include <Network/Client_Network.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
-#include <Menu/Bar.h>
+#include "HUD_Processing.h"
 #include "Menu_Processing.h"
 #include "Game_Client.h"
 #include <string>
@@ -18,6 +18,7 @@ private:
 	// Period of drawing & sending in ms
 	int delay = 20;
 	// Last time of activity
+
 	int time_prev = 0;
 	// Zoom velocity
 	float zoom_vel = 2;
@@ -54,8 +55,8 @@ private:
 	void process_commands();
 	// Converts commands into single string
 	std::string commands_to_string();
-	// HP bar;
-	Bar HP_bar;
+	// HUD
+	HUD_Processing hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network);
 public:
 	// Default constructor
 	Control();
