@@ -141,6 +141,10 @@ void Game_Client::decode(std::string source) {
 
 			auto projectile = create_projectile(projectile_def);
 		}
+		// Sound
+		if (symbol == "s") {
+			
+		}
 	}
 
 }

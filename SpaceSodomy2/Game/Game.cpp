@@ -478,8 +478,8 @@ void Game::delete_player(int id) {
 	players.erase(players.find(id));
 }
 
-float Game::get_hp(int id) {
+Ship* Game::get_ship(int id) {
 	for (auto ship : ships)
 		if (ship->get_player() == players[id])
-			return ship->get_hp()->get();
+			return ship;
 }
