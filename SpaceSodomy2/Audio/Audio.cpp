@@ -44,7 +44,7 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 	sf::Sound* sound = new sf::Sound();
 	*sound = *sounds[name];
 	sound->play();
-	sound->setPosition(pos.x, pos.y, z);
+	sound->setPosition(z, pos.x, pos.y);
 	sound->setVolume(volume);
 	activeSounds[id] = sound;
 	sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
