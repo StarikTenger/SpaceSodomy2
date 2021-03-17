@@ -93,7 +93,5 @@ public:
 	Ship* new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
 	// Deletes player
 	void delete_player(int id);
-	// Get hp
-	Ship* get_ship(int id);
 };
 

@@ -92,7 +92,9 @@ Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
 	draw.load_fonts("fonts.conf");
+	audio.set_draw(&draw);
 	game.set_draw(&draw);
+	game.set_audio(&audio);
 	// Default key matches
 	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
 	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };

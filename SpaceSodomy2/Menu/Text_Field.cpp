@@ -32,6 +32,9 @@ bool Text_Field::get_keyboard_active() {
 void Text_Field::set_text(std::string text_) {
 	text.setString(text_);
 }
+void Text_Field::set_text_backup() {
+	text.setString(text_backup);
+}
 void Text_Field::set_font(sf::Font font_) {
 	font_setted = 1;
 	text.setFont(font_);
@@ -56,9 +59,19 @@ void Text_Field::step() {
 		text.setFont(*(get_draw()->get_font("font")));
 		height = aux::get_text_max_height(text);
 	}
+	if (!keyboard_active)
+		keyboard_activated = 1;
 	// Text entering
 	if (keyboard_active) {
-		std::string str = text.getString();
+		std::string str;
+		if (keyboard_activated) {
+			keyboard_activated = 0;
+			str = "";
+			text_backup = text.getString();
+		}
+		else {
+			str = text.getString();
+		}
 		while (!get_keyboard()->text_entered->empty()) {
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			get_keyboard()->text_entered->pop();
@@ -66,6 +79,11 @@ void Text_Field::step() {
 				str.pop_back();
 			if (symbol >= 32)
 				str.push_back(symbol);
+			if (symbol == 13)
+			{
+				keyboard_active = 0;
+				break;
+			}
 		}
 		text.setString(str);
 	}
