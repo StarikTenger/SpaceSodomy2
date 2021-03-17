@@ -166,6 +166,7 @@ Sound* Game::create_sound(std::string name, b2Body* body, float playing_offset) 
 	sound->set_body(body);
 	sound->set_name(name);
 	sound->set_playing_offset(create_counter(playing_offset, 1));
+	id_manager.set_id(sound);
 	sounds.insert(sound);
 	return sound;
 }
