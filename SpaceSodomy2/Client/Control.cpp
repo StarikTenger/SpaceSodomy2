@@ -93,6 +93,7 @@ Control::Control() {
 	draw.load_textures("textures.conf");
 	draw.load_fonts("fonts.conf");
 	audio.set_draw(&draw);
+	audio.load_sounds();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
 	// Default key matches

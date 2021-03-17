@@ -36,16 +36,16 @@ void Audio::load_sounds(std::string path) {
 }
 
 void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) {
-	while (-sound_timeouts.top().first < aux::get_milli_count()) {
+	while (!sound_timeouts.empty() && -sound_timeouts.top().first < aux::get_milli_count()) {
 		activeSounds.erase(sound_timeouts.top().second);
 		sound_timeouts.pop();
 	}
 	sf::Listener::setDirection(1.f, 0.f, 0.f);
-	sf::Sound *sound = new sf::Sound;
+	sf::Sound* sound = new sf::Sound();
 	*sound = *sounds[name];
-	sound->setPosition(z, pos.x, pos.y);
-	sound->setVolume(volume);
 	sound->play();
+	sound->setPosition(pos.x, pos.y, z);
+	sound->setVolume(volume);
 	activeSounds[id] = sound;
 	sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
 }
