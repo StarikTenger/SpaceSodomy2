@@ -23,6 +23,10 @@ Counter* Active_Module::get_recharge_counter() {
 	return recharge_counter;
 }
 
+Sound_Manager* Active_Module::get_sound_manager() {
+	return sound_manager;
+}
+
 void Active_Module::set_recharge_time(float val) {
 	recharge_time = val;
 }
@@ -37,6 +41,10 @@ void Active_Module::set_recharge_counter(Counter* _counter) {
 
 void Active_Module::set_bind(int val) {
 	bind = val;
+}
+
+void Active_Module::set_sound_manager(Sound_Manager* val) {
+	sound_manager = val;
 }
 
 void Active_Module::step(float dt) {

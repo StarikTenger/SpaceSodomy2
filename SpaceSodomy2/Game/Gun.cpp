@@ -19,5 +19,10 @@ void Gun::activate() {
 	projectile_def.player = player;
 	projectile_def.damage = damage;
 
+	Sound_Def sound_def;
+	sound_def.name = "gn";
+	sound_def.body = body;
+	sound_manager->create_sound(sound_def);
+
 	projectile_manager->create_projectile(projectile_def);
 }

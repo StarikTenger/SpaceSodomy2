@@ -46,6 +46,9 @@ Gun* Game::create_gun() {
 	auto counter = create_counter();
 	counter->set_change_vel(-1);
 	gun->set_recharge_counter(counter);
+	// Managers
+	gun->set_projectile_manager(&projectile_manager);
+	gun->set_sound_manager(&sound_manager);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -117,7 +120,6 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Gun
 	auto gun = create_gun();
 	gun->set(body, player);
-	gun->set_projectile_manager(&projectile_manager);
 	ship->set_gun(gun);
 
 	// Hp
@@ -302,6 +304,7 @@ void Game::step(float _dt) {
 	process_projectiles();
 	process_active_modules();
 	process_projectlie_manager();
+	process_sound_manager();
 	process_counters();
 	process_sounds();
 }
