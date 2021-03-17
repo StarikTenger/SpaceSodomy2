@@ -99,6 +99,9 @@
     <ClInclude Include="Id_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -154,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="Id_Manager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

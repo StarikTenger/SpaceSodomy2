@@ -25,6 +25,7 @@ public:
 	// Get methods
 	float get_recharge_time();
 	b2Body* get_body();
+	Counter* get_recharge_counter();
 
 	// Set methods
 	void set_recharge_time(float);

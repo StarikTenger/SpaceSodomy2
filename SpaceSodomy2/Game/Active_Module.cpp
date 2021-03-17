@@ -19,6 +19,10 @@ b2Body* Active_Module::get_body()
 	return nullptr;
 }
 
+Counter* Active_Module::get_recharge_counter() {
+	return recharge_counter;
+}
+
 void Active_Module::set_recharge_time(float val) {
 	recharge_time = val;
 }
