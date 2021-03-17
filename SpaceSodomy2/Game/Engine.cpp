@@ -24,6 +24,17 @@ void Engine::apply_force_angular(float dir) {
 	body->ApplyTorque(dir * force_angular, 1);
 }
 
+void Engine::stabilize_rotation() {
+	if (command_module->get_command(Command_Module::ENGINE_ANG_LEFT) ||
+		command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
+		return;
+	float eps = 0.01;
+	if (body->GetAngularVelocity() < -eps)
+		command_module->set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+	if (body->GetAngularVelocity() > eps)
+		command_module->set_command(Command_Module::ENGINE_ANG_LEFT, 1);
+}
+
 // Get methods
 float Engine::get_force_linear() {
 	return force_linear;
@@ -43,6 +54,8 @@ void Engine::set_force_angular(float value) {
 // Step
 void Engine::step() {
 	// Command processing
+	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
+		stabilize_rotation();
 	if (command_module->get_command(Command_Module::ENGINE_LIN_FORWARD))
 		apply_force_linear(b2Vec2(1, 0));
 	if (command_module->get_command(Command_Module::ENGINE_LIN_BACKWARD))
