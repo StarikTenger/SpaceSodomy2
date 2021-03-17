@@ -27,9 +27,6 @@
     <ClCompile Include="Menu_Processing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sound_Processing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HUD_Processing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu_Processing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound_Processing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Processing.h">

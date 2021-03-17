@@ -5,9 +5,15 @@ void Game_Client::set_draw(Draw* _draw) {
 	draw = _draw;
 	draw->apply_camera({ 0, 0 }, 100, 0);
 }
+void Game_Client::set_audio(Audio* _audio) {
+	audio = _audio;
+}
 
 Draw* Game_Client::get_draw() {
 	return draw;
+}
+Audio* Game_Client::get_audio() {
+	return audio;
 }
 
 void Game_Client::display(int id) {
@@ -143,8 +149,19 @@ void Game_Client::decode(std::string source) {
 		}
 		// Sound
 		if (symbol == "s") {
+			int id;
+			std::string name;
+			b2Vec2 pos;
 			
+			stream >> id >> name >> pos.x >> pos.y;
+
+			audio->update_sound(id, name, pos);
 		}
 	}
+}
 
+Ship* Game_Client::get_ship(int id) {
+	for (auto ship : ships)
+		if (ship->get_player() == players[id])
+			return ship;
 }

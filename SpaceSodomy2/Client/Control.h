@@ -4,6 +4,7 @@
 #include <Network/Client_Network.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
+#include <Audio/Audio.h>
 #include "HUD_Processing.h"
 #include "Menu_Processing.h"
 #include "Game_Client.h"
@@ -30,6 +31,8 @@ private:
 	Game_Client game;
 	// Contains window 7 other drawing stuff
 	Draw draw;
+	// Contains audio
+	Audio audio;
 	// Contains menu objects
 	Menu_Processing menu_processing;
 	// Contains mouse position

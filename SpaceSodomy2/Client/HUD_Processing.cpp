@@ -30,6 +30,7 @@ HUD_Processing::HUD_Processing(Draw* draw, b2Vec2* mouse_pos, aux::Keyboard* key
 }
 
 void HUD_Processing::step() {
-	HP_bar.value = game->get_ship(player_network->get_id())->get_hp()->get();
+	if (game->get_ship(player_network->get_id()) != nullptr)
+		HP_bar.value = game->get_ship(player_network->get_id())->get_hp()->get();
 	HP_bar.step();
 }

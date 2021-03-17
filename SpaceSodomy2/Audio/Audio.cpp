@@ -35,25 +35,32 @@ void Audio::load_sounds(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
-void Audio::play(std::string name, b2Vec2 pos, double z, double volume, sf::Sound* sound) {
-	for (int i = 0; i < activeSounds.size(); i++) {
-		if (activeSounds[i]->getStatus() != sf::Sound::Playing) {
-			//std::cout << activeSounds.size() << " deleted\n";
-			delete activeSounds[i];
-			activeSounds.erase(activeSounds.begin() + i);
-			i--;
-		}
+void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) {
+	while (-sound_timeouts.top().first < aux::get_milli_count()) {
+		activeSounds.erase(sound_timeouts.top().second);
+		sound_timeouts.pop();
 	}
 	sf::Listener::setDirection(1.f, 0.f, 0.f);
+	sf::Sound *sound = new sf::Sound;
 	*sound = *sounds[name];
 	sound->setPosition(z, pos.x, pos.y);
 	sound->setVolume(volume);
 	sound->play();
-	activeSounds.push_back(sound);
+	activeSounds[id] = sound;
+	sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
 }
 
-void Audio::play(std::string name, b2Vec2 pos, double volume, sf::Sound* sound) {
+void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
 	pos -= draw->get_camera()->get_pos();
 	pos = aux::rotate(draw->get_camera()->get_pos(), pos, draw->get_camera()->get_angle());
-	play(name, pos, -5, volume, sound);
+	play(id, name, pos, -5, volume);
+}
+
+void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
+	if (activeSounds.count(id)) {
+		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
+	}
+	else {
+		play(id, name, pos, 100);
+	}
 }

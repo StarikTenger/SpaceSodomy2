@@ -6,12 +6,14 @@
 #include <Draw/Draw.h>
 #include <string>
 #include <map>
+#include <queue>
 #include <fstream>
 
 class Audio {
 private:
 	std::map<std::string, sf::Sound*> sounds;
-	std::vector<sf::Sound*> activeSounds;
+	std::map<int, sf::Sound*> activeSounds;
+	std::priority_queue<std::pair<int, int>> sound_timeouts;
 	void load_sound(std::string name, std::string path_to_sound);
 	Draw* draw;
 public:
@@ -23,6 +25,8 @@ public:
 
 	void load_sounds(std::string path = "sounds.conf");
 
-	void play(std::string name, b2Vec2 pos, double z, double volume, sf::Sound* sound);
-	void play(std::string name, b2Vec2 pos, double volume, sf::Sound* sound);
+	void play(int id, std::string name, b2Vec2 pos, double z, double volume);
+	void play(int id, std::string name, b2Vec2 pos, double volume);
+
+	void update_sound(int id, std::string name, b2Vec2 pos);
 };

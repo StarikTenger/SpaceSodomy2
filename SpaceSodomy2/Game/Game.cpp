@@ -487,9 +487,3 @@ void Game::delete_player(int id) {
 	// Deleting player
 	players.erase(players.find(id));
 }
-
-Ship* Game::get_ship(int id) {
-	for (auto ship : ships)
-		if (ship->get_player() == players[id])
-			return ship;
-}

@@ -189,9 +189,3 @@ float aux::get_text_max_height(sf::Text text) {
 	}
 	return max_height;
 }
-
-std::string aux::to_string(float value) {
-	std::stringstream s;
-	s << value;
-	return s.str();
-}
