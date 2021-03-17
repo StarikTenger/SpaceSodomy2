@@ -7,6 +7,7 @@
 #include <sstream>
 #include "entities.h"
 #include "Projectile_Manager.h"
+#include "Sound_Manager.h"
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
@@ -35,6 +36,7 @@ protected:
 	std::set<Sound*> sounds;
 
 	Projectile_Manager projectile_manager;
+	Sound_Manager sound_manager;
 	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -72,6 +74,7 @@ protected:
 	void process_projectiles();
 	void process_active_modules();
 	void process_projectlie_manager();
+	void process_sound_manager();
 	void process_physics();
 	void process_counters();
 	void process_sounds();

@@ -257,6 +257,13 @@ void Game::process_projectlie_manager() {
 	}
 }
 
+void Game::process_sound_manager() {
+	Sound_Def sound_def;
+	while (sound_manager.get_next(sound_def)) {
+		create_sound(sound_def.name, sound_def.body);
+	}
+}
+
 void Game::process_physics() {
 	contact_table.reset();
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {

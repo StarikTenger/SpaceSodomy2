@@ -177,6 +177,8 @@
     <ClInclude Include="Projectile_Manager.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Sound_Def.h" />
+    <ClInclude Include="Sound_Manager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +205,8 @@
     <ClCompile Include="Projectile_Manager.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Sound_Def.cpp" />
+    <ClCompile Include="Sound_Manager.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
