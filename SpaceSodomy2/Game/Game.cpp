@@ -164,6 +164,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 Sound* Game::create_sound(std::string name, b2Body* body, float playing_offset) {
 	auto sound = new Sound();
 	sound->set_body(body);
+	sound->set_name(name);
 	sound->set_playing_offset(create_counter(playing_offset, 1));
 	sounds.insert(sound);
 	return sound;

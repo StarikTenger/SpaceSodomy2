@@ -3,6 +3,6 @@
 #include <string>
 
 struct Sound_Def {
-	std::string name = "";
+	std::string name = "_";
 	b2Body* body = nullptr;
 };
