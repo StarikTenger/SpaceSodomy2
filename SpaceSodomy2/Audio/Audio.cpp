@@ -58,6 +58,7 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
 	pos = aux::rotate(draw->get_camera()->get_pos(), pos, draw->get_camera()->get_angle());
 	play(id, name, pos, -5, volume);
+	pos -= draw->get_camera()->get_pos();
 }
 
 void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
