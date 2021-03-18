@@ -163,6 +163,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Menu_Object.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Scroll_Bar.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="Text_Field.h" />
   </ItemGroup>
@@ -179,6 +180,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scroll_Bar.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="Text_Field.cpp" />
   </ItemGroup>
