@@ -9,7 +9,7 @@
 class Active_Module : public iId {
 protected:
 	// Common for all modules
-	float recharge_time = 0.3;
+	float recharge_time = 0.1;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player

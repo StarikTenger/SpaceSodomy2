@@ -157,9 +157,10 @@ bool aux::rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point) {
 
 b2Vec2 aux::rotate(b2Vec2 center, b2Vec2 point, float angle) {
 	b2Vec2 point1;
+	float dist = sqrt(point.x * point.x + point.y * point.y);
 	point -= center;
-	point1.x = point.x * cos(angle) - point.y * sin(angle);
-	point1.y = point.x * sin(angle) + point.y * cos(angle);
+	point1.x = dist * cos(angle);
+	point1.y = dist * sin(angle);
 	point1 += center;
 	return point1;
 }
