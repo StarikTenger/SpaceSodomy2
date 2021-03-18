@@ -23,8 +23,8 @@ Counter* Active_Module::get_recharge_counter() {
 	return recharge_counter;
 }
 
-Sound_Manager* Active_Module::get_sound_manager() {
-	return sound_manager;
+Event_Manager* Active_Module::get_event_manager() {
+	return event_manager;
 }
 
 void Active_Module::set_recharge_time(float val) {
@@ -43,8 +43,8 @@ void Active_Module::set_bind(int val) {
 	bind = val;
 }
 
-void Active_Module::set_sound_manager(Sound_Manager* val) {
-	sound_manager = val;
+void Active_Module::set_event_manager(Event_Manager* val) {
+	event_manager = val;
 }
 
 void Active_Module::step(float dt) {

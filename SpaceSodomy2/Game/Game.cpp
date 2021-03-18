@@ -48,7 +48,7 @@ Gun* Game::create_gun() {
 	gun->set_recharge_counter(counter);
 	// Managers
 	gun->set_projectile_manager(&projectile_manager);
-	gun->set_sound_manager(&sound_manager);
+	gun->set_event_manager(&sound_manager);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -161,7 +161,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-Sound* Game::create_sound(std::string name, b2Body* body, float playing_offset) {
+Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) {
 	auto sound = new Sound();
 	sound->set_body(body);
 	sound->set_name(name);
@@ -262,9 +262,9 @@ void Game::process_projectlie_manager() {
 }
 
 void Game::process_sound_manager() {
-	Sound_Def sound_def;
-	while (sound_manager.get_next(sound_def)) {
-		create_sound(sound_def.name, sound_def.body);
+	Event_Def event_def;
+	while (sound_manager.get_next(event_def)) {
+		create_event(event_def.name, event_def.body);
 	}
 }
 
@@ -452,9 +452,9 @@ std::string Game::encode() {
 		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
 	}
 
-	// Sounds
+	// Events
 	for (auto sound : sounds) {
-		message += "s ";
+		message += "e ";
 		// Id
 		message += std::to_string(sound->get_id()) + " ";
 		// Name

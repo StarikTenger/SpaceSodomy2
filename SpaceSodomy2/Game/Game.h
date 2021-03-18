@@ -7,7 +7,7 @@
 #include <sstream>
 #include "entities.h"
 #include "Projectile_Manager.h"
-#include "Sound_Manager.h"
+#include "Event_Manager.h"
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
@@ -36,7 +36,7 @@ protected:
 	std::set<Sound*> sounds;
 
 	Projectile_Manager projectile_manager;
-	Sound_Manager sound_manager;
+	Event_Manager sound_manager;
 	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -57,7 +57,7 @@ protected:
 	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile* create_projectile(Projectile_Def);
-	Sound* create_sound(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
+	Sound* create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
 
 	// Delete functions
 	void delete_body(b2Body*);
