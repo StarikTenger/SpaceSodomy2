@@ -155,13 +155,8 @@ bool aux::rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point) {
 	return ((point.y > begin.y) && (point.x > begin.x) && (point.y < end.y) && (point.x < end.x));
 }
 
-b2Vec2 aux::rotate(b2Vec2 center, b2Vec2 point, float angle) {
-	b2Vec2 point1;
-	point -= center;
-	point1.x = point.x * cos(angle) - point.y * sin(angle);
-	point1.y = point.x * sin(angle) + point.y * cos(angle);
-	point1 += center;
-	return point1;
+b2Vec2 aux::rotate(b2Vec2 point, float angle) {
+	return b2Vec2(point.x * cos(angle) - point.y * sin(angle), point.x * sin(angle) + point.y * cos(angle));
 }
 
 b2Vec2 aux::angle_to_vec(float angle) {

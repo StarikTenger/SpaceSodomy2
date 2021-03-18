@@ -39,7 +39,7 @@ public:
 	// Check if rectangle contains point
 	static bool rect_contains(b2Vec2 center, b2Vec2 scale, b2Vec2 point);
 	// Rotate point around point (angle in radians)
-	static b2Vec2 rotate(b2Vec2 center, b2Vec2 point, float angle);
+	static b2Vec2 rotate(b2Vec2 point, float angle);
 	// Keyboard
 	struct Keyboard {
 		const std::vector<std::string> names =

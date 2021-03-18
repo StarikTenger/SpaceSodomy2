@@ -49,6 +49,7 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 		<< draw->get_camera()->get_pos().y << " " << draw->get_camera()->get_angle() << "\n";
 	sound->setPosition(z, pos.x, pos.y);
 	sound->setVolume(volume);
+	sound->setRelativeToListener(1);
  	sound->play();
 	activeSounds[id] = sound;
 	sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
@@ -56,12 +57,15 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 }
 
 void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
-	pos = aux::rotate(draw->get_camera()->get_pos(), pos, draw->get_camera()->get_angle());
+	pos -= draw->get_camera()->get_pos();
+	pos = aux::rotate(pos, draw->get_camera()->get_angle());
 	play(id, name, pos, -5, volume);
 }
 
 void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
 	if (activeSounds.count(id)) {
+		pos -= draw->get_camera()->get_pos();
+		pos = aux::rotate(pos, draw->get_camera()->get_angle());
 		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
 	}
 	else {
