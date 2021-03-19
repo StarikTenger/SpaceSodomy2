@@ -238,7 +238,7 @@ void Game::process_ships() {
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
 		// Checking for < zero hp
-		if (ship->get_hp() <= 0)
+		if (ship->get_hp()->get() <= 0)
 			ships_to_delete.insert(ship);
 	}
 	for (auto ship : ships_to_delete)
