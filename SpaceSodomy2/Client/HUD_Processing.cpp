@@ -8,13 +8,14 @@ void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config, Draw* draw, 
 	bar->set_use_window_cords(use_window_cords);
 	bar->set_pos(pos);
 	bar->set_scale(scale);
+	bar->set_character_size(character_size);
 	if (use_custom_color) {
 		*config >> back.r >> back.g >> back.b >> back.a
 			>> front.r >> front.g >> front.b >> front.a
 			>> text.r >> text.g >> text.b >> text.a;
-		bar->back_color = back;
-		bar->front_color = front;
-		bar->text_color = text;
+		bar->set_back_color(back);
+		bar->set_front_color(front);
+		bar->set_text_color(text);
 	}
 	bar->set_draw(draw);
 	bar->set_mouse_pos(mouse_pos);
@@ -31,6 +32,6 @@ HUD_Processing::HUD_Processing(Draw* draw, b2Vec2* mouse_pos, aux::Keyboard* key
 
 void HUD_Processing::step() {
 	if (game->get_ship(player_network->get_id()) != nullptr)
-		HP_bar.value = game->get_ship(player_network->get_id())->get_hp()->get();
+		HP_bar.set_value(10);//game->get_ship(player_network->get_id())->get_hp()->get());
 	HP_bar.step();
 }
