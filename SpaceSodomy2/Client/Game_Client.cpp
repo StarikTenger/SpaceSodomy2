@@ -46,9 +46,10 @@ void Game_Client::display(int id) {
 			!ship->get_body()->GetFixtureList()->GetShape())
 			continue;
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		auto color = ship->get_player()->get_color();
 		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors", ship->get_body()->GetPosition(), {radius, radius}, 
-			ship->get_body()->GetAngle(), ship->get_player()->get_color());
+			ship->get_body()->GetAngle(), color);
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
@@ -62,7 +63,7 @@ void Game_Client::display(int id) {
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i))
 				draw->image(textures[i], ship->get_body()->GetPosition(), 
-					{ radius, radius }, ship->get_body()->GetAngle());
+					{ radius, radius }, ship->get_body()->GetAngle(), color);
 		}
 
 	}
@@ -125,6 +126,9 @@ void Game_Client::decode(std::string source) {
 			// Hp
 			float hp;
 			stream >> hp;
+			if (hp < 50) {
+				std::cout << "hp: " << hp << "\n";
+			}
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->get_hp()->set(hp);

@@ -435,7 +435,7 @@ std::string Game::encode() {
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Hp
-		message += std::to_string(ship->get_hp()->get());
+		message += std::to_string(ship->get_hp()->get()) + " ";
 	}
 
 	// Projectiles
