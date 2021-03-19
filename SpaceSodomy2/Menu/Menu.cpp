@@ -141,7 +141,6 @@ void Menu::step() {
 		text_fields_strings->operator[](text_field->get_id()) = text_field->get_text();
 		if (clicked && !text_field->get_active() && text_field->get_keyboard_active()) {
 			text_field->set_keyboard_active(0);
-			text_field->set_text_backup();
 		}
 	}
 	for (auto text_field : text_fields) {

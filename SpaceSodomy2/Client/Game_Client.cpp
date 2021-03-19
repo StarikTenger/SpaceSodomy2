@@ -30,6 +30,14 @@ void Game_Client::display(int id) {
 	// Clear scene
 	draw->clear();
 
+	// Background
+	Camera camera_backup = *draw->get_camera();
+	draw->apply_camera(b2Vec2(0, 0), 100, 1.5 * b2_pi);
+	draw->image("background", draw->get_camera()->get_pos(),
+		aux::to_b2Vec2(sf::Vector2f(draw->get_texture("background")->getSize())), 0, sf::Color::Black);
+	draw->set_camera(camera_backup);
+	draw->apply_camera();
+
 	// Walls
 	for (auto wall : walls) {
 		auto vertices = wall->get_vertices();

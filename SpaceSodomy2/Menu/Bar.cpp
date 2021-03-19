@@ -8,7 +8,7 @@ Bar::Bar() {
 
 void Bar::step() {
 	text.set_pos(get_pos());
-	text.set_text(std::to_string(value));
+	text.set_text(std::to_string(int(value)));
 	text.set_color(text_color);
 	text.set_text_character_pixel_size(character_size);
 	text.set_draw(get_draw());
