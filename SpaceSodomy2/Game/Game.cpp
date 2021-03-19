@@ -59,6 +59,7 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_color(color);
 	player->set_name(name);
 	player->set_command_module(create_command_module());
+	player->set_time_to_respawn(create_counter(0, -1));
 	// Id
 	player->set_id(id);
 	players[player->get_id()] = player;
@@ -198,6 +199,8 @@ void Game::delete_ship(Ship* ship) {
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
 	delete_counter(ship->get_hp());
+	// Player management
+	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
 	delete ship;
 }
@@ -216,6 +219,30 @@ void Game::delete_sound(Sound* sound) {
 	delete_counter(sound->get_playing_offset());
 	sounds.erase(sound);
 	delete sound;
+}
+
+void Game::process_players() {
+	// Creating ships
+	for (auto player_pair : players) {
+		auto player = player_pair.second;
+		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0) {
+			// TODO: function to determine new ship position
+			player->set_is_alive(1);
+			create_ship(player, {0, 0}, 0);
+		}
+	}
+}
+
+void Game::process_ships() {
+	// Deleting
+	std::set<Ship*> ships_to_delete;
+	for (auto ship : ships) {
+		// Checking for < zero hp
+		if (ship->get_hp() <= 0)
+			ships_to_delete.insert(ship);
+	}
+	for (auto ship : ships_to_delete)
+		delete_ship(ship);
 }
 
 void Game::process_engines() {
@@ -302,6 +329,8 @@ void Game::apply_command(int id, int command, int val) {
 void Game::step(float _dt) {
 	dt = _dt;
 	process_physics();
+	process_players();
+	process_ships();
 	process_engines();
 	process_projectiles();
 	process_active_modules();
@@ -468,7 +497,7 @@ std::string Game::encode() {
 }
 
 Ship* Game::new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
-	Player* player = new Player(id, color, name);
+	Player* player = create_player(id, color, name);
 	players[id] = player;
 	auto ship = create_ship(player, pos, angle);
 	player->set_command_module(ship->get_player()->get_command_module());
