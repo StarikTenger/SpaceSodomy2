@@ -50,7 +50,8 @@ sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
 
 void Draw::load_textures(std::string path) {
 	std::cout << "Start loading\n";
-	std::ifstream file(path);
+	std::ifstream input_file(path);
+	auto file = aux::comment(input_file);
 	while (file) {
 		std::string name, path;
 		file >> name >> path;
@@ -62,7 +63,8 @@ void Draw::load_textures(std::string path) {
 
 void Draw::load_fonts(std::string path) {
 	std::cout << "Start loading\n";
-	std::ifstream file(path);
+	std::ifstream input_file(path);
+	auto file = aux::comment(input_file);
 	while (file) {
 		std::string name, path;
 		file >> name >> path;

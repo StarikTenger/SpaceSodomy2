@@ -47,6 +47,8 @@ void Game_Client::display(int id) {
 			continue;
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
+		draw->image("ship_colors", ship->get_body()->GetPosition(), {radius, radius}, 
+			ship->get_body()->GetAngle(), ship->get_player()->get_color());
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",

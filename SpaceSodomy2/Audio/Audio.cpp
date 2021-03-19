@@ -43,6 +43,7 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
    		sound_timeouts.pop();
 	}
 	sf::Listener::setDirection(1.f, 0.f, 0.f);
+	sf::Listener::setPosition(0.f, 0.f, 0.f);
 	sf::Sound* sound = new sf::Sound();
 	*sound = *sounds[name];
 	std::cout << pos.x << " " << pos.y << " " << draw->get_camera()->get_pos().x << " "
@@ -57,16 +58,13 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 }
 
 void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
-	pos -= draw->get_camera()->get_pos();
-	pos = aux::rotate(pos, draw->get_camera()->get_angle());
 	play(id, name, pos, -5, volume);
-	pos -= draw->get_camera()->get_pos();
 }
 
 void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
+	pos -= draw->get_camera()->get_pos();
+	pos = aux::rotate(pos, draw->get_camera()->get_angle());
 	if (activeSounds.count(id)) {
-		pos -= draw->get_camera()->get_pos();
-		pos = aux::rotate(pos, draw->get_camera()->get_angle());
 		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
 	}
 	else {
