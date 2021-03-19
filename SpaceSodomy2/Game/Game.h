@@ -70,6 +70,8 @@ protected:
 	void delete_sound(Sound*);
 
 	 // Processing functions
+	void process_players();
+	void process_ships();
 	void process_engines();
 	void process_projectiles();
 	void process_active_modules();
