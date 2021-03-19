@@ -7,7 +7,7 @@ private:
 	b2Vec2 indent = { 5, 5 }; // indent above text size
 	bool keyboard_active = 0;
 	bool keyboard_activated = 1;
-	std::string text_backup;
+	std::string new_text = "";
 	bool font_setted = 0;
 	float height;
 public:
@@ -23,7 +23,6 @@ public:
 
 	// Set methods
 	void set_text(std::string text_);
-	void set_text_backup();
 	void set_font(sf::Font font_);
 	void set_text_color(sf::Color);
 	void set_text_character_pixel_size(unsigned int size_);
