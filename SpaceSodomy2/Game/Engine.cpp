@@ -13,6 +13,7 @@ Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina
 
 // Forces' methods
 void Engine::apply_force_linear(b2Vec2 direction) {
+	is_linear_force_used = 1;
 	// Rotation matrix
 	b2Transform transform(b2Vec2_zero, b2Rot(body->GetAngle()));
 	// Apply rotation matrix
@@ -58,9 +59,9 @@ void Engine::step(float _dt) {
 	// Boost management
 	current_modifier = 1;
 	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
-		stamina->modify(-dt * boost_stamina_consumption);
 		current_modifier = boost_modifier;
 	}
+	is_linear_force_used = 0;
 	// Command processing
 	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
 		stabilize_rotation();
@@ -76,4 +77,8 @@ void Engine::step(float _dt) {
 		apply_force_angular(-1);
 	if (command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
 		apply_force_angular(1);
+	// Boost consumption
+	if (is_linear_force_used && command_module->get_command(Command_Module::BOOST)) {
+		stamina->modify(-dt * boost_stamina_consumption);
+	}
 }

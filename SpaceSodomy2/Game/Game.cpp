@@ -125,8 +125,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Stamina
 	auto stamina = create_counter(100, 100);
-	stamina->set_delay(1);
-	stamina->set_change_vel(20);
+	stamina->set_delay(0.5);
+	stamina->set_change_vel(50);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
 

@@ -11,9 +11,12 @@ private:
 	// Properties
 	float force_linear = 2;
 	float force_angular = 0.5;
-	float current_modifier = 1;
+	float current_modifier = 2;
 	float boost_modifier = 2;
 	float boost_stamina_consumption = 50;
+
+	// To manage boost correctly
+	bool is_linear_force_used = 0;
 
 	// Command interface
 	Command_Module* command_module = nullptr;

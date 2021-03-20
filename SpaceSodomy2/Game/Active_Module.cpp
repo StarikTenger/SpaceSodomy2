@@ -65,6 +65,5 @@ void Active_Module::step(float dt) {
 		activate();
 		recharge_counter->set(recharge_time);
 		stamina->modify(-stamina_consumption);
-		stamina->restart_delay();
 	}
 }
