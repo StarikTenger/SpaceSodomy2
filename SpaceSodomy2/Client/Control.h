@@ -60,6 +60,9 @@ private:
 	std::string commands_to_string();
 	// HUD
 	HUD_Processing hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network);
+
+	// Auto stabilize rotation
+	bool stabilize_rotation_auto = 0;
 public:
 	// Default constructor
 	Control();

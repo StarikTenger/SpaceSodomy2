@@ -25,7 +25,7 @@ private:
 		std::string* id_, std::string* name_);
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
-		b2Vec2 pos, b2Vec2 indent, int character_size);
+		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
 	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
 	bool disactivated = 0;

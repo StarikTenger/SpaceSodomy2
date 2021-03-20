@@ -60,8 +60,10 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
 	if (key_by_name("ENGINE_ANG_RIGHT"))
 		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
-	if (key_by_name("STABILIZE_ROTATION"))
+	if (key_by_name("STABILIZE_ROTATION") || stabilize_rotation_auto)
 		command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
+	if (key_by_name("STABILIZE_ROTATION_AUTO") && !key_prev_by_name("STABILIZE_ROTATION_AUTO"))
+		stabilize_rotation_auto = !stabilize_rotation_auto;
 	if (key_by_name("SHOOT"))
 		command_module.set_command(Command_Module::SHOOT, 1);
 	if (key_by_name("BOOST"))

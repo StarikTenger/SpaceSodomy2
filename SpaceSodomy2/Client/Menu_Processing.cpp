@@ -27,7 +27,7 @@ void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::s
 	fout.close();
 }
 void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
-	b2Vec2 pos, b2Vec2 indent, int character_size) {
+	b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -38,7 +38,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			if (j == 0) {
 				menu->add_constant_text(current_id, cur_name,
-					b2Vec2(pos.x - 2 * indent.x, pos.y + indent.y * i), 0, character_size, sf::Color::White,
+					b2Vec2(pos.x - name_indent, pos.y + indent.y * i), 0, character_size, sf::Color::White,
 					mouse_pos, keyboard);
 				current_id++;
 			}
@@ -186,7 +186,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	keys_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
-	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -125 }, { 50, 50 }, 20);
+	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, 200, { 50, 50 }, 20);
 }
 
 void Menu_Processing::step() {
