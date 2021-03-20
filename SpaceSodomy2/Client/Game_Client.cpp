@@ -17,15 +17,13 @@ Audio* Game_Client::get_audio() {
 }
 
 void Game_Client::display(int id) {
-	//draw->apply_camera({0, 0}, 100, 0);
 	// Finding cam target
-	for (auto ship : ships) {
-		if (ship->get_player()->get_id() == id) {
-			draw->get_camera()->set_pos(ship->get_body()->GetPosition());
-			draw->get_camera()->set_angle(ship->get_body()->GetAngle());
-		}
+	auto ship = get_ship(id);
+	if (ship) {
+		draw->get_camera()->set_pos(ship->get_body()->GetPosition());
+		draw->get_camera()->set_angle(ship->get_body()->GetAngle());
+		draw->apply_camera();
 	}
-	draw->apply_camera();
 
 	// Clear scene
 	draw->clear();
@@ -80,7 +78,12 @@ void Game_Client::display(int id) {
 	// Projectiles
 	for (auto projectile : projectiles) {
 		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
-		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, projectile->get_body()->GetAngle());
+		auto color = projectile->get_player()->get_color();
+		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, 
+			projectile->get_body()->GetAngle(), color);
+		radius *= 0.8;
+		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius },
+			projectile->get_body()->GetAngle());
 
 	}
 }
@@ -106,14 +109,18 @@ void Game_Client::decode(std::string source) {
 		}
 		// Player
 		if (symbol == "P") {
+			// Id
 			int id;
 			stream >> id;
+			// Color
 			sf::Color color;
 			int r, g, b;
 			stream >> r >> g >> b;
 			color = sf::Color(r, g, b);
+			// Name
 			std::string name;
 			stream >> name;
+			// Creating player
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
@@ -153,17 +160,20 @@ void Game_Client::decode(std::string source) {
 		}
 		// Projectile
 		if (symbol == "p") {
+			// Ids
 			int id, player_id;
 			stream >> id >> player_id;
+			// Pos
 			b2Vec2 pos;
 			stream >> pos.x >> pos.y;
+			// Angle
 			float angle;
 			stream >> angle;
-
+			// Creating projectile_def
 			Projectile_Def projectile_def;
 			projectile_def.pos = pos;
 			projectile_def.player = players[player_id];
-
+			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
 		}
 		// Event

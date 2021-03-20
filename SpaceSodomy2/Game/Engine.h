@@ -7,7 +7,7 @@
 class Engine : public iId{
 private:
 	// Properties
-	float force_linear = 1;
+	float force_linear = 2;
 	float force_angular = 0.5;
 
 	// Command interface
