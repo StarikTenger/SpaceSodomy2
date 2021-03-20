@@ -6,7 +6,7 @@
 
 class HUD_Processing {
 private:
-	Bar HP_bar;
+	Bar HP_bar, stamina_bar;
 
 	Game_Client* game;
 	Client_Network* player_network;

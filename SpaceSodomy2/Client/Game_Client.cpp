@@ -30,9 +30,10 @@ void Game_Client::display(int id) {
 
 	// Background
 	Camera camera_backup = *draw->get_camera();
-	draw->apply_camera(b2Vec2(0, 0), 100, 1.5 * b2_pi);
-	draw->image("background", draw->get_camera()->get_pos(),
-		aux::to_b2Vec2(sf::Vector2f(draw->get_texture("background")->getSize())), 0, sf::Color::Black);
+	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
+	draw->apply_camera(b2Vec2(0, 0), mid.Normalize() / draw->get_texture("background")->getSize().x, camera_backup.get_angle());
+	draw->image("background", b2Vec2(0, 0),
+		aux::to_b2Vec2(sf::Vector2f(draw->get_texture("background")->getSize())), 0);
 	draw->set_camera(camera_backup);
 	draw->apply_camera();
 
