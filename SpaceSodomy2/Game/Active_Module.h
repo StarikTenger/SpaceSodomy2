@@ -9,11 +9,8 @@
 class Active_Module : public iId {
 protected:
 	// Common for all modules
-	float recharge_time = 0.3;
-	float stamina_consumption = 10;
-	float max_stamina = 100;
-	float stamina_cooldown_delay_time = 1;
-	float stamina_cooldown_speed = 50;
+	float recharge_time = 0.1;
+	float stamina_consumption = 2;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player
@@ -43,11 +40,8 @@ public:
 
 	// Set methods
 	void set_recharge_time(float);
-	void set_stamina_cooldown_delay_time(float);
-	void set_stamina_cooldown_speed(float);
 	void set_body(b2Body*);
 	void set_recharge_counter(Counter*);
-	void set_stamina_cooldown_delay_counter(Counter*);
 	void set_bind(int);
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);

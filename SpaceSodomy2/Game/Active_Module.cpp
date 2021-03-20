@@ -39,24 +39,12 @@ void Active_Module::set_recharge_time(float val) {
 	recharge_time = val;
 }
 
-void Active_Module::set_stamina_cooldown_delay_time(float val) {
-	stamina_cooldown_delay_time = val;
-}
-
-void Active_Module::set_stamina_cooldown_speed(float val) {
-	stamina_cooldown_speed = val;
-}
-
 void Active_Module::set_body(b2Body* val) {
 	body = val;
 }
 
 void Active_Module::set_recharge_counter(Counter* _counter) {
 	recharge_counter = _counter;
-}
-
-void Active_Module::set_stamina_cooldown_delay_counter(Counter* _counter) {
-	stamina_cooldown_delay_counter = _counter;
 }
 
 void Active_Module::set_bind(int val) {
@@ -77,17 +65,6 @@ void Active_Module::step(float dt) {
 		activate();
 		recharge_counter->set(recharge_time);
 		stamina->modify(-stamina_consumption);
-		stamina_cooldown_delay_counter->set(stamina_cooldown_delay_time);
-	}
-	if (stamina_cooldown_delay_counter->get() < 0) {
-		if (stamina->get() < max_stamina - b2_epsilon)
-			stamina->set_change_vel(stamina_cooldown_speed);
-		else {
-			stamina->set(max_stamina);
-			stamina->set_change_vel(0);
-		}
-	}
-	else {
-		stamina->set_change_vel(0);
+		stamina->restart_delay();
 	}
 }
