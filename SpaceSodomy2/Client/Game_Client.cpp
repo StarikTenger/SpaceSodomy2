@@ -138,9 +138,13 @@ void Game_Client::decode(std::string source) {
 			if (hp < 50) {
 				std::cout << "hp: " << hp << "\n";
 			}
+			float stamina;
+			stream >> stamina;
+			std::cout << "stamina: " << stamina << "\n";
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->get_hp()->set(hp);
+			ship->get_stamina()->set(stamina);
 
 			// Decoding commands
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);

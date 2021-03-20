@@ -44,8 +44,11 @@ Gun* Game::create_gun() {
 	active_modules.insert(gun);
 	// Counter
 	auto counter = create_counter();
+	auto cooldown_delay = create_counter();
 	counter->set_change_vel(-1);
+	cooldown_delay->set_change_vel(-1);
 	gun->set_recharge_counter(counter);
+	gun->set_stamina_cooldown_delay_counter(cooldown_delay);
 	// Managers
 	gun->set_projectile_manager(&projectile_manager);
 	gun->set_event_manager(&sound_manager);
@@ -127,6 +130,11 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto hp = create_counter(100);
 	ship->set_hp(hp);
 
+	// Stamina
+	auto stamina = create_counter(100);
+	gun->set_stamina(stamina);
+	ship->set_stamina(stamina);
+
 	// Damage receiver
 	auto damage_receiver = create_damage_receiver(body, hp);
 	ship->set_damage_receiver(damage_receiver);
@@ -199,6 +207,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
 	delete_counter(ship->get_hp());
+	delete_counter(ship->get_stamina());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -465,6 +474,8 @@ std::string Game::encode() {
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Hp
 		message += std::to_string(ship->get_hp()->get()) + " ";
+		// Stamina
+		message += std::to_string(ship->get_stamina()->get()) + " ";
 	}
 
 	// Projectiles
