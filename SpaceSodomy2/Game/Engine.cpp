@@ -5,9 +5,10 @@
 // Constructor
 Engine::Engine() {}
 
-Engine::Engine(b2Body* _body, Command_Module* _command_module) {
+Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina) {
 	body = _body;
 	command_module = _command_module;
+	stamina = _stamina;
 }
 
 // Forces' methods
@@ -17,7 +18,7 @@ void Engine::apply_force_linear(b2Vec2 direction) {
 	// Apply rotation matrix
 	direction = b2Mul(transform, direction);
 	// Apply force in correct direction
-	body->ApplyForceToCenter(force_linear * direction, 1);
+	body->ApplyForceToCenter(force_linear * current_modifier * direction, 1);
 }
 
 void Engine::apply_force_angular(float dir) {
@@ -52,7 +53,14 @@ void Engine::set_force_angular(float value) {
 }
 
 // Step
-void Engine::step() {
+void Engine::step(float _dt) {
+	dt = _dt;
+	// Boost management
+	current_modifier = 1;
+	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
+		stamina->modify(-dt * boost_stamina_consumption);
+		current_modifier = boost_modifier;
+	}
 	// Command processing
 	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
 		stabilize_rotation();

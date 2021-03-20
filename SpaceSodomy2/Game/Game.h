@@ -47,17 +47,17 @@ protected:
 	std::string map_path = "";
 
 	// Create functions
-	Player* create_player(int id, sf::Color color = {}, std::string name = "_");
-	b2Body* create_round_body(b2Vec2 pos, float angle, float radius, float mass);
-	Gun* create_gun();
-	Command_Module* create_command_module();
-	Engine* create_engine(b2Body* = nullptr, Command_Module* = nullptr);
-	Counter* create_counter(float val = 0, float change_vel = 0);
+	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
+	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
+	Gun*             create_gun();
+	Command_Module*  create_command_module();
+	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr);
+	Counter*         create_counter(float val = 0, float change_vel = 0);
 	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr);
-	Ship* create_ship(Player* player, b2Vec2 pos, float angle);
-	Wall* create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
-	Projectile* create_projectile(Projectile_Def);
-	Sound* create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
+	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
+	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
+	Projectile*      create_projectile(Projectile_Def);
+	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
 
 	// Delete functions
 	void delete_body(b2Body*);

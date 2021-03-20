@@ -64,6 +64,8 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
 	if (key_by_name("SHOOT"))
 		command_module.set_command(Command_Module::SHOOT, 1);
+	if (key_by_name("BOOST"))
+		command_module.set_command(Command_Module::BOOST, 1);
 
 	// Zoom out
 	if (key_by_name("ZOOM_OUT"))
@@ -104,6 +106,7 @@ Control::Control() {
 	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A};
 	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
 	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D};
+	key_matches["BOOST"] = { sf::Keyboard::LShift};
 	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
 	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
 	key_matches["SHOOT"] = { sf::Keyboard::Space};

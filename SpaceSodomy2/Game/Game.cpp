@@ -76,8 +76,8 @@ Command_Module* Game::create_command_module() {
 	return command_module;
 }
 
-Engine* Game::create_engine(b2Body* body, Command_Module* command_module) {
-	auto engine = new Engine(body, command_module);
+Engine* Game::create_engine(b2Body* body, Command_Module* command_module, Counter* stamina) {
+	auto engine = new Engine(body, command_module, stamina);
 	engines.insert(engine);
 	id_manager.set_id(engine);
 	return engine;
@@ -117,10 +117,6 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto command_module = new Command_Module();
 	player->set_command_module(command_module);
 
-	// Engine
-	auto engine = create_engine(body, command_module);
-	ship->set_engine(engine);
-
 	// Gun
 	auto gun = create_gun();
 	gun->set(body, player);
@@ -134,6 +130,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto stamina = create_counter(100);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
+
+	// Engine
+	auto engine = create_engine(body, command_module, stamina);
+	ship->set_engine(engine);
 
 	// Damage receiver
 	auto damage_receiver = create_damage_receiver(body, hp);
@@ -256,7 +256,7 @@ void Game::process_ships() {
 
 void Game::process_engines() {
 	for (auto engine : engines)
-		engine->step();
+		engine->step(dt);
 }
 
 void Game::process_projectiles() {
