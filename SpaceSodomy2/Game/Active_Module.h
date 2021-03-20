@@ -10,7 +10,7 @@ class Active_Module : public iId {
 protected:
 	// Common for all modules
 	float recharge_time = 0.3;
-	float stamina_consumption = 20;
+	float stamina_consumption = 10;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player

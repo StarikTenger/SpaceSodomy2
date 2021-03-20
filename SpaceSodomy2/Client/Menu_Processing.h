@@ -28,6 +28,7 @@ private:
 		b2Vec2 pos, b2Vec2 indent, int character_size);
 	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
+	bool disactivated = 0;
 public:
 	Menu_Processing();
 	bool active = 1;

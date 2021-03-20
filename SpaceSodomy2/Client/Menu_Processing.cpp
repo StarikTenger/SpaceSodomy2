@@ -194,12 +194,16 @@ void Menu_Processing::step() {
 		for (auto menu : menus) {
 			menu->step();
 		}
+		disactivated = 1;
 	}
 	if (!active) {
-		events.push(name_to_id["ApplyClientConfig"]);
-		events.push(name_to_id["ApplyKeys"]);
+		if (disactivated) {
+			events.push(name_to_id["ApplyClientConfig"]);
+			events.push(name_to_id["ApplyKeys"]);
+		}
 		while (keyboard->text_entered->size())
 			keyboard->text_entered->pop();
+		disactivated = 0;
 	}
 	while (!events.empty()){
 		if (name_to_id["NewGame"] == events.front()) { // New game button
