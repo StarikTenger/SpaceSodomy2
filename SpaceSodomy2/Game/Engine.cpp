@@ -78,7 +78,7 @@ void Engine::step(float _dt) {
 	if (command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
 		apply_force_angular(1);
 	// Boost consumption
-	if (is_linear_force_used && command_module->get_command(Command_Module::BOOST)) {
+	if (stamina->get() > 0 && is_linear_force_used && command_module->get_command(Command_Module::BOOST)) {
 		stamina->modify(-dt * boost_stamina_consumption);
 	}
 }
