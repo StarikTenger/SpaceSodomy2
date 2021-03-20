@@ -44,11 +44,8 @@ Gun* Game::create_gun() {
 	active_modules.insert(gun);
 	// Counter
 	auto counter = create_counter();
-	auto cooldown_delay = create_counter();
 	counter->set_change_vel(-1);
-	cooldown_delay->set_change_vel(-1);
 	gun->set_recharge_counter(counter);
-	gun->set_stamina_cooldown_delay_counter(cooldown_delay);
 	// Managers
 	gun->set_projectile_manager(&projectile_manager);
 	gun->set_event_manager(&sound_manager);
@@ -131,7 +128,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_hp(hp);
 
 	// Stamina
-	auto stamina = create_counter(100);
+	auto stamina = create_counter(100, 100);
+	stamina->set_delay(1);
+	stamina->set_change_vel(20);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
 
