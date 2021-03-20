@@ -205,6 +205,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_body(ship->get_body());
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
+	delete_damage_receiver(ship->get_damage_receiver());
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
 	// Player management
