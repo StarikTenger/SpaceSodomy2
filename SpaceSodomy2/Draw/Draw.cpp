@@ -100,12 +100,13 @@ void Draw::clear() {
 	window->clear();
 }
 
-void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color) {
+void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle) {
 	sf::RectangleShape rectangle;
 	rectangle.setOrigin(box.x / 2, box.y / 2);
 	rectangle.setSize(sf::Vector2f(box.x, box.y));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(pos.x, pos.y);
+	rectangle.setRotation(angle);
 	window->draw(rectangle);
 }
 

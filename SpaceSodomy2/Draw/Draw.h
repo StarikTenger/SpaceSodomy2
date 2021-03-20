@@ -48,7 +48,7 @@ public:
 
 	// Primirives
 	void clear();
-	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
+	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void fill_circle(b2Vec2 pos, float r, sf::Color color);
 	void line(b2Vec2 start, b2Vec2 finish, sf::Color color);

@@ -26,6 +26,10 @@ void Bar::set_front_color(sf::Color front_color_) {
 void Bar::set_text_color(sf::Color text_color_) {
 	text_color = text_color_;
 }
+void Bar::set_angle(float angle_) {
+	text.set_text_angle(angle_);
+	angle = angle_;
+}
 
 // Get methods
 float Bar::get_max_value() {
@@ -52,12 +56,14 @@ bool Bar::is_critical() {
 }
 
 void Bar::step() {
-	text.set_pos(get_pos());
-	text.set_text(std::to_string(int(value)));
-	text.set_color(text_color);
-	text.set_text_character_pixel_size(character_size);
-	text.set_draw(get_draw());
-	text.set_mouse_pos(get_mouse_pos());
+	if (draw_text) {
+		text.set_pos(get_pos());
+		text.set_text(std::to_string(int(value)));
+		text.set_color(text_color);
+		text.set_text_character_pixel_size(character_size);
+		text.set_draw(get_draw());
+		text.set_mouse_pos(get_mouse_pos());
+	}
 
 	if (is_critical()) {
 		float mod = (0.5 + sin(float(aux::get_milli_count()) / 100) / 2) * 0.15;
@@ -72,8 +78,9 @@ void Bar::step() {
 
 	primitive_step();
 	//std::cout << get_pos().x << " " << get_pos().y << " " << get_scale().x << " " << get_scale().y << "\n";
-	get_draw()->fill_rect(get_pos(), get_scale(), current_back_color);
+	get_draw()->fill_rect(get_pos(), get_scale(), current_back_color, angle);
 	get_draw()->fill_rect(get_pos() - b2Vec2(get_scale().x * (max_value - value) / max_value / 2 , 0),
-		get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0), front_color);
-	text.step();
+		get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0), front_color, angle);
+	if (draw_text) 
+		text.step();
 }

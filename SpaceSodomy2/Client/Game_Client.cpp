@@ -52,11 +52,45 @@ void Game_Client::display(int id) {
 			!ship->get_body()->GetFixtureList() ||
 			!ship->get_body()->GetFixtureList()->GetShape())
 			continue;
+
+		// HP_bar & name
+		b2Vec2* mouse_pos = new b2Vec2;
+		aux::Keyboard* keyboard = new aux::Keyboard;
+		Bar* HP_bar = new Bar();
+		b2Vec2 pos = ship->get_body()->GetPosition() - draw->get_camera()->get_pos();
+		pos.x *= draw->get_camera()->get_scale();
+		pos.y *= draw->get_camera()->get_scale();
+		HP_bar->set_value(ship->get_hp()->get());
+		HP_bar->set_pos(pos + b2Vec2(0,10));
+		HP_bar->set_scale(b2Vec2(50, 10));
+		HP_bar->draw_text = 0;
+		HP_bar->set_draw(draw);
+		HP_bar->set_mouse_pos(mouse_pos);
+		HP_bar->set_angle((draw->get_camera()->get_angle() + b2_pi / 2) / b2_pi * 180);
+		HP_bar->set_keyboard(keyboard);
+		Constant_Text* name = new Constant_Text();
+		name->set_color(ship->get_player()->get_color());
+		name->set_text(ship->get_player()->get_name());
+		name->set_pos(pos + b2Vec2(0, 20));
+		name->set_text_character_pixel_size(30);
+		name->set_text_scale(1);
+		name->set_draw(draw);
+		name->set_mouse_pos(mouse_pos);
+		name->set_keyboard(keyboard);
+		name->set_text_angle((draw->get_camera()->get_angle() + b2_pi / 2) / b2_pi * 180);
+
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
 		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors", ship->get_body()->GetPosition(), {radius, radius}, 
 			ship->get_body()->GetAngle(), color);
+
+		Camera camera_backup = *draw->get_camera();
+		draw->apply_camera(b2Vec2(0, 0), 1, camera_backup.get_angle());
+		HP_bar->step();
+		name->step();
+		draw->set_camera(camera_backup);
+		draw->apply_camera();
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
@@ -69,10 +103,13 @@ void Game_Client::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i))
-				draw->image(textures[i], ship->get_body()->GetPosition(), 
+				draw->image(textures[i], ship->get_body()->GetPosition(),
 					{ radius, radius }, ship->get_body()->GetAngle(), color);
 		}
-
+		delete mouse_pos;
+		delete keyboard;
+		delete HP_bar;
+		delete name;
 	}
 
 	// Projectiles

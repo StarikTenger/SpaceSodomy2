@@ -49,6 +49,12 @@ void Text_Field::set_indent(b2Vec2 indent_) {
 void Text_Field::set_keyboard_active(bool keyboard_active_) {
 	keyboard_active = keyboard_active_;
 }
+void Text_Field::set_text_scale(float scale) {
+	text.setScale(scale, scale);
+}
+void Text_Field::set_text_angle(float angle) {
+	text.setRotation(angle);
+}
 
 void Text_Field::step() {
 	if (!font_setted) { // if font isn't setted -> set standart font
