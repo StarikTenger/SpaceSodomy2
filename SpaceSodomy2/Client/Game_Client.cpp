@@ -54,30 +54,29 @@ void Game_Client::display(int id) {
 			continue;
 
 		// HP_bar & name
-		b2Vec2* mouse_pos = new b2Vec2;
-		aux::Keyboard* keyboard = new aux::Keyboard;
-		Bar* HP_bar = new Bar();
-		b2Vec2 pos = ship->get_body()->GetPosition() - draw->get_camera()->get_pos();
-		pos.x *= draw->get_camera()->get_scale();
-		pos.y *= draw->get_camera()->get_scale();
-		HP_bar->set_value(ship->get_hp()->get());
-		HP_bar->set_pos(pos + b2Vec2(0,10));
-		HP_bar->set_scale(b2Vec2(50, 10));
-		HP_bar->draw_text = 0;
-		HP_bar->set_draw(draw);
-		HP_bar->set_mouse_pos(mouse_pos);
-		HP_bar->set_angle((draw->get_camera()->get_angle() + b2_pi / 2) / b2_pi * 180);
-		HP_bar->set_keyboard(keyboard);
-		Constant_Text* name = new Constant_Text();
-		name->set_color(ship->get_player()->get_color());
-		name->set_text(ship->get_player()->get_name());
-		name->set_pos(pos + b2Vec2(0, 20));
-		name->set_text_character_pixel_size(30);
-		name->set_text_scale(1);
-		name->set_draw(draw);
-		name->set_mouse_pos(mouse_pos);
-		name->set_keyboard(keyboard);
-		name->set_text_angle((draw->get_camera()->get_angle() + b2_pi / 2) / b2_pi * 180);
+		if (ship->get_player()->get_id() != id) {// && !object.effects[Bonus::INVISIBILITY]) {
+			// hp
+			{
+				auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());
+				float l = ship->get_hp()->get() / ship->get_hp()->get_max();
+				draw->image("box", ship->get_body()->GetPosition() + shift,	b2Vec2(1, 0.1),
+					draw->get_camera()->get_angle() + b2_pi / 2, { 100, 20, 20, 255 });
+				shift = b2Vec2(0, 0) - aux::rotate({ (1 - l) / 2, -0.5 },
+					draw->get_camera()->get_angle() + b2_pi / 2);
+				draw->image("box", ship->get_body()->GetPosition() + shift, b2Vec2(1*l, 0.1),
+					draw->get_camera()->get_angle() + b2_pi / 2, { 255, 0, 0, 255 });
+			}
+
+			// Name
+			{
+				auto shift = b2Vec2(0, 0) - 0.7 * aux::direction(draw->get_camera()->get_angle());
+				std::string str = ship->get_player()->get_name();
+				if (str.size() > 18)
+					str = str.substr(0, 18);
+				draw->text(str, "font", ship->get_body()->GetPosition() + shift, 0.03 / 5,
+					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
+			}
+		}
 
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
@@ -87,8 +86,6 @@ void Game_Client::display(int id) {
 
 		Camera camera_backup = *draw->get_camera();
 		draw->apply_camera(b2Vec2(0, 0), 1, camera_backup.get_angle());
-		HP_bar->step();
-		name->step();
 		draw->set_camera(camera_backup);
 		draw->apply_camera();
 		// Engines
@@ -106,10 +103,6 @@ void Game_Client::display(int id) {
 				draw->image(textures[i], ship->get_body()->GetPosition(),
 					{ radius, radius }, ship->get_body()->GetAngle(), color);
 		}
-		delete mouse_pos;
-		delete keyboard;
-		delete HP_bar;
-		delete name;
 	}
 
 	// Projectiles

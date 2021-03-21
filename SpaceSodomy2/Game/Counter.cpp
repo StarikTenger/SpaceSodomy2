@@ -16,6 +16,9 @@ Counter::Counter(float _value, float _max_value) {
 float Counter::get() {
 	return value;
 }
+float Counter::get_max() {
+	return max_value;
+}
 
 void Counter::set(float _value) {
 	value = _value;

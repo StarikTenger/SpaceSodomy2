@@ -175,3 +175,16 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	drawnText.setPosition(aux::to_Vector2f(pos));
 	window->draw(drawnText);
 }
+
+void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
+	sf::Text drawnText;
+	drawnText.setFont(*fonts[font_name]);
+	drawnText.setString(text);
+	drawnText.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+	drawnText.setCharacterSize(60);
+	drawnText.setScale(size / 2, size);
+	drawnText.setOrigin(floor(drawnText.getLocalBounds().width / 2), floor(drawnText.getLocalBounds().height));
+	drawnText.setPosition(aux::to_Vector2f(pos));
+	drawnText.setRotation(dir * 180 / b2_pi);
+	window->draw(drawnText);
+}

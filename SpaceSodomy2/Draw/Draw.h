@@ -56,5 +56,6 @@ public:
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
 	void display_text(sf::Text* text);
 	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
+	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 };
 

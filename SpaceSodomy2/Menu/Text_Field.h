@@ -30,6 +30,7 @@ public:
 	void set_keyboard_active(bool keyboard_active_);
 	void set_text_scale(float scale);
 	void set_text_angle(float angle);
+	void set_text_center();
 
 	void step();
 };

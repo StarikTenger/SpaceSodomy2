@@ -184,3 +184,7 @@ float aux::get_text_max_height(sf::Text text) {
 	}
 	return max_height;
 }
+
+b2Vec2 aux::direction(float angle) {
+	return b2Vec2(cos(angle), sin(angle));
+}
