@@ -9,11 +9,11 @@ class Engine : public iId{
 private:
 	float dt = 0;
 	// Properties
-	float force_linear = 2;
+	float force_linear = 1.5;
 	float force_angular = 0.5;
 	float current_modifier = 2;
 	float boost_modifier = 2;
-	float boost_stamina_consumption = 50;
+	float boost_stamina_consumption = 20;
 
 	// To manage boost correctly
 	bool is_linear_force_used = 0;
