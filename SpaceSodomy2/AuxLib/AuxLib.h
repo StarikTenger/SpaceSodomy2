@@ -65,24 +65,4 @@ public:
 	};
 	// Get text scale
 	static float get_text_max_height(sf::Text text);
-
-	// Checks if the point is in the polygon. Uses angles. 
-	static bool is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_inner,
-		float local_eps = 0.1);
-	// Distance from line given as two points. Is safe
-	static float dist_from_line(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
-	// Distance from segment given as two points
-	static float dist_from_segment(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
-	//Distance from polygon. Is always positive
-	static float dist_from_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon);
-
-	// Integer bounding box for polygons. 
-	static b2Vec2 box_size(const std::vector<b2Vec2>& polygon);
-	// Polygon origin as in SFML -- the left upper bounding point
-	static b2Vec2 origin_pos(const std::vector<b2Vec2>& polygon);
-
-	template<class T>
-	static b2Vec2 mult(b2Vec2 a, T b) {
-		return b2Vec2(a.x * b, a.y * b);
-	}
 };

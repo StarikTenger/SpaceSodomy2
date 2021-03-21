@@ -40,8 +40,6 @@ void Game_Client::display(int id) {
 	// Walls
 	for (auto wall : walls) {
 		auto vertices = wall->get_vertices();
-		draw->image("wall " + std::to_string(wall->hash()), 
-			wall->get_origin_pos() + b2Vec2(wall->get_box_size().x/2, wall->get_box_size().y /2) , wall->get_box_size(), 0);
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
 			draw->line(vertices[i], vertices[j], {255, 255, 255});
@@ -107,12 +105,6 @@ void Game_Client::decode(std::string source) {
 			if (map_path != path) {
 				map_path = path;
 				load_map(map_path);
-				for (auto wall : walls) {
-					std::cout << (wall->get_orientation() ? "OUTER " : "INNER ");
-					draw->make_polygon_texture(wall->get_vertices(), wall->get_orientation(), sf::Vector2f(0.1, 0.1),
-					"wall", "wall " + std::to_string(wall->hash()), 3.5, wall->get_outer_bound_of_inner_wall_textures());
-					wall->init_draw();
-				}
 			}
 		}
 		// Player

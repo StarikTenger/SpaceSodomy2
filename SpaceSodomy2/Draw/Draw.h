@@ -46,7 +46,7 @@ public:
 	// Displays the render
 	void display();
 
-	// Primitives
+	// Primirives
 	void clear();
 	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
@@ -56,11 +56,5 @@ public:
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
 	void display_text(sf::Text* text);
 	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
-
-	// Generates a polygon-fitting texture.
-	// Is inefficient
-	void make_polygon_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
-		sf::Vector2f scale, std::string base_texture, std::string result_texture,
-		float half_translucent_distance, int outer_bound_of_inner_wall_textures);
 };
 
