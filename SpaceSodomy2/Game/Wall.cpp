@@ -21,6 +21,7 @@ void Wall::set(b2World* world, std::vector<b2Vec2> _vertices, int _orientation) 
 	vertices = _vertices;
 	// Check for orientation
 	float area = aux::area(vertices);
+	orientation = _orientation;
 	if (area * (_orientation == OUTER ? 1 : -1) < 0)
 		std::reverse(vertices.begin(), vertices.end());
 
