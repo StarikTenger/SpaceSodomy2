@@ -395,7 +395,7 @@ int Game::load_map(std::string path) {
 		if (symbol == "WALL") {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
-			int orientation = Wall::OUTER;
+			int orientation = Wall::INNER;
 			float restitution = 0.5;
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")

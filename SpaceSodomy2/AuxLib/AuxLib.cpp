@@ -184,3 +184,79 @@ float aux::get_text_max_height(sf::Text text) {
 	}
 	return max_height;
 }
+
+
+bool aux::is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_outer,
+	float local_eps) {
+	float rotation = 0;
+	for (int i = 0; i < polygon.size(); i++) {
+		int prev = i;
+		int next = (i + 1) % polygon.size();
+		auto a = polygon[prev] - point;
+		auto b = polygon[next] - point;
+		rotation += acos(b2Dot(a, b) / (a.Length() * b.Length())) *
+			(2 * (b2Cross(b, a) > 0) - 1);
+	}
+	return (abs(rotation) > local_eps) != !is_outer; // != is XOR
+}
+
+float aux::dist_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
+	if ((line_end - line_beg).Length() > b2_epsilon) {
+		return abs(b2Dot(line_beg - point, b2Cross((line_end - line_beg), 1))) / (line_end - line_beg).Length();
+	}
+	else {
+		return (line_beg - point).Length();
+	}
+}
+
+float aux::dist_from_segment(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end) {
+	if (b2Dot(segment_beg - point, segment_beg - segment_end) *
+		b2Dot(segment_end - point, segment_beg - segment_end) < 0) {
+		return dist_from_line(point, segment_beg, segment_end);
+	}
+	else {
+		return std::min((segment_beg - point).Length(), (segment_end - point).Length());
+	}
+}
+
+float aux::dist_from_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon) {
+	float ans = dist_from_segment(point, polygon[0], polygon[polygon.size() - 1]);
+	for (int i = 0; i < polygon.size() - 1; i++) {
+		ans = std::min(ans,
+			dist_from_segment(point, polygon[i], polygon[i + 1]));
+	}
+	return ans;
+}
+
+b2Vec2 aux::box_size(const std::vector<b2Vec2>& polygon) {
+	float max_x = polygon[0].x;
+	for (int i = 0; i < polygon.size(); i++) {
+		max_x = std::max(max_x, polygon[i].x);
+	}
+	float max_y = polygon[0].y;
+	for (int i = 0; i < polygon.size(); i++) {
+		max_y = std::max(max_y, polygon[i].y);
+	}
+	float min_x = polygon[0].x;
+	for (int i = 0; i < polygon.size(); i++) {
+		min_x = std::min(min_x, polygon[i].x);
+	}
+	float min_y = polygon[0].y;
+	for (int i = 0; i < polygon.size(); i++) {
+		min_y = std::min(min_y, polygon[i].y);
+	}
+	return b2Vec2(max_x - min_x, max_y - min_y);
+}
+
+b2Vec2 aux::origin_pos(const std::vector<b2Vec2>& polygon) {
+	float min_x = polygon[0].x;
+	for (int i = 0; i < polygon.size(); i++) {
+		min_x = std::min(min_x, polygon[i].x);
+	}
+	float min_y = polygon[0].y;
+	for (int i = 0; i < polygon.size(); i++) {
+		min_y = std::min(min_y, polygon[i].y);
+	}
+	return b2Vec2(min_x, min_y);
+}
+
