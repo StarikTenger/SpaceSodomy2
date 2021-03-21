@@ -193,12 +193,8 @@ void Game_Client::decode(std::string source) {
 			// Hp
 			float hp;
 			stream >> hp;
-			if (hp < 50) {
-				std::cout << "hp: " << hp << "\n";
-			}
 			float stamina;
 			stream >> stamina;
-			std::cout << "stamina: " << stamina << "\n";
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->get_hp()->set(hp);

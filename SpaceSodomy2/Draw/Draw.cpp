@@ -237,6 +237,8 @@ void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_ou
 	textures[result_texture]->loadFromImage(new_image);
 
 	std::cout << result_texture << " done\n";
+}
+
 void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
 	sf::Text drawnText;
 	drawnText.setFont(*fonts[font_name]);
