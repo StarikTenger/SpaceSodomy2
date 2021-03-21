@@ -245,13 +245,13 @@ void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
 		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width);
 
 	export_texture(wall_texture + " " + std::to_string(wall_id),
-		"textures/walls/" + map_name + '/' + wall_texture + " " + std::to_string(wall_id) + ".png");
+		"textures/walls/" + map_name + '_' + wall_texture + " " + std::to_string(wall_id) + ".png");
 }
 
 void Draw::load_wall_textures(int walls_size, std::string wall_name, std::string map_name){
 	for (int i = 0; i < walls_size; i++) {
 		load_texture(wall_name + " " + std::to_string(i),
-			"textures/walls/" + map_name + '/' + wall_name + " " + std::to_string(i) + ".png");
+			"textures/walls/" + map_name + '_' + wall_name + " " + std::to_string(i) + ".png");
 	}
 }
 
