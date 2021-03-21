@@ -281,7 +281,7 @@ void Game::process_projectiles() {
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-				damage_receiver->damage(projectile->get_damage());
+				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				projectiles_to_delete.insert(projectile);
 			}
 		}
