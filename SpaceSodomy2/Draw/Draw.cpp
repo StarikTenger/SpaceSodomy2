@@ -174,3 +174,57 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	drawnText.setPosition(aux::to_Vector2f(pos));
 	window->draw(drawnText);
 }
+
+void Draw::make_polygon_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+	sf::Vector2f scale, std::string base_texture, std::string result_texture,
+	float half_translucent_distance, int outer_bound_of_inner_wall_textures) {
+
+	std::cout << "making texture of: " << result_texture << '\n';
+
+	sf::Image base_image = get_texture(base_texture)->copyToImage();
+	sf::Image new_image;
+	sf::Color::Transparent;
+
+	sf::Vector2i image_size;
+	b2Vec2 origin;
+	b2Vec2 point;
+
+	if (is_outer) {
+		image_size.x = aux::box_size(polygon).x / scale.x;
+		image_size.y = aux::box_size(polygon).y / scale.y;
+
+		origin = aux::origin_pos(polygon);
+	}
+	else {
+		image_size.x = aux::box_size(polygon).x / scale.x * outer_bound_of_inner_wall_textures;
+		image_size.y = aux::box_size(polygon).y / scale.y * outer_bound_of_inner_wall_textures;
+
+		origin.x = aux::origin_pos(polygon).x - aux::box_size(polygon).x * (outer_bound_of_inner_wall_textures / 2);
+		origin.y = aux::origin_pos(polygon).y - aux::box_size(polygon).y * (outer_bound_of_inner_wall_textures / 2);
+	}
+
+	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
+
+	for (int i = 0; i < image_size.x; i++) {
+		for (int j = 0; j < image_size.y; j++) {
+
+			point.x = origin.x + i * scale.x;
+			point.y = origin.y + j * scale.y;
+
+			auto base_color = sf::Color::Transparent;
+			if (aux::is_in_polygon(point, polygon, is_outer)) {
+				base_color = base_image.getPixel(i % base_image.getSize().x,
+					j % base_image.getSize().y);
+				base_color.a /= (1 + pow((aux::dist_from_polygon(point, polygon) / half_translucent_distance), 2));
+			}
+			new_image.setPixel(i, j, base_color);
+		}
+	}
+	sf::Texture* tex = new sf::Texture();
+	if (!textures.insert(std::make_pair(result_texture, tex)).second) {
+		std::cout << "collision in wall hashes\n";
+	}
+	textures[result_texture]->loadFromImage(new_image);
+
+	std::cout << result_texture << " done\n";
+}

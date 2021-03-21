@@ -10,7 +10,13 @@ private:
 	int orientation = OUTER;
 	std::vector<b2Vec2> vertices;
 	b2Body* body = nullptr;
+	b2Vec2 origin_pos;
+	b2Vec2 box_size;
+
+	//should be odd
+	int outer_bound_of_inner_wall_textures = 3;
 public:
+
 	enum Orientation {
 		INNER, OUTER
 	};
@@ -23,5 +29,15 @@ public:
 	// Creating a wall with the  
 	void set(b2World*, std::vector<b2Vec2>, int _orientation = OUTER);
 	//void set_orientation(int);
+
+	//A invariant unique id for walls
+	int hash();
+
+	// Initializes params for drawing
+	void init_draw();
+
+	b2Vec2 get_origin_pos();
+	b2Vec2 get_box_size();
+	int get_outer_bound_of_inner_wall_textures();
 };
 
