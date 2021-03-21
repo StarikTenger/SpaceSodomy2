@@ -28,6 +28,14 @@ Counter* Player::get_time_to_respawn() {
 	return time_to_respawn;
 }
 
+int Player::get_deaths() {
+	return deaths;
+}
+
+int Player::get_kills() {
+	return kills;
+}
+
 // Set methods
 void Player::set_is_alive(bool val) {
 	if (!val) {
@@ -51,4 +59,19 @@ void Player::set_command_module(Command_Module* val) {
 
 void Player::set_time_to_respawn(Counter* val) {
 	time_to_respawn = val;
+}
+
+void Player::set_deaths(int deaths_) {
+	deaths = deaths_;
+}
+void Player::set_kills(int kills_) {
+	kills = kills_;
+}
+
+void Player::add_death() {
+	deaths++;
+}
+
+void Player::add_kill() {
+	kills++;
 }

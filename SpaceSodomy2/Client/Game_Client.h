@@ -25,5 +25,7 @@ public:
 
 	// Get ship
 	Ship* get_ship(int id);
-};
 
+	// Get players
+	std::map<int, Player*>* get_players();
+};

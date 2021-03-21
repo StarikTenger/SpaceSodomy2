@@ -150,10 +150,15 @@ void Game_Client::decode(std::string source) {
 			// Name
 			std::string name;
 			stream >> name;
+			// Deaths & kills
+			int deaths, kills;
+			stream >> deaths >> kills;
 			// Creating player
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
+			player->set_deaths(deaths);
+			player->set_kills(kills);
 		}
 		// Ship
 		if (symbol == "S") {
@@ -223,4 +228,8 @@ Ship* Game_Client::get_ship(int id) {
 	for (auto ship : ships)
 		if (ship->get_player() == players[id])
 			return ship;
+}
+
+std::map<int, Player*>* Game_Client::get_players() {
+	return &players;
 }

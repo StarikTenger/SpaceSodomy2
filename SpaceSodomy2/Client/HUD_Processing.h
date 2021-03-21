@@ -8,12 +8,23 @@ class HUD_Processing {
 private:
 	Bar HP_bar, stamina_bar;
 
+	int table_use_windows_cords;
+	b2Vec2 table_pos;
+	float table_character_size;
+	float table_name_indent;
+	b2Vec2 table_indent;
+
 	Game_Client* game;
 	Client_Network* player_network;
 
-	void apply_bar(Bar* bar, std::stringstream* config, Draw* draw, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
+	Draw* draw;
+	b2Vec2* mouse_pos;
+	aux::Keyboard* keyboard;
+
+	void apply_bar(Bar* bar, std::stringstream* config);
+	void table_step();
 public:
-	HUD_Processing(Draw* draw, b2Vec2* mouse_pos, aux::Keyboard* keyboard, Game_Client* game_, Client_Network* player_network_);
+	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_, Client_Network* player_network_);
 
 	void step();
 };

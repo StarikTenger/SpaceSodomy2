@@ -14,6 +14,10 @@ Counter* Damage_Receiver::get_hp() {
     return hp;
 }
 
+Player* Damage_Receiver::get_last_hit() {
+    return last_hit;
+}
+
 void Damage_Receiver::set_body(b2Body* val) {
     body = val;
 }
@@ -22,6 +26,7 @@ void Damage_Receiver::set_hp(Counter* val) {
     hp = val;
 }
 
-void Damage_Receiver::damage(float value) {
+void Damage_Receiver::damage(float value, Player* hit_by) {
     hp->modify(-value);
+    last_hit = hit_by;
 }
