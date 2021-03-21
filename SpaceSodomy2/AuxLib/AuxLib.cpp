@@ -164,6 +164,7 @@ b2Vec2 aux::angle_to_vec(float angle) {
 }
 
 float aux::get_text_max_height(sf::Text text) {
+	return 0;
 	size_t character_size = text.getCharacterSize();
 	sf::Font font = *text.getFont();
 	std::string text_string = text.getString().toAnsiString();
