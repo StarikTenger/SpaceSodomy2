@@ -254,8 +254,11 @@ void Game::process_ships() {
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
 		// Checking for < zero hp
-		if (ship->get_hp()->get() <= 0)
+		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
+			ship->get_player()->add_death();
+			ship->get_damage_receiver()->get_last_hit()->add_kill();
+		}
 	}
 	for (auto ship : ships_to_delete)
 		delete_ship(ship);
@@ -463,6 +466,9 @@ std::string Game::encode() {
 		message += std::to_string(player.second->get_color().b) + " ";
 		// Name
 		message += player.second->get_name() + " ";
+		// Deaths & kills
+		message += std::to_string(player.second->get_deaths()) + " ";
+		message += std::to_string(player.second->get_kills()) + " ";
 	}
 
 	// Ships
