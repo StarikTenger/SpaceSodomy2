@@ -9,7 +9,9 @@
 Game::Game() {
 	new_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
 	// Contact filter
-	physics.SetContactFilter(&collision_filter);
+	//physics.SetContactFilter(&collision_filter);
+	physics.SetContactListener(&contact_table);
+	contact_table.set_collision_filter(&collision_filter);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -89,8 +91,9 @@ Counter* Game::create_counter(float val, float change_vel) {
 	return counter;
 }
 
-Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp) {
+Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
+	damage_receiver->set_player(player);
 	damage_receivers.insert(damage_receiver);
 	id_manager.set_id(damage_receiver);
 	return damage_receiver;
@@ -125,7 +128,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Stamina
 	auto stamina = create_counter(100, 100);
-	stamina->set_delay(0.5);
+	stamina->set_delay(0.7);
 	stamina->set_change_vel(50);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
@@ -135,7 +138,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_engine(engine);
 
 	// Damage receiver
-	auto damage_receiver = create_damage_receiver(body, hp);
+	auto damage_receiver = create_damage_receiver(body, hp, player);
 	ship->set_damage_receiver(damage_receiver);
 
 	return ship;
@@ -162,6 +165,8 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_body(body);
 	projectile->set_player(projectile_def.player);
 	projectile->set_damage(projectile_def.damage);
+	projectile->set_hp(create_counter(projectile_def.damage, 0));
+	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player()));
 
 	// Adding to vectors
 	projectiles.insert(projectile);
@@ -187,6 +192,8 @@ void Game::delete_body(b2Body* body) {
 
 void Game::delete_projectile(Projectile* projectile) {
 	delete_body(projectile->get_body());
+	delete_counter(projectile->get_hp());
+	delete_damage_receiver(projectile->get_damage_receiver());
 	projectiles.erase(projectile);
 	delete projectile;
 }
@@ -248,8 +255,11 @@ void Game::process_ships() {
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
 		// Checking for < zero hp
-		if (ship->get_hp()->get() <= 0)
+		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
+			ship->get_player()->add_death();
+			ship->get_damage_receiver()->get_last_hit()->add_kill();
+		}
 	}
 	for (auto ship : ships_to_delete)
 		delete_ship(ship);
@@ -264,24 +274,26 @@ void Game::process_projectiles() {
 	std::set<Projectile*> projectiles_to_delete;
 	// Dealing damage
 	for (auto projectile : projectiles) {
+		// Checking hp
+		if (projectile->get_hp()->get() <= 0) {
+			projectiles_to_delete.insert(projectile);
+		}
+		// Dealing damage
 		for (auto damage_receiver : damage_receivers) {
-			if (contact_table.check(projectile->get_body(),
-				damage_receiver->get_body())) {
-				std::cout << "damage\n";
-				damage_receiver->damage(projectile->get_damage());
+			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
+				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				projectiles_to_delete.insert(projectile);
 			}
 		}
-	}
-
-	// Deleting
-	for (auto projectile : projectiles) {
 		// Checking for wall collision
 		for (auto wall : walls) {
 			if (contact_table.check(projectile->get_body(), wall->get_body()))
 				projectiles_to_delete.insert(projectile);
 		}
 	}
+
+	// Deleting
 	for (auto projectile : projectiles_to_delete)
 		delete_projectile(projectile);
 }
@@ -308,9 +320,7 @@ void Game::process_sound_manager() {
 void Game::process_physics() {
 	contact_table.reset();
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
-		if (contact->IsTouching())
-			contact_table.add(contact->GetFixtureA()->GetBody(), 
-				contact->GetFixtureB()->GetBody());
+
 		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() *
 			contact->GetFixtureB()->GetRestitution());
 	}
@@ -460,6 +470,9 @@ std::string Game::encode() {
 		message += std::to_string(player.second->get_color().b) + " ";
 		// Name
 		message += player.second->get_name() + " ";
+		// Deaths & kills
+		message += std::to_string(player.second->get_deaths()) + " ";
+		message += std::to_string(player.second->get_kills()) + " ";
 	}
 
 	// Ships

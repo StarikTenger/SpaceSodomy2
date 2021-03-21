@@ -28,6 +28,9 @@ public:
 	void set_text_character_pixel_size(unsigned int size_);
 	void set_indent(b2Vec2 indent_);
 	void set_keyboard_active(bool keyboard_active_);
+	void set_text_scale(float scale);
+	void set_text_angle(float angle);
+	void set_text_center();
 
 	void step();
 };

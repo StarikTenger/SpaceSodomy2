@@ -14,6 +14,8 @@ public:
 	Counter(float _value);
 	Counter(float _value, float _max_value);
 	float get();
+	float get_max();
+
 	void set(float);
 	void set_max(float);
 	void set_delay(float);

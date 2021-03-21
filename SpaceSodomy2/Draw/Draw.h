@@ -48,9 +48,9 @@ public:
 	// Displays the render
 	void display();
 
-	// Primitives
+	// Primirives
 	void clear();
-	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
+	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void fill_circle(b2Vec2 pos, float r, sf::Color color);
 	void line(b2Vec2 start, b2Vec2 finish, sf::Color color);
@@ -78,5 +78,6 @@ public:
 	//load map-specific wall textures
 	void load_wall_textures(int walls_size, std::string wall_name, std::string map_name);
 
+	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 };
 

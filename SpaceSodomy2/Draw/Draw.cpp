@@ -113,12 +113,13 @@ void Draw::clear() {
 	window->clear();
 }
 
-void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color) {
+void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle) {
 	sf::RectangleShape rectangle;
 	rectangle.setOrigin(box.x / 2, box.y / 2);
 	rectangle.setSize(sf::Vector2f(box.x, box.y));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(pos.x, pos.y);
+	rectangle.setRotation(angle);
 	window->draw(rectangle);
 }
 
@@ -236,6 +237,17 @@ void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_ou
 	textures[result_texture]->loadFromImage(new_image);
 
 	std::cout << result_texture << " done\n";
+void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
+	sf::Text drawnText;
+	drawnText.setFont(*fonts[font_name]);
+	drawnText.setString(text);
+	drawnText.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
+	drawnText.setCharacterSize(60);
+	drawnText.setScale(size / 2, size);
+	drawnText.setOrigin(floor(drawnText.getLocalBounds().width / 2), floor(drawnText.getLocalBounds().height));
+	drawnText.setPosition(aux::to_Vector2f(pos));
+	drawnText.setRotation(dir * 180 / b2_pi);
+	window->draw(drawnText);
 }
 
 void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,

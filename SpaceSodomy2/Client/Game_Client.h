@@ -2,12 +2,13 @@
 #include <Game/Game.h>
 #include <Draw/Draw.h>
 #include <Audio/Audio.h>
+#include <Menu/Bar.h>
+#include <Menu/Constant_Text.h>
 
 class Game_Client : public Game {
 private:
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
-
 public:
 	// Set methods
 	void set_draw(Draw* _draw);
@@ -24,5 +25,7 @@ public:
 
 	// Get ship
 	Ship* get_ship(int id);
-};
 
+	// Get players
+	std::map<int, Player*>* get_players();
+};

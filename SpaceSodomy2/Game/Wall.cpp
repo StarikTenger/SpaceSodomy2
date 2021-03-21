@@ -23,7 +23,6 @@ void Wall::set(b2World* world, std::vector<b2Vec2> _vertices, int _orientation) 
 	float area = aux::area(vertices);
 	if (area * (_orientation == OUTER ? 1 : -1) < 0)
 		std::reverse(vertices.begin(), vertices.end());
-	orientation = _orientation;
 
 	if (!body) {
 		b2BodyDef body_def;

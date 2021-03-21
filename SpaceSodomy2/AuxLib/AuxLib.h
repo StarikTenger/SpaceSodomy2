@@ -86,4 +86,6 @@ public:
 	static b2Vec2 mult(b2Vec2 a, T b) {
 		return b2Vec2(a.x * b, a.y * b);
 	}
+	// Get direction
+	static b2Vec2 direction(float angle);
 };

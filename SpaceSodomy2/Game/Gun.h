@@ -5,7 +5,7 @@
 
 class Gun : public Active_Module {
 protected:
-	float damage = 10;
+	float damage = 20;
 	Projectile_Manager* projectile_manager = nullptr;
 public:
 	void set_projectile_manager(Projectile_Manager*);

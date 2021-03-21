@@ -49,6 +49,12 @@ void Text_Field::set_indent(b2Vec2 indent_) {
 void Text_Field::set_keyboard_active(bool keyboard_active_) {
 	keyboard_active = keyboard_active_;
 }
+void Text_Field::set_text_scale(float scale) {
+	text.setScale(scale, scale);
+}
+void Text_Field::set_text_angle(float angle) {
+	text.setRotation(angle);
+}
 
 void Text_Field::step() {
 	if (!font_setted) { // if font isn't setted -> set standart font
@@ -91,7 +97,7 @@ void Text_Field::step() {
 		get_draw()->stroke_rect(get_pos() + b2Vec2(indent.x / 2.0, indent.y / 2.0), get_scale() + indent, sf::Color::White);
 	primitive_step();
 	//std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
-	text.setPosition(aux::to_Vector2f(get_pos()) - sf::Vector2f(text.getLocalBounds().width / 2.0,
-		height / 2.0));
+	text.setOrigin(sf::Vector2f(text.getLocalBounds().width / 2.0, height / 2.0));
+	text.setPosition(aux::to_Vector2f(get_pos()));
 	get_draw()->display_text(&text);
 }

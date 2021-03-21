@@ -10,12 +10,15 @@ private:
 	float max_value = 100;
 	float value = 50;
 	float critical_value = 30;
+	float angle = 0;
 	unsigned int character_size = 10;
 	sf::Color back_color = sf::Color(60, 60, 60, 190);
 	sf::Color front_color = sf::Color::Red;
 	sf::Color text_color = sf::Color::White;
 public:
 	Bar();
+
+	bool draw_text = 1;
 
 	// Set methods
 	void set_max_value(float max_value_);
@@ -24,6 +27,7 @@ public:
 	void set_back_color(sf::Color back_color_);
 	void set_front_color(sf::Color front_color_);
 	void set_text_color(sf::Color text_color_);
+	void set_angle(float angle_);
 
 	// Get methods
 	float get_max_value();

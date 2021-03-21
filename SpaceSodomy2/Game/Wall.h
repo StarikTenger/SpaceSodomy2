@@ -14,7 +14,6 @@ private:
 	b2Vec2 origin_pos;
 	b2Vec2 box_size;
 public:
-
 	enum Orientation {
 		INNER, OUTER
 	};

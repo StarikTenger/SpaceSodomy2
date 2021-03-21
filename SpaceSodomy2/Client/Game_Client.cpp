@@ -56,11 +56,42 @@ void Game_Client::display(int id) {
 			!ship->get_body()->GetFixtureList() ||
 			!ship->get_body()->GetFixtureList()->GetShape())
 			continue;
+
+		// HP_bar & name
+		if (ship->get_player()->get_id() != id) {// && !object.effects[Bonus::INVISIBILITY]) {
+			// hp
+			{
+				auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());
+				float l = ship->get_hp()->get() / ship->get_hp()->get_max();
+				draw->image("box", ship->get_body()->GetPosition() + shift,	b2Vec2(1, 0.1),
+					draw->get_camera()->get_angle() + b2_pi / 2, { 100, 20, 20, 255 });
+				shift = b2Vec2(0, 0) - aux::rotate({ (1 - l) / 2, -0.5 },
+					draw->get_camera()->get_angle() + b2_pi / 2);
+				draw->image("box", ship->get_body()->GetPosition() + shift, b2Vec2(1*l, 0.1),
+					draw->get_camera()->get_angle() + b2_pi / 2, { 255, 0, 0, 255 });
+			}
+
+			// Name
+			{
+				auto shift = b2Vec2(0, 0) - 0.7 * aux::direction(draw->get_camera()->get_angle());
+				std::string str = ship->get_player()->get_name();
+				if (str.size() > 18)
+					str = str.substr(0, 18);
+				draw->text(str, "font", ship->get_body()->GetPosition() + shift, 0.03 / 5,
+					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
+			}
+		}
+
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
 		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors", ship->get_body()->GetPosition(), {radius, radius}, 
 			ship->get_body()->GetAngle(), color);
+
+		Camera camera_backup = *draw->get_camera();
+		draw->apply_camera(b2Vec2(0, 0), 1, camera_backup.get_angle());
+		draw->set_camera(camera_backup);
+		draw->apply_camera();
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
@@ -73,10 +104,9 @@ void Game_Client::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i))
-				draw->image(textures[i], ship->get_body()->GetPosition(), 
+				draw->image(textures[i], ship->get_body()->GetPosition(),
 					{ radius, radius }, ship->get_body()->GetAngle(), color);
 		}
-
 	}
 
 	// Projectiles
@@ -136,10 +166,15 @@ void Game_Client::decode(std::string source) {
 			// Name
 			std::string name;
 			stream >> name;
+			// Deaths & kills
+			int deaths, kills;
+			stream >> deaths >> kills;
 			// Creating player
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
+			player->set_deaths(deaths);
+			player->set_kills(kills);
 		}
 		// Ship
 		if (symbol == "S") {
@@ -209,4 +244,8 @@ Ship* Game_Client::get_ship(int id) {
 	for (auto ship : ships)
 		if (ship->get_player() == players[id])
 			return ship;
+}
+
+std::map<int, Player*>* Game_Client::get_players() {
+	return &players;
 }

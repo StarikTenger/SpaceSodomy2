@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 
-class Collision_Filter : public b2ContactFilter{
+class Collision_Filter {
 private:
 	struct Collision_Info {
 		int type = STANDART;
@@ -19,6 +19,7 @@ private:
 		{STANDART, STANDART, 0},
 		{STANDART, WALL, 0},
 		{PROJECTILE, WALL, 0},
+		{PROJECTILE, PROJECTILE, -1},
 		{PROJECTILE, STANDART, -1}
 	};
 public:
@@ -31,6 +32,6 @@ public:
 	Collision_Filter();
 	void add_body(b2Body*, int type = STANDART, int id = 0);
 	void delete_body(b2Body*);
-	bool ShouldCollide(b2Fixture*, b2Fixture*) override;
+	bool ShouldCollide(b2Fixture*, b2Fixture*);
 };
 
