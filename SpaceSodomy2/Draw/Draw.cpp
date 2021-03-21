@@ -74,6 +74,14 @@ void Draw::load_fonts(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
+void Draw::export_texture(std::string name, std::string path_to_texture) {
+	std::cout << "Start exporting " + name + '\n';
+	sf::Image image = get_texture(name)->copyToImage();
+	image.saveToFile(path_to_texture);
+	std::cout << "Finish exporting\n";
+}
+
+
 void Draw::apply_camera() {
 	cam.set_borders(b2Vec2(window->getSize().x, window->getSize().y));
 	cam.apply(window);
@@ -175,10 +183,14 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	window->draw(drawnText);
 }
 
-void Draw::make_polygon_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
 	sf::Vector2f scale, std::string base_texture, std::string result_texture,
-	float half_translucent_distance, int outer_bound_of_inner_wall_textures) {
+	float wall_width) {
 
+	if (textures.find(result_texture) != textures.end()) {
+		std::cout << "texture already found: " << result_texture << '\n';
+		return;
+	}
 	std::cout << "making texture of: " << result_texture << '\n';
 
 	sf::Image base_image = get_texture(base_texture)->copyToImage();
@@ -189,42 +201,42 @@ void Draw::make_polygon_texture(const std::vector<b2Vec2>& polygon, bool is_oute
 	b2Vec2 origin;
 	b2Vec2 point;
 
-	if (is_outer) {
-		image_size.x = aux::box_size(polygon).x / scale.x;
-		image_size.y = aux::box_size(polygon).y / scale.y;
+	image_size.x = (aux::box_size(polygon).x + wall_width * 2) * scale.x;
+	image_size.y = (aux::box_size(polygon).y + wall_width * 2) * scale.y;
 
-		origin = aux::origin_pos(polygon);
-	}
-	else {
-		image_size.x = aux::box_size(polygon).x / scale.x * outer_bound_of_inner_wall_textures;
-		image_size.y = aux::box_size(polygon).y / scale.y * outer_bound_of_inner_wall_textures;
-
-		origin.x = aux::origin_pos(polygon).x - aux::box_size(polygon).x * (outer_bound_of_inner_wall_textures / 2);
-		origin.y = aux::origin_pos(polygon).y - aux::box_size(polygon).y * (outer_bound_of_inner_wall_textures / 2);
-	}
+	origin = aux::origin_pos(polygon) - b2Vec2(wall_width, wall_width);
 
 	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
 
 	for (int i = 0; i < image_size.x; i++) {
 		for (int j = 0; j < image_size.y; j++) {
 
-			point.x = origin.x + i * scale.x;
-			point.y = origin.y + j * scale.y;
+			point.x = origin.x + i / scale.x;
+			point.y = origin.y + j / scale.y;
 
-			auto base_color = sf::Color::Transparent;
 			if (aux::is_in_polygon(point, polygon, is_outer)) {
-				base_color = base_image.getPixel(i % base_image.getSize().x,
+				auto base_color = base_image.getPixel(i % base_image.getSize().x,
 					j % base_image.getSize().y);
-				base_color.a /= (1 + pow((aux::dist_from_polygon(point, polygon) / half_translucent_distance), 2));
+				float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
+				if (transparency_modifier < 0) {
+					transparency_modifier = 0;
+				}
+				base_color.a *= transparency_modifier;
+				new_image.setPixel(i, j, base_color);
 			}
-			new_image.setPixel(i, j, base_color);
 		}
 	}
 	sf::Texture* tex = new sf::Texture();
-	if (!textures.insert(std::make_pair(result_texture, tex)).second) {
-		std::cout << "collision in wall hashes\n";
-	}
+	textures.insert(std::make_pair(result_texture, tex)).second;
 	textures[result_texture]->loadFromImage(new_image);
 
 	std::cout << result_texture << " done\n";
 }
+
+void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
+	std::string wall_texture, int wall_id, float wall_width) {
+	make_polygonal_texture(wall, is_outer, sf::Vector2f(100, 100),
+		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width);
+}
+
+

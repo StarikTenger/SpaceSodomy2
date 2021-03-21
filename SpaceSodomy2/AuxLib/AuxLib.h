@@ -10,6 +10,7 @@
 #include <sstream>
 #include <queue>
 
+
 class aux {
 public:
 	// Converts color from hsv to rgb
@@ -68,7 +69,7 @@ public:
 
 	// Checks if the point is in the polygon. Uses angles. 
 	static bool is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_inner,
-		float local_eps = 0.1);
+		float local_eps = 0.01);
 	// Distance from line given as two points. Is safe
 	static float dist_from_line(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
 	// Distance from segment given as two points

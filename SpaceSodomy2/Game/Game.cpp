@@ -147,6 +147,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
 	walls.insert(wall);
+	id_manager.set_id(wall);
 	return wall;
 }
 
@@ -386,6 +387,8 @@ int Game::load_map(std::string path) {
 	map_path = path;
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
+	int wall_id = 0;
+
 	// Parsing
 	std::string symbol;
 	while (input >> symbol) {
@@ -395,7 +398,7 @@ int Game::load_map(std::string path) {
 		if (symbol == "WALL") {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
-			int orientation = Wall::INNER;
+			int orientation = Wall::OUTER;
 			float restitution = 0.5;
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
@@ -429,7 +432,8 @@ int Game::load_map(std::string path) {
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points, orientation, restitution);
+			create_wall(points, orientation, restitution) -> set_id(wall_id);
+			wall_id++;
 			continue;
 		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";

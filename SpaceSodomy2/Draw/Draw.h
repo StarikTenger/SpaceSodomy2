@@ -18,6 +18,7 @@ private:
 	// Load single texture
 	void load_texture(std::string name, std::string path_to_texture);
 	void load_font(std::string name, std::string path_to_font);
+	void export_texture(std::string name, std::string path_to_texture);
 public:
 	Draw();
 
@@ -38,6 +39,7 @@ public:
 	// Load fonts from file
 	void load_fonts(std::string path = "fonts.conf");
 
+
 	// Applies cameraborders
 	void apply_camera();
 	void apply_camera(b2Vec2 pos, float scale, float angle);
@@ -57,10 +59,21 @@ public:
 	void display_text(sf::Text* text);
 	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
 
-	// Generates a polygon-fitting texture.
-	// Is inefficient
-	void make_polygon_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+	/// <summary>
+	/// Makes a polygon-fitting texture. Its transparency is linear with distance for the polygon
+	/// </summary>
+	/// <param name="polygon">: the base polygon </param>
+	/// <param name="is_outer">: the polygons orientation </param>
+	/// <param name="scale">: the amount of pixels per unit distance </param>
+	/// <param name="base_texture">: the base textures name</param>
+	/// <param name="result_texture">: the results name</param>
+	/// <param name="wall_width">: the width of the wall texture </param>
+	void make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
 		sf::Vector2f scale, std::string base_texture, std::string result_texture,
-		float half_translucent_distance, int outer_bound_of_inner_wall_textures);
+		float wall_width);
+	// Make a wall-fitting texture
+	void make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
+		std::string wall_texture, int wall_id, float wall_width);
+
 };
 
