@@ -10,8 +10,13 @@
 
 void Draw::load_texture(std::string name, std::string path_to_texture) {
 	sf::Texture* tex = new sf::Texture();
+	tex->loadFromFile(path_to_texture);
+	if (!tex->getSize().x || !tex->getSize().y) {
+		std::cout << "Texture is divine\n";
+		delete tex;
+		return;
+	}
 	textures.insert(std::make_pair(name, tex));
-	textures[name]->loadFromFile(path_to_texture);
 }
 void Draw::load_font(std::string name, std::string path_to_font) {
 	sf::Font* font = new sf::Font();
@@ -74,10 +79,10 @@ void Draw::load_fonts(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
-void Draw::export_texture(std::string name, std::string path_to_texture) {
+void Draw::export_texture(std::string name, std::string path) {
 	std::cout << "Start exporting " + name + '\n';
 	sf::Image image = get_texture(name)->copyToImage();
-	image.saveToFile(path_to_texture);
+	image.saveToFile(path);
 	std::cout << "Finish exporting\n";
 }
 
@@ -234,9 +239,20 @@ void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_ou
 }
 
 void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
-	std::string wall_texture, int wall_id, float wall_width) {
+	std::string wall_texture, int wall_id, float wall_width, std::string map_name) {
+
 	make_polygonal_texture(wall, is_outer, sf::Vector2f(100, 100),
 		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width);
+
+	export_texture(wall_texture + " " + std::to_string(wall_id),
+		"textures/walls/" + map_name + '/' + wall_texture + " " + std::to_string(wall_id) + ".png");
+}
+
+void Draw::load_wall_textures(int walls_size, std::string wall_name, std::string map_name){
+	for (int i = 0; i < walls_size; i++) {
+		load_texture(wall_name + " " + std::to_string(i),
+			"textures/walls/" + map_name + '/' + wall_name + " " + std::to_string(i) + ".png");
+	}
 }
 
 

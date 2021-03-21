@@ -107,11 +107,16 @@ void Game_Client::decode(std::string source) {
 			if (map_path != path) {
 				map_path = path;
 				load_map(map_path);
+				for (int i = 0; i < path.size(); i++) {
+					if (path[i] == '/' || path[i] == '.') {
+						path[i] = '_';
+					}
+				}
+				draw->load_wall_textures(walls.size(), "wall", path);
 				for (auto wall : walls) {
 					float wall_width = 1;
-
 					draw->make_wall_texture(wall->get_vertices(), wall->get_orientation(), 
-						"wall", wall->get_id(), wall_width);
+						"wall", wall->get_id(), wall_width, path);
 					wall->init_drawing(wall_width);
 				}
 			}

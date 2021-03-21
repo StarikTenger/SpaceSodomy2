@@ -73,7 +73,10 @@ public:
 		float wall_width);
 	// Make a wall-fitting texture
 	void make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
-		std::string wall_texture, int wall_id, float wall_width);
+		std::string wall_texture, int wall_id, float wall_width, std::string map_name);
+
+	//load map-specific wall textures
+	void load_wall_textures(int walls_size, std::string wall_name, std::string map_name);
 
 };
 
