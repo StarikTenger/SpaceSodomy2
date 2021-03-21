@@ -12,7 +12,7 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 	sf::Texture* tex = new sf::Texture();
 	tex->loadFromFile(path_to_texture);
 	if (!tex->getSize().x || !tex->getSize().y) {
-		std::cout << "Texture is divine\n";
+		std::cout << "Texture does not exists\n";
 		delete tex;
 		return;
 	}
