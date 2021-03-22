@@ -532,6 +532,12 @@ Ship* Game::new_player(int id, sf::Color color, std::string name, b2Vec2 pos, fl
 	return ship;
 }
 
+Player* Game::player_by_id(int id) {
+	if (!players.at(id))
+		return nullptr;
+	return players[id];
+}
+
 void Game::delete_player(int id) {
 	// Deleting ship
 	std::deque<Ship*> ships_to_delete;

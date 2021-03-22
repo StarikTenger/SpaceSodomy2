@@ -81,8 +81,6 @@ protected:
 	void process_counters();
 	void process_sounds();
 
-	// Misc
-	//void deal_damage(); TODO: damage receiver
 public:
 	Game();
 	// Sets command to player with id=id
@@ -96,6 +94,8 @@ public:
 	std::string encode();
 	// Creates new player
 	Ship* new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
+	// Gets player by id
+	Player* player_by_id(int id);
 	// Deletes player
 	void delete_player(int id);
 };

@@ -62,6 +62,7 @@ void Control::receive() {
 		time_by_id[id_] = aux::get_milli_count();
 		std::string command_string;
 		message >> command_string;
+		game.player_by_id(id_)->set_name(name_);
 		for (int i = 1; i < command_string.size(); i++) {
 			game.apply_command(id_, i - 1, command_string[i] == '1');
 		}
