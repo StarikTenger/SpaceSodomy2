@@ -129,7 +129,6 @@ void Control::step() {
 	// load configs
 	if (reload) {
 		load_config("client_config.conf");
-		reload = 0;
 	}
 	// Receiving
 	network.receive();
@@ -161,6 +160,11 @@ void Control::step() {
 
 		// Sending
 		network.send(commands_to_string());
+	}
+
+	if (reload) {
+		load_config("client_config.conf");
+		reload = 0;
 	}
 }
 

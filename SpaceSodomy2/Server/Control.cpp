@@ -50,11 +50,7 @@ void Control::receive() {
 		IP_by_id[id_] = IP_address_;
 		id_by_IP[IP_address_] = id_;
 		time_by_id[id_] = aux::get_milli_count();
-		sf::Color new_color;
-		new_color.r = aux::random_int(0, 255);
-		new_color.g = aux::random_int(0, 255);
-		new_color.b = aux::random_int(0, 255);
-		new_color.a = 255;
+		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 		game.new_player(id_, new_color, name_, b2Vec2_zero, 0);
 	}
 	// Applying commands
