@@ -240,6 +240,7 @@ Ship* Game_Client::get_ship(int id) {
 	for (auto ship : ships)
 		if (ship->get_player() == players[id])
 			return ship;
+	return nullptr;
 }
 
 std::map<int, Player*>* Game_Client::get_players() {
