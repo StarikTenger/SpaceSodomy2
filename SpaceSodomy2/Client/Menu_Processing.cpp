@@ -39,7 +39,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 			if (j == 0) {
 				menu->add_constant_text(current_id, cur_name,
 					b2Vec2(pos.x - name_indent, pos.y + indent.y * i), 0, character_size, sf::Color::White,
-					mouse_pos, keyboard);
+					2, mouse_pos, keyboard);
 				current_id++;
 			}
 			if (j == keys->operator[](i).size()) {
@@ -47,7 +47,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 				text_fields_strings[current_id] = cur;
 				menu->add_keyboard_field(current_id, text_fields_strings[current_id], "TextField",
 					b2Vec2(pos.x + indent.x * (j + 1), pos.y + indent.y * i), 0, character_size, sf::Color::White,
-					mouse_pos, keyboard);
+					1, mouse_pos, keyboard);
 				current_id++;
 			}
 			else
@@ -112,7 +112,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
  			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				mouse_pos, keyboard);
+				1, mouse_pos, keyboard);
 			break;
 		case 3:
 			file >> use_window_cords >> pos.x >> pos.y;
@@ -126,13 +126,13 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				mouse_pos, keyboard);
+				1, mouse_pos, keyboard);
 			break;
 		case 5:
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
-				mouse_pos, keyboard);
+				2, mouse_pos, keyboard);
 			break;
 		default:
 			i--;
@@ -186,7 +186,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	keys_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
-	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, 200, { 50, 50 }, 20);
+	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, -30, { 100, 50 }, 20);
 }
 
 void Menu_Processing::step() {

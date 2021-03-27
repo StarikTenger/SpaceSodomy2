@@ -7,6 +7,7 @@ private:
 	bool keyboard_active = 0;
 	bool font_setted = 0;
 	float height;
+	int align = 0;
 public:
 	Keyboard_Field();
 
@@ -25,6 +26,7 @@ public:
 	void set_text_character_pixel_size(unsigned int size_);
 	void set_indent(b2Vec2 indent_);
 	void set_keyboard_active(bool keyboard_active_);
+	void set_align(int align);
 
 	void step();
 };

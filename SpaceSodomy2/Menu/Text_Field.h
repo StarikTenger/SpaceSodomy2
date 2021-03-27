@@ -10,6 +10,7 @@ private:
 	std::string new_text = "";
 	bool font_setted = 0;
 	float height;
+	int align = 0;
 public:
 	Text_Field();
 	
@@ -30,7 +31,7 @@ public:
 	void set_keyboard_active(bool keyboard_active_);
 	void set_text_scale(float scale);
 	void set_text_angle(float angle);
-	void set_text_center();
+	void set_align(int align_);
 
 	void step();
 };
