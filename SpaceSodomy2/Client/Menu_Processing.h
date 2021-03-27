@@ -9,6 +9,8 @@ private:
 	Menu config_menu; // config menu object
 	Menu keys_menu; // keys menu object
 	Menu settings_menu; // settings menu object
+	Menu sound_menu; // sound menu object
+
 	std::vector<Menu*> menus;
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
@@ -29,11 +31,15 @@ private:
 	void init_menu(std::string path_, Menu* object);
 	Draw* draw;
 	bool disactivated = 0;
+
+	int* music_volume;
+	int* sound_volume;
 public:
 	Menu_Processing();
 	bool active = 1;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
-		aux::Keyboard* keyboard_, bool* reload_);
+		aux::Keyboard* keyboard_, bool* reload_,
+		int* sound_volume_, int* music_volume_);
 	void step();
 };
 

@@ -235,8 +235,11 @@ void Game_Client::decode(std::string source) {
 			b2Vec2 pos;
 			
 			stream >> id >> name >> pos.x >> pos.y;
-
-			audio->update_sound(id, name, pos);
+			
+			if (sound_volume != nullptr)
+				audio->update_sound(id, name, pos, *sound_volume);
+			else
+				audio->update_sound(id, name, pos, 100);
 		}
 	}
 }

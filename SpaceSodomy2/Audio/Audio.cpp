@@ -82,14 +82,14 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
 	play(id, name, pos, -5, volume);
 }
 
-void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
+void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume) {
 	pos -= draw->get_camera()->get_pos();
 	pos = aux::rotate(pos, -draw->get_camera()->get_angle() - b2_pi / 2);
 	if (activeSounds.count(id)) {
 		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
 	}
 	else {
-		play(id, name, pos, 100);
+		play(id, name, pos, volume);
 	}
 }
 

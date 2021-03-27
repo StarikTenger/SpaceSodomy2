@@ -28,4 +28,6 @@ public:
 
 	// Get players
 	std::map<int, Player*>* get_players();
+
+	int* sound_volume = nullptr;
 };

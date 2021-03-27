@@ -103,6 +103,7 @@ Control::Control() {
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
+	game.sound_volume = &sound_volume;
 	// Default key matches
 	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
 	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
@@ -122,7 +123,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &sound_volume, &music_volume);
 }
 
 int Control::get_is_running() {
@@ -169,14 +170,14 @@ void Control::step() {
 		if ((game.get_ship(network.get_id()) != nullptr) &&
 			(game.get_ship(network.get_id())->get_player() != nullptr) &&
 			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
-			audio.update_music("ss06", 70);
+			audio.update_music("ss06", sound_volume);
 			if (respawned)
 				audio.start_music("ss06");
 			respawned = 0;
 		}
 		else {
 			respawned = 1;
-			audio.update_music("ss06", 10);
+			audio.update_music("ss06", sound_volume / 8);
 		}
 	}
 
