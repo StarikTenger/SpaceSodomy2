@@ -568,8 +568,6 @@ std::string Game::encode() {
 		message += std::to_string(player.second->get_deaths()) + " ";
 		message += std::to_string(player.second->get_kills()) + " ";
 		// Time to respawn
-		std::cout << player.second->get_time_to_respawn()->get() << " " << int(player.second->get_time_to_respawn()->get() + 0.99) << " "
-			<< std::to_string(int(player.second->get_time_to_respawn()->get())) << "\n";
 		message += std::to_string(int(player.second->get_time_to_respawn()->get() + 0.99)) + " ";
 		// Is alive
 		message += std::to_string(int(player.second->get_is_alive())) + " ";

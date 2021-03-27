@@ -48,6 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{D5AA8D3F-8E3
 		env\keys.conf = env\keys.conf
 		env\menu.conf = env\menu.conf
 		env\parameters.conf = env\parameters.conf
+		setup.conf = setup.conf
 		env\sounds.conf = env\sounds.conf
 		env\textures.conf = env\textures.conf
 	EndProjectSection

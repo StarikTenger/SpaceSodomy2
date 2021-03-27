@@ -12,7 +12,7 @@ private:
 	bool is_alive = 1;
 	sf::Color color;
 	std::string name = "_";
-	std::string gun_name = "cascade";
+	std::string gun_name = "default";
 	Command_Module* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
 public:

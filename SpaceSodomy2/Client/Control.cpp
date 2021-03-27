@@ -234,9 +234,8 @@ void Control::load_config(std::string path) {
 	std::string name_;
 	config >> name_;
 	network.set_name(name_);
-	std::string gun_name;
-	config >> gun_name;
-	game.set_gun_name(gun_name);
+	//game.set_gun_name("default");
 	// Key config
 	load_keys("keys.conf");
+	//game.load_setup("setup.conf");
 }

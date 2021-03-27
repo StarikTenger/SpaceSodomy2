@@ -35,6 +35,7 @@ Control::Control() {
 }
 
 void Control::receive() {
+	
 	network.receive();
 	if (network.get_last_message() == "")
 		return;
@@ -42,10 +43,11 @@ void Control::receive() {
 	std::stringstream message;
 	message << network.get_last_message();
 	network.del_last_message();
-	std::string IP_address_, name_, gun_name;
+	std::string IP_address_, name_, time, gun_name;
 	message >> IP_address_;
 	int id_;
 	message >> id_;
+	message >> time;
 	message >> name_;
 	message >> gun_name;
 	//std::cout << IP_address_ << " " << local_ << "\n";
