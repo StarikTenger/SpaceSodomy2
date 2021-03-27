@@ -57,6 +57,20 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
+void Menu_Processing::load_sound(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	config >> *sound_volume;
+	config >> *music_volume;
+}
+
+void Menu_Processing::save_sound(std::string path) {
+	std::ofstream fout;
+	fout.open(path);
+	fout << *sound_volume << "\n" << *music_volume;
+	fout.close();
+}
+
 void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);
@@ -152,6 +166,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	reload = reload_;
 	sound_volume = sound_volume_;
 	music_volume = music_volume_;
+	load_sound("sound_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -203,6 +218,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, -30, { 100, 50 }, 20);
+	name_to_id["ApplySounds"] = ++current_id;
+	name_to_id["Apply"] = ++current_id;
 }
 
 void Menu_Processing::step() {
@@ -250,22 +267,19 @@ void Menu_Processing::step() {
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
 			sound_menu.set_active(0);
-			events.push(name_to_id["ApplyClientConfig"]);
-			events.push(name_to_id["ApplyKeys"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["Main"] == events.front()) { // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
 			sound_menu.set_active(0);
-			events.push(name_to_id["ApplyKeys"]);
-			events.push(name_to_id["ApplyClientConfig"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["Control"] == events.front()) { // Control button
 			config_menu.set_active(0);
 			sound_menu.set_active(0);
 			keys_menu.set_active(1);
-			events.push(name_to_id["ApplyClientConfig"]);
-			events.push(name_to_id["ApplyKeys"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
 			save_keys("keys.conf", keys_menu_vec);
@@ -275,8 +289,15 @@ void Menu_Processing::step() {
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
 			sound_menu.set_active(1);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["Apply"] == events.front()) {
 			events.push(name_to_id["ApplyKeys"]);
 			events.push(name_to_id["ApplyClientConfig"]);
+			events.push(name_to_id["ApplySound"]);
+		}
+		if (name_to_id["ApplySound"] == events.front()) {
+			save_sound("sound_settings.conf");
 		}
 		events.pop();
 	}
