@@ -607,6 +607,8 @@ std::string Game::encode() {
 		message += std::to_string(projectile->get_body()->GetPosition().y) + " ";
 		// Angle
 		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
+		// Radius
+		message += std::to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius) + " ";
 	}
 
 	// Events
