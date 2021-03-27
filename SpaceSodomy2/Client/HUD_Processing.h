@@ -7,6 +7,7 @@
 class HUD_Processing {
 private:
 	Bar HP_bar, stamina_bar;
+	Constant_Text time_to_respawn, press_r_to_respawn;
 
 	int table_use_windows_cords;
 	b2Vec2 table_pos;
@@ -21,6 +22,7 @@ private:
 	b2Vec2* mouse_pos;
 	aux::Keyboard* keyboard;
 
+	std::string get_respawn_button_name(std::string path);
 	void apply_bar(Bar* bar, std::stringstream* config);
 	void table_step();
 public:

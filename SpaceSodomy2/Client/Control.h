@@ -63,6 +63,9 @@ private:
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;
+
+	// Respawned
+	bool respawned = 1;
 public:
 	// Default constructor
 	Control();

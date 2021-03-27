@@ -93,14 +93,12 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
 	}
 }
 
-void Audio::update_music(int id, std::string name, double volume) {
-	if (activeMusics.count(id)) {
-		activeMusics[id]->setVolume(volume);
-	}
-	else {
-		activeMusics[id] = musics[name];
-		activeMusics[id]->setLoop(1);
-		activeMusics[id]->setVolume(volume);
-		activeMusics[id]->play();
-	}
+void Audio::update_music(std::string name, double volume) {
+	musics[name] = musics[name];
+	musics[name]->setLoop(1);
+	musics[name]->setVolume(volume);
+}
+
+void Audio::start_music(std::string name) {
+	musics[name]->play();
 }

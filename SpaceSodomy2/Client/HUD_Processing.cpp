@@ -5,6 +5,21 @@ bool operator<(Player& a, Player& b) {
 		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
 }
 
+std::string HUD_Processing::get_respawn_button_name(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	for (int i = 0; !config.eof(); i++) {
+		std::string cur, cur_name;
+		config >> cur_name >> cur;
+		if (cur_name == "RESPAWN") {
+			return cur;
+		}
+		for (int j = 0; !config.eof() && (cur != "END"); j++) {
+			config >> cur;
+		}
+	}
+}
+
 void HUD_Processing::table_step() {
 	std::vector<Player> rating_table;
 	std::map <int, sf::Color> colors;
@@ -94,12 +109,37 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	apply_bar(&stamina_bar, &config);
 	config >> table_use_windows_cords >> table_pos.x >> table_pos.y >> table_character_size >>
 		table_name_indent >> table_indent.x >> table_indent.y;
+
+	time_to_respawn.set_draw(draw);
+	time_to_respawn.set_mouse_pos(mouse_pos);
+	time_to_respawn.set_keyboard(keyboard);
+	time_to_respawn.set_use_window_cords(0);
+	time_to_respawn.set_text_character_pixel_size(60);
+	time_to_respawn.set_text_scale(0.5);
+
+	press_r_to_respawn.set_draw(draw);
+	press_r_to_respawn.set_mouse_pos(mouse_pos);
+	press_r_to_respawn.set_keyboard(keyboard);
+	press_r_to_respawn.set_use_window_cords(0);
+	press_r_to_respawn.set_text_character_pixel_size(60);
+	press_r_to_respawn.set_text_scale(0.5);
 }
 
 void HUD_Processing::step() {
 	if (game->get_ship(player_network->get_id()) != nullptr) {
 		HP_bar.set_value(game->get_ship(player_network->get_id())->get_hp()->get());
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
+	}
+	if (!game->player_by_id(player_network->get_id())->get_is_alive()) {
+		time_to_respawn.set_text("Time to respawn: " +
+			std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
+		float mod = abs(sin(float(aux::get_milli_count()) / 500));
+		press_r_to_respawn.set_text_color(sf::Color(255, 255, 255, 255 - 254 * mod));
+		press_r_to_respawn.set_text("Press " + get_respawn_button_name("keys.conf") + " to respawn");
+		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0)
+			time_to_respawn.step();
+		else
+			press_r_to_respawn.step();
 	}
 	HP_bar.step();
 	stamina_bar.step();

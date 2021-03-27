@@ -242,7 +242,8 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
-		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0) {
+		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 &&
+			player->get_command_module()->get_command(Command_Module::RESPAWN)) {
 			// TODO: function to determine new ship position
 			player->set_is_alive(1);
 			create_ship(player, {0, 0}, 0);
@@ -254,11 +255,13 @@ void Game::process_ships() {
 	// Deleting
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
+		ship->get_hp()->modify(-dt*20);
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			ship->get_damage_receiver()->get_last_hit()->add_kill();
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
+				ship->get_damage_receiver()->get_last_hit()->add_kill();
 		}
 	}
 	for (auto ship : ships_to_delete)
@@ -473,6 +476,12 @@ std::string Game::encode() {
 		// Deaths & kills
 		message += std::to_string(player.second->get_deaths()) + " ";
 		message += std::to_string(player.second->get_kills()) + " ";
+		// Time to respawn
+		std::cout << player.second->get_time_to_respawn()->get() << " " << int(player.second->get_time_to_respawn()->get() + 0.99) << " "
+			<< std::to_string(int(player.second->get_time_to_respawn()->get())) << "\n";
+		message += std::to_string(int(player.second->get_time_to_respawn()->get() + 0.99)) + " ";
+		// Is alive
+		message += std::to_string(int(player.second->get_is_alive())) + " ";
 	}
 
 	// Ships

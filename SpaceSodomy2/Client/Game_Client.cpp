@@ -127,6 +127,7 @@ void Game_Client::decode(std::string source) {
 	clear();
 
 	// Creating stringstream
+	//std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
@@ -166,15 +167,19 @@ void Game_Client::decode(std::string source) {
 			// Name
 			std::string name;
 			stream >> name;
-			// Deaths & kills
-			int deaths, kills;
-			stream >> deaths >> kills;
+			// Deaths, kills & etc
+			int deaths, kills, time_to_respawn, is_alive;
+			stream >> deaths >> kills >> time_to_respawn >> is_alive;
+			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
 			player->set_deaths(deaths);
 			player->set_kills(kills);
+			player->set_is_alive(is_alive);
+			player->get_time_to_respawn()->set(float(time_to_respawn));
+			//std::cout << player->get_time_to_respawn()->get() << "\n";
 		}
 		// Ship
 		if (symbol == "S") {
