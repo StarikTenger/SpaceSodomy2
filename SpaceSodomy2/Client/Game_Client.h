@@ -9,6 +9,7 @@ class Game_Client : public Game {
 private:
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
+	std::string gun_name = "cascade";
 public:
 	// Set methods
 	void set_draw(Draw* _draw);
@@ -17,6 +18,10 @@ public:
 	// Get methods
 	Draw* get_draw();
 	Audio* get_audio();
+	std::string get_gun_name();
+
+	// Set methods
+	void set_gun_name(std::string val);
 
 	void display(int id);
 
@@ -30,4 +35,7 @@ public:
 	std::map<int, Player*>* get_players();
 
 	int* sound_volume = nullptr;
+
+	// Load setup
+	void load_setup(std::string path);
 };

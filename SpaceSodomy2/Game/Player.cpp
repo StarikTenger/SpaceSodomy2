@@ -58,7 +58,7 @@ void Player::set_name(std::string name_) {
 }
 
 void Player::set_gun_name(std::string val) {
-	name = val;
+	gun_name = val;
 }
 
 void Player::set_command_module(Command_Module* val) {

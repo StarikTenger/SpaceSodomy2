@@ -16,6 +16,14 @@ Audio* Game_Client::get_audio() {
 	return audio;
 }
 
+std::string Game_Client::get_gun_name() {
+	return gun_name;
+}
+
+void Game_Client::set_gun_name(std::string val) {
+	gun_name = val;
+}
+
 void Game_Client::display(int id) {
 	// Finding cam target
 	auto ship = get_ship(id);
@@ -257,4 +265,20 @@ Ship* Game_Client::get_ship(int id) {
 
 std::map<int, Player*>* Game_Client::get_players() {
 	return &players;
+}
+
+void Game_Client::load_setup(std::string path) {
+	std::ifstream fileInput(path);
+	std::stringstream file = aux::comment(fileInput);
+
+	std::string command; // Current command
+	while (file >> command) {
+		if (command == "END") // End of file
+			break;
+		if (command == "GUN") {
+			file >> gun_name;
+		}
+	}
+
+	std::cout << gun_name << "\n";
 }
