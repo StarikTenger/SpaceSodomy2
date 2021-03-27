@@ -18,8 +18,13 @@ void Control::load_config(std::string path) {
 		if (command == "MAP") {
 			std::string name;
 			file >> name;
-			//sys.currentMap = name;
 			game.load_map(name);	
+		}
+
+		if (command == "PARAMETERS") {
+			std::string name;
+			file >> name;
+			game.load_parameters(name);
 		}
 	}
 }

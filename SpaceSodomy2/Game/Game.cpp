@@ -41,7 +41,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	return body;
 }
 
-Gun* Game::create_gun() {
+Gun* Game::create_gun(Gun_Def def) {
 	auto gun = new Gun();
 	active_modules.insert(gun);
 	// Counter
@@ -51,6 +51,8 @@ Gun* Game::create_gun() {
 	// Managers
 	gun->set_projectile_manager(&projectile_manager);
 	gun->set_event_manager(&sound_manager);
+	// Characteristics
+	gun->import_gun_def(def);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -118,7 +120,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	player->set_command_module(command_module);
 
 	// Gun
-	auto gun = create_gun();
+	Gun_Def gun_def;
+	if (guns.count(player->get_gun_name()))
+		gun_def = guns[player->get_gun_name()];
+	auto gun = create_gun(gun_def);
 	gun->set(body, player);
 	ship->set_gun(gun);
 
@@ -156,7 +161,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 
 Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	// Creating body
-	auto body = create_round_body(projectile_def.pos, projectile_def.angle, 0.2, 0.1);
+	auto body = create_round_body(projectile_def.pos, projectile_def.angle, projectile_def.radius, projectile_def.mass);
 	body->SetLinearVelocity(projectile_def.vel);
 	collision_filter.add_body(body, Collision_Filter::PROJECTILE, projectile_def.player->get_id());
 
@@ -393,7 +398,7 @@ void Game::clear() {
 	b2World physics = b2World(b2Vec2_zero);
 }
 
-int Game::load_map(std::string path) {
+bool Game::load_map(std::string path) {
 	map_path = path;
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
@@ -447,6 +452,92 @@ int Game::load_map(std::string path) {
 			continue;
 		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
+		return false;
+	}
+	return true;
+}
+
+bool Game::load_parameters(std::string path) {
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
+
+	// Parsing
+	std::string symbol;
+	while (input >> symbol) {
+		if (symbol == "END")
+			break;
+		// Gun
+		if (symbol == "GUN") {
+			std::string symbol_1;
+			std::string name;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to read GUN name";
+				return false;
+			}
+			guns[name] = {};
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "DAMAGE") {
+					float damage;
+					if (!(input >> damage)) {
+						std::cerr << "Game::load_parameters: failed to read GUN DAMAGE";
+						return false;
+					}
+					guns[name].damage = damage;
+					continue;
+				}
+				if (symbol == "RECHARGE") {
+					float recharge;
+					if (!(input >> recharge)) {
+						std::cerr << "Game::load_parameters: failed to read GUN RECHARGE";
+						return false;
+					}
+					guns[name].recharge_time = recharge;
+					continue;
+				}
+				if (symbol == "STAMINA_CONSUMPTION") {
+					float stamina_consumption;
+					if (!(input >> stamina_consumption)) {
+						std::cerr << "Game::load_parameters: failed to read GUN STAMINA_CONSUMTION";
+						return false;
+					}
+					guns[name].stamina_consumption = stamina_consumption;
+					continue;
+				}
+				if (symbol == "PROJECTILE_MASS") {
+					float projectile_mass;
+					if (!(input >> projectile_mass)) {
+						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_MASS";
+						return false;
+					}
+					guns[name].projectile_mass = projectile_mass;
+					continue;
+				}
+				if (symbol == "PROJECTILE_VEL") {
+					float projectile_vel;
+					if (!(input >> projectile_vel)) {
+						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_VEL";
+						return false;
+					}
+					guns[name].projectile_vel = projectile_vel;
+					continue;
+				}
+				if (symbol == "PROJECTILE_RADIUS") {
+					float projectile_radius;
+					if (!(input >> projectile_radius)) {
+						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_RADIUS";
+						return false;
+					}
+					guns[name].projectile_radius = projectile_radius;
+					continue;
+				}
+				std::cerr << "Game::load_parameters: unknown symbol " << symbol << "\n";
+				return false;
+			}
+			continue;
+		}
+		std::cerr << "Game::load_parameters: unknown symbol " << symbol << "\n";
 		return false;
 	}
 	return true;

@@ -6,10 +6,19 @@ void Gun::set_projectile_manager(Projectile_Manager* _projectile_manager) {
 	projectile_manager = _projectile_manager;
 }
 
+void Gun::import_gun_def(Gun_Def def) {
+	damage = def.damage;
+	recharge_time = def.recharge_time;
+	stamina_consumption = def.stamina_consumption;
+	projectile_mass = def.projectile_mass;
+	projectile_vel = def.projectile_vel;
+	projectile_radius = def.projectile_radius;
+}
+
 void Gun::activate() {
 	Projectile_Def projectile_def;
 
-	float vel_val = 10;
+	float vel_val = projectile_vel;
 
 	projectile_def.pos = body->GetPosition();
 	projectile_def.vel = body->GetLinearVelocity();
@@ -18,6 +27,8 @@ void Gun::activate() {
 	projectile_def.vel += delta_vel;
 	projectile_def.player = player;
 	projectile_def.damage = damage;
+	projectile_def.radius = projectile_radius;
+	projectile_def.mass = projectile_mass;
 
 	Event_Def event_def;
 	event_def.name = "gn";

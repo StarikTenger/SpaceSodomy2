@@ -20,6 +20,10 @@ std::string Player::get_name() {
 	return name;
 }
 
+std::string Player::get_gun_name() {
+	return gun_name;
+}
+
 Command_Module* Player::get_command_module() {
 	return command_module;
 }
@@ -51,6 +55,10 @@ void Player::set_color(sf::Color color_) {
 
 void Player::set_name(std::string name_) {
 	name = name_;
+}
+
+void Player::set_gun_name(std::string val) {
+	name = val;
 }
 
 void Player::set_command_module(Command_Module* val) {

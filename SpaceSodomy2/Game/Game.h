@@ -11,6 +11,7 @@
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
+#include "Gun_Def.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
@@ -35,10 +36,14 @@ protected:
 	std::set<Damage_Receiver*> damage_receivers;
 	std::set<Sound*> sounds;
 
+	// Managers
 	Projectile_Manager projectile_manager;
 	Event_Manager sound_manager;
 	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);
+
+	// Lists of smth
+	std::map<std::string, Gun_Def> guns;
 
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
@@ -49,7 +54,7 @@ protected:
 	// Create functions
 	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
-	Gun*             create_gun();
+	Gun*             create_gun(Gun_Def);
 	Command_Module*  create_command_module();
 	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
@@ -86,8 +91,9 @@ public:
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
-	// Loads walls from file (returns 1 if everything is correct)
-	int load_map(std::string path);
+	// Load funcions
+	bool load_map(std::string path);
+	bool load_parameters(std::string path);
 	// Clears everyrhing
 	void clear();
 	// Encodes class into string
