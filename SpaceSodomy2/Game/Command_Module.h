@@ -18,6 +18,7 @@ public:
 		STABILIZE_ROTATION,
 		SHOOT,
 		BOOST,
+		RESPAWN,
 
 		COMMAND_COUNT
 	};

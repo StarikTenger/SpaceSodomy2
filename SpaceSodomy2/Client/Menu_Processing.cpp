@@ -55,7 +55,6 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 			config >> cur;
 		}
 	}
-
 }
 
 void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {

@@ -14,7 +14,6 @@ private:
 	std::map<std::string, sf::Sound*> sounds;
 	std::map<std::string, sf::Music*> musics;
 	std::map<int, sf::Sound*> activeSounds;
-	std::map<int, sf::Music*> activeMusics;
 	std::priority_queue<std::pair<int, int>> sound_timeouts;
 	void load_sound(std::string name, std::string path_to_sound);
 	void load_music(std::string name, std::string path_to_music);
@@ -33,5 +32,6 @@ public:
 	void play(int id, std::string name, b2Vec2 pos, double volume);
 
 	void update_sound(int id, std::string name, b2Vec2 pos);
-	void update_music(int id, std::string name, double volume);
+	void update_music(std::string name, double volume);
+	void start_music(std::string name);
 };

@@ -68,6 +68,8 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::SHOOT, 1);
 	if (key_by_name("BOOST"))
 		command_module.set_command(Command_Module::BOOST, 1);
+	if (key_by_name("RESPAWN"))
+		command_module.set_command(Command_Module::RESPAWN, 1);
 
 	// Zoom out
 	if (key_by_name("ZOOM_OUT"))
@@ -104,15 +106,16 @@ Control::Control() {
 	// Default key matches
 	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
 	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
-	key_matches["ENGINE_LIN_LEFT"] = { sf::Keyboard::Left};
-	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right};
-	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A};
-	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D};
-	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D};
-	key_matches["BOOST"] = { sf::Keyboard::LShift};
-	key_matches["ZOOM_IN"] = { sf::Keyboard::E};
-	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q};
-	key_matches["SHOOT"] = { sf::Keyboard::Space};
+	key_matches["ENGINE_LIN_LEFT"] = { sf::Keyboard::Left };
+	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right };
+	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A };
+	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D };
+	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D };
+	key_matches["BOOST"] = { sf::Keyboard::LShift };
+	key_matches["ZOOM_IN"] = { sf::Keyboard::E };
+	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q };
+	key_matches["SHOOT"] = { sf::Keyboard::Space };
+	key_matches["RESPAWN"] = { sf::Keyboard::R };
 	key_matches["MENU"] = { sf::Keyboard::Escape };
 	// SFML key names
 	for (int i = 0; i < keyboard.names.size(); i++) {
@@ -165,10 +168,16 @@ void Control::step() {
 		// Music
 		if ((game.get_ship(network.get_id()) != nullptr) &&
 			(game.get_ship(network.get_id())->get_player() != nullptr) &&
-			(game.get_ship(network.get_id())->get_player()->get_is_alive()))
-			audio.update_music(0, "ss06", 70);
-		else
-			audio.update_music(0, "ss06", 10);
+			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
+			audio.update_music("ss06", 70);
+			if (respawned)
+				audio.start_music("ss06");
+			respawned = 0;
+		}
+		else {
+			respawned = 1;
+			audio.update_music("ss06", 10);
+		}
 	}
 
 	if (reload) {
