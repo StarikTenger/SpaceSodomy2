@@ -54,7 +54,7 @@ void Client_Network::send(std::string data) {
 	// Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
-		name + " #" +
+		name + " " +
 		data;
 	// Sending
 	auto func = [](sf::UdpSocket* socket, std::string data,

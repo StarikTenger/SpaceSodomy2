@@ -84,6 +84,8 @@ void Control::process_commands() {
 
 std::string Control::commands_to_string() {
 	std::string message = "";
+	message += game.get_gun_name() + " ";
+	message += "#";
 	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
 		if (command_module.get_command(i))
 			message += "1";
@@ -232,6 +234,9 @@ void Control::load_config(std::string path) {
 	std::string name_;
 	config >> name_;
 	network.set_name(name_);
+	std::string gun_name;
+	config >> gun_name;
+	game.set_gun_name(gun_name);
 	// Key config
 	load_keys("keys.conf");
 }

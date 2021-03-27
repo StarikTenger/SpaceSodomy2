@@ -16,6 +16,14 @@ Audio* Game_Client::get_audio() {
 	return audio;
 }
 
+std::string Game_Client::get_gun_name() {
+	return gun_name;
+}
+
+void Game_Client::set_gun_name(std::string val) {
+	gun_name = val;
+}
+
 void Game_Client::display(int id) {
 	// Finding cam target
 	auto ship = get_ship(id);

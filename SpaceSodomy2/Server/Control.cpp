@@ -42,12 +42,12 @@ void Control::receive() {
 	std::stringstream message;
 	message << network.get_last_message();
 	network.del_last_message();
-	std::string IP_address_, local_, name_;
+	std::string IP_address_, name_, gun_name;
 	message >> IP_address_;
 	int id_;
 	message >> id_;
-	message >> local_;
 	message >> name_;
+	message >> gun_name;
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_by_id[id_])) {
@@ -64,6 +64,7 @@ void Control::receive() {
 		std::string command_string;
 		message >> command_string;
 		game.player_by_id(id_)->set_name(name_);
+		game.player_by_id(id_)->set_gun_name(gun_name);
 		for (int i = 1; i < command_string.size(); i++) {
 			game.apply_command(id_, i - 1, command_string[i] == '1');
 		}
