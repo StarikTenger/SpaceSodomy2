@@ -9,6 +9,8 @@ struct Projectile_Def {
 	b2Vec2 vel;
 	float angle = 0;
 	float damage = 0;
+	float mass = 0.05;
+	float radius = 0.2;
 
 	Projectile_Def();
 };

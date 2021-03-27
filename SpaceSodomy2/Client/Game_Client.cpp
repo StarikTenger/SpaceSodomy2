@@ -111,7 +111,7 @@ void Game_Client::display(int id) {
 
 	// Projectiles
 	for (auto projectile : projectiles) {
-		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2 * 2;
 		auto color = projectile->get_player()->get_color();
 		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, 
 			projectile->get_body()->GetAngle(), color);
@@ -221,9 +221,13 @@ void Game_Client::decode(std::string source) {
 			// Angle
 			float angle;
 			stream >> angle;
+			// Radius
+			float radius;
+			stream >> radius;
 			// Creating projectile_def
 			Projectile_Def projectile_def;
 			projectile_def.pos = pos;
+			projectile_def.radius = radius;
 			projectile_def.player = players[player_id];
 			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
