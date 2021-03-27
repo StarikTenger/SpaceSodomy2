@@ -205,10 +205,10 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	sound_menu.set_text_fields_strings(&text_fields_strings);
 	text_fields_strings[current_id] = "Sound Volume:";
 	text_fields_strings[current_id + 2] = "Music Volume:";
-	sliders_vals[current_id + 1] = *sound_volume;
-	sliders_vals[current_id + 3] = *music_volume;
 	menus.push_back(&sound_menu);
 	init_menu("menu_configs/sound.conf", &sound_menu);
+	sliders_vals[current_id - 3] = *sound_volume;
+	sliders_vals[current_id - 1] = *music_volume;
 	// set keys menu fields
 	keys_menu.set_draw(draw);
 	keys_menu.set_active(0);
@@ -233,8 +233,7 @@ void Menu_Processing::step() {
 	}
 	if (!active) {
 		if (disactivated) {
-			events.push(name_to_id["ApplyClientConfig"]);
-			events.push(name_to_id["ApplyKeys"]);
+			events.push(name_to_id["Apply"]);
 		}
 		while (keyboard->text_entered->size())
 			keyboard->text_entered->pop();
