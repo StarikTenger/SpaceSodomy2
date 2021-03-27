@@ -130,7 +130,8 @@ void HUD_Processing::step() {
 		HP_bar.set_value(game->get_ship(player_network->get_id())->get_hp()->get());
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
 	}
-	if (!game->player_by_id(player_network->get_id())->get_is_alive()) {
+	if (game->player_by_id(player_network->get_id()) != nullptr &&
+		!game->player_by_id(player_network->get_id())->get_is_alive()) {
 		time_to_respawn.set_text("Time to respawn: " +
 			std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
 		float mod = abs(sin(float(aux::get_milli_count()) / 500));
