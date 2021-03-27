@@ -175,6 +175,9 @@ void Control::step() {
 		load_config("client_config.conf");
 		reload = 0;
 	}
+
+	if (draw.get_window() == nullptr || !draw.get_window()->isOpen())
+		is_running = 0;
 }
 
 int Control::load_keys(std::string path) {

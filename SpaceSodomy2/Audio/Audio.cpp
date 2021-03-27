@@ -17,7 +17,7 @@ void Audio::load_sound(std::string name, std::string path_to_sound) {
 
 void Audio::load_music(std::string name, std::string path_to_music) {
 	sf::Music* music = new sf::Music();
-	if (!music->openFromFile(path_to_musica)) {
+	if (!music->openFromFile(path_to_music)) {
 		std::cout << "Can't load soundtrack " << name << "\n";
 		return; // error
 	}
