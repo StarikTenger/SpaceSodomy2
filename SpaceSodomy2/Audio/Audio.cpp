@@ -15,6 +15,15 @@ void Audio::load_sound(std::string name, std::string path_to_sound) {
 	sounds[name] = sound;
 }
 
+void Audio::load_music(std::string name, std::string path_to_music) {
+	sf::Music* music = new sf::Music();
+	if (!music->openFromFile(path_to_musica)) {
+		std::cout << "Can't load soundtrack " << name << "\n";
+		return; // error
+	}
+	musics[name] = music;
+}
+
 void Audio::set_draw(Draw* draw_) {
 	draw = draw_;
 }
@@ -31,6 +40,18 @@ void Audio::load_sounds(std::string path) {
 		file >> name >> path;
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_sound(name, path);
+	}
+	std::cout << "Finish loading\n";
+}
+
+void Audio::load_musics(std::string path) {
+	std::cout << "Musics start loading\n";
+	std::ifstream file(path);
+	while (file) {
+		std::string name, path;
+		file >> name >> path;
+		std::cout << "loaded: " << name << " " << path << "\n";
+		load_music(name, path);
 	}
 	std::cout << "Finish loading\n";
 }
@@ -69,5 +90,17 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos) {
 	}
 	else {
 		play(id, name, pos, 100);
+	}
+}
+
+void Audio::update_music(int id, std::string name, double volume) {
+	if (activeMusics.count(id)) {
+		activeMusics[id]->setVolume(volume);
+	}
+	else {
+		activeMusics[id] = musics[name];
+		activeMusics[id]->setLoop(1);
+		activeMusics[id]->setVolume(volume);
+		activeMusics[id]->play();
 	}
 }

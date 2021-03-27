@@ -98,6 +98,7 @@ Control::Control() {
 	draw.load_fonts("fonts.conf");
 	audio.set_draw(&draw);
 	audio.load_sounds();
+	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
 	// Default key matches
@@ -160,6 +161,14 @@ void Control::step() {
 
 		// Sending
 		network.send(commands_to_string());
+
+		// Music
+		if ((game.get_ship(network.get_id()) != nullptr) &&
+			(game.get_ship(network.get_id())->get_player() != nullptr) &&
+			(game.get_ship(network.get_id())->get_player()->get_is_alive()))
+			audio.update_music(0, "ss06", 70);
+		else
+			audio.update_music(0, "ss06", 10);
 	}
 
 	if (reload) {
