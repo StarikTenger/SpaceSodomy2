@@ -81,7 +81,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		current_id++;
 		std::string type;
 		int typenum = 0;
-		std::string texture_name, name;
+		std::string texture_name, button_name, name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
@@ -100,20 +100,18 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 5;
 		switch (typenum) {
 		case 1:
-			file >> name;
+			file >> button_name;
 			file >> texture_name;
 			file >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y;
 			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos);
-			name_to_id[name] = i;
+			name_to_id[button_name] = i;
 			break;
 		case 2:
-			file >> name;
 			file >> texture_name;
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
- 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
+			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				1, mouse_pos, keyboard);
-			name_to_id[name] = i;
 			break;
 		case 3:
 			file >> name;
@@ -132,12 +130,10 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				1, mouse_pos, keyboard);
 			break;
 		case 5:
-			file >> name;
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> character_size;
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				2, mouse_pos, keyboard);
-			name_to_id[name] = i;
 			break;
 		default:
 			i--;
@@ -148,7 +144,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 }
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
-	aux::Keyboard* keyboard_, bool* reload_, int* sound_volume_, int* music_volume_) {
+	aux::Keyboard* keyboard_, bool* reload_,
+	int* sound_volume_, int* music_volume_) {
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
@@ -169,12 +166,12 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	config_menu.set_events(&events);
 	config_menu.set_sliders_vals(&sliders_vals);
 	config_menu.set_text_fields_strings(&text_fields_strings);
-	text_fields_strings[name_to_id["ServerIp:"]] = "Server IP:";
-	text_fields_strings[name_to_id["Port:"]] = "Port:";
-	text_fields_strings[name_to_id["ID:"]] = "ID:";
-	text_fields_strings[name_to_id["Name:"]] = "Name:";
-	load_config("client_config.conf", &text_fields_strings[name_to_id["ServerIP"]], &text_fields_strings[name_to_id["Port"]],
-		&text_fields_strings[name_to_id["ID"]], &text_fields_strings[name_to_id["Name"]]);
+	text_fields_strings[current_id] = "Server IP:";
+	text_fields_strings[current_id + 2] = "Port:";
+	text_fields_strings[current_id + 4] = "ID:";
+	text_fields_strings[current_id + 6] = "Name:";
+	load_config("client_config.conf", &text_fields_strings[current_id + 1], &text_fields_strings[current_id + 3],
+		&text_fields_strings[current_id + 5], &text_fields_strings[current_id + 7]);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
 	// set settigs menu 
@@ -185,18 +182,18 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	settings_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&settings_menu);
 	init_menu("menu_configs/settings.conf", &settings_menu);
-	// set sound menu fields
-	sound_menu.set_active(draw);
+	// sound menu settings
+	sound_menu.set_draw(draw);
 	sound_menu.set_active(0);
 	sound_menu.set_events(&events);
 	sound_menu.set_sliders_vals(&sliders_vals);
 	sound_menu.set_text_fields_strings(&text_fields_strings);
-	text_fields_strings[name_to_id["SoundVolume:"]] = "Sound Volume:";
-	text_fields_strings[name_to_id["MusicVolume:"]] = "Music Volume:";
-	sliders_vals[name_to_id["SoundVolume"]] = *sound_volume;
-	sliders_vals[name_to_id["MusicVolume"]] = *music_volume;
-	menus.push_back(&keys_menu);
-	init_menu("menu_configs/sound.conf", &keys_menu);
+	text_fields_strings[current_id] = "Sound Volume:";
+	text_fields_strings[current_id + 2] = "Music Volume:";
+	sliders_vals[current_id + 1] = *sound_volume;
+	sliders_vals[current_id + 3] = *music_volume;
+	menus.push_back(&sound_menu);
+	init_menu("menu_configs/sound.conf", &sound_menu);
 	// set keys menu fields
 	keys_menu.set_draw(draw);
 	keys_menu.set_active(0);
@@ -213,6 +210,8 @@ void Menu_Processing::step() {
 		for (auto menu : menus) {
 			menu->step();
 		}
+		*sound_volume = sliders_vals[name_to_id["SoundVolume"]];
+		*music_volume = sliders_vals[name_to_id["MusicVolume"]];
 		disactivated = 1;
 	}
 	if (!active) {
@@ -224,9 +223,7 @@ void Menu_Processing::step() {
 			keyboard->text_entered->pop();
 		disactivated = 0;
 	}
-	*sound_volume = sliders_vals[name_to_id["SoundVolume"]];
-	*music_volume = sliders_vals[name_to_id["MusicVolume"]];
-	while (!events.empty()){
+	while (!events.empty()) {
 		if (name_to_id["NewGame"] == events.front()) { // New game button
 			active = 0;
 		}
@@ -234,6 +231,7 @@ void Menu_Processing::step() {
 			std::cout << "well, it works";
 		}
 		if (name_to_id["Settings"] == events.front()) { // Settings button
+			sound_menu.set_active(0);
 			main_menu.set_active(0);
 			settings_menu.set_active(1);
 			config_menu.set_active(1);
@@ -251,22 +249,34 @@ void Menu_Processing::step() {
 			settings_menu.set_active(0);
 			config_menu.set_active(0);
 			keys_menu.set_active(0);
+			sound_menu.set_active(0);
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplyKeys"]);
 		}
 		if (name_to_id["Main"] == events.front()) { // Main button
 			config_menu.set_active(1);
 			keys_menu.set_active(0);
+			sound_menu.set_active(0);
 			events.push(name_to_id["ApplyKeys"]);
+			events.push(name_to_id["ApplyClientConfig"]);
 		}
 		if (name_to_id["Control"] == events.front()) { // Control button
 			config_menu.set_active(0);
+			sound_menu.set_active(0);
 			keys_menu.set_active(1);
 			events.push(name_to_id["ApplyClientConfig"]);
+			events.push(name_to_id["ApplyKeys"]);
 		}
 		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
 			save_keys("keys.conf", keys_menu_vec);
 			*reload = 1;
+		}
+		if (name_to_id["Sound"] == events.front()) {
+			config_menu.set_active(0);
+			keys_menu.set_active(0);
+			sound_menu.set_active(1);
+			events.push(name_to_id["ApplyKeys"]);
+			events.push(name_to_id["ApplyClientConfig"]);
 		}
 		events.pop();
 	}

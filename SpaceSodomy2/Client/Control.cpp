@@ -170,14 +170,14 @@ void Control::step() {
 		if ((game.get_ship(network.get_id()) != nullptr) &&
 			(game.get_ship(network.get_id())->get_player() != nullptr) &&
 			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
-			audio.update_music("ss06", sound_volume);
+			audio.update_music("ss06", music_volume);
 			if (respawned)
 				audio.start_music("ss06");
 			respawned = 0;
 		}
 		else {
 			respawned = 1;
-			audio.update_music("ss06", sound_volume / 8);
+			audio.update_music("ss06", music_volume / 8);
 		}
 	}
 
