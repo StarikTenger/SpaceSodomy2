@@ -58,7 +58,7 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_wind
 }
 
 void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
-	int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
+	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	text_fields.push_back(new Text_Field);
 	text_fields.back()->set_id(id);
 	text_fields.back()->set_text(text);
@@ -68,13 +68,14 @@ void Menu::add_text_field(int id, std::string text, std::string texture_name, b2
 	text_fields.back()->set_text_character_pixel_size(character_size);
 	text_fields.back()->set_color(color);
 	text_fields.back()->set_draw(draw);
+	text_fields.back()->set_align(align);
 	text_fields.back()->set_mouse_pos(mouse_pos);
 	text_fields.back()->set_keyboard(keyboard);
 	text_fields.back()->set_clicked(&clicked);
 }
 
 void Menu::add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
-	int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
+	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	keyboard_fields.push_back(new Keyboard_Field);
 	keyboard_fields.back()->set_id(id);
 	keyboard_fields.back()->set_text(text);
@@ -84,13 +85,14 @@ void Menu::add_keyboard_field(int id, std::string text, std::string texture_name
 	keyboard_fields.back()->set_text_character_pixel_size(character_size);
 	keyboard_fields.back()->set_color(color);
 	keyboard_fields.back()->set_draw(draw);
+	keyboard_fields.back()->set_align(align);
 	keyboard_fields.back()->set_mouse_pos(mouse_pos);
 	keyboard_fields.back()->set_keyboard(keyboard);
 	keyboard_fields.back()->set_clicked(&clicked);
 }
 
 void Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_window_cords,
-	int character_size, sf::Color color, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
+	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	constant_texts.push_back(new Constant_Text);
 	constant_texts.back()->set_id(id);
 	constant_texts.back()->set_text(text);
@@ -99,6 +101,7 @@ void Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_windo
 	constant_texts.back()->set_text_character_pixel_size(character_size);
 	constant_texts.back()->set_color(color);
 	constant_texts.back()->set_draw(draw);
+	constant_texts.back()->set_align(align);
 	constant_texts.back()->set_mouse_pos(mouse_pos);
 	constant_texts.back()->set_keyboard(keyboard);
 	constant_texts.back()->set_clicked(&clicked);

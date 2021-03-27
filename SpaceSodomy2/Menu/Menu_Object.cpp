@@ -29,7 +29,7 @@ b2Vec2 Menu_Object::window_cords_pos() {
 	case 3:
 		return pos + mid;
 	case 4:
-		return pos + b2Vec2(mid.x, - mid.y);
+		return pos + b2Vec2(mid.x, -mid.y);
 	default:
 		return pos;
 	}
@@ -75,6 +75,9 @@ bool* Menu_Object::get_clicked() {
 int Menu_Object::get_use_window_cords() {
 	return use_window_cords;
 }
+b2Vec2 Menu_Object::get_cur_pos() {
+	return cur_pos;
+}
 
 // Set methods
 void Menu_Object::set_id(int id_) {
@@ -113,15 +116,22 @@ void Menu_Object::set_clicked(bool* clicked_) {
 void Menu_Object::set_use_window_cords(int use_window_cords_) {
 	use_window_cords = use_window_cords_;
 }
+void Menu_Object::set_cur_pos(b2Vec2 cur_pos_) {
+	cur_pos = cur_pos_;
+	cur_pos_activated = 1;
+}
 
 void Menu_Object::primitive_step() {
+	if (!cur_pos_activated) {
+		cur_pos = window_cords_pos();
+	}
 	if (use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
-	//std::cout << pos.x  << " " << pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
-	if (aux::rect_contains(window_cords_pos() + mid, scale, *mouse_pos))
+	//std::cout << cur_pos.x << " " << cur_pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
+	if (aux::rect_contains(cur_pos + mid, scale, *mouse_pos))
 		active = 1;
 	else
 		active = 0;
 	if (image_active)
-		draw->image(texture_name, window_cords_pos(), scale, 0, color);
+		draw->image(texture_name, cur_pos, scale, 0, color);
 }

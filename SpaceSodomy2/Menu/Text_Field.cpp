@@ -55,6 +55,9 @@ void Text_Field::set_text_scale(float scale) {
 void Text_Field::set_text_angle(float angle) {
 	text.setRotation(angle);
 }
+void Text_Field::set_align(int align_) {
+	align = align_;
+}
 
 void Text_Field::step() {
 	if (!font_setted) { // if font isn't setted -> set standart font
@@ -93,11 +96,23 @@ void Text_Field::step() {
 	set_scale(b2Vec2(text.getLocalBounds().width, height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));
+	switch (align)
+	{
+	case 1:
+		set_cur_pos({ get_pos().x + text.getLocalBounds().width / 2, get_pos().y });
+		break;
+	case 2:
+		set_cur_pos({ get_pos().x - text.getLocalBounds().width / 2, get_pos().y });
+		break;
+	default:
+		set_cur_pos(get_pos());
+		break;
+	}
 	if (keyboard_active)
-		get_draw()->stroke_rect(get_pos() + b2Vec2(indent.x / 2.0, indent.y / 2.0), get_scale() + indent, sf::Color::White);
+		get_draw()->stroke_rect(get_cur_pos() + b2Vec2(indent.x / 2.0, indent.y / 2.0), get_scale() + indent, sf::Color::White);
 	primitive_step();
 	//std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
 	text.setOrigin(sf::Vector2f(text.getLocalBounds().width / 2.0, height / 2.0));
-	text.setPosition(aux::to_Vector2f(get_pos()));
+	text.setPosition(aux::to_Vector2f(get_cur_pos()));
 	get_draw()->display_text(&text);
 }

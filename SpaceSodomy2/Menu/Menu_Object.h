@@ -12,6 +12,7 @@ private:
 	sf::Color color;
 	Draw* draw;
 	b2Vec2 pos, scale;
+	b2Vec2 cur_pos;
 	// Is object active (mouse pointed on it)
 	bool active = 0;
 	b2Vec2* mouse_pos;
@@ -23,6 +24,7 @@ private:
 	// Mouse clicked
 	bool* clicked = 0;
 	int use_window_cords = 0;
+	bool cur_pos_activated = 0;
 
 	b2Vec2 window_cords_pos();
 	b2Vec2 mid;
@@ -45,6 +47,7 @@ public:
 	bool get_active();
 	bool* get_clicked();
 	int get_use_window_cords();
+	b2Vec2 get_cur_pos();
 
 	// Set methods
 	void set_id(int id_);
@@ -59,6 +62,7 @@ public:
 	void set_keyboard(aux::Keyboard* keyboard);
 	void set_clicked(bool* clicked_);
 	void set_use_window_cords(int use_window_cords_);
+	void set_cur_pos(b2Vec2 cur_pos_);
 
 	void primitive_step(); // Rendering & active check
 };
