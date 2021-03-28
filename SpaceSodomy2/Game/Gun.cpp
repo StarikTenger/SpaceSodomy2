@@ -30,6 +30,9 @@ void Gun::activate() {
 	projectile_def.radius = projectile_radius;
 	projectile_def.mass = projectile_mass;
 
+	// Recoil
+	body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
+
 	Event_Def event_def;
 	event_def.name = "gn";
 	event_def.body = body;
