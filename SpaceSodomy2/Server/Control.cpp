@@ -42,7 +42,7 @@ void Control::receive() {
 	// Splitting message
 	std::stringstream message;
 	message << network.get_last_message();
-	std::cout << network.get_last_message() << "\n";
+	//std::cout << network.get_last_message() << "\n";
 	network.del_last_message();
 	std::string IP_address_, name_, time, gun_name;
 	message >> IP_address_;

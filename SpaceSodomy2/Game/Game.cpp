@@ -580,16 +580,16 @@ std::string Game::encode() {
 		// Player id
 		message += std::to_string(ship->get_player()->get_id()) + " ";
 		// Pos
-		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
-		message += std::to_string(ship->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(ship->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(ship->get_body()->GetPosition().y, 2) + " ";
 		// Angle
-		message += std::to_string(ship->get_body()->GetAngle()) + " ";
+		message += aux::float_to_string(ship->get_body()->GetAngle(), 3) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Hp
-		message += std::to_string(ship->get_hp()->get()) + " ";
+		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		// Stamina
-		message += std::to_string(ship->get_stamina()->get()) + " ";
+		message += std::to_string((int)ship->get_stamina()->get()) + " ";
 	}
 
 	// Projectiles
@@ -600,12 +600,12 @@ std::string Game::encode() {
 		// Player id
 		message += std::to_string(projectile->get_player()->get_id()) + " ";
 		// Pos
-		message += std::to_string(projectile->get_body()->GetPosition().x) + " ";
-		message += std::to_string(projectile->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
 		// Angle
-		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
 		// Radius
-		message += std::to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 
 	// Events
@@ -616,8 +616,8 @@ std::string Game::encode() {
 		// Name
 		message += sound->get_name() + " ";
 		// Pos
-		message += std::to_string(sound->get_body()->GetPosition().x) + " ";
-		message += std::to_string(sound->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(sound->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(sound->get_body()->GetPosition().y, 2) + " ";
 	}
 
 	return message;

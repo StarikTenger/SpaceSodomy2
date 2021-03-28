@@ -29,6 +29,8 @@ public:
 	static std::string mask_to_string(std::vector<int>, int digit = 16, char start = '0');
 	// Converts string to bit max
 	static std::vector<int> string_to_mask(std::string, int digit = 16, char start = '0');
+	// Float to string with fixed digits
+	static std::string float_to_string(float val, int precision);
 	// Calculates polygon signed area 
 	static float area(std::vector<b2Vec2>);
 	// Returns normalized vector by angle
