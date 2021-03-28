@@ -7,7 +7,6 @@
 #include "Game.h"
 
 Game::Game() {
-	new_player(0, {255, 0, 0}, "biba", b2Vec2(0, 0), 0);
 	// Contact filter
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
@@ -624,8 +623,9 @@ std::string Game::encode() {
 	return message;
 }
 
-Ship* Game::new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle) {
+Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, b2Vec2 pos, float angle) {
 	Player* player = create_player(id, color, name);
+	player->set_gun_name(gun_name);
 	players[id] = player;
 	auto ship = create_ship(player, pos, angle);
 	player->set_command_module(ship->get_player()->get_command_module());

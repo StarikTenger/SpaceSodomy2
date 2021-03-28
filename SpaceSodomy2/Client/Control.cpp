@@ -85,6 +85,7 @@ void Control::process_commands() {
 std::string Control::commands_to_string() {
 	std::string message = "";
 	message += game.get_gun_name() + " ";
+	std::cout << game.get_gun_name() << "\n";
 	message += "#";
 	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
 		if (command_module.get_command(i))
@@ -100,6 +101,7 @@ Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_textures("textures.conf");
 	draw.load_fonts("fonts.conf");
+	game.load_setup("setup.conf");
 	audio.set_draw(&draw);
 	audio.load_sounds();
 	audio.load_musics();
@@ -235,8 +237,7 @@ void Control::load_config(std::string path) {
 	std::string name_;
 	config >> name_;
 	network.set_name(name_);
-	//game.set_gun_name("default");
 	// Key config
 	load_keys("keys.conf");
-	//game.load_setup("setup.conf");
+	game.load_setup("setup.conf");
 }

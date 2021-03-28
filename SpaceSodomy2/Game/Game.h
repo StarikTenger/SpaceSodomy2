@@ -99,7 +99,7 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	Ship* new_player(int id, sf::Color color, std::string name, b2Vec2 pos, float angle);
+	Ship* new_player(int id, sf::Color color, std::string name, std::string gun_name, b2Vec2 pos, float angle);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player
