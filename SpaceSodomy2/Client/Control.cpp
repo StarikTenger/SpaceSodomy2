@@ -85,6 +85,7 @@ void Control::process_commands() {
 std::string Control::commands_to_string() {
 	std::string message = "";
 	message += game.get_gun_name() + " ";
+	message += game.get_hull_name() + " ";
 	std::cout << game.get_gun_name() << "\n";
 	message += "#";
 	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {

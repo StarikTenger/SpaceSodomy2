@@ -13,6 +13,7 @@ private:
 	sf::Color color;
 	std::string name = "_";
 	std::string gun_name = "default";
+	std::string hull_name = "default";
 	Command_Module* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
 public:
@@ -23,6 +24,7 @@ public:
 	sf::Color get_color();
 	std::string get_name();
 	std::string get_gun_name();
+	std::string get_hull_name();
 	Command_Module* get_command_module();
 	Counter* get_time_to_respawn();
 	int get_deaths();
@@ -32,6 +34,7 @@ public:
 	void set_color(sf::Color color_);
 	void set_name(std::string name_);
 	void set_gun_name(std::string val);
+	void set_hull_name(std::string val);
 	void set_command_module(Command_Module*);
 	void set_time_to_respawn(Counter*);
 	void set_deaths(int deaths_);

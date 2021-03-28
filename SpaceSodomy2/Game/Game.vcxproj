@@ -177,6 +177,7 @@
     <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="Hull_Def.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Event_Manager.h" />
     <ClInclude Include="Wall.h" />
@@ -191,7 +192,6 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gun.cpp" />
-    <ClCompile Include="Gun_Def.cpp" />
     <ClCompile Include="Id_Manager.cpp" />
     <ClCompile Include="iId.cpp" />
     <ClCompile Include="pch.cpp">

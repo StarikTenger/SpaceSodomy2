@@ -12,6 +12,7 @@
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
 #include "Gun_Def.h"
+#include "Hull_Def.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
@@ -42,8 +43,9 @@ protected:
 	Id_Manager id_manager;
 	b2World physics = b2World(b2Vec2_zero);
 
-	// Lists of smth
+	// Ship components
 	std::map<std::string, Gun_Def> guns;
+	std::map<std::string, Hull_Def> hulls;
 
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
@@ -99,7 +101,7 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	Ship* new_player(int id, sf::Color color, std::string name, std::string gun_name, b2Vec2 pos, float angle);
+	Ship* new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, b2Vec2 pos, float angle);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player
