@@ -10,6 +10,8 @@ private:
 	Menu keys_menu; // keys menu object
 	Menu settings_menu; // settings menu object
 	Menu sound_menu; // sound menu object
+	Menu gun_menu; // gun menu object
+	std::map <std::string, Menu> guns; // guns
 
 	std::vector<Menu*> menus;
 	aux::Keyboard* keyboard;
@@ -31,6 +33,9 @@ private:
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
+	void init_gun(std::string, int damage, float recharge, int stamina_consumption, float projectile_mass,
+		float projectile_radius, int projectile_vel, Menu* gun);
+	void init_gun_menu(std::string path, std::string path_to_guns_description);
 	Draw* draw;
 	bool disactivated = 0;
 

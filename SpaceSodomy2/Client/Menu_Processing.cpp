@@ -157,6 +157,69 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	}
 }
 
+void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
+	float projectile_radius, int projectile_vel, Menu* gun) {
+	gun->add_button(++current_id, name, b2Vec2(-100, -100), 4, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-100, -200), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-100, -225), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Recharge: " + std::to_string(recharge), b2Vec2(-100, -250), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-100, -275), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet mass: " + std::to_string(projectile_mass), b2Vec2(-100, -300), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet radius: " + std::to_string(projectile_radius), b2Vec2(-100, -325), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-100, -350), 4, 0.4,
+		sf::Color::White, 1, mouse_pos, keyboard);
+}
+
+void Menu_Processing::init_gun_menu(std::string path, std::string path_to_guns_description) {
+	init_menu(path, &gun_menu);
+	std::ifstream file_to_comment(path_to_guns_description);
+	std::stringstream config = aux::comment(file_to_comment);
+	while (!config.eof()) {
+		int damage, stamina_consumption, projectile_vel;
+		float recharge, projectile_mass, projectile_radius;
+		std::string name, next;
+		config >> next;
+		while (next == "GUN") {
+			config >> name >> next;
+			while (next != "END") {
+				if (next == "DAMAGE") {
+					config >> damage;
+				}
+				if (next == "RECHARGE") {
+					config >> recharge;
+				}
+				if (next == "STAMINA_CONSUMPTION") {
+					config >> stamina_consumption;
+				}
+				if (next == "PROJECTILE_MASS") {
+					config >> projectile_mass;
+				}
+				if (next == "PROJECTILE_RADIUS") {
+					config >> projectile_radius;
+				}
+				if (next == "PROJECTILE_VEL") {
+					config >> projectile_vel;
+				}
+				config >> next;
+			}
+			guns[name].set_draw(draw);
+			guns[name].set_active(0);
+			guns[name].set_events(&events);
+			guns[name].set_sliders_vals(&sliders_vals);
+			guns[name].set_text_fields_strings(&text_fields_strings);
+			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
+				projectile_radius, projectile_vel, &guns[name]);
+			config >> next;
+		}
+	}
+}
+
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
 	int* sound_volume_, int* music_volume_) {
@@ -220,6 +283,14 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, -30, { 100, 50 }, 20);
 	name_to_id["ApplySounds"] = ++current_id;
 	name_to_id["Apply"] = ++current_id;
+	// set gun menu fields
+	gun_menu.set_draw(draw);
+	gun_menu.set_active(0);
+	gun_menu.set_events(&events);
+	gun_menu.set_sliders_vals(&sliders_vals);
+	gun_menu.set_text_fields_strings(&text_fields_strings);
+	menus.push_back(&gun_menu);
+	init_menu("menu_configs/keys.conf", &keys_menu);
 }
 
 void Menu_Processing::step() {
@@ -297,6 +368,25 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
+		}
+		if (name_to_id["Gun"] == events.front()) {
+
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id[] == events.front()) {
+
+		}
+		if (name_to_id[] == events.front()) {
+
+		}
+		if (name_to_id[] == events.front()) {
+
+		}
+		if (name_to_id[] == events.front()) {
+
+		}
+		if (name_to_id[] == events.front()) {
+
 		}
 		events.pop();
 	}
