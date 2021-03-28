@@ -5,25 +5,19 @@
 #include "framework.h"
 #include "Draw.h"
 #include <iostream>
-#include <thread>
 
 // PRIVATE //
 
 void Draw::load_texture(std::string name, std::string path_to_texture) {
 	sf::Texture* tex = new sf::Texture();
-	textures[name] = tex;
-	auto load_func = [](sf::Texture* tex, std::string path_to_texture) {
-		tex->loadFromFile(path_to_texture);
-		if (!tex->getSize().x || !tex->getSize().y) {
-			std::cout << "Texture does not exists\n";
-			delete tex;
-			return;
-		}
-	};
-	std::thread load_thread(load_func, tex, path_to_texture);
-	load_thread.detach();
+	tex->loadFromFile(path_to_texture);
+	if (!tex->getSize().x || !tex->getSize().y) {
+		std::cout << "Texture does not exists\n";
+		delete tex;
+		return;
+	}
+	textures.insert(std::make_pair(name, tex));
 }
-
 void Draw::load_font(std::string name, std::string path_to_font) {
 	sf::Font* font = new sf::Font();
 	fonts.insert(std::make_pair(name, font));
@@ -161,8 +155,8 @@ void Draw::line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 	float angle, sf::Color color)
-	{
-	if (!textures.at(name) || !textures[name])
+{
+	if (textures.find(name) == textures.end())
 		return;
 	sf::Texture& tex = *textures[name];
 	b2Vec2 scale = { box.x / tex.getSize().x  , box.y / tex.getSize().y };
@@ -260,24 +254,17 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size,
 
 void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
 	std::string wall_texture, int wall_id, float wall_width, std::string map_name) {
-	std::string texture_name = wall_texture + " " + std::to_string(wall_id);
 
-	if (textures.find(texture_name) != textures.end()) {
-		std::cout << "texture already found: " << texture_name << '\n';
-		return;
-	}
 	make_polygonal_texture(wall, is_outer, sf::Vector2f(100, 100),
-		wall_texture, texture_name, wall_width);
+		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width);
 
 	export_texture(wall_texture + " " + std::to_string(wall_id),
-		"textures/walls/" + map_name + '_' + texture_name + ".png");
+		"textures/walls/" + map_name + '_' + wall_texture + " " + std::to_string(wall_id) + ".png");
 }
 
-void Draw::load_wall_textures(int walls_size, std::string wall_name, std::string map_name){
+void Draw::load_wall_textures(int walls_size, std::string wall_name, std::string map_name) {
 	for (int i = 0; i < walls_size; i++) {
 		load_texture(wall_name + " " + std::to_string(i),
 			"textures/walls/" + map_name + '_' + wall_name + " " + std::to_string(i) + ".png");
 	}
 }
-
-
