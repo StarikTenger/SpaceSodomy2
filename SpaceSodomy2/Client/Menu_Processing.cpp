@@ -16,15 +16,14 @@ void Menu_Processing::set_current_gun(std::string path, std::string new_gun) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::string next, new_string = "";
-	for (int i = 0; !config.eof(); i++) {
-		config >> next;
+	while (config >> next) {
 		new_string += next + " ";
 		if (next == "GUN") {
-			config >> next;
 			config >> next;
 			new_string += new_gun + " ";
 		}
 	}
+	file_to_comment.close();
 	std::ofstream fout;
 	fout.open(path);
 	fout << new_string;
