@@ -129,6 +129,8 @@ Control::Control() {
 	}
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &sound_volume, &music_volume, &game);
+	// Music name
+	track = audio.get_music_by_number(aux::random_int(0, 131213));
 }
 
 int Control::get_is_running() {
@@ -175,14 +177,18 @@ void Control::step() {
 		if ((game.get_ship(network.get_id()) != nullptr) &&
 			(game.get_ship(network.get_id())->get_player() != nullptr) &&
 			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
-			audio.update_music("ss06", music_volume);
 			if (respawned)
-				audio.start_music("ss06");
+			{
+				audio.stop_music(track);
+				track = audio.get_music_by_number(aux::random_int(0, 131213));
+				audio.start_music(track);
+			}
+			audio.update_music(track, music_volume);
 			respawned = 0;
 		}
 		else {
 			respawned = 1;
-			audio.update_music("ss06", music_volume / 8);
+			audio.update_music(track, music_volume / 8);
 		}
 	}
 

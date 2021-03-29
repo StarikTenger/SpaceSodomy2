@@ -102,3 +102,15 @@ void Audio::update_music(std::string name, double volume) {
 void Audio::start_music(std::string name) {
 	musics[name]->play();
 }
+void Audio::stop_music(std::string name) {
+	musics[name]->stop();
+}
+
+std::string Audio::get_music_by_number(int val) {
+	val %= musics.size();
+	auto it = musics.begin();
+	for (int i = 0; i < val; i++) {
+		it++;
+	}
+	return it->first;
+}
