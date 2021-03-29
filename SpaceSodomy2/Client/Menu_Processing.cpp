@@ -35,9 +35,10 @@ void Menu_Processing::close_settings_menus() {
 	keys_menu.set_active(0);
 	sound_menu.set_active(0);
 	gun_menu.set_active(0);
-	for (auto menu : guns) {
-		menu.second.set_active(0);
-	}
+	guns["default"].set_active(0);
+	guns["snipe"].set_active(0);
+	guns["heavy"].set_active(0);
+	guns["cascade"].set_active(0);
 }
 
 void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
@@ -335,7 +336,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	gun_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&gun_menu);
 	init_gun_menu("menu_configs/gun.conf", "parameters.conf");
-	std::cout << current_id << " " << name_to_id["Apply"] << " " << name_to_id["default"] << std::endl;
+	//std::cout << current_id << " " << name_to_id["Apply"] << " " << name_to_id["default"] << std::endl;
 }
 
 void Menu_Processing::step() {
@@ -405,7 +406,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["ApplyKeys"]);
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplySound"]);
-			//events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["ApplyGun"]);
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
@@ -417,19 +418,19 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["default"] == events.front()) {
 			cur_gun = "default";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["cascade"] == events.front()) {
 			cur_gun = "cascade";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["heavy"] == events.front()) {
 			cur_gun = "heavy";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["snipe"] == events.front()) {
 			cur_gun = "snipe";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["ApplyGun"] == events.front()) {
 			close_settings_menus();
