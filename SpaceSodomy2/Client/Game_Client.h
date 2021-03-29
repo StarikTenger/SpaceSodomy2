@@ -24,6 +24,7 @@ public:
 
 	// Set methods
 	void set_gun_name(std::string val);
+	void set_hull_name(std::string val);
 
 	void display(int id);
 

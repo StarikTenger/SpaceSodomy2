@@ -28,6 +28,10 @@ void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
 
+void Game_Client::set_hull_name(std::string val) {
+	hull_name = val;
+}
+
 void Game_Client::display(int id) {
 	// Finding cam target
 	auto ship = get_ship(id);

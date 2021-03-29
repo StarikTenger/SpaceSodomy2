@@ -20,7 +20,43 @@ void Menu_Processing::init_hull(std::string name, int hp, float mass, float radi
 	menus.push_back(hull);
 }
 void Menu_Processing::init_hull_menu(std::string path, std::string path_to_hulls_description) {
-
+	init_menu(path, &hull_menu);
+	std::ifstream file_to_comment(path_to_hulls_description);
+	std::stringstream config = aux::comment(file_to_comment);
+	int hp, stamina, stamina_recovery;
+	float mass, radius;
+	std::string name, next;
+	while (next != "HULL")
+		config >> next;
+	while (next == "HULL") {
+		config >> name >> next;
+		while (next != "END") {
+			if (next == "HP") {
+				config >> hp;
+			}
+			if (next == "MASS") {
+				config >> mass;
+			}
+			if (next == "RADIUS") {
+				config >> radius;
+			}
+			if (next == "STAMINA") {
+				config >> stamina;
+			}
+			if (next == "STAMINA_RECOVERY") {
+				config >> stamina_recovery;
+			}
+			config >> next;
+		}
+		hulls[name].set_draw(draw);
+		hulls[name].set_active(0);
+		hulls[name].set_events(&events);
+		hulls[name].set_sliders_vals(&sliders_vals);
+		hulls[name].set_text_fields_strings(&text_fields_strings);
+		init_hull(name, hp, mass, radius,
+			stamina, stamina_recovery, &hulls[name]);
+		config >> next;
+	}
 }
 
 void Menu_Processing::close_settings_menus() {
@@ -28,10 +64,10 @@ void Menu_Processing::close_settings_menus() {
 	keys_menu.set_active(0);
 	sound_menu.set_active(0);
 	gun_menu.set_active(0);
-	guns["default"].set_active(0);
-	guns["snipe"].set_active(0);
-	guns["heavy"].set_active(0);
-	guns["cascade"].set_active(0);
+	for (auto it = guns.begin(); it != guns.end(); it++)
+		guns[it->first].set_active(0);
+	for (auto it = hulls.begin(); it != hulls.end(); it++)
+		hulls[it->first].set_active(0);
 }
 
 void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
@@ -321,7 +357,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	current_id++;
 	name_to_id["Apply"] = current_id;
 	current_id++;
-	name_to_id["ApplyGun"] = current_id;
+	name_to_id["ApplySetup"] = current_id;
 	current_id++;
 	// set gun menu fields
 	gun_menu.set_draw(draw);
@@ -331,7 +367,14 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	gun_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&gun_menu);
 	init_gun_menu("menu_configs/gun.conf", "parameters.conf");
-	//std::cout << current_id << " " << name_to_id["Apply"] << " " << name_to_id["default"] << std::endl;
+	// set hull menu fields
+	hull_menu.set_draw(draw);
+	hull_menu.set_active(0);
+	hull_menu.set_events(&events);
+	hull_menu.set_sliders_vals(&sliders_vals);
+	hull_menu.set_text_fields_strings(&text_fields_strings);
+	menus.push_back(&hull_menu);
+	init_hull_menu("menu_configs/hull.conf", "parameters.conf");
 }
 
 void Menu_Processing::step() {
@@ -352,6 +395,7 @@ void Menu_Processing::step() {
 		disactivated = 0;
 	}
 	while (!events.empty()) {
+		std::cout << game->get_hull_name() << "-hull\n";
 		if (name_to_id["NewGame"] == events.front()) { // New game button
 			active = 0;
 		}
@@ -401,7 +445,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["ApplyKeys"]);
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplySound"]);
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["ApplySetup"]);
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
@@ -438,9 +482,34 @@ void Menu_Processing::step() {
 			guns[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
-		if (name_to_id["ApplyGun"] == events.front()) {
+		if (name_to_id["ApplySetup"] == events.front()) {
 			//set_current_gun("setup.conf", cur_gun);
 			game->save_setup("setup.conf");
+		}
+		if (name_to_id["Hull"] == events.front()) {
+			events.push(name_to_id[game->get_hull_name() + "-hull"]);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["default-hull"] == events.front()) {
+			game->set_hull_name("default");
+			close_settings_menus();
+			hull_menu.set_active(1);
+			guns[game->get_hull_name() + "-hull"].set_active(1);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["light-hull"] == events.front()) {
+			game->set_hull_name("light");
+			close_settings_menus();
+			hull_menu.set_active(1);
+			guns[game->get_hull_name() + "-hull"].set_active(1);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["heavy-hull"] == events.front()) {
+			game->set_hull_name("heavy");
+			close_settings_menus();
+			hull_menu.set_active(1);
+			guns[game->get_gun_name() + "-hull"].set_active(1);
+			events.push(name_to_id["Apply"]);
 		}
 		events.pop();
 	}
