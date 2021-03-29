@@ -294,3 +294,9 @@ void Game_Client::load_setup(std::string path) {
 
 	std::cout << gun_name << "\n";
 }
+
+void Game_Client::save_setup(std::string path) {
+	std::ofstream file(path);
+	file << "GUN " << gun_name << "\n" << "HULL " << hull_name;
+	file.close();
+}

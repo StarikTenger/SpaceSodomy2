@@ -22,65 +22,6 @@ void Menu_Processing::init_hull(std::string name, int hp, float mass, float radi
 void Menu_Processing::init_hull_menu(std::string path, std::string path_to_hulls_description) {
 
 }
-std::string Menu_Processing::get_current_hull(std::string path) {
-	std::ifstream file_to_comment(path);
-	std::stringstream config = aux::comment(file_to_comment);
-	std::string next;
-	config >> next;
-	while (next != "HULL")
-		config >> next;
-	config >> next;
-	return next;
-}
-void Menu_Processing::set_current_hull(std::string path, std::string new_hull) {
-	if (get_current_hull(path) == new_hull)
-		return;
-	std::ifstream file_to_comment(path);
-	std::stringstream config = aux::comment(file_to_comment);
-	std::string next, new_string = "";
-	while (config >> next) {
-		new_string += next + " ";
-		if (next == "HULL") {
-			config >> next;
-			new_string += new_hull + " ";
-		}
-	}
-	file_to_comment.close();
-	std::ofstream fout;
-	fout.open(path);
-	fout << new_string;
-	fout.close();
-}
-
-std::string Menu_Processing::get_current_gun(std::string path) {
-	std::ifstream file_to_comment(path);
-	std::stringstream config = aux::comment(file_to_comment);
-	std::string next;
-	config >> next;
-	while (next != "GUN")
-		config >> next;
-	config >> next;
-	return next;
-}
-void Menu_Processing::set_current_gun(std::string path, std::string new_gun) {
-	if (get_current_gun(path) == new_gun)
-		return;
-	std::ifstream file_to_comment(path);
-	std::stringstream config = aux::comment(file_to_comment);
-	std::string next, new_string = "";
-	while (config >> next) {
-		new_string += next + " ";
-		if (next == "GUN") {
-			config >> next;
-			new_string += new_gun + " ";
-		}
-	}
-	file_to_comment.close();
-	std::ofstream fout;
-	fout.open(path);
-	fout << new_string;
-	fout.close();
-}
 
 void Menu_Processing::close_settings_menus() {
 	config_menu.set_active(0);
@@ -314,7 +255,9 @@ void Menu_Processing::init_gun_menu(std::string path, std::string path_to_guns_d
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
-	int* sound_volume_, int* music_volume_) {
+	int* sound_volume_, int* music_volume_,
+	Game_Client* game_) {
+	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
@@ -464,40 +407,40 @@ void Menu_Processing::step() {
 			save_sound("sound_settings.conf");
 		}
 		if (name_to_id["Gun"] == events.front()) {
-			cur_gun = get_current_gun("setup.conf");
-			events.push(name_to_id[cur_gun]);
+			events.push(name_to_id[game->get_gun_name()]);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["default"] == events.front()) {
-			cur_gun = "default";
+			game->set_gun_name("default");
 			close_settings_menus();
 			gun_menu.set_active(1);
-			guns[cur_gun].set_active(1);
+			guns[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["cascade"] == events.front()) {
-			cur_gun = "cascade";
+			game->set_gun_name("cascade");
 			close_settings_menus();
 			gun_menu.set_active(1);
-			guns[cur_gun].set_active(1);
+			guns[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["heavy"] == events.front()) {
-			cur_gun = "heavy";
+			game->set_gun_name("heavy");
 			close_settings_menus();
 			gun_menu.set_active(1);
-			guns[cur_gun].set_active(1);
+			guns[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["snipe"] == events.front()) {
-			cur_gun = "snipe";
+			game->set_gun_name("snipe");
 			close_settings_menus();
 			gun_menu.set_active(1);
-			guns[cur_gun].set_active(1);
+			guns[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["ApplyGun"] == events.front()) {
-			set_current_gun("setup.conf", cur_gun);
+			//set_current_gun("setup.conf", cur_gun);
+			game->save_setup("setup.conf");
 		}
 		events.pop();
 	}

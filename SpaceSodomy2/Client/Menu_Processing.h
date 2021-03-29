@@ -1,6 +1,7 @@
 #pragma once
 #include<Menu/Menu.h>
 #include<AuxLib/AuxLib.h>
+#include<Client/Game_Client.h>
 #include<string>
 
 class Menu_Processing {
@@ -39,25 +40,23 @@ private:
 		float projectile_radius, int projectile_vel, Menu* gun);
 	void init_gun_menu(std::string path, std::string path_to_guns_description);
 	void close_settings_menus();
-	std::string get_current_gun(std::string path);
-	void set_current_gun(std::string path, std::string new_gun);
 	void init_hull_menu(std::string path, std::string path_to_guns_description);
 	void init_hull(std::string name, int hp, float mass, float radius,
 		int stamina, int stamina_recovery, Menu* hull);
-	std::string get_current_hull(std::string path);
-	void set_current_hull(std::string path, std::string new_hull);
-	std::string cur_gun, cur_hull;
 	Draw* draw;
+	Game_Client* game;
 	bool disactivated = 0;
 
 	int* music_volume;
 	int* sound_volume;
+
 public:
 	Menu_Processing();
 	bool active = 1;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, bool* reload_,
-		int* sound_volume_, int* music_volume_);
+		int* sound_volume_, int* music_volume_,
+		Game_Client* game_);
 	void step();
 };
 
