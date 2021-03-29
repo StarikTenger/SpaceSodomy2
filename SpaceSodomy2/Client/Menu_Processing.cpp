@@ -406,7 +406,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["ApplyKeys"]);
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplySound"]);
-			//events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["ApplyGun"]);
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
@@ -418,19 +418,19 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["default"] == events.front()) {
 			cur_gun = "default";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["cascade"] == events.front()) {
 			cur_gun = "cascade";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["heavy"] == events.front()) {
 			cur_gun = "heavy";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["snipe"] == events.front()) {
 			cur_gun = "snipe";
-			events.push(name_to_id["ApplyGun"]);
+			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["ApplyGun"] == events.front()) {
 			close_settings_menus();
