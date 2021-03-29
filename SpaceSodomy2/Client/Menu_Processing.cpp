@@ -63,6 +63,8 @@ std::string Menu_Processing::get_current_gun(std::string path) {
 	return next;
 }
 void Menu_Processing::set_current_gun(std::string path, std::string new_gun) {
+	if (get_current_gun(path) == new_gun)
+		return;
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::string next, new_string = "";
