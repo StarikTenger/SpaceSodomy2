@@ -2,6 +2,56 @@
 
 Menu_Processing::Menu_Processing() {}
 
+void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
+	int stamina, int stamina_recovery, Menu* hull) {
+	hull->add_button(++current_id, name, b2Vec2(-100, 100), 4, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 225), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	hull->add_constant_text(++current_id, "Mass: " + std::to_string(mass), b2Vec2(-300, 250), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	hull->add_constant_text(++current_id, "Radius: " + std::to_string(radius), b2Vec2(-300, 275), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	hull->add_constant_text(++current_id, "Stamina: " + std::to_string(stamina), b2Vec2(-300, 300), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	hull->add_constant_text(++current_id, "Stamina recovery: " + std::to_string(stamina_recovery), b2Vec2(-300, 325), 4, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	menus.push_back(hull);
+}
+void Menu_Processing::init_hull_menu(std::string path, std::string path_to_hulls_description) {
+
+}
+std::string Menu_Processing::get_current_hull(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::string next;
+	config >> next;
+	while (next != "HULL")
+		config >> next;
+	config >> next;
+	return next;
+}
+void Menu_Processing::set_current_hull(std::string path, std::string new_hull) {
+	if (get_current_hull(path) == new_hull)
+		return;
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::string next, new_string = "";
+	while (config >> next) {
+		new_string += next + " ";
+		if (next == "HULL") {
+			config >> next;
+			new_string += new_hull + " ";
+		}
+	}
+	file_to_comment.close();
+	std::ofstream fout;
+	fout.open(path);
+	fout << new_string;
+	fout.close();
+}
+
 std::string Menu_Processing::get_current_gun(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);

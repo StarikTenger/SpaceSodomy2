@@ -12,6 +12,8 @@ private:
 	Menu sound_menu; // sound menu object
 	Menu gun_menu; // gun menu object
 	std::map <std::string, Menu> guns; // guns
+	Menu hull_menu; // hull menu objects
+	std::map <std::string, Menu> hulls; // hulls
 
 	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
@@ -39,7 +41,12 @@ private:
 	void close_settings_menus();
 	std::string get_current_gun(std::string path);
 	void set_current_gun(std::string path, std::string new_gun);
-	std::string cur_gun;
+	void init_hull_menu(std::string path, std::string path_to_guns_description);
+	void init_hull(std::string name, int hp, float mass, float radius,
+		int stamina, int stamina_recovery, Menu* hull);
+	std::string get_current_hull(std::string path);
+	void set_current_hull(std::string path, std::string new_hull);
+	std::string cur_gun, cur_hull;
 	Draw* draw;
 	bool disactivated = 0;
 
