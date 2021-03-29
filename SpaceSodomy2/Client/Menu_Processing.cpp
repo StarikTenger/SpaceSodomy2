@@ -494,21 +494,21 @@ void Menu_Processing::step() {
 			game->set_hull_name("default");
 			close_settings_menus();
 			hull_menu.set_active(1);
-			guns[game->get_hull_name() + "-hull"].set_active(1);
+			hulls[game->get_hull_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["light-hull"] == events.front()) {
 			game->set_hull_name("light");
 			close_settings_menus();
 			hull_menu.set_active(1);
-			guns[game->get_hull_name() + "-hull"].set_active(1);
+			hulls[game->get_hull_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["heavy-hull"] == events.front()) {
 			game->set_hull_name("heavy");
 			close_settings_menus();
 			hull_menu.set_active(1);
-			guns[game->get_gun_name() + "-hull"].set_active(1);
+			hulls[game->get_gun_name()].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		events.pop();
