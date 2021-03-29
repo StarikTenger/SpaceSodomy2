@@ -133,10 +133,12 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Hp
 	auto hp = create_counter(def.hp);
+	hp->set_max(def.hp);
 	ship->set_hp(hp);
 
 	// Stamina
 	auto stamina = create_counter(def.stamina, def.stamina_recovery);
+	stamina->set_max(def.stamina);
 	stamina->set_delay(0.7);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
