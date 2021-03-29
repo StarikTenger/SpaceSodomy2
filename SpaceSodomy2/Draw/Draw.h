@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <direct.h>
 #include "Camera.h"
 
 class Draw {
@@ -68,7 +69,8 @@ public:
 	/// <param name="base_texture">: the base textures name</param>
 	/// <param name="result_texture">: the results name</param>
 	/// <param name="wall_width">: the width of the wall texture </param>
-	void make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+	/// returns true if the texture was created
+	bool make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
 		sf::Vector2f scale, std::string base_texture, std::string result_texture,
 		float wall_width);
 	// Make a wall-fitting texture
@@ -79,5 +81,9 @@ public:
 	void load_wall_textures(int walls_size, std::string wall_name, std::string map_name);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
+
+	// Packs textures into a single dir
+	// WINDOWS ONLY
+	void mk_wall_dir(std::string map_name);
 };
 

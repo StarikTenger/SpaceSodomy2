@@ -157,6 +157,7 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
+				draw->mk_wall_dir(path);
 				draw->load_wall_textures(walls.size(), "wall", path);
 				for (auto wall : walls) {
 					float wall_width = 0.5;

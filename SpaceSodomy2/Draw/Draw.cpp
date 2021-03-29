@@ -12,7 +12,7 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 	sf::Texture* tex = new sf::Texture();
 	tex->loadFromFile(path_to_texture);
 	if (!tex->getSize().x || !tex->getSize().y) {
-		std::cout << "Texture does not exists\n";
+		std::cout << "Texture does not exist\n";
 		delete tex;
 		return;
 	}
@@ -189,13 +189,13 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	window->draw(drawnText);
 }
 
-void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+bool Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
 	sf::Vector2f scale, std::string base_texture, std::string result_texture,
 	float wall_width) {
 
 	if (textures.find(result_texture) != textures.end()) {
 		std::cout << "texture already found: " << result_texture << '\n';
-		return;
+		return false;
 	}
 	std::cout << "making texture of: " << result_texture << '\n';
 
@@ -237,6 +237,7 @@ void Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_ou
 	textures[result_texture]->loadFromImage(new_image);
 
 	std::cout << result_texture << " done\n";
+	return true;
 }
 
 void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
@@ -255,16 +256,28 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size,
 void Draw::make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
 	std::string wall_texture, int wall_id, float wall_width, std::string map_name) {
 
-	make_polygonal_texture(wall, is_outer, sf::Vector2f(100, 100),
-		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width);
-
-	export_texture(wall_texture + " " + std::to_string(wall_id),
-		"textures/walls/" + map_name + '_' + wall_texture + " " + std::to_string(wall_id) + ".png");
+	if (make_polygonal_texture(wall, is_outer, sf::Vector2f(100, 100),
+		wall_texture, wall_texture + " " + std::to_string(wall_id), wall_width)) {
+		export_texture(wall_texture + " " + std::to_string(wall_id),
+			"textures/walls/" + map_name + '/' + wall_texture + " " + std::to_string(wall_id) + ".png");
+	}
 }
 
 void Draw::load_wall_textures(int walls_size, std::string wall_name, std::string map_name) {
 	for (int i = 0; i < walls_size; i++) {
 		load_texture(wall_name + " " + std::to_string(i),
-			"textures/walls/" + map_name + '_' + wall_name + " " + std::to_string(i) + ".png");
+			"textures/walls/" + map_name + '/' + wall_name + " " + std::to_string(i) + ".png");
 	}
 }
+
+
+void Draw::mk_wall_dir(std::string map_name) {
+	if (_mkdir(("textures/walls/" + map_name).c_str())) {
+		if (errno == EEXIST) {
+			return;
+		}
+		std::cout << "Error: could not create directory: " << "textures/walls/" + map_name << '\n';
+	}
+	std::cout << "Directory " << "textures/walls/" + map_name << "created\n";
+}
+
