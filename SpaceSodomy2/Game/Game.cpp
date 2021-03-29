@@ -109,8 +109,13 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Player
 	ship->set_player(player);
 
+	// Hull def
+	Hull_Def def;
+	if (hulls.count(player->get_hull_name()))
+		def = hulls[player->get_hull_name()];
+
 	// Body
-	auto body = create_round_body(pos, angle, 0.4, 1);
+	auto body = create_round_body(pos, angle, def.radius, def.mass);
 	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	ship->set_body(body);
 
@@ -127,13 +132,14 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_gun(gun);
 
 	// Hp
-	auto hp = create_counter(100);
+	auto hp = create_counter(def.hp);
+	hp->set_max(def.hp);
 	ship->set_hp(hp);
 
 	// Stamina
-	auto stamina = create_counter(100, 100);
+	auto stamina = create_counter(def.stamina, def.stamina_recovery);
+	stamina->set_max(def.stamina);
 	stamina->set_delay(0.7);
-	stamina->set_change_vel(50);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
 
@@ -250,7 +256,7 @@ void Game::process_players() {
 			player->get_command_module()->get_command(Command_Module::RESPAWN)) {
 			// TODO: function to determine new ship position
 			player->set_is_alive(1);
-			create_ship(player, {0, 0}, 0);
+			create_ship(player, { 0, 0 }, 0);
 		}
 	}
 }
@@ -468,9 +474,19 @@ bool Game::load_parameters(std::string path) {
 	while (input >> symbol) {
 		if (symbol == "END")
 			break;
+		// Lambda for reading symbols
+		auto read_symbol = [&](std::string symbol_name, float& var) {
+			if (symbol == symbol_name) {
+				float val;
+				if (!(input >> val)) {
+					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					return false;
+				}
+				var = val;
+			}
+		};
 		// Gun
 		if (symbol == "GUN") {
-			std::string symbol_1;
 			std::string name;
 			if (!(input >> name)) {
 				std::cerr << "Game::load_parameters: failed to read GUN name";
@@ -480,62 +496,34 @@ bool Game::load_parameters(std::string path) {
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				if (symbol == "DAMAGE") {
-					float damage;
-					if (!(input >> damage)) {
-						std::cerr << "Game::load_parameters: failed to read GUN DAMAGE";
-						return false;
-					}
-					guns[name].damage = damage;
-					continue;
-				}
-				if (symbol == "RECHARGE") {
-					float recharge;
-					if (!(input >> recharge)) {
-						std::cerr << "Game::load_parameters: failed to read GUN RECHARGE";
-						return false;
-					}
-					guns[name].recharge_time = recharge;
-					continue;
-				}
-				if (symbol == "STAMINA_CONSUMPTION") {
-					float stamina_consumption;
-					if (!(input >> stamina_consumption)) {
-						std::cerr << "Game::load_parameters: failed to read GUN STAMINA_CONSUMTION";
-						return false;
-					}
-					guns[name].stamina_consumption = stamina_consumption;
-					continue;
-				}
-				if (symbol == "PROJECTILE_MASS") {
-					float projectile_mass;
-					if (!(input >> projectile_mass)) {
-						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_MASS";
-						return false;
-					}
-					guns[name].projectile_mass = projectile_mass;
-					continue;
-				}
-				if (symbol == "PROJECTILE_VEL") {
-					float projectile_vel;
-					if (!(input >> projectile_vel)) {
-						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_VEL";
-						return false;
-					}
-					guns[name].projectile_vel = projectile_vel;
-					continue;
-				}
-				if (symbol == "PROJECTILE_RADIUS") {
-					float projectile_radius;
-					if (!(input >> projectile_radius)) {
-						std::cerr << "Game::load_modules: failed to read GUN PROJECTILE_RADIUS";
-						return false;
-					}
-					guns[name].projectile_radius = projectile_radius;
-					continue;
-				}
-				std::cerr << "Game::load_parameters: unknown symbol " << symbol << "\n";
+				
+				read_symbol("RECHARGE", guns[name].recharge_time);
+				read_symbol("DAMAGE", guns[name].damage);
+				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);
+				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
+				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
+				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
+			}
+			continue;
+		}
+		// Body
+		if (symbol == "HULL") {
+			std::string symbol_1;
+			std::string name;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to read BODY name";
 				return false;
+			}
+			hulls[name] = {};
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				
+				read_symbol("HP", hulls[name].hp);
+				read_symbol("MASS", hulls[name].mass);
+				read_symbol("RADIUS", hulls[name].radius);
+				read_symbol("STAMINA", hulls[name].stamina);
+				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
 			}
 			continue;
 		}
@@ -580,16 +568,18 @@ std::string Game::encode() {
 		// Player id
 		message += std::to_string(ship->get_player()->get_id()) + " ";
 		// Pos
-		message += std::to_string(ship->get_body()->GetPosition().x) + " ";
-		message += std::to_string(ship->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(ship->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(ship->get_body()->GetPosition().y, 2) + " ";
 		// Angle
-		message += std::to_string(ship->get_body()->GetAngle()) + " ";
+		message += aux::float_to_string(ship->get_body()->GetAngle(), 3) + " ";
+		// Radius
+		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Hp
-		message += std::to_string(ship->get_hp()->get()) + " ";
+		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		// Stamina
-		message += std::to_string(ship->get_stamina()->get()) + " ";
+		message += std::to_string((int)ship->get_stamina()->get()) + " ";
 	}
 
 	// Projectiles
@@ -600,12 +590,12 @@ std::string Game::encode() {
 		// Player id
 		message += std::to_string(projectile->get_player()->get_id()) + " ";
 		// Pos
-		message += std::to_string(projectile->get_body()->GetPosition().x) + " ";
-		message += std::to_string(projectile->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
 		// Angle
-		message += std::to_string(projectile->get_body()->GetAngle()) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
 		// Radius
-		message += std::to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 
 	// Events
@@ -616,16 +606,17 @@ std::string Game::encode() {
 		// Name
 		message += sound->get_name() + " ";
 		// Pos
-		message += std::to_string(sound->get_body()->GetPosition().x) + " ";
-		message += std::to_string(sound->get_body()->GetPosition().y) + " ";
+		message += aux::float_to_string(sound->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(sound->get_body()->GetPosition().y, 2) + " ";
 	}
 
 	return message;
 }
 
-Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, b2Vec2 pos, float angle) {
+Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, b2Vec2 pos, float angle) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
+	player->set_hull_name(hull_name);
 	players[id] = player;
 	auto ship = create_ship(player, pos, angle);
 	player->set_command_module(ship->get_player()->get_command_module());

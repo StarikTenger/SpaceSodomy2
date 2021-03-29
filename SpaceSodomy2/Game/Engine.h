@@ -10,7 +10,7 @@ private:
 	float dt = 0;
 	// Properties
 	float force_linear = 1.5;
-	float force_angular = 0.5;
+	float force_angular = 2;
 	float current_modifier = 2;
 	float boost_modifier = 2;
 	float boost_stamina_consumption = 20;

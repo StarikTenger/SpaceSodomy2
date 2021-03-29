@@ -23,7 +23,7 @@ void Engine::apply_force_linear(b2Vec2 direction) {
 }
 
 void Engine::apply_force_angular(float dir) {
-	body->ApplyTorque(dir * force_angular, 1);
+	body->ApplyTorque(dir * force_angular * body->GetFixtureList()->GetShape()->m_radius, 1);
 }
 
 void Engine::stabilize_rotation() {

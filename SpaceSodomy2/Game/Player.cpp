@@ -24,6 +24,10 @@ std::string Player::get_gun_name() {
 	return gun_name;
 }
 
+std::string Player::get_hull_name() {
+	return hull_name;
+}
+
 Command_Module* Player::get_command_module() {
 	return command_module;
 }
@@ -59,6 +63,10 @@ void Player::set_name(std::string name_) {
 
 void Player::set_gun_name(std::string val) {
 	gun_name = val;
+}
+
+void Player::set_hull_name(std::string val) {
+	hull_name = val;
 }
 
 void Player::set_command_module(Command_Module* val) {

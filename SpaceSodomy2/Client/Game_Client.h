@@ -9,7 +9,8 @@ class Game_Client : public Game {
 private:
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
-	std::string gun_name = "cascade";
+	std::string gun_name = "default";
+	std::string hull_name = "default";
 public:
 	// Set methods
 	void set_draw(Draw* _draw);
@@ -19,6 +20,7 @@ public:
 	Draw* get_draw();
 	Audio* get_audio();
 	std::string get_gun_name();
+	std::string get_hull_name();
 
 	// Set methods
 	void set_gun_name(std::string val);

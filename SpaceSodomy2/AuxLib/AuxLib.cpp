@@ -4,6 +4,8 @@
 #include "pch.h"
 #include "framework.h"
 #include "AuxLib.h"
+#include <iomanip>
+#include <sstream>
 
 // Converts color from hsv to rgb
 sf::Color aux::from_hsv(float H, float S, float V) {
@@ -129,6 +131,12 @@ std::vector<int> aux::string_to_mask(std::string str, int digit, char start) {
 		vec.push_back(val % 2);
 	}
 	return vec;
+}
+
+std::string aux::float_to_string(float val, int precision) {
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(precision) << val;
+	return stream.str();
 }
 
 float aux::area(std::vector<b2Vec2> vertices) {

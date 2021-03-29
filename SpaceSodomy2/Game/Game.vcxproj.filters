@@ -108,6 +108,9 @@
     <ClInclude Include="Gun_Def.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hull_Def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -169,9 +172,6 @@
     </ClCompile>
     <ClCompile Include="Event_Manager.cpp">
       <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Gun_Def.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

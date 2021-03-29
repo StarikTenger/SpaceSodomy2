@@ -20,6 +20,10 @@ std::string Game_Client::get_gun_name() {
 	return gun_name;
 }
 
+std::string Game_Client::get_hull_name() {
+	return hull_name;
+}
+
 void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
@@ -200,6 +204,9 @@ void Game_Client::decode(std::string source) {
 			// Angle
 			float angle;
 			stream >> angle;
+			// Radius
+			float radius;
+			stream >> radius;
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
@@ -210,6 +217,7 @@ void Game_Client::decode(std::string source) {
 			stream >> stamina;
 
 			auto ship = create_ship(players[player_id], pos, angle);
+			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;
 			ship->get_hp()->set(hp);
 			ship->get_stamina()->set(stamina);
 
@@ -277,6 +285,9 @@ void Game_Client::load_setup(std::string path) {
 			break;
 		if (command == "GUN") {
 			file >> gun_name;
+		}
+		if (command == "HULL") {
+			file >> hull_name;
 		}
 	}
 
