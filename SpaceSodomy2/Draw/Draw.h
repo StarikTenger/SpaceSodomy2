@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <direct.h>
 #include "Camera.h"
 
 class Draw {
@@ -80,5 +81,9 @@ public:
 	void load_wall_textures(int walls_size, std::string wall_name, std::string map_name);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
+
+	// Packs textures into a single dir
+	// WINDOWS ONLY
+	void mk_wall_dir(std::string map_name);
 };
 
