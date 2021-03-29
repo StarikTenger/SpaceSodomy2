@@ -13,7 +13,7 @@ private:
 	Menu gun_menu; // gun menu object
 	std::map <std::string, Menu> guns; // guns
 
-	std::vector<Menu*> menus;
+	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
@@ -36,6 +36,10 @@ private:
 	void init_gun(std::string, int damage, float recharge, int stamina_consumption, float projectile_mass,
 		float projectile_radius, int projectile_vel, Menu* gun);
 	void init_gun_menu(std::string path, std::string path_to_guns_description);
+	void close_settings_menus();
+	std::string get_current_gun(std::string path);
+	void set_current_gun(std::string path, std::string new_gun);
+	std::string cur_gun;
 	Draw* draw;
 	bool disactivated = 0;
 
