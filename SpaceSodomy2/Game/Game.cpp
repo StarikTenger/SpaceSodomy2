@@ -287,22 +287,27 @@ void Game::process_projectiles() {
 	std::set<Projectile*> projectiles_to_delete;
 	// Dealing damage
 	for (auto projectile : projectiles) {
-		// Checking hp
-		if (projectile->get_hp()->get() <= 0) {
-			projectiles_to_delete.insert(projectile);
-		}
 		// Dealing damage
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
-				projectiles_to_delete.insert(projectile);
 			}
 		}
 		// Checking for wall collision
 		for (auto wall : walls) {
 			if (contact_table.check(projectile->get_body(), wall->get_body()))
 				projectiles_to_delete.insert(projectile);
+		}
+		// Checking for ship collision
+		for (auto ship : ships) {
+			if (projectile->get_player()->get_id() != ship->get_player()->get_id() &&
+				contact_table.check(projectile->get_body(), ship->get_body()))
+				projectiles_to_delete.insert(projectile);
+		}
+		// Checking hp
+		if (projectile->get_hp()->get() <= 0) {
+			projectiles_to_delete.insert(projectile);
 		}
 	}
 
