@@ -40,4 +40,5 @@ public:
 
 	// Load setup
 	void load_setup(std::string path);
+	void save_setup(std::string path);
 };
