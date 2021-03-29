@@ -125,7 +125,7 @@ void Menu_Object::primitive_step() {
 	if (!cur_pos_activated) {
 		cur_pos = window_cords_pos();
 	}
-	if (use_picture_scale)
+	if (image_active && use_picture_scale)
 		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
 	//std::cout << cur_pos.x << " " << cur_pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
 	if (aux::rect_contains(cur_pos + mid, scale, *mouse_pos))

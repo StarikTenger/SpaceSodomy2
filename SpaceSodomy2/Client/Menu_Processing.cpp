@@ -418,24 +418,33 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["default"] == events.front()) {
 			cur_gun = "default";
+			close_settings_menus();
+			gun_menu.set_active(1);
+			guns[cur_gun].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["cascade"] == events.front()) {
 			cur_gun = "cascade";
+			close_settings_menus();
+			gun_menu.set_active(1);
+			guns[cur_gun].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["heavy"] == events.front()) {
 			cur_gun = "heavy";
+			close_settings_menus();
+			gun_menu.set_active(1);
+			guns[cur_gun].set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["snipe"] == events.front()) {
 			cur_gun = "snipe";
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["ApplyGun"] == events.front()) {
 			close_settings_menus();
 			gun_menu.set_active(1);
 			guns[cur_gun].set_active(1);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["ApplyGun"] == events.front()) {
 			set_current_gun("setup.conf", cur_gun);
 		}
 		events.pop();
