@@ -38,9 +38,9 @@ private:
 	void init_menu(std::string path_, Menu* object);
 	void init_gun(std::string, int damage, float recharge, int stamina_consumption, float projectile_mass,
 		float projectile_radius, int projectile_vel, Menu* gun);
-	void init_gun_menu(std::string path, std::string path_to_guns_description);
+	void init_gun_menu(b2Vec2 pos, std::string path_to_guns_description);
 	void close_settings_menus();
-	void init_hull_menu(std::string path, std::string path_to_guns_description);
+	void init_hull_menu(b2Vec2 pos, std::string path_to_guns_description);
 	void init_hull(std::string name, int hp, float mass, float radius,
 		int stamina, int stamina_recovery, Menu* hull);
 	Draw* draw;
