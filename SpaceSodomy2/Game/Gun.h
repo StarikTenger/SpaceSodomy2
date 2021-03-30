@@ -10,6 +10,7 @@ protected:
 	float projectile_mass = 0.05;
 	float projectile_vel = 10;
 	float projectile_radius = 0.2;
+	float projectile_hp = 20;
 	Projectile_Manager* projectile_manager = nullptr;
 public:
 	void set_projectile_manager(Projectile_Manager*);
