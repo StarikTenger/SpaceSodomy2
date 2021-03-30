@@ -3,10 +3,12 @@
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <string>
+#include <set>
 #include <map>
 #include <fstream>
 #include <direct.h>
 #include "Camera.h"
+#include "Float_Animation.h"
 
 class Draw {
 private:
@@ -16,12 +18,15 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	// Matches fonts and names
 	std::map<std::string, sf::Font*> fonts;
+	// Animations
+	std::set<Float_Animation*> animations;
 	// Load single texture
 	void load_texture(std::string name, std::string path_to_texture);
 	void load_font(std::string name, std::string path_to_font);
 	void export_texture(std::string name, std::string path_to_texture);
 public:
 	Draw();
+	void step(float dt);
 
 	// Get methods
 	sf::RenderWindow* get_window();
@@ -59,6 +64,10 @@ public:
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
 	void display_text(sf::Text* text);
 	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
+
+	// Animations
+	void create_animation(Float_Animation);
+	void draw_animations();
 
 	/// <summary>
 	/// Makes a polygon-fitting texture. Its transparency is linear with distance for the polygon

@@ -402,6 +402,10 @@ void Game::step(float _dt) {
 	process_sounds();
 }
 
+void Game::set_dt(float _dt) {
+	dt = _dt;
+}
+
 void Game::clear() {
 	// Clear ships
 	for (auto ship : ships)

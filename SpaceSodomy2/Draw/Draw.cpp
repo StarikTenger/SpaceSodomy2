@@ -26,6 +26,19 @@ void Draw::load_font(std::string name, std::string path_to_font) {
 
 Draw::Draw() {}
 
+void Draw::step(float dt) {
+	std::set<Float_Animation*> animations_to_delete;
+	for (auto animation : animations) {
+		animation->step(dt);
+		if (!animation->is_alive())
+			animations_to_delete.insert(animation);
+	}
+	for (auto animation : animations_to_delete) {
+		animations.erase(animation);
+		delete(animation);
+	}
+}
+
 sf::RenderWindow* Draw::get_window() {
 	return window;
 }
@@ -155,7 +168,7 @@ void Draw::line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 	float angle, sf::Color color)
-{
+	{
 	if (textures.find(name) == textures.end())
 		return;
 	sf::Texture& tex = *textures[name];
@@ -187,6 +200,19 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	drawnText.setOrigin(floor(drawnText.getLocalBounds().width / 2), floor(drawnText.getLocalBounds().height));
 	drawnText.setPosition(aux::to_Vector2f(pos));
 	window->draw(drawnText);
+}
+
+void Draw::create_animation(Float_Animation animation) {
+	auto animation_ptr = new Float_Animation();
+	*animation_ptr = animation;
+	animations.insert(animation_ptr);
+} 
+
+void Draw::draw_animations() {
+	for (auto animation : animations) {
+		auto state = animation->get_state_current();
+		image(state.image, state.pos, state.scale, state.angle, state.color);
+	}
 }
 
 bool Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
