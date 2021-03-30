@@ -674,14 +674,13 @@ std::string Game::encode() {
 	return message;
 }
 
-Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name) {
+void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	players[id] = player;
-	auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
-	player->set_command_module(ship->get_player()->get_command_module());
-	return ship;
+	player->set_is_alive(0);
+	player->get_time_to_respawn()->set(0);
 }
 
 Player* Game::player_by_id(int id) {
