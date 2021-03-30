@@ -19,6 +19,9 @@
 
 class Game {
 protected:
+	bool auto_damage = 1;
+	b2Vec2 get_rand_respawn_pos();
+
 	// Collision control
 	Collision_Filter collision_filter;
 
@@ -30,12 +33,16 @@ protected:
 	std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<Command_Module*> command_modules;
-	std::set<Wall*> walls;
+	
 	std::set<Active_Module*> active_modules;
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
 	std::set<Sound*> sounds;
+	
+	// Walls
+	std::set<Wall*> walls;
+	b2Vec2 lower_left_corner, upper_right_corner;
 
 	// Managers
 	Projectile_Manager projectile_manager;
@@ -101,7 +108,7 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	Ship* new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, b2Vec2 pos, float angle);
+	Ship* new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player

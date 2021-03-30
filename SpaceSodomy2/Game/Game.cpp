@@ -6,6 +6,24 @@
 #include "framework.h"
 #include "Game.h"
 
+b2Vec2 Game::get_rand_respawn_pos() {
+	bool acceptable = 0;
+	b2Vec2 respawn_point;
+	while (!acceptable) {
+		acceptable = 1;
+		respawn_point = b2Vec2(aux::random_int(lower_left_corner.x, upper_right_corner.x) + aux::random_float(-1, 1, 4),
+			aux::random_int(lower_left_corner.y, upper_right_corner.y) + aux::random_float(-1, 1, 4));
+		//respawn_point = b2Vec2(0, 0);
+		for (auto wall : walls) {
+			acceptable = aux::is_in_polygon(respawn_point, wall->get_vertices(),
+				wall->get_orientation() == Wall::INNER);
+			if (!acceptable)
+				break;
+		}
+	}
+	return respawn_point;
+}
+
 Game::Game() {
 	// Contact filter
 	//physics.SetContactFilter(&collision_filter);
@@ -256,7 +274,12 @@ void Game::process_players() {
 			player->get_command_module()->get_command(Command_Module::RESPAWN)) {
 			// TODO: function to determine new ship position
 			player->set_is_alive(1);
-			create_ship(player, { 0, 0 }, 0);
+
+			// getting random respawn position
+
+			// creating ship
+			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			//auto_damage = 0;
 		}
 	}
 }
@@ -265,7 +288,8 @@ void Game::process_ships() {
 	// Deleting
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
-		//ship->get_hp()->modify(-dt*20);
+		if (auto_damage)
+			ship->get_hp()->modify(-dt*20);
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
@@ -416,6 +440,7 @@ bool Game::load_map(std::string path) {
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
 	int wall_id = 0;
+	bool corner_init = 0;
 
 	// Parsing
 	std::string symbol;
@@ -460,7 +485,32 @@ bool Game::load_map(std::string path) {
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points, orientation, restitution) -> set_id(wall_id);
+			create_wall(points, orientation, restitution)->set_id(wall_id);
+
+			if (orientation == Wall::INNER) {
+				for (auto point : points) {
+					if (!corner_init) {
+						lower_left_corner = point;
+						upper_right_corner = point;
+						corner_init = 1;
+					}
+					else {
+						lower_left_corner.x = std::min(
+							lower_left_corner.x,
+							point.x);
+						lower_left_corner.y = std::min(
+							lower_left_corner.y,
+							point.y);
+						upper_right_corner.x = std::max(
+							upper_right_corner.x,
+							point.x);
+						upper_right_corner.y = std::max(
+							upper_right_corner.y,
+							point.y);
+					}
+				}
+			}
+
 			wall_id++;
 			continue;
 		}
@@ -620,12 +670,12 @@ std::string Game::encode() {
 	return message;
 }
 
-Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, b2Vec2 pos, float angle) {
+Ship* Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	players[id] = player;
-	auto ship = create_ship(player, pos, angle);
+	auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
 	player->set_command_module(ship->get_player()->get_command_module());
 	return ship;
 }

@@ -60,7 +60,7 @@ void Control::receive() {
 		id_by_IP[IP_address_] = id_;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_player(id_, new_color, name_, gun_name, hull_name, b2Vec2_zero, 0);
+		game.new_player(id_, new_color, name_, gun_name, hull_name);
 	}
 	// Applying commands
 	if (IP_by_id[id_] == IP_address_) {

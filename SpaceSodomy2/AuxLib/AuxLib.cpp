@@ -61,6 +61,14 @@ int aux::get_milli_count() {
 	return nCount;
 }
 
+// Binpow
+long long aux::binpow(long long a, int b) {
+	if (b == 0)
+		return 1;
+	long long ans = binpow(a, b / 2);
+	return ans * ans * ((b % 2) ? a : 1);
+}
+
 // Converts ms time to string format
 std::string aux::get_time(int time) {
 	std::string milliSeconds = std::to_string(time % 1000);
@@ -86,8 +94,8 @@ int aux::random_int(int min, int max) {
 	return std::rand() % (max + 1 - min) + min;
 }
 float aux::random_float(float min, float max, int digits) {
-	float k = pow(10, (float)digits);
-	return random_int(int(min * k), int(max * k)) / k;
+	float k = binpow(10, digits);
+	return float(random_int(int(min * k), int(max * k))) / k;
 }
 
 std::stringstream aux::comment(std::ifstream& file) {

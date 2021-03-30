@@ -90,4 +90,6 @@ public:
 	}
 	// Get direction
 	static b2Vec2 direction(float angle);
+	// Binpow
+	static long long binpow(long long a, int b);
 };
