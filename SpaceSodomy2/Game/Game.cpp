@@ -193,7 +193,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_body(body);
 	projectile->set_player(projectile_def.player);
 	projectile->set_damage(projectile_def.damage);
-	projectile->set_hp(create_counter(projectile_def.damage, 0));
+	projectile->set_hp(create_counter(projectile_def.hp, 0));
 	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player()));
 
 	// Adding to vectors
@@ -562,6 +562,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
+				read_symbol("PROJECTILE_HP", guns[name].projectile_hp);
 			}
 			continue;
 		}
