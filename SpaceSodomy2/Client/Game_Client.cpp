@@ -28,6 +28,10 @@ void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
 
+void Game_Client::set_hull_name(std::string val) {
+	hull_name = val;
+}
+
 void Game_Client::display(int id) {
 	// Finding cam target
 	auto ship = get_ship(id);
@@ -214,13 +218,19 @@ void Game_Client::decode(std::string source) {
 			// Hp
 			float hp;
 			stream >> hp;
+			float max_hp;
+			stream >> max_hp;
 			float stamina;
 			stream >> stamina;
+			float max_stamina;
+			stream >> max_stamina;
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;
 			ship->get_hp()->set(hp);
 			ship->get_stamina()->set(stamina);
+			ship->get_hp()->set_max(max_hp);
+			ship->get_stamina()->set_max(max_stamina);
 
 			// Decoding commands
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);

@@ -583,8 +583,10 @@ std::string Game::encode() {
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Hp
 		message += std::to_string((int)ship->get_hp()->get()) + " ";
+		message += std::to_string((int)ship->get_hp()->get_max()) + " ";
 		// Stamina
 		message += std::to_string((int)ship->get_stamina()->get()) + " ";
+		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
 	}
 
 	// Projectiles

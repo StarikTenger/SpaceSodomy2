@@ -69,6 +69,9 @@ private:
 
 	// Sound & music volume
 	int sound_volume = 100, music_volume = 100;
+
+	// Music name
+	std::string track;
 public:
 	// Default constructor
 	Control();

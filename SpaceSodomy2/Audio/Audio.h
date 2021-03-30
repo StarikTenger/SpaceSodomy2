@@ -34,4 +34,7 @@ public:
 	void update_sound(int id, std::string name, b2Vec2 pos, double volume);
 	void update_music(std::string name, double volume);
 	void start_music(std::string name);
+	void stop_music(std::string name);
+
+	std::string get_music_by_number(int val);
 };
