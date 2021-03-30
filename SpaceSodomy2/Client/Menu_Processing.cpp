@@ -31,8 +31,10 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	while (next == "HULL") {
 		config >> name >> next;
 		name_to_id[name + "-hull"] = current_id;
-		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(100 * (cur_but_id % 3), 100 * (cur_but_id / 3)),
+		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
 			1, { 1, 1 }, sf::Color::White, mouse_pos);
+		hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+			1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 		cur_but_id++;
 		while (next != "END") {
 			if (next == "HP") {
@@ -262,8 +264,10 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 		while (next == "GUN") {
 			config >> name >> next;
 			name_to_id[name + "-gun"] = current_id;
-			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(100 * (cur_but_id % 3), 100 * (cur_but_id / 3)),
+			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
 				1, { 1, 1 }, sf::Color::White, mouse_pos);
+			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 			cur_but_id++;
 			while (next != "END") {
 				if (next == "DAMAGE") {
