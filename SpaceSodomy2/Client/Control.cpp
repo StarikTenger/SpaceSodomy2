@@ -100,6 +100,7 @@ std::string Control::commands_to_string() {
 Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
+	draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
 	draw.load_fonts("fonts.conf");
 	game.load_setup("setup.conf");

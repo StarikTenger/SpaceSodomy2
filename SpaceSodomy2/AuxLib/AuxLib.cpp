@@ -279,3 +279,7 @@ b2Vec2 aux::origin_pos(const std::vector<b2Vec2>& polygon) {
 b2Vec2 aux::direction(float angle) {
 	return b2Vec2(cos(angle), sin(angle));
 }
+
+std::pair<int, int> aux::get_screen_resolution() {
+	return { 1920, 1080 };
+}

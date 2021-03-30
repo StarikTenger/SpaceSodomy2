@@ -19,7 +19,7 @@
 
 class Game {
 protected:
-	bool auto_damage = 1;
+	bool auto_damage = 0;
 	b2Vec2 get_rand_respawn_pos();
 
 	// Collision control
