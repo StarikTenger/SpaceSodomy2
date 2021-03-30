@@ -131,6 +131,9 @@ Control::Control() {
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &sound_volume, &music_volume, &game);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
+
+	// Dt
+	game.set_dt(delay * 0.001);
 }
 
 int Control::get_is_running() {

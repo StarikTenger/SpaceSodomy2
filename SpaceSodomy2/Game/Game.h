@@ -93,6 +93,8 @@ public:
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
+	// Set
+	void set_dt(float);
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);

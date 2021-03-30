@@ -125,6 +125,10 @@ void Game_Client::display(int id) {
 		}
 	}
 
+	// Animations
+	draw->step(dt);
+	draw->draw_animations();
+
 	// Projectiles
 	for (auto projectile : projectiles) {
 		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2 * 2;
@@ -134,8 +138,21 @@ void Game_Client::display(int id) {
 		radius *= 0.8;
 		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius },
 			projectile->get_body()->GetAngle());
-
+		// Animation
+		Float_Animation::State state_begin;
+		state_begin.pos = projectile->get_body()->GetPosition();
+		state_begin.scale = 1. * b2Vec2(radius, radius);
+		state_begin.angle = 0;
+		state_begin.color = color;
+		Float_Animation::State state_end = state_begin;
+		state_end.scale = b2Vec2_zero;
+		state_end.color.a = 0;
+		state_end.pos += aux::rotate({ 0, 0.1 }, aux::random_float(0, 2, 2) * b2_pi);
+		Float_Animation animation("bullet", state_begin, state_end, 0.15);
+		draw->create_animation(animation);
 	}
+
+	
 }
 
 void Game_Client::decode(std::string source) {
