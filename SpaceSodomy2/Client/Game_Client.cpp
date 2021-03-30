@@ -97,6 +97,20 @@ void Game_Client::display(int id) {
 					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
 			}
 		}
+		else {
+			// Trace
+			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
+				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
+			dir.Normalize();
+			float lenstep = 0.5;
+			int steps = 20;
+			for (int i = 0; i < steps; i++) {
+				auto col = sf::Color::Red;
+				col.a = 255 / steps;
+				draw->line(ship->get_body()->GetPosition(), 
+					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
+			}
+		}
 
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
@@ -223,6 +237,9 @@ void Game_Client::decode(std::string source) {
 			// Pos
 			b2Vec2 pos;
 			stream >> pos.x >> pos.y;
+			// Linear velocity
+			b2Vec2 linvel;
+			stream >> linvel.x >> linvel.y;
 			// Angle
 			float angle;
 			stream >> angle;
@@ -243,6 +260,7 @@ void Game_Client::decode(std::string source) {
 			stream >> max_stamina;
 
 			auto ship = create_ship(players[player_id], pos, angle);
+			ship->get_body()->SetLinearVelocity(linvel);
 			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;
 			ship->get_hp()->set(hp);
 			ship->get_stamina()->set(stamina);

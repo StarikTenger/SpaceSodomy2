@@ -9,7 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
-
+#include <Windows.h>
 
 class aux {
 public:
@@ -92,4 +92,6 @@ public:
 	static b2Vec2 direction(float angle);
 	// Binpow
 	static long long binpow(long long a, int b);
+
+	static std::pair<int, int> get_screen_resolution();
 };

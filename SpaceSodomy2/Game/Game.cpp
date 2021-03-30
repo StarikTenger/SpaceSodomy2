@@ -630,6 +630,9 @@ std::string Game::encode() {
 		// Pos
 		message += aux::float_to_string(ship->get_body()->GetPosition().x, 2) + " ";
 		message += aux::float_to_string(ship->get_body()->GetPosition().y, 2) + " ";
+		// Linear velocity
+		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().x, 3) + " ";
+		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().y, 3) + " ";
 		// Angle
 		message += aux::float_to_string(ship->get_body()->GetAngle(), 3) + " ";
 		// Radius
