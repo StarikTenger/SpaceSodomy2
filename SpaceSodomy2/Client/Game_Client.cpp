@@ -254,6 +254,7 @@ void Game_Client::decode(std::string source) {
 			stream >> max_stamina;
 
 			auto ship = create_ship(players[player_id], pos, angle);
+			ship->set_id(id);
 			ship->get_body()->SetLinearVelocity(linvel);
 			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;
 			ship->get_hp()->set(hp);
@@ -262,9 +263,24 @@ void Game_Client::decode(std::string source) {
 			ship->get_stamina()->set_max(max_stamina);
 
 			// Decoding commands
+			int loc_engine_active = 0;
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
-			for (int i = 0; i < commands.size(); i++)
+			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+				if (commands[i]) {
+					for (int j = 0; j < engine_commands.size(); j++) {
+						if (engine_commands[j] == i) {
+							loc_engine_active++;
+							break;
+						}
+					}
+				}
+			}
+			//std::cout << "ship id: " << id << "\n";
+			if (loc_engine_active != engine_active) {
+				engine_active = loc_engine_active;
+				audio->update_sound(id, "engine", pos, *sound_volume * engine_active / 4, 1);
+			}
 		}
 		// Projectile
 		if (symbol == "p") {
@@ -297,9 +313,9 @@ void Game_Client::decode(std::string source) {
 			stream >> id >> name >> pos.x >> pos.y;
 			
 			if (sound_volume != nullptr)
-				audio->update_sound(id, name, pos, *sound_volume);
+				audio->update_sound(id, name, pos, *sound_volume, 0);
 			else
-				audio->update_sound(id, name, pos, 100);
+				audio->update_sound(id, name, pos, 100, 0);
 		}
 	}
 }

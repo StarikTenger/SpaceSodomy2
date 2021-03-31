@@ -56,7 +56,7 @@ void Audio::load_musics(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
-void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) {
+void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume, bool looped) {
 	while (!sound_timeouts.empty() && -sound_timeouts.top().first < aux::get_milli_count()) {
 		activeSounds[sound_timeouts.top().second]->stop();
 		delete activeSounds[sound_timeouts.top().second];
@@ -72,25 +72,30 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume) 
 	sound->setPosition(z, pos.x, pos.y);
 	sound->setVolume(volume);
 	sound->setRelativeToListener(1);
+	sound->setLoop(looped);
  	sound->play();
 	activeSounds[id] = sound;
-	sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
-	std::cout << sound_timeouts.size() << sound_timeouts.top().first << " " << sound_timeouts.top().second << "\n";
+	if (!looped)
+		sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
+	//std::cout << sound_timeouts.size() << sound_timeouts.top().first << " " << sound_timeouts.top().second << "\n";
 }
 
-void Audio::play(int id, std::string name, b2Vec2 pos, double volume) {
-	play(id, name, pos, -5, volume);
+void Audio::play(int id, std::string name, b2Vec2 pos, double volume, bool looped) {
+	play(id, name, pos, -5, volume, looped);
 }
 
-void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume) {
+void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume, bool looped) {
 	pos -= draw->get_camera()->get_pos();
 	pos = aux::rotate(pos, -draw->get_camera()->get_angle() - b2_pi / 2);
 	if (activeSounds.count(id)) {
 		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
+		activeSounds[id]->setVolume(volume);
 	}
 	else {
-		play(id, name, pos, volume);
+		std::cout << "Sound: " << name << "\n";
+		play(id, name, pos, volume, looped);
 	}
+	activeSounds[id]->setLoop(looped);
 }
 
 void Audio::update_music(std::string name, double volume) {

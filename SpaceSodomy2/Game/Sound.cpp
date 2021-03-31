@@ -12,7 +12,7 @@ Counter* Sound::get_playing_offset() {
 	return playing_offset;
 }
 
-b2Body* Sound::get_body() {
+b2Body* Sound::get_body() {	
 	return body;
 }
 
