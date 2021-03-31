@@ -114,8 +114,9 @@ void Game_Client::display(int id) {
 
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
-		draw->image("ship", ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
-		draw->image("ship_colors", ship->get_body()->GetPosition(), {radius, radius}, 
+		std::cout << ship->get_player()->get_hull_name() << "\n";
+		draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
+		draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius},
 			ship->get_body()->GetAngle(), color);
 
 		Camera camera_backup = *draw->get_camera();
@@ -209,6 +210,9 @@ void Game_Client::decode(std::string source) {
 			// Name
 			std::string name;
 			stream >> name;
+			// Hull
+			std::string hull;
+			stream >> hull;
 			// Deaths, kills & etc
 			int deaths, kills, time_to_respawn, is_alive;
 			stream >> deaths >> kills >> time_to_respawn >> is_alive;
@@ -217,6 +221,7 @@ void Game_Client::decode(std::string source) {
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
+			player->set_hull_name(hull);
 			player->set_deaths(deaths);
 			player->set_kills(kills);
 			player->set_is_alive(is_alive);
