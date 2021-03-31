@@ -70,6 +70,8 @@ void Control::process_commands() {
 		command_module.set_command(Command_Module::BOOST, 1);
 	if (key_by_name("RESPAWN"))
 		command_module.set_command(Command_Module::RESPAWN, 1);
+	if (key_by_name("FULLSCREEN"))
+		draw.fullscreen_toggle();
 
 	// Zoom out
 	if (key_by_name("ZOOM_OUT"))
@@ -100,6 +102,7 @@ std::string Control::commands_to_string() {
 Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
+	draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
 	draw.load_fonts("fonts.conf");
 	game.load_setup("setup.conf");

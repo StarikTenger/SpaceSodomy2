@@ -10,8 +10,7 @@
 #include <sstream>
 #include <queue>
 #include <direct.h>
-
-
+#include <Windows.h>
 
 class aux {
 public:
@@ -103,4 +102,6 @@ public:
 	static void mk_dir(std::string map_name);
 	
 	static float vec_to_angle(b2Vec2 vec);
+
+	static std::pair<int, int> get_screen_resolution();
 };

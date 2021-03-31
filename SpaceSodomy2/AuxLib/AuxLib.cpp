@@ -309,4 +309,6 @@ bool aux::is_left_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
 	return (b2Cross(line_end - line_beg, point - line_beg) < 0);
 }
 
-
+std::pair<int, int> aux::get_screen_resolution() {
+	return { 1920, 1080 };
+}

@@ -11,6 +11,7 @@ struct Projectile_Def {
 	float damage = 0;
 	float mass = 0.05;
 	float radius = 0.2;
+	float hp = 20;
 
 	Projectile_Def();
 };

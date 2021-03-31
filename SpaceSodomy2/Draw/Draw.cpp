@@ -66,6 +66,17 @@ sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
 	return window;
 }
 
+void Draw::fullscreen_toggle() {
+	auto res = aux::get_screen_resolution();
+	if (fullscreen) {
+		window->close();
+		create_window(600, 600, "Space Sodomy II");
+	}
+	else
+		window->create(sf::VideoMode::getDesktopMode(), "Space Sodomy II", sf::Style::Fullscreen);
+	fullscreen = !fullscreen;
+}
+
 void Draw::load_textures(std::string path) {
 	std::cout << "Start loading\n";
 	std::ifstream input_file(path);

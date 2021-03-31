@@ -27,6 +27,7 @@ public:
 	void load_font(std::string name, std::string path_to_font);
 	void export_texture(std::string name, std::string path_to_texture);
 
+	bool fullscreen = 0;
 public:
 	Draw();
 	void step(float dt);
@@ -43,6 +44,9 @@ public:
 
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
+
+	// Fullscreen
+	void fullscreen_toggle();
 
 	// Load textures from file
 	void load_textures(std::string path = "textures.conf");
