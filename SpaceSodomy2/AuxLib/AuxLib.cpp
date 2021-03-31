@@ -202,18 +202,28 @@ float aux::get_text_max_height(sf::Text text) {
 }
 
 
-bool aux::is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_outer,
-	float local_eps) {
-	float rotation = 0;
+bool aux::is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_outer) {
+	int rot_number = 0;
 	for (int i = 0; i < polygon.size(); i++) {
-		int prev = i;
-		int next = (i + 1) % polygon.size();
-		auto a = polygon[prev] - point;
-		auto b = polygon[next] - point;
-		rotation += acos(b2Dot(a, b) / (a.Length() * b.Length())) *
-			(2 * (b2Cross(b, a) > 0) - 1);
+		auto segment_beg = polygon[i];
+		auto segment_end = polygon[(i + 1) % polygon.size()];
+		if (segment_beg.y <= point.y) {
+			if (segment_end.y > point.y) {
+				if (is_left_from_line(point, segment_beg, segment_end)) {
+					rot_number++;
+				}
+			}
+		}
+		else {
+			if (segment_end.y <= point.y) {
+				if (!is_left_from_line(point, segment_beg, segment_end)) {
+					rot_number--;
+				}
+			}
+		}
+		
 	}
-	return (abs(rotation) > local_eps) != !is_outer; // != is XOR
+	return (bool)rot_number == is_outer;
 }
 
 float aux::dist_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
@@ -226,8 +236,8 @@ float aux::dist_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
 }
 
 float aux::dist_from_segment(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end) {
-	if (b2Dot(segment_beg - point, segment_beg - segment_end) *
-		b2Dot(segment_end - point, segment_beg - segment_end) < 0) {
+	if (b2Dot(segment_beg - point, segment_beg - segment_end) > 0 !=
+		b2Dot(segment_end - point, segment_beg - segment_end) > 0) {
 		return dist_from_line(point, segment_beg, segment_end);
 	}
 	else {
@@ -292,6 +302,11 @@ void aux::mk_dir(std::string path) {
 
 float aux::vec_to_angle(b2Vec2 vec) {
 	return atan2(vec.y, vec.x);
+}
+
+
+bool aux::is_left_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
+	return (b2Cross(line_end - line_beg, point - line_beg) < 0);
 }
 
 

@@ -390,7 +390,7 @@ void Game_Client::load_wall_textures() {
 
 		if (!draw->isTextureExist(wall_name)) {
 
-			make_polygonal_texture(wall->get_vertices(), wall->get_orientation(), sf::Vector2f(10, 10),
+			make_polygonal_texture(wall->get_vertices(), wall->get_orientation(), sf::Vector2f(100, 100),
 				"wall", wall_name, 0.5);
 
 			draw->export_texture(wall_name,
