@@ -206,9 +206,9 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			file >> name;
 			file >> use_window_cords >> pos.x >> pos.y;
 			file >> axis_scale.x >> axis_scale.y >> slider_scale.x >> slider_scale.y;
-			file >> min_val >> max_val >> val;
+			file >> min_val >> max_val;
 			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
-				min_val, max_val, val, mouse_pos);
+				min_val, max_val, sliders_vals[i], mouse_pos);
 			name_to_id[name] = i;
 			break;
 		case 4:
@@ -353,9 +353,9 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	text_fields_strings[current_id] = "Sound Volume:";
 	text_fields_strings[current_id + 2] = "Music Volume:";
 	menus.push_back(&sound_menu);
+	sliders_vals[current_id + 1] = *sound_volume;
+	sliders_vals[current_id + 3] = *music_volume;
 	init_menu("menu_configs/sound.conf", &sound_menu);
-	sliders_vals[current_id - 3] = *sound_volume;
-	sliders_vals[current_id - 1] = *music_volume;
 	// set keys menu fields
 	keys_menu.set_draw(draw);
 	keys_menu.set_active(0);
@@ -364,7 +364,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	keys_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
-	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -300 }, -30, { 100, 50 }, 20);
+	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -350 }, -30, { 100, 50 }, 20);
 	std::cout << current_id << " ";
 
 	name_to_id["ApplySounds"] = current_id++;

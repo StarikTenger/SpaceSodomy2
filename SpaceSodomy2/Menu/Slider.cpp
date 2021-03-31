@@ -35,7 +35,6 @@ sf::Text Slider::returnText(b2Vec2 pos_, std::string z, int fontSize)
 
 void Slider::create(int min, int max)
 {
-	slider_value = min;
 	min_value = min;
 	max_value = max;
 }
@@ -123,7 +122,7 @@ b2Vec2 Slider::get_slider_scale() {
 
 void Slider::step() {
 	set_scale(slider_scale);
-	set_pos(aux::to_b2Vec2(slider.getPosition()));
+	set_slider_value(get_slider_value());
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;
