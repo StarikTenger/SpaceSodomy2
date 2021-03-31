@@ -688,7 +688,7 @@ void Game::new_player(int id, sf::Color color, std::string name, std::string gun
 }
 
 Player* Game::player_by_id(int id) {
-	if (!players.at(id))
+	if (!players.count(id))
 		return nullptr;
 	return players[id];
 }

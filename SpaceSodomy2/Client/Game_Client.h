@@ -11,6 +11,16 @@ private:
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
+	int engine_active = 0;
+
+	std::vector <int> engine_commands = {
+				Command_Module::ENGINE_ANG_LEFT,
+				Command_Module::ENGINE_ANG_RIGHT,
+				Command_Module::ENGINE_LIN_BACKWARD,
+				Command_Module::ENGINE_LIN_FORWARD,
+				Command_Module::ENGINE_LIN_LEFT,
+				Command_Module::ENGINE_LIN_RIGHT
+	};
 public:
 	// Set methods
 	void set_draw(Draw* _draw);

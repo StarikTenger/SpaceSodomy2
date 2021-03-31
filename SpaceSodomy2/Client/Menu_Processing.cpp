@@ -160,6 +160,10 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	config >> *(port_);
 	config >> *(id_);
 	config >> *(name_);
+	if ((*id_) == "0") {
+		*id_ = std::to_string(aux::random_int(1, 100000));
+		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
+	}
 }
 
 void Menu_Processing::init_menu(std::string path_, Menu* object) {
