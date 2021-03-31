@@ -15,8 +15,8 @@ b2Vec2 Game::get_rand_respawn_pos() {
 			aux::random_int(lower_left_corner.y, upper_right_corner.y) + aux::random_float(-1, 1, 4));
 		//respawn_point = b2Vec2(0, 0);
 		for (auto wall : walls) {
-			acceptable = aux::is_in_polygon(respawn_point, wall->get_vertices(),
-				wall->get_orientation() == Wall::INNER);
+			acceptable = !aux::is_in_polygon(respawn_point, wall->get_vertices(),
+				wall->get_orientation());
 			if (!acceptable)
 				break;
 		}

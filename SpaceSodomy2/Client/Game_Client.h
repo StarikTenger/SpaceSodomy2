@@ -42,4 +42,12 @@ public:
 	// Load setup
 	void load_setup(std::string path);
 	void save_setup(std::string path);
+
+	bool make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+		sf::Vector2f scale, std::string base_texture, std::string result_texture,
+		float wall_width);
+	// load wall textures
+	void load_wall_textures();
+
+
 };

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <direct.h>
 #include <Windows.h>
 
 class aux {
@@ -69,9 +70,12 @@ public:
 	// Get text scale
 	static float get_text_max_height(sf::Text text);
 
-	// Checks if the point is in the polygon. Uses angles. 
-	static bool is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_inner,
-		float local_eps = 0.01);
+	// Checks if the point is in the polygon. 
+	static bool is_in_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon, bool is_outer);
+
+	//
+	static bool is_left_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end);
+
 	// Distance from line given as two points. Is safe
 	static float dist_from_line(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
 	// Distance from segment given as two points
@@ -92,6 +96,12 @@ public:
 	static b2Vec2 direction(float angle);
 	// Binpow
 	static long long binpow(long long a, int b);
+
+	// Packs textures into a single dir
+    // WINDOWS ONLY
+	static void mk_dir(std::string map_name);
+	
+	static float vec_to_angle(b2Vec2 vec);
 
 	static std::pair<int, int> get_screen_resolution();
 };
