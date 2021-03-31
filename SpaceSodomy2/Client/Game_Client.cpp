@@ -178,14 +178,8 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
-				draw->mk_wall_dir(path);
-				draw->load_wall_textures(walls.size(), "wall", path);
-				for (auto wall : walls) {
-					float wall_width = 0.5;
-					draw->make_wall_texture(wall->get_vertices(), wall->get_orientation(), 
-						"wall", wall->get_id(), wall_width, path);
-					wall->init_drawing(wall_width);
-				}
+				aux::mk_dir("textures/walls/" + path);
+				load_wall_textures();
 			}
 		}
 		// Player
@@ -326,4 +320,82 @@ void Game_Client::save_setup(std::string path) {
 	std::ofstream file(path);
 	file << "GUN " << gun_name << "\n" << "HULL " << hull_name;
 	file.close();
+}
+
+bool Game_Client::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
+	sf::Vector2f scale, std::string base_texture, std::string result_texture,
+	float wall_width) {
+
+	if (draw->isTextureExist(result_texture)) {
+		std::cout << "texture already found: " << result_texture << '\n';
+		return false;
+	}
+	std::cout << "making texture of: " << result_texture << '\n';
+
+	sf::Image base_image = draw->get_texture(base_texture)->copyToImage();
+	sf::Image new_image;
+	sf::Color::Transparent;
+
+	sf::Vector2i image_size;
+	b2Vec2 origin;
+	b2Vec2 point;
+
+	image_size.x = (aux::box_size(polygon).x + wall_width * 2) * scale.x;
+	image_size.y = (aux::box_size(polygon).y + wall_width * 2) * scale.y;
+
+	origin = aux::origin_pos(polygon) - b2Vec2(wall_width, wall_width);
+
+	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
+
+	for (int i = 0; i < image_size.x; i++) {
+		for (int j = 0; j < image_size.y; j++) {
+
+			point.x = origin.x + i / scale.x;
+			point.y = origin.y + j / scale.y;
+
+			if (aux::is_in_polygon(point, polygon, is_outer)) {
+				auto base_color = base_image.getPixel(i % base_image.getSize().x,
+					j % base_image.getSize().y);
+				float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
+				if (transparency_modifier < 0) {
+					transparency_modifier = 0;
+				}
+				base_color.a *= transparency_modifier;
+				new_image.setPixel(i, j, base_color);
+			}
+		}
+	}
+	sf::Texture* tex = new sf::Texture;
+	draw->insert_texture(tex, result_texture);
+	draw->get_texture(result_texture)->loadFromImage(new_image);
+
+	std::cout << result_texture << " done\n";
+	return true;
+}
+
+
+void Game_Client::load_wall_textures() {
+	auto path = map_path;
+	for (int i = 0; i < path.size(); i++) {
+		if (path[i] == '/' || path[i] == '.') {
+			path[i] = '_';
+		}
+	}
+	for (auto wall : walls) {
+
+		auto wall_name = std::string("") + "wall" + " " + std::to_string(wall->get_id());
+
+		draw->load_texture(wall_name,
+			"textures/walls/" + path + '/' + wall_name + ".png");
+
+		if (!draw->isTextureExist(wall_name)) {
+
+			make_polygonal_texture(wall->get_vertices(), wall->get_orientation(), sf::Vector2f(10, 10),
+				"wall", wall_name, 0.5);
+
+			draw->export_texture(wall_name,
+				"textures/walls/" + path + '/' + wall_name + ".png");
+		}
+		wall->init_drawing(0.5);
+	}
 }

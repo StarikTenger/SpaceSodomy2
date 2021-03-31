@@ -279,3 +279,19 @@ b2Vec2 aux::origin_pos(const std::vector<b2Vec2>& polygon) {
 b2Vec2 aux::direction(float angle) {
 	return b2Vec2(cos(angle), sin(angle));
 }
+
+void aux::mk_dir(std::string path) {
+	if (_mkdir((path).c_str())) {
+		if (errno == EEXIST) {
+			return;
+		}
+		std::cout << "Error: could not create directory: " << path << '\n';
+	}
+	std::cout << "Directory " << path << " created\n";
+}
+
+float aux::vec_to_angle(b2Vec2 vec) {
+	return atan2(vec.y, vec.x);
+}
+
+

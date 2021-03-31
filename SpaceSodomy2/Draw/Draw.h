@@ -6,7 +6,6 @@
 #include <set>
 #include <map>
 #include <fstream>
-#include <direct.h>
 #include "Camera.h"
 #include "Float_Animation.h"
 
@@ -20,10 +19,14 @@ private:
 	std::map<std::string, sf::Font*> fonts;
 	// Animations
 	std::set<Float_Animation*> animations;
+
+public:
 	// Load single texture
+	void insert_texture(sf::Texture* tex, std::string name);
 	void load_texture(std::string name, std::string path_to_texture);
 	void load_font(std::string name, std::string path_to_font);
 	void export_texture(std::string name, std::string path_to_texture);
+
 public:
 	Draw();
 	void step(float dt);
@@ -31,6 +34,7 @@ public:
 	// Get methods
 	sf::RenderWindow* get_window();
 	Camera* get_camera();
+	bool isTextureExist(std::string name);
 	sf::Texture* get_texture(std::string name);
 	sf::Font* get_font(std::string name);
 
@@ -54,7 +58,7 @@ public:
 	// Displays the render
 	void display();
 
-	// Primirives
+	// Primitives
 	void clear();
 	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
@@ -69,30 +73,10 @@ public:
 	void create_animation(Float_Animation);
 	void draw_animations();
 
-	/// <summary>
-	/// Makes a polygon-fitting texture. Its transparency is linear with distance for the polygon
-	/// </summary>
-	/// <param name="polygon">: the base polygon </param>
-	/// <param name="is_outer">: the polygons orientation </param>
-	/// <param name="scale">: the amount of pixels per unit distance </param>
-	/// <param name="base_texture">: the base textures name</param>
-	/// <param name="result_texture">: the results name</param>
-	/// <param name="wall_width">: the width of the wall texture </param>
-	/// returns true if the texture was created
 	bool make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
 		sf::Vector2f scale, std::string base_texture, std::string result_texture,
 		float wall_width);
-	// Make a wall-fitting texture
-	void make_wall_texture(const std::vector<b2Vec2>& wall, bool is_outer,
-		std::string wall_texture, int wall_id, float wall_width, std::string map_name);
-
-	//load map-specific wall textures
-	void load_wall_textures(int walls_size, std::string wall_name, std::string map_name);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
-
-	// Packs textures into a single dir
-	// WINDOWS ONLY
-	void mk_wall_dir(std::string map_name);
 };
 

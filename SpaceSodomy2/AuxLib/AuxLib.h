@@ -9,6 +9,8 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <direct.h>
+
 
 
 class aux {
@@ -92,4 +94,10 @@ public:
 	static b2Vec2 direction(float angle);
 	// Binpow
 	static long long binpow(long long a, int b);
+
+	// Packs textures into a single dir
+    // WINDOWS ONLY
+	static void mk_dir(std::string map_name);
+	
+	static float vec_to_angle(b2Vec2 vec);
 };
