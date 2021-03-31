@@ -103,7 +103,7 @@ void Game_Client::display(int id) {
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
 			float lenstep = 0.5;
-			int steps = 20;
+			int steps = 40;
 			for (int i = 0; i < steps; i++) {
 				auto col = sf::Color::Red;
 				col.a = 255 / steps;
