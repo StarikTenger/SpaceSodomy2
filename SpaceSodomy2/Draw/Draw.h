@@ -77,10 +77,8 @@ public:
 	void create_animation(Float_Animation);
 	void draw_animations();
 
-	bool make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
-		sf::Vector2f scale, std::string base_texture, std::string result_texture,
-		float wall_width);
-
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
+
+	void overlay_texture(sf::RenderTexture& base, sf::Texture* im, sf::Color color, sf::Vector2i origin_pos);
 };
 
