@@ -24,6 +24,8 @@ public:
 	static void random_seed(int seed);
 	static int random_int(int min, int max);
 	static float random_float(float min, float max, int digits);
+	// Instantiate Templates
+	static std::stringstream instantiate(std::stringstream& file);
 	// Erases commented strings
 	static std::stringstream comment(std::ifstream& file);
 	// Converts bit mask to string
@@ -104,4 +106,9 @@ public:
 	static float vec_to_angle(b2Vec2 vec);
 
 	static std::pair<int, int> get_screen_resolution();
+
+
+
+	// Python-like format
+	static std::string format(std::string base, std::string word);
 };

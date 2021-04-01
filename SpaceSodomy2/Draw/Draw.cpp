@@ -80,7 +80,7 @@ void Draw::fullscreen_toggle() {
 void Draw::load_textures(std::string path) {
 	std::cout << "Start loading\n";
 	std::ifstream input_file(path);
-	auto file = aux::comment(input_file);
+	auto file = (aux::comment(input_file));
 	while (file) {
 		std::string name, path;
 		file >> name >> path;

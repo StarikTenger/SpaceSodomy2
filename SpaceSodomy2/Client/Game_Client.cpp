@@ -114,7 +114,6 @@ void Game_Client::display(int id) {
 
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
-		std::cout << ship->get_player()->get_hull_name() << "\n";
 		draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius},
 			ship->get_body()->GetAngle(), color);
@@ -193,7 +192,6 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
-				aux::mk_dir("textures/walls/" + path);
 				load_wall_textures();
 			}
 		}
@@ -338,7 +336,7 @@ std::map<int, Player*>* Game_Client::get_players() {
 
 void Game_Client::load_setup(std::string path) {
 	std::ifstream fileInput(path);
-	std::stringstream file = aux::comment(fileInput);
+	std::stringstream file = (aux::comment(fileInput));
 
 	std::string command; // Current command
 	while (file >> command) {
@@ -420,6 +418,9 @@ void Game_Client::load_wall_textures() {
 			path[i] = '_';
 		}
 	}
+
+	aux::mk_dir("textures/walls/" + path);
+
 	for (auto wall : walls) {
 
 		auto wall_name = std::string("") + "wall" + " " + std::to_string(wall->get_id());
