@@ -93,7 +93,7 @@ void Control::step() {
 			//game.delete_player(id);
 			//IP_by_id.erase(IP_by_id.find(id));
 			//addresses.erase(IP_by_id[id]);
-			network.del_address(IP_by_id[id]);
+			//network.del_address(IP_by_id[id]);
 		}
 		// Release next game step 
 		game.step(delay * 0.001);
