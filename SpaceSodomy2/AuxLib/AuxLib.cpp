@@ -124,12 +124,24 @@ std::stringstream aux::instantiate(std::stringstream& file) {
 		if (elem == "TEMPLATE") {
 			templ.clear();
 			file >> elem;
-			file >> elem;
-			while (elem != "]") {
-				templ.emplace_back(elem);
+			if (elem == "LINK") {
 				file >> elem;
+				std::cout << "Following text template link " << elem << '\n';
+				std::ifstream file(elem);
+				std::stringstream list = (aux::comment(file));
+				while (list >> elem) {
+					templ.emplace_back(elem);
+				}
+				continue;
 			}
-			continue;
+			else if (elem == "[") {
+				file >> elem;
+				while (elem != "]") {
+					templ.emplace_back(elem);
+					file >> elem;
+				}
+				continue;
+			}
 		}
 		if (elem == "{") {
 			std::deque<std::string> to_format;
