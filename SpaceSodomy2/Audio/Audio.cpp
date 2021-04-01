@@ -35,9 +35,10 @@ Draw* Audio::get_draw() {
 void Audio::load_sounds(std::string path) {
 	std::cout << "Start loading\n";
 	std::ifstream file(path);
-	while (file) {
+	std::stringstream loadedFile = aux::comment(file);
+	while (loadedFile) {
 		std::string name, path;
-		file >> name >> path;
+		loadedFile >> name >> path;
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_sound(name, path);
 	}
@@ -47,9 +48,10 @@ void Audio::load_sounds(std::string path) {
 void Audio::load_musics(std::string path) {
 	std::cout << "Musics start loading\n";
 	std::ifstream file(path);
-	while (file) {
+	std::stringstream loadedFile = aux::comment(file);
+	while (loadedFile) {
 		std::string name, path;
-		file >> name >> path;
+		loadedFile >> name >> path;
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_music(name, path);
 	}
@@ -112,6 +114,10 @@ void Audio::stop_music(std::string name) {
 }
 
 std::string Audio::get_music_by_number(int val) {
+	if (musics.size() == 0) {
+		std::cout << "no music found\n";
+		return "";
+	}
 	val %= musics.size();
 	auto it = musics.begin();
 	for (int i = 0; i < val; i++) {
