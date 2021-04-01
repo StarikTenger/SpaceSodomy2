@@ -111,4 +111,7 @@ public:
 
 	// Python-like format
 	static std::string format(std::string base, std::string word);
+
+	// COMMANDS must be caps
+	static bool is_command(std::string word);
 };

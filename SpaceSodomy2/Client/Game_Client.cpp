@@ -422,22 +422,24 @@ void Game_Client::load_wall_textures() {
 	draw->load_texture(global_wall_name,
 		"textures/walls/" + global_wall_name + ".png");
 
-	if (!draw->isTextureExist(global_wall_name)) {
-		for (auto wall : walls) {
-			wall->init_drawing(wall_width);
-			if (origin_pos.x > wall->get_origin_pos().x) {
-				origin_pos.x = wall->get_origin_pos().x;
-			}
-			if (origin_pos.y > wall->get_origin_pos().y) {
-				origin_pos.y = wall->get_origin_pos().y;
-			}
-			if (end_pos.x < wall->get_box_size().x + wall->get_origin_pos().x) {
-				end_pos.x = wall->get_box_size().x + wall->get_origin_pos().x;
-			}
-			if (end_pos.y < wall->get_box_size().y + wall->get_origin_pos().y) {
-				end_pos.y = wall->get_box_size().y + wall->get_origin_pos().y;
-			}
+	for (auto wall : walls) {
+		wall->init_drawing(wall_width);
+		if (origin_pos.x > wall->get_origin_pos().x) {
+			origin_pos.x = wall->get_origin_pos().x;
 		}
+		if (origin_pos.y > wall->get_origin_pos().y) {
+			origin_pos.y = wall->get_origin_pos().y;
+		}
+		if (end_pos.x < wall->get_box_size().x + wall->get_origin_pos().x) {
+			end_pos.x = wall->get_box_size().x + wall->get_origin_pos().x;
+		}
+		if (end_pos.y < wall->get_box_size().y + wall->get_origin_pos().y) {
+			end_pos.y = wall->get_box_size().y + wall->get_origin_pos().y;
+		}
+	}
+
+
+	if (!draw->isTextureExist(global_wall_name)) {
 		sf::RenderTexture base;
 		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
 		base.clear(sf::Color::Transparent);
