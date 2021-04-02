@@ -25,11 +25,19 @@ b2Vec2 Menu_Object::window_cords_pos() {
 	case 1:
 		return pos - mid;
 	case 2:
-		return pos + b2Vec2(-mid.x, mid.y);
+		return pos - b2Vec2(mid.x, 0);
 	case 3:
-		return pos + mid;
+		return pos + b2Vec2(-mid.x, mid.y);
 	case 4:
+		return pos + b2Vec2(0, mid.y);
+	case 5:
+		return pos + mid;
+	case 6:
+		return pos + b2Vec2(mid.x, 0);
+	case 7:
 		return pos + b2Vec2(mid.x, -mid.y);
+	case 8:
+		return pos - b2Vec2(0, mid.y);
 	default:
 		return pos;
 	}
