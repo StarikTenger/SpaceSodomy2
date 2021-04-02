@@ -142,6 +142,32 @@ std::stringstream aux::instantiate(std::stringstream& file) {
 				}
 				continue;
 			}
+			else if (elem == "IFLINK") {
+				std::string condition;
+				file >> condition;
+				if (!is_command(condition)) {
+					std::cout << "incorrect text template syntax\n";
+					continue;
+				}
+				std::string list_name;
+				file >> list_name;
+				std::cout << "Following text template iflink " << list_name << '\n';
+				std::ifstream file(list_name);
+				std::stringstream list = aux::comment(file);
+				while (list >> elem) {
+					if (elem == condition) {
+						while (list >> elem) {
+							if (elem == "END") {
+								break;
+							}
+							else {
+								templ.emplace_back(elem);
+							}
+						}
+					}
+				}
+				continue;
+			}
 		}
 		if (elem == "{") {
 			std::deque<std::string> to_format;
@@ -381,4 +407,13 @@ std::string aux::format(std::string base, std::string word) {
 		ans += word + temp[i];
 	}
 	return ans;
+}
+
+bool aux::is_command(std::string word) {
+	for (auto i : word) {
+		if (!isupper(i)) {
+			return false;
+		}
+	}
+	return true;
 }

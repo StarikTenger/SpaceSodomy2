@@ -54,12 +54,10 @@ void Game_Client::display(int id) {
 	draw->apply_camera();
 
 	// Walls
+	draw->image(global_wall_name, aux::mult((origin_pos + end_pos), 0.5), end_pos - origin_pos);
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
 		auto vertices = wall->get_vertices();
-		draw->image("wall " + std::to_string(wall->get_id()), 
-			wall->get_origin_pos() + b2Vec2(wall->get_box_size().x/2, wall->get_box_size().y /2) , 
-			wall->get_box_size(), 0, color);
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
 			draw->line(vertices[i], vertices[j], color);
@@ -359,15 +357,12 @@ void Game_Client::save_setup(std::string path) {
 	file.close();
 }
 
-bool Game_Client::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
-	sf::Vector2f scale, std::string base_texture, std::string result_texture,
+sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
+	sf::Vector2f scale, std::string base_texture,
 	float wall_width) {
 
-	if (draw->isTextureExist(result_texture)) {
-		std::cout << "texture already found: " << result_texture << '\n';
-		return false;
-	}
-	std::cout << "making texture of: " << result_texture << '\n';
+	auto polygon = wall->get_vertices();
+	bool is_outer = wall->get_orientation();
 
 	sf::Image base_image = draw->get_texture(base_texture)->copyToImage();
 	sf::Image new_image;
@@ -403,11 +398,8 @@ bool Game_Client::make_polygonal_texture(const std::vector<b2Vec2>& polygon, boo
 		}
 	}
 	sf::Texture* tex = new sf::Texture;
-	draw->insert_texture(tex, result_texture);
-	draw->get_texture(result_texture)->loadFromImage(new_image);
-
-	std::cout << result_texture << " done\n";
-	return true;
+	tex->loadFromImage(new_image);
+	return tex;
 }
 
 
@@ -419,23 +411,53 @@ void Game_Client::load_wall_textures() {
 		}
 	}
 
-	aux::mk_dir("textures/walls/" + path);
+	auto color = sf::Color(0, 151, 255);
+	//auto color = sf::Color(0, 151, 255);
+	sf::Vector2f scale(100, 100);
+	float wall_width = 1.0;
+	std::string wall_name = "wall";
+
+	global_wall_name = "wall_" + path;
+
+	draw->load_texture(global_wall_name,
+		"textures/walls/" + global_wall_name + ".png");
 
 	for (auto wall : walls) {
-
-		auto wall_name = std::string("") + "wall" + " " + std::to_string(wall->get_id());
-
-		draw->load_texture(wall_name,
-			"textures/walls/" + path + '/' + wall_name + ".png");
-
-		if (!draw->isTextureExist(wall_name)) {
-
-			make_polygonal_texture(wall->get_vertices(), wall->get_orientation(), sf::Vector2f(100, 100),
-				"wall", wall_name, 0.5);
-
-			draw->export_texture(wall_name,
-				"textures/walls/" + path + '/' + wall_name + ".png");
+		wall->init_drawing(wall_width);
+		if (origin_pos.x > wall->get_origin_pos().x) {
+			origin_pos.x = wall->get_origin_pos().x;
 		}
-		wall->init_drawing(0.5);
+		if (origin_pos.y > wall->get_origin_pos().y) {
+			origin_pos.y = wall->get_origin_pos().y;
+		}
+		if (end_pos.x < wall->get_box_size().x + wall->get_origin_pos().x) {
+			end_pos.x = wall->get_box_size().x + wall->get_origin_pos().x;
+		}
+		if (end_pos.y < wall->get_box_size().y + wall->get_origin_pos().y) {
+			end_pos.y = wall->get_box_size().y + wall->get_origin_pos().y;
+		}
+	}
+
+
+	if (!draw->isTextureExist(global_wall_name)) {
+		sf::RenderTexture base;
+		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
+		base.clear(sf::Color::Transparent);
+		for (auto wall : walls) {
+			std::cout << "making wall with id " << wall->get_id() << "\n";
+			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width);
+			draw->overlay_texture(base, temp, color,
+				sf::Vector2i((wall->get_origin_pos().x - origin_pos.x) * scale.x, 
+				             (wall->get_origin_pos().y - origin_pos.y) * scale.y));
+			base.display();
+			delete temp;
+		}
+		base.display();
+		sf::Texture* tex = new sf::Texture;
+		sf::Image ans = sf::Texture(base.getTexture()).copyToImage();
+		draw->insert_texture(tex, global_wall_name);
+		draw->get_texture(global_wall_name)->loadFromImage(ans);
+		draw->export_texture(global_wall_name,
+			"textures/walls/" + global_wall_name + ".png");
 	}
 }

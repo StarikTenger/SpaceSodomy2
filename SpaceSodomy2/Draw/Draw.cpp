@@ -226,59 +226,6 @@ void Draw::draw_animations() {
 	}
 }
 
-bool Draw::make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
-	sf::Vector2f scale, std::string base_texture, std::string result_texture,
-	float wall_width) {
-
-	if (textures.find(result_texture) != textures.end()) {
-		std::cout << "texture already found: " << result_texture << '\n';
-		return false;
-	}
-	std::cout << "making texture of: " << result_texture << '\n';
-
-	sf::Image base_image = get_texture(base_texture)->copyToImage();
-	sf::Image new_image;
-	sf::Color::Transparent;
-
-	sf::Vector2i image_size;
-	b2Vec2 origin;
-	b2Vec2 point;
-
-	image_size.x = (aux::box_size(polygon).x + wall_width * 2) * scale.x;
-	image_size.y = (aux::box_size(polygon).y + wall_width * 2) * scale.y;
-
-	origin = aux::origin_pos(polygon) - b2Vec2(wall_width, wall_width);
-
-	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
-
-	for (int i = 0; i < image_size.x; i++) {
-		for (int j = 0; j < image_size.y; j++) {
-
-			point.x = origin.x + i / scale.x;
-			point.y = origin.y + j / scale.y;
-
-			if (aux::is_in_polygon(point, polygon, is_outer)) {
-				auto base_color = base_image.getPixel(i % base_image.getSize().x,
-					j % base_image.getSize().y);
-				float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
-				if (transparency_modifier < 0) {
-					transparency_modifier = 0;
-				}
-				base_color.a *= transparency_modifier;
-				new_image.setPixel(i, j, base_color);
-			}
-		}
-	}
-	sf::Texture* tex = new sf::Texture();
-	textures.insert(std::make_pair(result_texture, tex)).second;
-	textures[result_texture]->loadFromImage(new_image);
-
-	std::cout << result_texture << " done\n";
-	return true;
-}
-
-
-
 void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
 	sf::Text drawnText;
 	drawnText.setFont(*fonts[font_name]);
@@ -300,4 +247,11 @@ void Draw::insert_texture(sf::Texture* tex, std::string name) {
 	textures.insert(std::make_pair(name, tex)).second;
 }
 
+void Draw::overlay_texture(sf::RenderTexture& base, sf::Texture* im, sf::Color color, sf::Vector2i origin_pos) {
+	sf::Sprite sprite;
+	sprite.setTexture(*im);
+	sprite.setPosition(sf::Vector2f(origin_pos));
+	sprite.setColor(color);
+	base.draw(sprite);
+}
 
