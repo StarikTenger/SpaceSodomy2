@@ -112,8 +112,83 @@ std::stringstream aux::comment(std::ifstream& file) {
 		}
 	}
 
+	return instantiate(newFile);
+}
+
+std::stringstream aux::instantiate(std::stringstream& file) {
+	std::deque<std::string> templ;
+	std::stringstream newFile; //Ans
+	std::string elem;
+
+	while (file >> elem) {
+		if (elem == "TEMPLATE") {
+			templ.clear();
+			file >> elem;
+			if (elem == "LINK") {
+				file >> elem;
+				std::cout << "Following text template link " << elem << '\n';
+				std::ifstream file(elem);
+				std::stringstream list = (aux::comment(file));
+				while (list >> elem) {
+					templ.emplace_back(elem);
+				}
+				continue;
+			}
+			else if (elem == "[") {
+				file >> elem;
+				while (elem != "]") {
+					templ.emplace_back(elem);
+					file >> elem;
+				}
+				continue;
+			}
+			else if (elem == "IFLINK") {
+				std::string condition;
+				file >> condition;
+				if (!is_command(condition)) {
+					std::cout << "incorrect text template syntax\n";
+					continue;
+				}
+				std::string list_name;
+				file >> list_name;
+				std::cout << "Following text template iflink " << list_name << '\n';
+				std::ifstream file(list_name);
+				std::stringstream list = aux::comment(file);
+				while (list >> elem) {
+					if (elem == condition) {
+						while (list >> elem) {
+							if (elem == "END") {
+								break;
+							}
+							else {
+								templ.emplace_back(elem);
+							}
+						}
+					}
+				}
+				continue;
+			}
+		}
+		if (elem == "{") {
+			std::deque<std::string> to_format;
+			file >> elem;
+			while (elem != "}") {
+				to_format.emplace_back(elem);
+				file >> elem;
+			}
+			for (int j = 0; j < templ.size(); j++) {
+				for (int i = 0; i < to_format.size(); i++) {
+					newFile << aux::format(to_format[i], templ[j]) << " ";
+				}
+				newFile << "\n";
+			}
+			continue;
+		}
+		newFile << elem << " ";
+	}
 	return newFile;
 }
+
 
 std::string aux::mask_to_string(std::vector<int> vec, int digit, char start) {
 	int val = 0;
@@ -311,4 +386,34 @@ bool aux::is_left_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end) {
 
 std::pair<int, int> aux::get_screen_resolution() {
 	return { 1920, 1080 };
+}
+
+
+std::string aux::format(std::string base, std::string word) {
+	std::deque<std::string> temp;
+	temp.emplace_back("");
+	int cur = 0;
+	for (int i = 0; i < base.size(); i++) {
+		if (base[i] == '*') {
+			cur++;
+			temp.emplace_back("");
+		}
+		else {
+			temp[cur] += base[i];
+		}
+	}
+	std::string ans = temp[0];
+	for (int i = 1; i < temp.size(); i++) {
+		ans += word + temp[i];
+	}
+	return ans;
+}
+
+bool aux::is_command(std::string word) {
+	for (auto i : word) {
+		if (!isupper(i)) {
+			return false;
+		}
+	}
+	return true;
 }

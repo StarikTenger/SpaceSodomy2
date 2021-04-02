@@ -68,8 +68,8 @@ void Control::receive() {
 		std::string command_string;
 		message >> command_string;
 		game.player_by_id(id_)->set_name(name_);
-		game.player_by_id(id_)->set_gun_name(gun_name);
-		game.player_by_id(id_)->set_hull_name(hull_name);
+		//game.player_by_id(id_)->set_gun_name(gun_name);
+		//game.player_by_id(id_)->set_hull_name(hull_name);
 		for (int i = 1; i < command_string.size(); i++) {
 			game.apply_command(id_, i - 1, command_string[i] == '1');
 		}
@@ -93,7 +93,7 @@ void Control::step() {
 			//game.delete_player(id);
 			//IP_by_id.erase(IP_by_id.find(id));
 			//addresses.erase(IP_by_id[id]);
-			network.del_address(IP_by_id[id]);
+			//network.del_address(IP_by_id[id]);
 		}
 		// Release next game step 
 		game.step(delay * 0.001);

@@ -4,6 +4,7 @@
 #include <Audio/Audio.h>
 #include <Menu/Bar.h>
 #include <Menu/Constant_Text.h>
+#include <AuxLib/AuxLib.h>
 
 class Game_Client : public Game {
 private:
@@ -12,6 +13,11 @@ private:
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	int engine_active = 0;
+
+	// box for drawing the global wall texture;
+	std::string global_wall_name = "";
+	b2Vec2 origin_pos = { 0,0 };
+	b2Vec2 end_pos = { 0,0 };
 
 	std::vector <int> engine_commands = {
 				Command_Module::ENGINE_ANG_LEFT,
@@ -53,9 +59,8 @@ public:
 	void load_setup(std::string path);
 	void save_setup(std::string path);
 
-	bool make_polygonal_texture(const std::vector<b2Vec2>& polygon, bool is_outer,
-		sf::Vector2f scale, std::string base_texture, std::string result_texture,
-		float wall_width);
+	sf::Texture* make_polygonal_texture(Wall* wall, sf::Vector2f scale, 
+		std::string base_texture, float wall_width);
 	// load wall textures
 	void load_wall_textures();
 
