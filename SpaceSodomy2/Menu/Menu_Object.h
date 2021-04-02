@@ -28,6 +28,8 @@ private:
 
 	b2Vec2 window_cords_pos();
 	b2Vec2 mid;
+
+	double screen_mode = 1;
 public:
 	Menu_Object();
 	Menu_Object(int id_, std::string texture_name_, Draw* draw_, 
@@ -48,6 +50,7 @@ public:
 	bool* get_clicked();
 	int get_use_window_cords();
 	b2Vec2 get_cur_pos();
+	double get_screen_mode();
 
 	// Set methods
 	void set_id(int id_);

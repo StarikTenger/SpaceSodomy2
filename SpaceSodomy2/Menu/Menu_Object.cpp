@@ -21,25 +21,25 @@ b2Vec2 Menu_Object::window_cords_pos() {
 	switch (use_window_cords)
 	{
 	case 0:
-		return pos;
+		return (screen_mode * pos);
 	case 1:
-		return pos - mid;
+		return (screen_mode * pos) - mid;
 	case 2:
-		return pos - b2Vec2(mid.x, 0);
+		return (screen_mode * pos) - b2Vec2(mid.x, 0);
 	case 3:
-		return pos + b2Vec2(-mid.x, mid.y);
+		return (screen_mode * pos) + b2Vec2(-mid.x, mid.y);
 	case 4:
-		return pos + b2Vec2(0, mid.y);
+		return (screen_mode * pos) + b2Vec2(0, mid.y);
 	case 5:
-		return pos + mid;
+		return (screen_mode * pos) + mid;
 	case 6:
-		return pos + b2Vec2(mid.x, 0);
+		return (screen_mode * pos) + b2Vec2(mid.x, 0);
 	case 7:
-		return pos + b2Vec2(mid.x, -mid.y);
+		return (screen_mode * pos) + b2Vec2(mid.x, -mid.y);
 	case 8:
-		return pos - b2Vec2(0, mid.y);
+		return (screen_mode * pos) - b2Vec2(0, mid.y);
 	default:
-		return pos;
+		return (screen_mode * pos);
 	}
 }
 
@@ -86,6 +86,9 @@ int Menu_Object::get_use_window_cords() {
 b2Vec2 Menu_Object::get_cur_pos() {
 	return cur_pos;
 }
+double Menu_Object::get_screen_mode() {
+	return screen_mode;
+}
 
 // Set methods
 void Menu_Object::set_id(int id_) {
@@ -130,11 +133,15 @@ void Menu_Object::set_cur_pos(b2Vec2 cur_pos_) {
 }
 
 void Menu_Object::primitive_step() {
+	if (image_active && use_picture_scale)
+		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
+	screen_mode = ((double)draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width +
+		(double)draw->get_window()->getSize().y / sf::VideoMode::getDesktopMode().height) / 2;
+	b2Vec2 backup_scale = scale;
+	scale = screen_mode * scale;
 	if (!cur_pos_activated) {
 		cur_pos = window_cords_pos();
 	}
-	if (image_active && use_picture_scale)
-		scale = aux::to_b2Vec2(sf::Vector2f(draw->get_texture(texture_name)->getSize()));
 	//std::cout << cur_pos.x << " " << cur_pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
 	if (aux::rect_contains(cur_pos + mid, scale, *mouse_pos))
 		active = 1;
@@ -142,4 +149,5 @@ void Menu_Object::primitive_step() {
 		active = 0;
 	if (image_active)
 		draw->image(texture_name, cur_pos, scale, 0, color);
+	scale = backup_scale;
 }
