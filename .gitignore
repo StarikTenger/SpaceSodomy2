@@ -365,6 +365,6 @@ FodyWeavers.xsd
 .vs/
 
 # Some configs
-SpaceSodomy2/env/client_config.conf
-SpaceSodomy2/env/setup.conf
-SpaceSodomy2/env/sound_settings.conf
+*client_config.conf
+*setup.conf
+*sound_settings.conf
