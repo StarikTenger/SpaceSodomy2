@@ -11,6 +11,8 @@ private:
 	b2Vec2 cord; // slider pointer pos
 	b2Vec2 axis_scale;
 	b2Vec2 slider_scale;
+	b2Vec2 real_axis_scale;
+	b2Vec2 real_slider_scale;
 	float slider_value;
 	bool font_active = 0; // is font active
 	bool slider_active = 0; // is slider active

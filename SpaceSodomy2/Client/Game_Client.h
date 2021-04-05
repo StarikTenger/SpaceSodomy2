@@ -53,8 +53,6 @@ public:
 	// Get players
 	std::map<int, Player*>* get_players();
 
-	int* sound_volume = nullptr;
-
 	// Load setup
 	void load_setup(std::string path);
 	void save_setup(std::string path);
