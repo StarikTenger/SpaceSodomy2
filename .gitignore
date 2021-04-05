@@ -365,6 +365,6 @@ FodyWeavers.xsd
 .vs/
 
 # Some configs
-client_config.conf
-setup.conf
-sound_settings.conf
+*/client_config.conf
+*/setup.conf
+*/sound_settings.conf

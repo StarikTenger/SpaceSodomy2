@@ -110,7 +110,6 @@ void Draw::export_texture(std::string name, std::string path) {
 	std::cout << "Finish exporting\n";
 }
 
-
 void Draw::apply_camera() {
 	cam.set_borders(b2Vec2(window->getSize().x, window->getSize().y));
 	cam.apply(window);
