@@ -225,8 +225,10 @@ void Draw::create_animation(Float_Animation animation) {
 	animations.insert(animation_ptr);
 } 
 
-void Draw::draw_animations() {
+void Draw::draw_animations(int layer) {
 	for (auto animation : animations) {
+		if (animation->get_layer() != layer)
+			continue;
 		auto state = animation->get_state_current();
 		image(state.image, state.pos, state.scale, state.angle, state.color);
 	}

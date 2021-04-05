@@ -272,10 +272,7 @@ void Game::process_players() {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 &&
 			player->get_command_module()->get_command(Command_Module::RESPAWN)) {
-			// TODO: function to determine new ship position
 			player->set_is_alive(1);
-
-			// getting random respawn position
 
 			// creating ship
 			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));

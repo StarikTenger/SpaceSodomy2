@@ -76,7 +76,7 @@ public:
 
 	// Animations
 	void create_animation(Float_Animation);
-	void draw_animations();
+	void draw_animations(int layer = 0);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 

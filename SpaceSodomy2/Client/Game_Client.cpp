@@ -138,7 +138,7 @@ void Game_Client::display(int id) {
 
 	// Animations
 	draw->step(dt);
-	draw->draw_animations();
+	draw->draw_animations(0);
 
 	// Projectiles
 	for (auto projectile : projectiles) {
