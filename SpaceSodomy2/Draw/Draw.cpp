@@ -143,7 +143,7 @@ void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle) {
 	rectangle.setSize(sf::Vector2f(box.x, box.y));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(pos.x, pos.y);
-	rectangle.setRotation(angle);
+	rectangle.setRotation(angle * 180 / b2_pi);
 	window->draw(rectangle);
 }
 
@@ -167,7 +167,7 @@ void Draw::fill_circle(b2Vec2 pos, float r, sf::Color color) {
 	window->draw(circle);
 }
 
-void Draw::line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
+void Draw::thin_line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 	sf::Vertex l[] =
 	{
 		sf::Vertex(sf::Vector2f(start.x, start.y)),
@@ -175,6 +175,13 @@ void Draw::line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 	};
 	l[0].color = l[1].color = color;
 	window->draw(l, 2, sf::Lines);
+}
+
+void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness) {
+	auto mid = 0.5 * (start + finish);
+	float len = b2Distance(start, finish);
+	float ang = aux::vec_to_angle(finish - start);
+	fill_rect(mid, {len, thickness}, color, ang);
 }
 
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
@@ -239,7 +246,7 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size,
 	window->draw(drawnText);
 }
 
-bool Draw::isTextureExist(std::string name) {
+bool Draw::is_texture_exist(std::string name) {
 	return (textures.find(name) != textures.end());
 }
 
