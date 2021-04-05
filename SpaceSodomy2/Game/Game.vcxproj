@@ -163,6 +163,7 @@
     <ClInclude Include="Contact_Table.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Damage_Receiver.h" />
+    <ClInclude Include="Effects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="entities.h" />
     <ClInclude Include="framework.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Contact_Table.cpp" />
     <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Damage_Receiver.cpp" />
+    <ClCompile Include="Effects.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gun.cpp" />

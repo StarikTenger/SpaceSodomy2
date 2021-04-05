@@ -29,6 +29,7 @@ Game::Game() {
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
+	null_effects = new Effects();
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -94,8 +95,8 @@ Command_Module* Game::create_command_module() {
 	return command_module;
 }
 
-Engine* Game::create_engine(b2Body* body, Command_Module* command_module, Counter* stamina) {
-	auto engine = new Engine(body, command_module, stamina);
+Engine* Game::create_engine(b2Body* body, Command_Module* command_module, Counter* stamina, Effects* effs) {
+	auto engine = new Engine(body, command_module, stamina, effs);
 	engines.insert(engine);
 	id_manager.set_id(engine);
 	return engine;
@@ -110,9 +111,10 @@ Counter* Game::create_counter(float val, float change_vel) {
 	return counter;
 }
 
-Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player) {
+Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
 	damage_receiver->set_player(player);
+	damage_receiver->set_effects(effs);
 	damage_receivers.insert(damage_receiver);
 	id_manager.set_id(damage_receiver);
 	return damage_receiver;
@@ -123,6 +125,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto ship = new Ship();
 	ships.insert(ship);
 	id_manager.set_id(ship);
+
+	// Create effects
+	auto effs = create_effects(default_effects);
+	ship->set_effects(effs);
 
 	// Player
 	ship->set_player(player);
@@ -147,6 +153,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 		gun_def = guns[player->get_gun_name()];
 	auto gun = create_gun(gun_def);
 	gun->set(body, player);
+	gun->set_ship_effects(effs);
 	ship->set_gun(gun);
 
 	// Hp
@@ -162,12 +169,13 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_stamina(stamina);
 
 	// Engine
-	auto engine = create_engine(body, command_module, stamina);
+	auto engine = create_engine(body, command_module, stamina, effs);
 	ship->set_engine(engine);
 
 	// Damage receiver
-	auto damage_receiver = create_damage_receiver(body, hp, player);
+	auto damage_receiver = create_damage_receiver(body, hp, player, effs);
 	ship->set_damage_receiver(damage_receiver);
+
 
 	return ship;
 }
@@ -194,7 +202,8 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_player(projectile_def.player);
 	projectile->set_damage(projectile_def.damage);
 	projectile->set_hp(create_counter(projectile_def.hp, 0));
-	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player()));
+	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), null_effects));
+	projectile->set_effects_def(projectile_def.effects_def);
 
 	// Adding to vectors
 	projectiles.insert(projectile);
@@ -211,6 +220,12 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 	id_manager.set_id(sound);
 	sounds.insert(sound);
 	return sound;
+}
+
+Effects* Game::create_effects(Effects_Def val) {
+	auto _effects = new Effects(val, 0);
+	effects.insert(_effects);
+	return _effects;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -244,6 +259,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_damage_receiver(ship->get_damage_receiver());
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
+	delete_effects(ship->get_effects());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -265,6 +281,12 @@ void Game::delete_sound(Sound* sound) {
 	sounds.erase(sound);
 	delete sound;
 }
+
+void Game::delete_effects(Effects* val) {
+	effects.erase(val);
+	delete val;
+}
+
 
 void Game::process_players() {
 	// Creating ships
@@ -290,6 +312,9 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
+		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get() > b2_epsilon) {
+			ship->get_damage_receiver()->damage(dt * 20, players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
+		}
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
@@ -316,6 +341,7 @@ void Game::process_projectiles() {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
+				*damage_receiver->get_effects() += Effects(*(projectile->get_effects_def()), projectile->get_player()->get_id());
 			}
 		}
 		// Checking for wall collision
@@ -384,6 +410,12 @@ void Game::process_sounds() {
 		delete_sound(sound);
 }
 
+void Game::process_effects() {
+	for (auto eff : effects) {
+		eff->step(dt);
+	}
+}
+
 void Game::apply_command(int id, int command, int val) {
 	players[id]->get_command_module()->set_command(command, val);
 }
@@ -400,6 +432,7 @@ void Game::step(float _dt) {
 	process_sound_manager();
 	process_counters();
 	process_sounds();
+	process_effects();
 }
 
 void Game::set_dt(float _dt) {
@@ -437,6 +470,7 @@ void Game::clear() {
 	sounds = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
+	delete null_effects;
 }
 
 bool Game::load_map(std::string path) {
@@ -539,23 +573,108 @@ bool Game::load_parameters(std::string path) {
 				float val;
 				if (!(input >> val)) {
 					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+
 					return false;
 				}
 				var = val;
 			}
 		};
+		if (symbol == "EFFECT_TYPES") {
+			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+				std::string devnull;
+				input >> devnull;
+				std::string temp;
+				input >> temp;
+				if (temp == "MAXIMAL") {
+					types[i] = Effects::Algebraic_Type::MAXIMAL;
+				}
+				else if (temp == "ADDITIVE") {
+					types[i] = Effects::Algebraic_Type::ADDITIVE;
+				}
+				else if (temp == "CONSTANT") {
+					types[i] = Effects::Algebraic_Type::CONSTANT;
+				}
+				else {
+					std::cerr << "Game::load_parameters: failed to read Algebraic_Type name\n";
+				}
+			}
+			continue;
+		}
 		// Gun
 		if (symbol == "GUN") {
 			std::string name;
 			if (!(input >> name)) {
-				std::cerr << "Game::load_parameters: failed to read GUN name";
+				std::cerr << "Game::load_parameters: failed to read GUN name\n";
 				return false;
 			}
 			guns[name] = {};
+			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+				std::string devnull;
+				input >> devnull;
+				float temp;
+				input >> temp;
+				guns[name].effect_def.effects[i].duration.set(temp);
+				guns[name].effect_def.effects[i].type = (types[i]);
+			}
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				
+
+				/*if (symbol == "RECHARGE") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].recharge_time = val;
+				}
+				if (symbol == "DAMAGE") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].damage = val;
+				}
+				if (symbol == "STAMINA_CONSUMPTION") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].stamina_consumption = val;
+				}if (symbol == "PROJECTILE_MASS") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].projectile_mass = val;
+				}
+				if (symbol == "PROJECTILE_VEL") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].projectile_vel = val;
+				}
+				if (symbol == "PROJECTILE_RADIUS") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].projectile_radius = val;
+				}if (symbol == "PROJECTILE_HP") {
+					float val;
+					std::string none = "";
+					if (!(input >> val)) {
+						return false;
+					}
+					guns[name].projectile_hp = val;
+				}*/
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);

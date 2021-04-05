@@ -5,10 +5,11 @@
 // Constructor
 Engine::Engine() {}
 
-Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina) {
+Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina, Effects* _effects) {
 	body = _body;
 	command_module = _command_module;
 	stamina = _stamina;
+	effects = _effects;
 }
 
 // Forces' methods
