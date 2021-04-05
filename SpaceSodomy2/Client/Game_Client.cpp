@@ -267,20 +267,20 @@ void Game_Client::decode(std::string source) {
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
-				if (commands[i]) {
+				/*if (commands[i]) {
 					for (int j = 0; j < engine_commands.size(); j++) {
 						if (engine_commands[j] == i) {
 							loc_engine_active++;
 							break;
 						}
 					}
-				}
+				}*/
 			}
 			//std::cout << "ship id: " << id << "\n";
-			if (loc_engine_active != engine_active) {
+			/*if (loc_engine_active != engine_active) {
 				engine_active = loc_engine_active;
 				audio->update_sound(id, "engine", pos, engine_active / 4.0, 1);
-			}
+			}*/
 		}
 		// Projectile
 		if (symbol == "p") {

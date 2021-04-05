@@ -43,8 +43,23 @@ std::queue<int>* Menu::get_events() {
 	return events;
 }
 
+void Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
+	b2Vec2* mouse_pos, bool use_image_scale) {
+	objects.push_back(new Menu_Object);
+	objects.back()->set_id(id);
+	objects.back()->set_texture_name(texture_name);
+	objects.back()->set_pos(pos);
+	objects.back()->set_use_window_cords(use_window_cords);
+	objects.back()->set_scale(scale);
+	objects.back()->set_draw(draw);
+	objects.back()->set_color(sf::Color::White);
+	objects.back()->set_mouse_pos(mouse_pos);
+	objects.back()->set_clicked(&clicked);
+	objects.back()->set_use_picture_scale(use_image_scale);
+}
+
 void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
-	sf::Color color, b2Vec2* mouse_pos) {
+	sf::Color color, b2Vec2* mouse_pos, bool use_image_scale) {
 	buttons.push_back(new Button);
 	buttons.back()->set_id(id);
 	buttons.back()->set_texture_name(texture_name);
@@ -55,6 +70,7 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_wind
 	buttons.back()->set_draw(draw);
 	buttons.back()->set_mouse_pos(mouse_pos);
 	buttons.back()->set_clicked(&clicked);
+	buttons.back()->set_use_picture_scale(use_image_scale);
 }
 
 void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
@@ -129,6 +145,10 @@ void Menu::step() {
 	// set clicked val
 	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+
+	for (auto object : objects) {
+		object->primitive_step();
+	}
 
 	// buttons handling
 	for (auto button : buttons) {
