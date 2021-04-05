@@ -9,6 +9,7 @@
 
 class Menu {
 private:
+	std::vector<Menu_Object*> objects;
 	std::vector<Button*> buttons;
 	std::vector<Text_Field*> text_fields;
 	std::vector<Keyboard_Field*> keyboard_fields;
@@ -37,6 +38,8 @@ public:
 	bool get_active();
 	std::queue<int>* get_events();
 
+	void add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
+		b2Vec2* mouse_pos, bool use_image_scale);
 	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
 		int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
 	void add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,

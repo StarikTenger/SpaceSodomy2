@@ -4,7 +4,7 @@ Menu_Processing::Menu_Processing() {}
 
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
-	hull->add_button(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(100, 100), sf::Color::White, mouse_pos, 0);
+	hull->add_image(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
 	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 225), 7, 20,
@@ -195,6 +195,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 4;
 		if (type == "ConstantText")
 			typenum = 5;
+		if (type == "Image")
+			typenum = 6;
 		switch (typenum) {
 		case 1:
 			file >> next;
@@ -309,6 +311,28 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				2, mouse_pos, keyboard);
 			break;
+		case 6:
+			file >> next;
+			texture_name = "NewGame";
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			use_image_scale = 1;
+			scale = { 1, 1 };
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "SCALE") {
+					file >> scale.x >> scale.y;
+					use_image_scale = 0;
+				}
+				file >> next;
+			}
+			object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
+			break;
 		default:
 			i--;
 			current_id--;
@@ -319,7 +343,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 
 void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
-	gun->add_button(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(100, 100), sf::Color::White, mouse_pos, 0);
+	gun->add_image(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 225), 7, 20,
