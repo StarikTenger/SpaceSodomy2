@@ -16,6 +16,22 @@ Effects::Effect::Effect(float time, Algebraic_Type _type) {
     duration = Counter(time);
 }
 
+Effects::Algebraic_Type Effects::Effect::get_type() {
+    return type;
+}
+Counter* Effects::Effect::get_counter() {
+    return &duration;
+}
+
+void Effects::Effect::set_type(Algebraic_Type _type) {
+    type = _type;
+}
+
+
+void Effects::Effect::set_counter(Counter counter) {
+    duration = counter;
+}
+
 void Effects::Effect::step(float dt) {
     duration.step(dt);
 }
@@ -24,7 +40,7 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (type == Algebraic_Type::ANNULATOR) {
         return *this;
     }
-    //TO REMOVE LATER
+    //TO REMOVE LATER: FOR DEBUG
     if (type != other.type) {
         std::cout << "Error adding effects: Algebraic types are ";
         switch (type) {
@@ -36,9 +52,6 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
             break;
         case Algebraic_Type::ANNULATOR:
             std::cout << "ANNULATOR ";
-            break;
-        case Algebraic_Type::CONSTANT:
-            std::cout << "CONSTANT ";
             break;
         }
         std::cout << "and ";
@@ -52,18 +65,15 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
         case Algebraic_Type::ANNULATOR:
             std::cout << "ANNULATOR ";
             break;
-        case Algebraic_Type::CONSTANT:
-            std::cout << "CONSTANT ";
-            break;
         }
         std::cout << "\n";
     }
+
+
     if (other.duration.get() < b2_epsilon) {
         return *this;
     }
-    if (duration.get() < b2_epsilon) {
-        duration = other.duration;
-    }
+    set_id(other.get_id());
     switch (type) {
     case Algebraic_Type::MAXIMAL:
         duration.set(std::max(duration.get(), other.duration.get()));
@@ -71,10 +81,8 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     case Algebraic_Type::ADDITIVE:
         duration.modify(other.duration.get());
         break;
-    case Algebraic_Type::CONSTANT:
-        break;
+        return *this;
     }
-    return *this;
 }
 Effects::Effect Effects::Effect::operator+(Effect effect) {
     auto left = *this;
@@ -84,10 +92,7 @@ Effects::Effect Effects::Effect::operator+(Effect effect) {
 
 
 
-Effects::Effects() {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects.push_back(Effects::Effect());
-    }
+Effects::Effects() : effects(Effects::Effect_Type::COUNT) {
 }
 Effects::Effects(Effects_Def def, int id) {
     effects = def.effects;
@@ -95,19 +100,13 @@ Effects::Effects(Effects_Def def, int id) {
         i.set_id(id);
     }
 }
+Effects::Effect* Effects::get_effect(Effect_Type type) {
+    return &effects[type];
+}
+void Effects::set_effect(Effect* eff, Effect_Type type) {
+    effects[type] = *eff;
+}
 
-Counter* Effects::get_effect(Effect_Type type) {
-    return &(effects[type].duration);
-}
-float Effects::get_effect_duration(Effect_Type type) {
-    return (effects[type].duration.get());
-}
-void Effects::set_effect(Counter* counter, Effect_Type type) {
-    effects[type].duration = *counter;
-}
-void Effects::set_effect(float time, Effect_Type type) {
-    effects[type].duration.set(time);
-}
 void Effects::step(float dt) {
     for (auto i : effects) {
         i.step(dt);
@@ -137,8 +136,21 @@ Effects Effects::operator+(Effects_Def effect) {
     return left;
 }
 
+
+void Effects::update(Effects_Def _effects, int id) {
+    Effects eff(_effects, id);
+    *this += eff;
+}
+
+
 Effects_Def::Effects_Def() {
     for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
         effects.push_back(Effects::Effect());
+    }
+}
+
+Effects_Def::Effects_Def(Effects::Algebraic_Type type) {
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+        effects.push_back(Effects::Effect(type));
     }
 }

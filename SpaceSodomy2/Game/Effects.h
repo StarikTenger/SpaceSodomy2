@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <deque>
 #include <AuxLib/AuxLib.h>
 #include "Counter.h"
 
@@ -14,19 +14,24 @@ public:
     enum Algebraic_Type {
         ANNULATOR,         // multiplicative zero
         ADDITIVE,
-        MAXIMAL,
-        CONSTANT
+        MAXIMAL
     };
     class Effect : public iId {
-    public:
+    private:
         Counter duration;
         Algebraic_Type type;
-   
+    public:
         // Creates an annulator effect
         Effect();
         Effect(Algebraic_Type);
         Effect(Counter, Algebraic_Type = Algebraic_Type::MAXIMAL);
         Effect(float, Algebraic_Type = Algebraic_Type::MAXIMAL);
+
+        Algebraic_Type get_type();
+        Counter* get_counter();
+
+        void set_type(Algebraic_Type);
+        void set_counter(Counter);
 
         void step(float dt);
 
@@ -34,29 +39,32 @@ public:
         Effect operator+(Effect effect);
     };
 
-public:
-    std::vector<Effect> effects;
-
-    Effects();
-    Effects(Effects_Def, int id);
-
-    Counter* get_effect(Effect_Type type);
-    float get_effect_duration(Effect_Type type);
-    void set_effect(Counter*, Effect_Type type);
-    void set_effect(float, Effect_Type type);
-
-    void step(float dt);
+private:
+    std::deque<Effect> effects;
 
     Effects& operator+=(Effects other);
     Effects& operator+=(Effects_Def other);
     Effects operator+(Effects effect);
     Effects operator+(Effects_Def effect);
 
+public:
+
+    Effects();
+    Effects(Effects_Def, int id);
+
+    Effect* get_effect(Effect_Type type);
+    void set_effect(Effect*, Effect_Type type);
+
+    void step(float dt);
+
+    void update(Effects_Def effects, int id);
+
 };
 
 struct Effects_Def {
 public:
-    std::vector<Effects::Effect> effects;
+    std::deque<Effects::Effect> effects;
 
     Effects_Def();
+    Effects_Def(Effects::Algebraic_Type);
 };

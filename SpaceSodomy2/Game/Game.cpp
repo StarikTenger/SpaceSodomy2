@@ -29,7 +29,6 @@ Game::Game() {
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
-	null_effects = new Effects();
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -71,6 +70,7 @@ Gun* Game::create_gun(Gun_Def def) {
 	gun->set_event_manager(&sound_manager);
 	// Characteristics
 	gun->import_gun_def(def);
+	gun->set_effects(&def.effect_def);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -127,7 +127,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	auto effs = create_effects(default_effects);
+	Effects_Def effects_def(Effects::Algebraic_Type::ADDITIVE);
+	auto effs = create_effects(effects_def);
+	//effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(10);
 	ship->set_effects(effs);
 
 	// Player
@@ -149,8 +151,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Gun
 	Gun_Def gun_def;
-	if (guns.count(player->get_gun_name()))
+	if (guns.count(player->get_gun_name())) {
 		gun_def = guns[player->get_gun_name()];
+	}
 	auto gun = create_gun(gun_def);
 	gun->set(body, player);
 	gun->set_ship_effects(effs);
@@ -202,7 +205,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_player(projectile_def.player);
 	projectile->set_damage(projectile_def.damage);
 	projectile->set_hp(create_counter(projectile_def.hp, 0));
-	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), null_effects));
+	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), nullptr));
 	projectile->set_effects_def(projectile_def.effects_def);
 
 	// Adding to vectors
@@ -312,8 +315,14 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
-		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get() > b2_epsilon) {
-			ship->get_damage_receiver()->damage(dt * 20, players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
+		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
+			if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id() != 0) {
+				ship->get_damage_receiver()->damage(dt * 20, 
+					players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
+			}
+			else {
+				ship->get_damage_receiver()->damage(dt * 20, ship->get_player());
+			}
 		}
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
@@ -341,7 +350,9 @@ void Game::process_projectiles() {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
-				*damage_receiver->get_effects() += Effects(*(projectile->get_effects_def()), projectile->get_player()->get_id());
+				if (damage_receiver->get_effects()) {
+					damage_receiver->get_effects()->update(*projectile->get_effects_def(), projectile->get_player()->get_id());
+				}
 			}
 		}
 		// Checking for wall collision
@@ -470,7 +481,6 @@ void Game::clear() {
 	sounds = {};
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
-	delete null_effects;
 }
 
 bool Game::load_map(std::string path) {
@@ -592,9 +602,6 @@ bool Game::load_parameters(std::string path) {
 				else if (temp == "ADDITIVE") {
 					types[i] = Effects::Algebraic_Type::ADDITIVE;
 				}
-				else if (temp == "CONSTANT") {
-					types[i] = Effects::Algebraic_Type::CONSTANT;
-				}
 				else {
 					std::cerr << "Game::load_parameters: failed to read Algebraic_Type name\n";
 				}
@@ -614,8 +621,8 @@ bool Game::load_parameters(std::string path) {
 				input >> devnull;
 				float temp;
 				input >> temp;
-				guns[name].effect_def.effects[i].duration.set(temp);
-				guns[name].effect_def.effects[i].type = (types[i]);
+				guns[name].effect_def.effects[i].get_counter()->set(temp);
+				guns[name].effect_def.effects[i].set_type((types[i]));
 			}
 			while (input >> symbol) {
 				if (symbol == "END")

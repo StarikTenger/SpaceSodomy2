@@ -55,7 +55,6 @@ protected:
 	std::map<std::string, Gun_Def> guns;
 	std::map<std::string, Hull_Def> hulls;
 	Effects_Def default_effects;
-	Effects* null_effects;
 	// int is Effect_Type;
 	std::map<int, Effects::Algebraic_Type> types;
 	// Contact table (stores pairs which are in contact)
