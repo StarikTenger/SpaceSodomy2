@@ -363,3 +363,8 @@ FodyWeavers.xsd
 # Own
 *.rep
 .vs/
+
+# Some configs
+client_config.conf
+setup.conf
+sound_settings.conf
