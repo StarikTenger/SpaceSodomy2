@@ -44,7 +44,7 @@ public:
 	void add_constant_text(int id, std::string text, b2Vec2 pos, int use_window_cords,
 		int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard);
 	void add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
-		sf::Color color, b2Vec2* mouse_pos);
+		sf::Color color, b2Vec2* mouse_pos, bool use_image_scale);
 	void add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 		int min, int max, int val, b2Vec2* mouse_pos);
 	void step();

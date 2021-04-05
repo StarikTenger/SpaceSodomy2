@@ -4,7 +4,7 @@ Menu_Processing::Menu_Processing() {}
 
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
-	hull->add_button(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	hull->add_button(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(100, 100), sf::Color::White, mouse_pos, 0);
 	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 225), 7, 20,
@@ -32,7 +32,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 		config >> name >> next;
 		name_to_id[name + "-hull"] = current_id;
 		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-			1, { 1, 1 }, sf::Color::White, mouse_pos);
+			1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
 		hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
 			1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 		cur_but_id++;
@@ -176,13 +176,13 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	std::stringstream file = aux::comment(comment_file);
 	for (int i = current_id; !file.eof(); i++) {
 		current_id++;
-		std::string type;
+		std::string type, next;
 		int typenum = 0;
 		std::string texture_name, button_name, name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
-		int use_window_cords;
+		int use_window_cords, use_image_scale;
 		int character_size;
 		file >> type;
 		if (type == "Button")
@@ -197,38 +197,115 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 5;
 		switch (typenum) {
 		case 1:
-			file >> button_name;
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y;
-			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos);
+			file >> next;
+			button_name = "default";
+			texture_name = "NewGame";
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			use_image_scale = 1;
+			scale = { 1, 1 };
+			while (next != "END") {
+				if (next == "NAME")
+					file >> button_name;
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "SCALE") {
+					file >> scale.x >> scale.y;
+					use_image_scale = 0;
+				}
+				file >> next;
+			}
+			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
 			name_to_id[button_name] = i;
 			break;
 		case 2:
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			texture_name = "TextField";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				1, mouse_pos, keyboard);
 			break;
 		case 3:
-			file >> name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> axis_scale.x >> axis_scale.y >> slider_scale.x >> slider_scale.y;
-			file >> min_val >> max_val;
+			name = "default";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			axis_scale = { 100, 5 };
+			slider_scale = {10, 10};
+			min_val = 0;
+			max_val = 100;
+			file >> next;
+			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "AXIS_SCALE")
+					file >> axis_scale.x >> axis_scale.y;
+				if (next == "SLIDER_SCALE")
+					file >> slider_scale.x >> slider_scale.y;
+				if (next == "MIN")
+					file >> min_val;
+				if (next == "MAX")
+					file >> max_val;
+				file >> next;
+			}
 			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
 				min_val, max_val, sliders_vals[i], mouse_pos);
 			name_to_id[name] = i;
 			break;
 		case 4:
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			texture_name = "TextField";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				1, mouse_pos, keyboard);
 			break;
 		case 5:
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				2, mouse_pos, keyboard);
 			break;
@@ -242,7 +319,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 
 void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
-	gun->add_button(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	gun->add_button(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(100, 100), sf::Color::White, mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 225), 7, 20,
@@ -273,7 +350,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 			config >> name >> next;
 			name_to_id[name + "-gun"] = current_id;
 			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 1, 1 }, sf::Color::White, mouse_pos);
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
 			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
 				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 			cur_but_id++;

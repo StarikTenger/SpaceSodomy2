@@ -44,7 +44,7 @@ std::queue<int>* Menu::get_events() {
 }
 
 void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
-	sf::Color color, b2Vec2* mouse_pos) {
+	sf::Color color, b2Vec2* mouse_pos, bool use_image_scale) {
 	buttons.push_back(new Button);
 	buttons.back()->set_id(id);
 	buttons.back()->set_texture_name(texture_name);
@@ -55,6 +55,7 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_wind
 	buttons.back()->set_draw(draw);
 	buttons.back()->set_mouse_pos(mouse_pos);
 	buttons.back()->set_clicked(&clicked);
+	buttons.back()->set_use_picture_scale(use_image_scale);
 }
 
 void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
