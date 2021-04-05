@@ -54,13 +54,15 @@ void Game_Client::display(int id) {
 	draw->apply_camera();
 
 	// Walls
-	draw->image(global_wall_name, aux::mult((origin_pos + end_pos), 0.5), end_pos - origin_pos);
+	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
 		auto vertices = wall->get_vertices();
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
-			draw->line(vertices[i], vertices[j], color);
+			float thickness = 0.05;
+			draw->thick_line(vertices[i], vertices[j], color, thickness);
+			draw->fill_circle(vertices[i], thickness / 2, color);
 		}
 	}
 
@@ -105,7 +107,7 @@ void Game_Client::display(int id) {
 			for (int i = 0; i < steps; i++) {
 				auto col = sf::Color::Red;
 				col.a = 255 / steps;
-				draw->line(ship->get_body()->GetPosition(), 
+				draw->thin_line(ship->get_body()->GetPosition(), 
 					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
 			}
 		}
@@ -439,7 +441,7 @@ void Game_Client::load_wall_textures() {
 	}
 
 
-	if (!draw->isTextureExist(global_wall_name)) {
+	if (!draw->is_texture_exist(global_wall_name)) {
 		sf::RenderTexture base;
 		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
 		base.clear(sf::Color::Transparent);
