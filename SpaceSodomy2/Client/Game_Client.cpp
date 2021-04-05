@@ -112,16 +112,13 @@ void Game_Client::display(int id) {
 			}
 		}
 
+		// Hull
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
 		draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius},
 			ship->get_body()->GetAngle(), color);
 
-		Camera camera_backup = *draw->get_camera();
-		draw->apply_camera(b2Vec2(0, 0), 1, camera_backup.get_angle());
-		draw->set_camera(camera_backup);
-		draw->apply_camera();
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
