@@ -282,7 +282,7 @@ void Game_Client::decode(std::string source) {
 			//std::cout << "ship id: " << id << "\n";
 			if (loc_engine_active != engine_active) {
 				engine_active = loc_engine_active;
-				audio->update_sound(id, "engine", pos, *sound_volume * engine_active / 4, 1);
+				audio->update_sound(id, "engine", pos, engine_active / 4.0, 1);
 			}
 		}
 		// Projectile
@@ -315,10 +315,7 @@ void Game_Client::decode(std::string source) {
 			
 			stream >> id >> name >> pos.x >> pos.y;
 			
-			if (sound_volume != nullptr)
-				audio->update_sound(id, name, pos, *sound_volume, 0);
-			else
-				audio->update_sound(id, name, pos, 100, 0);
+			audio->update_sound(id, name, pos, 1, 0);
 		}
 	}
 }

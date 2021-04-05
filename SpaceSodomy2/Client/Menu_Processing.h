@@ -46,16 +46,11 @@ private:
 	Draw* draw;
 	Game_Client* game;
 	bool disactivated = 0;
-
-	int* music_volume;
-	int* sound_volume;
-
 public:
 	Menu_Processing();
 	bool active = 1;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, bool* reload_,
-		int* sound_volume_, int* music_volume_,
 		Game_Client* game_);
 	void step();
 };

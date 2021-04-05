@@ -135,14 +135,18 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 void Menu_Processing::load_sound(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
-	config >> *sound_volume;
-	config >> *music_volume;
+	double volume;
+	config >> volume;
+	game->get_audio()->set_sound_volume(volume);
+	config >> volume;
+	game->get_audio()->set_music_volume(volume);
 }
 
 void Menu_Processing::save_sound(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
-	fout << *sound_volume << "\n" << *music_volume;
+	fout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
 	fout.close();
 }
 
@@ -308,16 +312,15 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
-	int* sound_volume_, int* music_volume_,
 	Game_Client* game_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
 	reload = reload_;
-	sound_volume = sound_volume_;
-	music_volume = music_volume_;
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	load_sound("sound_settings.conf");
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -357,8 +360,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	text_fields_strings[current_id] = "Sound Volume:";
 	text_fields_strings[current_id + 2] = "Music Volume:";
 	menus.push_back(&sound_menu);
-	sliders_vals[current_id + 1] = *sound_volume;
-	sliders_vals[current_id + 3] = *music_volume;
+	sliders_vals[current_id + 1] = game->get_audio()->get_sound_volume();
+	sliders_vals[current_id + 3] = game->get_audio()->get_music_volume();
 	init_menu("menu_configs/sound.conf", &sound_menu);
 	// set keys menu fields
 	keys_menu.set_draw(draw);
@@ -399,8 +402,8 @@ void Menu_Processing::step() {
 		for (auto menu : menus) {
 			menu->step();
 		}
-		*sound_volume = sliders_vals[name_to_id["SoundVolume"]];
-		*music_volume = sliders_vals[name_to_id["MusicVolume"]];
+		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
+		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
 		disactivated = 1;
 	}
 	if (!active) {
