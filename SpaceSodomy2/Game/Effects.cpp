@@ -112,15 +112,20 @@ void Effects::step(float dt) {
         i.step(dt);
     }
 }
+void Effects::set_id(int id) {
+    for (auto i : effects) {
+        i.set_id(id);
+    }
+}
 
 Effects& Effects::operator+=(Effects other) {
-    for (int i = 0; i < effects.size(); i++) {
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
         effects[i] += other.effects[i];
     }
     return *this;
 }
 Effects& Effects::operator+=(Effects_Def other) {
-    for (int i = 0; i < effects.size(); i++) {
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
         effects[i] += other.effects[i];
     }
     return *this;

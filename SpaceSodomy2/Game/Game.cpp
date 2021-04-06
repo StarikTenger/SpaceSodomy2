@@ -127,9 +127,16 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	Effects_Def effects_def(Effects::Algebraic_Type::ADDITIVE);
+	Effects_Def effects_def;
+	for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+		effects_def.effects[i].set_type(types[i]);
+	}
+	std::cout << "andrey_pidor\n";
 	auto effs = create_effects(effects_def);
-	//effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(10);
+	effs->set_id(player->get_id());
+	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(+0.3141492);
+	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_max(1000);
+	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_change_vel(-1);
 	ship->set_effects(effs);
 
 	// Player
@@ -315,15 +322,13 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
-		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
-			if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id() != 0) {
-				ship->get_damage_receiver()->damage(dt * 20, 
-					players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
-			}
-			else {
-				ship->get_damage_receiver()->damage(dt * 20, ship->get_player());
-			}
-		}
+
+
+		/*if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
+			ship->get_damage_receiver()->damage(dt * 5,
+				players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
+		}*/
+
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
@@ -351,6 +356,7 @@ void Game::process_projectiles() {
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				if (damage_receiver->get_effects()) {
+					//std::cout << damage_receiver->get_effects()->effects.size();
 					damage_receiver->get_effects()->update(*projectile->get_effects_def(), projectile->get_player()->get_id());
 				}
 			}
@@ -479,6 +485,11 @@ void Game::clear() {
 	for (auto sound : sounds)
 		delete sound;
 	sounds = {};
+	for (auto effect : effects) {
+		delete effect;
+	}
+	effects = {};
+
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
 }

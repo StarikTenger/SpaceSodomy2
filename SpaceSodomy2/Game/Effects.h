@@ -21,7 +21,6 @@ public:
         Counter duration;
         Algebraic_Type type;
     public:
-        // Creates an annulator effect
         Effect();
         Effect(Algebraic_Type);
         Effect(Counter, Algebraic_Type = Algebraic_Type::MAXIMAL);
@@ -33,13 +32,14 @@ public:
         void set_type(Algebraic_Type);
         void set_counter(Counter);
 
+
         void step(float dt);
 
         Effect& operator+=(Effect other);
         Effect operator+(Effect effect);
     };
 
-private:
+public:
     std::deque<Effect> effects;
 
     Effects& operator+=(Effects other);
@@ -56,6 +56,7 @@ public:
     void set_effect(Effect*, Effect_Type type);
 
     void step(float dt);
+    void set_id(int id);
 
     void update(Effects_Def effects, int id);
 
