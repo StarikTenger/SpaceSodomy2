@@ -156,10 +156,14 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	Gun_Def gun_def;
 	if (guns.count(player->get_gun_name())) {
 		gun_def = guns[player->get_gun_name()];
+
 	}
 	auto gun = create_gun(gun_def);
 	gun->set(body, player);
-	gun->set_effects(&guns[player->get_gun_name()].effect_def);
+	gun->set_effects(nullptr);
+	if (guns.count(player->get_gun_name())) {
+		gun->set_effects(&guns[player->get_gun_name()].effect_def);
+	}
 	gun->set_ship_effects(effs);
 	ship->set_gun(gun);
 
@@ -358,7 +362,7 @@ void Game::process_projectiles() {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
-				if (damage_receiver->get_effects()) {
+				if (damage_receiver->get_effects() && projectile->get_effects_def()) {
 					damage_receiver->get_effects()->update(projectile->get_effects_def(), projectile->get_player()->get_id());
 				}
 			}
