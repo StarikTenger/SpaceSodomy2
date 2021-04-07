@@ -9,6 +9,9 @@ class Effects {
 public:
     enum Effect_Type {
         LASER_BURN,
+        BERSERK,
+        CHARGE,
+
         COUNT
     };
     enum Algebraic_Type {

@@ -132,6 +132,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 		effects_def.effects[i].set_type(types[i]);
 	}
 	auto effs = create_effects(effects_def, player->get_id());
+	effs->get_effect(Effects::Effect_Type::CHARGE)->get_counter()->set(5);
 	ship->set_effects(effs);
 
 	// Player
@@ -230,9 +231,6 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 
 Effects* Game::create_effects(Effects_Def val, int id) {
 	auto _effects = new Effects(val, id);
-	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(+0.3141492);
-	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_max(1000);
-	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_change_vel(-1);
 	effects.insert(_effects);
 	return _effects;
 }
@@ -604,6 +602,7 @@ bool Game::load_parameters(std::string path) {
 				}
 				var = val;
 			}
+			return true;
 		};
 		if (symbol == "EFFECT_TYPES") {
 			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
@@ -632,16 +631,22 @@ bool Game::load_parameters(std::string path) {
 			}
 			guns[name] = {};
 			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-				std::string devnull;
-				input >> devnull;
-				float temp;
-				input >> temp;
-				guns[name].effect_def.effects[i].get_counter()->set(temp);
+				guns[name].effect_def.effects[i].get_counter()->set(0);
 				guns[name].effect_def.effects[i].set_type((types[i]));
 			}
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
+				float temp = 0;
+				if (read_symbol("LASER_BURN", temp)) {
+					guns[name].effect_def.effects[Effects::Effect_Type::LASER_BURN].get_counter()->set(temp);
+				}
+				if (read_symbol("BERSERK", temp)) {
+					guns[name].effect_def.effects[Effects::Effect_Type::BERSERK].get_counter()->set(temp);
+				}
+				if (read_symbol("CHARGE", temp)) {
+					guns[name].effect_def.effects[Effects::Effect_Type::CHARGE].get_counter()->set(temp);
+				}
 
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);

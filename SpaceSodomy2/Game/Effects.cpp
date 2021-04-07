@@ -3,17 +3,24 @@
 
 Effects::Effect::Effect() {
     type = Algebraic_Type::ANNULATOR;
+    duration.set_change_vel(-1);
 }
 Effects::Effect::Effect(Algebraic_Type _type) {
     type = _type;
+    duration.set_change_vel(-1);
+
 }
 Effects::Effect::Effect(Counter counter, Algebraic_Type _type) {
     type = _type;
     duration = counter;
+    duration.set_change_vel(-1);
+
 }
 Effects::Effect::Effect(float time, Algebraic_Type _type) {
     type = _type;
     duration = Counter(time);
+    duration.set_change_vel(-1);
+
 }
 
 Effects::Algebraic_Type Effects::Effect::get_type() {
