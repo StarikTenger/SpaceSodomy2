@@ -138,7 +138,7 @@ void Game_Client::display(int id) {
 
 	// Animations
 	draw->step(dt);
-	draw->draw_animations(0);
+	draw->draw_animations(GAME);
 
 	// Projectiles
 	for (auto projectile : projectiles) {
@@ -159,7 +159,7 @@ void Game_Client::display(int id) {
 		state_end.scale = b2Vec2_zero;
 		state_end.color.a = 0;
 		state_end.pos += aux::rotate({ 0, 0.1 }, aux::random_float(0, 2, 2) * b2_pi);
-		Float_Animation animation("bullet", state_begin, state_end, 0.15);
+		Float_Animation animation("bullet", state_begin, state_end, 0.15, GAME);
 		draw->create_animation(animation);
 	}
 

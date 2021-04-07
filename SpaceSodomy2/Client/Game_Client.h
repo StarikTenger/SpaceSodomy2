@@ -8,6 +8,10 @@
 
 class Game_Client : public Game {
 private:
+	enum Animation_Layers {
+		GAME,
+		HUD
+	};
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
