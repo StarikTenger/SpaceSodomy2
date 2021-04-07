@@ -74,7 +74,7 @@ protected:
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
-	Effects*         create_effects(Effects_Def);
+	Effects*         create_effects(Effects_Def, int id);
 
 	// Delete functions
 	void delete_body(b2Body*);

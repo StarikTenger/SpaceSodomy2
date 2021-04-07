@@ -51,6 +51,7 @@ public:
 
     Effects();
     Effects(Effects_Def, int id);
+    Effects(Effects_Def*, int id);
 
     Effect* get_effect(Effect_Type type);
     void set_effect(Effect*, Effect_Type type);
@@ -58,7 +59,7 @@ public:
     void step(float dt);
     void set_id(int id);
 
-    void update(Effects_Def effects, int id);
+    void update(Effects_Def* effects, int id);
 
 };
 

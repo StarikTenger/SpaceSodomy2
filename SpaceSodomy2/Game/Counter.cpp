@@ -50,10 +50,8 @@ void Counter::step(float dt) {
 	current_delay -= dt;
 	if (current_delay < b2_epsilon) {
 		if (value < max_value - b2_epsilon) {
-			std::cout << value << '\n';
 
 			value = value + dt * change_vel;
-			std::cout << value << '\n';
 
 		}
 		else {
@@ -63,5 +61,4 @@ void Counter::step(float dt) {
 	if (value < 0) {
 		value = -b2_epsilon;
 	}
-	std::cout << value << '\n';
 }

@@ -131,12 +131,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
 		effects_def.effects[i].set_type(types[i]);
 	}
-	std::cout << "andrey_pidor\n";
-	auto effs = create_effects(effects_def);
-	effs->set_id(player->get_id());
-	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(+0.3141492);
-	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_max(1000);
-	effs->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_change_vel(-1);
+	auto effs = create_effects(effects_def, player->get_id());
 	ship->set_effects(effs);
 
 	// Player
@@ -163,6 +158,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	}
 	auto gun = create_gun(gun_def);
 	gun->set(body, player);
+	gun->set_effects(&guns[player->get_gun_name()].effect_def);
 	gun->set_ship_effects(effs);
 	ship->set_gun(gun);
 
@@ -232,8 +228,11 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 	return sound;
 }
 
-Effects* Game::create_effects(Effects_Def val) {
-	auto _effects = new Effects(val, 0);
+Effects* Game::create_effects(Effects_Def val, int id) {
+	auto _effects = new Effects(val, id);
+	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->modify(+0.3141492);
+	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_max(1000);
+	_effects->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->set_change_vel(-1);
 	effects.insert(_effects);
 	return _effects;
 }
@@ -324,10 +323,16 @@ void Game::process_ships() {
 			ship->get_hp()->modify(-dt*20);
 
 
-		/*if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
-			ship->get_damage_receiver()->damage(dt * 5,
-				players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
-		}*/
+		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
+			if (player_by_id(ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()) == nullptr) {
+				ship->get_damage_receiver()->damage(dt * 5,
+					ship->get_player());
+			}
+			else {
+				ship->get_damage_receiver()->damage(dt * 5,
+					players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
+			}
+		}
 
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
@@ -356,8 +361,7 @@ void Game::process_projectiles() {
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				if (damage_receiver->get_effects()) {
-					//std::cout << damage_receiver->get_effects()->effects.size();
-					damage_receiver->get_effects()->update(*projectile->get_effects_def(), projectile->get_player()->get_id());
+					damage_receiver->get_effects()->update(projectile->get_effects_def(), projectile->get_player()->get_id());
 				}
 			}
 		}
@@ -639,60 +643,6 @@ bool Game::load_parameters(std::string path) {
 				if (symbol == "END")
 					break;
 
-				/*if (symbol == "RECHARGE") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].recharge_time = val;
-				}
-				if (symbol == "DAMAGE") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].damage = val;
-				}
-				if (symbol == "STAMINA_CONSUMPTION") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].stamina_consumption = val;
-				}if (symbol == "PROJECTILE_MASS") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].projectile_mass = val;
-				}
-				if (symbol == "PROJECTILE_VEL") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].projectile_vel = val;
-				}
-				if (symbol == "PROJECTILE_RADIUS") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].projectile_radius = val;
-				}if (symbol == "PROJECTILE_HP") {
-					float val;
-					std::string none = "";
-					if (!(input >> val)) {
-						return false;
-					}
-					guns[name].projectile_hp = val;
-				}*/
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);

@@ -94,11 +94,17 @@ Effects::Effect Effects::Effect::operator+(Effect effect) {
 
 Effects::Effects() : effects(Effects::Effect_Type::COUNT) {
 }
-Effects::Effects(Effects_Def def, int id) {
-    effects = def.effects;
-    for (auto i : effects) {
-        i.set_id(id);
+Effects::Effects(Effects_Def def, int id) : effects(Effects::Effect_Type::COUNT) {
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+        effects[i] = (def.effects[i]);
     }
+    set_id(id);
+}
+Effects::Effects(Effects_Def* def, int id) : effects(Effects::Effect_Type::COUNT) {
+    for (int i = 0; i < def->effects.size(); i++) {
+        effects[i] = (def->effects[i]);
+    }
+    set_id(id);
 }
 Effects::Effect* Effects::get_effect(Effect_Type type) {
     return &effects[type];
@@ -108,13 +114,13 @@ void Effects::set_effect(Effect* eff, Effect_Type type) {
 }
 
 void Effects::step(float dt) {
-    for (auto i : effects) {
-        i.step(dt);
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+        effects[i].step(dt);
     }
 }
 void Effects::set_id(int id) {
-    for (auto i : effects) {
-        i.set_id(id);
+    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+        effects[i].set_id(id);
     }
 }
 
@@ -142,9 +148,9 @@ Effects Effects::operator+(Effects_Def effect) {
 }
 
 
-void Effects::update(Effects_Def _effects, int id) {
+void Effects::update(Effects_Def* _effects, int id) {
     Effects eff(_effects, id);
-    *this += eff;
+    operator+=(eff);
 }
 
 
