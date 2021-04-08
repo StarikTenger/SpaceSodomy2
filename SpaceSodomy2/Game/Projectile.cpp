@@ -20,6 +20,11 @@ Damage_Receiver* Projectile::get_damage_receiver() {
 	return damage_receiver;
 }
 
+
+Effects_Def* Projectile::get_effects_def() {
+	return effects_def;
+}
+
 float Projectile::get_damage() {
 	return damage;
 }
@@ -42,4 +47,8 @@ void Projectile::set_damage_receiver(Damage_Receiver* val) {
 
 void Projectile::set_damage(float val) {
 	damage = val;
+}
+
+void Projectile::set_effects_def(Effects_Def* val) {
+	effects_def = val;
 }

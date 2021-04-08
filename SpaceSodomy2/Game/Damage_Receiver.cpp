@@ -22,6 +22,11 @@ Player* Damage_Receiver::get_player() {
     return player;
 }
 
+Effects* Damage_Receiver::get_effects() {
+    return effects;
+}
+
+
 void Damage_Receiver::set_body(b2Body* val) {
     body = val;
 }
@@ -33,6 +38,11 @@ void Damage_Receiver::set_hp(Counter* val) {
 void Damage_Receiver::set_player(Player* val) {
     player = val;
 }
+
+void Damage_Receiver::set_effects(Effects* val) {
+    effects = val;
+}
+
 
 void Damage_Receiver::damage(float value, Player* hit_by) {
     hp->modify(-value);

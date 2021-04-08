@@ -34,6 +34,10 @@ Damage_Receiver* Ship::get_damage_receiver() {
 	return damage_receiver;
 }
 
+Effects* Ship::get_effects() {
+	return effects;
+}
+
 // Set methods
 void Ship::set_player(Player* val) {
 	player = val;
@@ -62,3 +66,8 @@ void Ship::set_stamina(Counter* val) {
 void Ship::set_damage_receiver(Damage_Receiver* val) {
 	damage_receiver = val;
 }
+
+void Ship::set_effects(Effects* val) {
+	effects = val;
+}
+

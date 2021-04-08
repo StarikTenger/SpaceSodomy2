@@ -5,10 +5,11 @@
 // Constructor
 Engine::Engine() {}
 
-Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina) {
+Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina, Effects* _effects) {
 	body = _body;
 	command_module = _command_module;
 	stamina = _stamina;
+	effects = _effects;
 }
 
 // Forces' methods
@@ -61,7 +62,10 @@ void Engine::step(float _dt) {
 	// Boost management
 	current_modifier = 1;
 	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
-		current_modifier = boost_modifier;
+		current_modifier *= boost_modifier;
+	}
+	if (effects->get_effect(Effects::Types::CHARGE)->get_counter()->get() > b2_epsilon) {
+		current_modifier *= 3;
 	}
 	is_linear_force_used = 0;
 	// Command processing

@@ -4,6 +4,7 @@
 #include "Command_Module.h"
 #include "Counter.h"
 #include "iId.h"
+#include "Effects.h"
 
 class Engine : public iId{
 private:
@@ -24,6 +25,8 @@ private:
 	b2Body* body = nullptr;
 	// Stamina
 	Counter* stamina = nullptr;
+	// Effects
+	Effects* effects;
 
 	// Forces' methods
 	void apply_force_linear(b2Vec2 direction);
@@ -32,7 +35,7 @@ private:
 public:
 	// Constructor
 	Engine();
-	Engine(b2Body*, Command_Module*, Counter*);
+	Engine(b2Body*, Command_Module*, Counter*, Effects*);
 	// Get methods
 	float get_force_linear();
 	float get_force_angular();

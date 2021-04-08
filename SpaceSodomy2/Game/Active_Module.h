@@ -5,6 +5,7 @@
 #include "Command_Module.h"
 #include "Counter.h"
 #include "iId.h"
+#include "Effects.h"
 
 class Active_Module : public iId {
 protected:
@@ -24,6 +25,10 @@ protected:
 	Event_Manager* event_manager = nullptr;
 	// Stamina
 	Counter* stamina;
+	// Dispensable effects
+	Effects_Def* effects;
+	// Effects affecting this
+	Effects* ship_effects;
 
 public:
 	Active_Module();
@@ -36,7 +41,7 @@ public:
 	Counter* get_stamina_cooldown_delay_counter();
 	Event_Manager* get_event_manager();
 	Counter* get_stamina();
-
+	Effects_Def* get_effects();
 
 	// Set methods
 	void set_recharge_time(float);
@@ -45,6 +50,9 @@ public:
 	void set_bind(int);
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);
+	void set_effects(Effects_Def*);
+	void set_ship_effects(Effects*);
+
 
 	// Activates module
 	virtual void activate() = 0;

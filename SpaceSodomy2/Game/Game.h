@@ -39,6 +39,7 @@ protected:
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
 	std::set<Sound*> sounds;
+	std::set<Effects*> effects;
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -53,7 +54,8 @@ protected:
 	// Ship components
 	std::map<std::string, Gun_Def> guns;
 	std::map<std::string, Hull_Def> hulls;
-
+	// int is Types;
+	std::map<int, Effects::Algebraic_Type> types;
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
 
@@ -65,13 +67,14 @@ protected:
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Def);
 	Command_Module*  create_command_module();
-	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr);
+	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr, Effects* = nullptr);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
-	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr);
+	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
+	Effects*         create_effects(Effects_Def*);
 
 	// Delete functions
 	void delete_body(b2Body*);
@@ -82,6 +85,7 @@ protected:
 	void delete_damage_receiver(Damage_Receiver*);
 	void delete_counter(Counter*);
 	void delete_sound(Sound*);
+	void delete_effects(Effects*);
 
 	 // Processing functions
 	void process_players();
@@ -94,6 +98,7 @@ protected:
 	void process_physics();
 	void process_counters();
 	void process_sounds();
+	void process_effects();
 
 public:
 	Game();
@@ -105,7 +110,7 @@ public:
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
-	// Clears everyrhing
+	// Clears everything
 	void clear();
 	// Encodes class into string
 	std::string encode();
