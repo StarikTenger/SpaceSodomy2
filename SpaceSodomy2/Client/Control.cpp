@@ -111,7 +111,6 @@ Control::Control() {
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
-	game.sound_volume = &sound_volume;
 	// Default key matches
 	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
 	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
@@ -131,7 +130,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &sound_volume, &music_volume, &game);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 
@@ -189,12 +188,12 @@ void Control::step() {
 				track = audio.get_music_by_number(aux::random_int(0, 131213));
 				audio.start_music(track);
 			}
-			audio.update_music(track, music_volume);
+			audio.update_music(track, 1);
 			respawned = 0;
 		}
 		else {
 			respawned = 1;
-			audio.update_music(track, music_volume / 8);
+			audio.update_music(track, 1.0 / 8);
 		}
 	}
 

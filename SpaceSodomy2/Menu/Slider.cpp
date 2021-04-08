@@ -2,8 +2,8 @@
 #include "Slider.h"
 
 Slider::Slider() {
-	axis_scale = { 200, 10 };
-	slider_scale = { 20, 30 };
+	axis_scale = { 200, 10.0 };
+	slider_scale = { 20.0, 30.0 };
 
 	text.setFillColor(sf::Color::White);
 
@@ -94,21 +94,23 @@ void Slider::set_slider_percent_value(float percent_value_)
 void Slider::draw(sf::RenderWindow* window)
 {
 	logic(window);
-	window->draw(returnText({ cord.x - 10, cord.y + 5 }, std::to_string(min_value), 20));
+	window->draw(returnText({ cord.x - 10, cord.y + 5 }, std::to_string(min_value), get_screen_mode() * 20));
 	window->draw(axis);
-	window->draw(returnText({ cord.x + axis_scale.x - 10, cord.y + 5 }, std::to_string(max_value), 20));
+	window->draw(returnText({ cord.x + axis_scale.x - 10, cord.y + 5 }, std::to_string(max_value), get_screen_mode() * 20));
 	window->draw(slider);
 	window->draw(returnText({ slider.getPosition().x - slider_scale.x, 
-		slider.getPosition().y - slider_scale.y }, std::to_string((int)slider_value), 15));
+		slider.getPosition().y - slider_scale.y }, std::to_string((int)slider_value), get_screen_mode() * 15));
 }
 
 void Slider::set_axis_scale(b2Vec2 axis_scale_) {
-	axis_scale = axis_scale_;
+	real_axis_scale = axis_scale_;
+	axis_scale = get_screen_mode() * axis_scale_;
 	axis.setOrigin(0, axis_scale.y / 2);
 	axis.setSize(aux::to_Vector2f(axis_scale));
 }
 void Slider::set_slider_scale(b2Vec2 slider_scale_) {
-	slider_scale = slider_scale_;
+	real_slider_scale = slider_scale_;
+	slider_scale = get_screen_mode() * slider_scale_;
 	slider.setOrigin(slider_scale.x / 2, slider_scale.y / 2);
 	slider.setSize(aux::to_Vector2f(slider_scale));
 }
@@ -121,8 +123,10 @@ b2Vec2 Slider::get_slider_scale() {
 }
 
 void Slider::step() {
-	set_scale(slider_scale);
+	primitive_step();
 	set_slider_value(get_slider_value());
+	set_slider_scale(real_slider_scale);
+	set_axis_scale(real_axis_scale);
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;
@@ -131,7 +135,6 @@ void Slider::step() {
 		slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
 		slider.getGlobalBounds().contains(mouse_pos_) << " " <<
 		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
-	primitive_step();
 	if (!font_active) {
 		text.setFont(*(get_draw()->get_font("neon")));
 		font_active = 1;

@@ -35,7 +35,7 @@ public:
 	// Get methods
 	sf::RenderWindow* get_window();
 	Camera* get_camera();
-	bool isTextureExist(std::string name);
+	bool is_texture_exist(std::string name);
 	sf::Texture* get_texture(std::string name);
 	sf::Font* get_font(std::string name);
 
@@ -67,7 +67,8 @@ public:
 	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0);
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void fill_circle(b2Vec2 pos, float r, sf::Color color);
-	void line(b2Vec2 start, b2Vec2 finish, sf::Color color);
+	void thin_line(b2Vec2 start, b2Vec2 finish, sf::Color color);
+	void thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness);
 	void image(std::string name, b2Vec2 pos, b2Vec2 box,
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
 	void display_text(sf::Text* text);
@@ -75,7 +76,7 @@ public:
 
 	// Animations
 	void create_animation(Float_Animation);
-	void draw_animations();
+	void draw_animations(int layer = 0);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 

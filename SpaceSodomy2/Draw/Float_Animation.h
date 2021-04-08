@@ -15,17 +15,25 @@ public:
 	};
 
 private:
+	// Animations on each layer are drawn separately
+	int layer = 0;
+	// state_current continiously changes from state_begin to state_end
 	State state_begin; 
 	State state_end;
 	State state_current;
+	// time_current changes from 0 to time_max
 	float time_current = 0;
 	float time_max = 0;
 
 public:
 	Float_Animation();
-	Float_Animation(std::string _image, State _state_begin, State _state_end, float _time);
+	Float_Animation(std::string _image, State _state_begin, State _state_end, float _time, int layer = 0);
 
+	// Getters
 	State get_state_current();
+	int get_layer();
+
+	// Animation is alive until it time reaches time_max
 	bool is_alive();
 
 	void step(float dt);

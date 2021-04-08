@@ -27,9 +27,26 @@ void Audio::load_music(std::string name, std::string path_to_music) {
 void Audio::set_draw(Draw* draw_) {
 	draw = draw_;
 }
+void Audio::set_sound_volume(double volume) {
+	sound_volume = volume;
+	for (auto sound : activeSounds)
+		activeSounds[sound.first]->setVolume(activeSounds_mode[sound.first] * volume);
+}
+void Audio::set_music_volume(double volume) {
+	music_volume = volume;
+	for (auto music : musics)
+		musics[music.first]->setVolume(musics_mode[music.first] * volume);
+}
+
 
 Draw* Audio::get_draw() {
 	return draw;
+}
+double Audio::get_sound_volume() {
+	return sound_volume;
+}
+double Audio::get_music_volume() {
+	return music_volume;
 }
 
 void Audio::load_sounds(std::string path) {
@@ -86,24 +103,26 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double volume, bool loope
 	play(id, name, pos, -5, volume, looped);
 }
 
-void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume, bool looped) {
+void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume_mode, bool looped) {
+	activeSounds_mode[id] = volume_mode;
 	pos -= draw->get_camera()->get_pos();
 	pos = aux::rotate(pos, -draw->get_camera()->get_angle() - b2_pi / 2);
 	if (activeSounds.count(id)) {
 		activeSounds[id]->setPosition(sf::Vector3f(pos.x, pos.y, -5));
-		activeSounds[id]->setVolume(volume);
+		activeSounds[id]->setVolume(sound_volume * activeSounds_mode[id]);
 	}
 	else {
 		std::cout << "Sound: " << name << "\n";
-		play(id, name, pos, volume, looped);
+		play(id, name, pos, sound_volume * activeSounds_mode[id], looped);
 	}
 	activeSounds[id]->setLoop(looped);
 }
 
-void Audio::update_music(std::string name, double volume) {
+void Audio::update_music(std::string name, double volume_mode) {
 	musics[name] = musics[name];
 	musics[name]->setLoop(1);
-	musics[name]->setVolume(volume);
+	musics_mode[name] = volume_mode;
+	musics[name]->setVolume(music_volume * volume_mode);
 }
 
 void Audio::start_music(std::string name) {

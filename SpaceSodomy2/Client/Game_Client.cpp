@@ -54,13 +54,15 @@ void Game_Client::display(int id) {
 	draw->apply_camera();
 
 	// Walls
-	draw->image(global_wall_name, aux::mult((origin_pos + end_pos), 0.5), end_pos - origin_pos);
+	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
 		auto vertices = wall->get_vertices();
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
-			draw->line(vertices[i], vertices[j], color);
+			float thickness = 0.05;
+			draw->thick_line(vertices[i], vertices[j], color, thickness);
+			draw->fill_circle(vertices[i], thickness / 2, color);
 		}
 	}
 
@@ -105,21 +107,18 @@ void Game_Client::display(int id) {
 			for (int i = 0; i < steps; i++) {
 				auto col = sf::Color::Red;
 				col.a = 255 / steps;
-				draw->line(ship->get_body()->GetPosition(), 
+				draw->thin_line(ship->get_body()->GetPosition(), 
 					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
 			}
 		}
 
+		// Hull
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
 		draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
 		draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius},
 			ship->get_body()->GetAngle(), color);
 
-		Camera camera_backup = *draw->get_camera();
-		draw->apply_camera(b2Vec2(0, 0), 1, camera_backup.get_angle());
-		draw->set_camera(camera_backup);
-		draw->apply_camera();
 		// Engines
 		std::vector<std::string> textures = {
 			"engine_lin_forward",
@@ -139,7 +138,7 @@ void Game_Client::display(int id) {
 
 	// Animations
 	draw->step(dt);
-	draw->draw_animations();
+	draw->draw_animations(GAME);
 
 	// Projectiles
 	for (auto projectile : projectiles) {
@@ -160,7 +159,7 @@ void Game_Client::display(int id) {
 		state_end.scale = b2Vec2_zero;
 		state_end.color.a = 0;
 		state_end.pos += aux::rotate({ 0, 0.1 }, aux::random_float(0, 2, 2) * b2_pi);
-		Float_Animation animation("bullet", state_begin, state_end, 0.15);
+		Float_Animation animation("bullet", state_begin, state_end, 0.15, GAME);
 		draw->create_animation(animation);
 	}
 
@@ -268,20 +267,20 @@ void Game_Client::decode(std::string source) {
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
-				if (commands[i]) {
+				/*if (commands[i]) {
 					for (int j = 0; j < engine_commands.size(); j++) {
 						if (engine_commands[j] == i) {
 							loc_engine_active++;
 							break;
 						}
 					}
-				}
+				}*/
 			}
 			//std::cout << "ship id: " << id << "\n";
-			if (loc_engine_active != engine_active) {
+			/*if (loc_engine_active != engine_active) {
 				engine_active = loc_engine_active;
-				audio->update_sound(id, "engine", pos, *sound_volume * engine_active / 4, 1);
-			}
+				audio->update_sound(id, "engine", pos, engine_active / 4.0, 1);
+			}*/
 		}
 		// Projectile
 		if (symbol == "p") {
@@ -313,10 +312,7 @@ void Game_Client::decode(std::string source) {
 			
 			stream >> id >> name >> pos.x >> pos.y;
 			
-			if (sound_volume != nullptr)
-				audio->update_sound(id, name, pos, *sound_volume, 0);
-			else
-				audio->update_sound(id, name, pos, 100, 0);
+			audio->update_sound(id, name, pos, 1, 0);
 		}
 	}
 }
@@ -439,7 +435,7 @@ void Game_Client::load_wall_textures() {
 	}
 
 
-	if (!draw->isTextureExist(global_wall_name)) {
+	if (!draw->is_texture_exist(global_wall_name)) {
 		sf::RenderTexture base;
 		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
 		base.clear(sf::Color::Transparent);

@@ -90,10 +90,6 @@ public:
 	// Polygon origin as in SFML -- the left upper bounding point
 	static b2Vec2 origin_pos(const std::vector<b2Vec2>& polygon);
 
-	template<class T>
-	static b2Vec2 mult(b2Vec2 a, T b) {
-		return b2Vec2(a.x * b, a.y * b);
-	}
 	// Get direction
 	static b2Vec2 direction(float angle);
 	// Binpow

@@ -8,6 +8,10 @@
 
 class Game_Client : public Game {
 private:
+	enum Animation_Layers {
+		GAME,
+		HUD
+	};
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
@@ -52,8 +56,6 @@ public:
 
 	// Get players
 	std::map<int, Player*>* get_players();
-
-	int* sound_volume = nullptr;
 
 	// Load setup
 	void load_setup(std::string path);

@@ -31,11 +31,13 @@ void Engine::stabilize_rotation() {
 	if (command_module->get_command(Command_Module::ENGINE_ANG_LEFT) ||
 		command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
 		return;
-	float eps = 0.01;
+	float eps = 0.5;
 	if (body->GetAngularVelocity() < -eps)
 		command_module->set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
-	if (body->GetAngularVelocity() > eps)
+	else if (body->GetAngularVelocity() > eps)
 		command_module->set_command(Command_Module::ENGINE_ANG_LEFT, 1);
+	else
+		body->SetAngularVelocity(0);
 }
 
 // Get methods

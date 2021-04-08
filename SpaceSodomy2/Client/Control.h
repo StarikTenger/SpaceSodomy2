@@ -67,9 +67,6 @@ private:
 	// Respawned
 	bool respawned = 1;
 
-	// Sound & music volume
-	int sound_volume = 100, music_volume = 100;
-
 	// Music name
 	std::string track;
 public:

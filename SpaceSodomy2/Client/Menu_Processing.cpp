@@ -4,7 +4,7 @@ Menu_Processing::Menu_Processing() {}
 
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
-	hull->add_button(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	hull->add_image(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
 	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 225), 7, 20,
@@ -32,7 +32,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 		config >> name >> next;
 		name_to_id[name + "-hull"] = current_id;
 		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-			1, { 1, 1 }, sf::Color::White, mouse_pos);
+			1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
 		hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
 			1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 		cur_but_id++;
@@ -135,14 +135,18 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 void Menu_Processing::load_sound(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
-	config >> *sound_volume;
-	config >> *music_volume;
+	double volume;
+	config >> volume;
+	game->get_audio()->set_sound_volume(volume);
+	config >> volume;
+	game->get_audio()->set_music_volume(volume);
 }
 
 void Menu_Processing::save_sound(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
-	fout << *sound_volume << "\n" << *music_volume;
+	fout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
 	fout.close();
 }
 
@@ -172,13 +176,13 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	std::stringstream file = aux::comment(comment_file);
 	for (int i = current_id; !file.eof(); i++) {
 		current_id++;
-		std::string type;
+		std::string type, next;
 		int typenum = 0;
 		std::string texture_name, button_name, name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
-		int use_window_cords;
+		int use_window_cords, use_image_scale;
 		int character_size;
 		file >> type;
 		if (type == "Button")
@@ -191,42 +195,143 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 4;
 		if (type == "ConstantText")
 			typenum = 5;
+		if (type == "Image")
+			typenum = 6;
 		switch (typenum) {
 		case 1:
-			file >> button_name;
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y;
-			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos);
+			file >> next;
+			button_name = "default";
+			texture_name = "NewGame";
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			use_image_scale = 1;
+			scale = { 1, 1 };
+			while (next != "END") {
+				if (next == "NAME")
+					file >> button_name;
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "SCALE") {
+					file >> scale.x >> scale.y;
+					use_image_scale = 0;
+				}
+				file >> next;
+			}
+			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
 			name_to_id[button_name] = i;
 			break;
 		case 2:
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			texture_name = "TextField";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				1, mouse_pos, keyboard);
 			break;
 		case 3:
-			file >> name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> axis_scale.x >> axis_scale.y >> slider_scale.x >> slider_scale.y;
-			file >> min_val >> max_val;
+			name = "default";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			axis_scale = { 100, 5 };
+			slider_scale = {10, 10};
+			min_val = 0;
+			max_val = 100;
+			file >> next;
+			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "AXIS_SCALE")
+					file >> axis_scale.x >> axis_scale.y;
+				if (next == "SLIDER_SCALE")
+					file >> slider_scale.x >> slider_scale.y;
+				if (next == "MIN")
+					file >> min_val;
+				if (next == "MAX")
+					file >> max_val;
+				file >> next;
+			}
 			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
 				min_val, max_val, sliders_vals[i], mouse_pos);
 			name_to_id[name] = i;
 			break;
 		case 4:
-			file >> texture_name;
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			texture_name = "TextField";
+			use_window_cords = 0;
+			pos = { 0,0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				1, mouse_pos, keyboard);
 			break;
 		case 5:
-			file >> use_window_cords >> pos.x >> pos.y;
-			file >> character_size;
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			character_size = 20;
+			file >> next;
+			while (next != "END") {
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				file >> next;
+			}
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				2, mouse_pos, keyboard);
+			break;
+		case 6:
+			file >> next;
+			texture_name = "NewGame";
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			use_image_scale = 1;
+			scale = { 1, 1 };
+			while (next != "END") {
+				if (next == "TEXTURE_NAME")
+					file >> texture_name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "SCALE") {
+					file >> scale.x >> scale.y;
+					use_image_scale = 0;
+				}
+				file >> next;
+			}
+			object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
 			break;
 		default:
 			i--;
@@ -238,7 +343,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 
 void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
-	gun->add_button(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(1, 1), sf::Color::White, mouse_pos);
+	gun->add_image(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 225), 7, 20,
@@ -269,7 +374,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 			config >> name >> next;
 			name_to_id[name + "-gun"] = current_id;
 			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 1, 1 }, sf::Color::White, mouse_pos);
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
 			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
 				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
 			cur_but_id++;
@@ -308,16 +413,15 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
-	int* sound_volume_, int* music_volume_,
 	Game_Client* game_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
 	reload = reload_;
-	sound_volume = sound_volume_;
-	music_volume = music_volume_;
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	load_sound("sound_settings.conf");
+	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -357,8 +461,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	text_fields_strings[current_id] = "Sound Volume:";
 	text_fields_strings[current_id + 2] = "Music Volume:";
 	menus.push_back(&sound_menu);
-	sliders_vals[current_id + 1] = *sound_volume;
-	sliders_vals[current_id + 3] = *music_volume;
+	sliders_vals[current_id + 1] = game->get_audio()->get_sound_volume();
+	sliders_vals[current_id + 3] = game->get_audio()->get_music_volume();
 	init_menu("menu_configs/sound.conf", &sound_menu);
 	// set keys menu fields
 	keys_menu.set_draw(draw);
@@ -399,8 +503,8 @@ void Menu_Processing::step() {
 		for (auto menu : menus) {
 			menu->step();
 		}
-		*sound_volume = sliders_vals[name_to_id["SoundVolume"]];
-		*music_volume = sliders_vals[name_to_id["MusicVolume"]];
+		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
+		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
 		disactivated = 1;
 	}
 	if (!active) {

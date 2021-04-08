@@ -54,6 +54,7 @@ void Keyboard_Field::set_align(int align_) {
 }
 
 void Keyboard_Field::step() {
+	primitive_step();
 	if (!font_setted) { // if font isn't setted -> set standart font
 		font_setted = 1;
 		text.setFont(*(get_draw()->get_font("font")));
@@ -70,28 +71,27 @@ void Keyboard_Field::step() {
 		}
 	}
 	// Set background params
-	if (height < text.getLocalBounds().height)
-		height = text.getLocalBounds().height;
-	set_scale(b2Vec2(text.getLocalBounds().width, height));
+	text.setScale({ (float)get_screen_mode(), (float)get_screen_mode() });
+	set_scale(b2Vec2(text.getLocalBounds().width, text.getLocalBounds().height));
 	set_scale(get_scale() + indent);
 	set_color(sf::Color(40, 40, 40, 255));
 	switch (align)
 	{
 	case 1:
-		set_cur_pos({ get_pos().x + text.getLocalBounds().width / 2, get_pos().y });
+		set_cur_pos(b2Vec2(get_pos().x + get_screen_mode() * text.getLocalBounds().width / 2, get_pos().y));
 		break;
 	case 2:
-		set_cur_pos({ get_pos().x - text.getLocalBounds().width / 2, get_pos().y });
+		set_cur_pos(b2Vec2(get_pos().x - get_screen_mode() * text.getLocalBounds().width / 2, get_pos().y));
 		break;
 	default:
 		set_cur_pos(get_pos());
 		break;
 	}
 	if (keyboard_active)
-		get_draw()->stroke_rect(get_cur_pos() + b2Vec2(indent.x / 2.0, indent.y / 2.0), get_scale() + indent, sf::Color::White);
-	primitive_step();
+		get_draw()->stroke_rect(get_cur_pos() + get_screen_mode() * b2Vec2(indent.x / 2.0, indent.y / 2.0),
+			 get_screen_mode() * (get_scale() + indent), sf::Color::White);
 	//std::cout << "Text: " << *get_clicked() << " " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
-	text.setPosition(aux::to_Vector2f(get_cur_pos()) - sf::Vector2f(text.getLocalBounds().width / 2.0,
-		height / 2.0));
+	text.setPosition((aux::to_Vector2f(get_cur_pos()) - 
+		sf::Vector2f(get_screen_mode() * text.getLocalBounds().width / 2.0, get_screen_mode() * text.getLocalBounds().height / 2.0)));
 	get_draw()->display_text(&text);
 }
