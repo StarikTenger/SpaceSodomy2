@@ -128,11 +128,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Create effects
 	Effects_Def effects_def;
-	for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+	for (int i = 0; i < Effects::Types::COUNT; i++) {
 		effects_def.effects[i].set_type(types[i]);
 	}
-	auto effs = create_effects(effects_def, player->get_id());
-	effs->get_effect(Effects::Effect_Type::CHARGE)->get_counter()->set(5);
+	auto effs = create_effects(&effects_def);
 	ship->set_effects(effs);
 
 	// Player
@@ -233,8 +232,8 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 	return sound;
 }
 
-Effects* Game::create_effects(Effects_Def val, int id) {
-	auto _effects = new Effects(val, id);
+Effects* Game::create_effects(Effects_Def* val) {
+	auto _effects = new Effects(val);
 	effects.insert(_effects);
 	return _effects;
 }
@@ -325,15 +324,11 @@ void Game::process_ships() {
 			ship->get_hp()->modify(-dt*20);
 
 
-		if (ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_counter()->get() > b2_epsilon) {
-			if (player_by_id(ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()) == nullptr) {
-				ship->get_damage_receiver()->damage(dt * 5,
-					ship->get_player());
-			}
-			else {
-				ship->get_damage_receiver()->damage(dt * 5,
-					players[ship->get_effects()->get_effect(Effects::Effect_Type::LASER_BURN)->get_id()]);
-			}
+
+		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > b2_epsilon) {
+			std::cout << ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() << '\n';
+
+			ship->get_damage_receiver()->damage(dt * 5, ship->get_damage_receiver()->get_last_hit());
 		}
 
 		// Checking for < zero hp
@@ -363,7 +358,7 @@ void Game::process_projectiles() {
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				if (damage_receiver->get_effects() && projectile->get_effects_def()) {
-					damage_receiver->get_effects()->update(projectile->get_effects_def(), projectile->get_player()->get_id());
+					damage_receiver->get_effects()->update(projectile->get_effects_def());
 				}
 			}
 		}
@@ -609,7 +604,7 @@ bool Game::load_parameters(std::string path) {
 			return true;
 		};
 		if (symbol == "EFFECT_TYPES") {
-			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+			for (int i = 0; i < Effects::Types::COUNT; i++) {
 				std::string devnull;
 				input >> devnull;
 				std::string temp;
@@ -634,7 +629,7 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+			for (int i = 0; i < Effects::Types::COUNT; i++) {
 				guns[name].effect_def.effects[i].get_counter()->set(0);
 				guns[name].effect_def.effects[i].set_type((types[i]));
 			}
@@ -642,14 +637,15 @@ bool Game::load_parameters(std::string path) {
 				if (symbol == "END")
 					break;
 				float temp = 0;
-				if (read_symbol("LASER_BURN", temp)) {
-					guns[name].effect_def.effects[Effects::Effect_Type::LASER_BURN].get_counter()->set(temp);
+				if (read_symbol("LASER_BURN", temp) && temp != 0) {
+					guns[name].effect_def.effects[Effects::Types::LASER_BURN].get_counter()->set(temp);
+					std::cout << name << " " << temp << '\n';
 				}
-				if (read_symbol("BERSERK", temp)) {
-					guns[name].effect_def.effects[Effects::Effect_Type::BERSERK].get_counter()->set(temp);
+				if (read_symbol("BERSERK", temp) && temp != 0) {
+					guns[name].effect_def.effects[Effects::Types::BERSERK].get_counter()->set(temp);
 				}
-				if (read_symbol("CHARGE", temp)) {
-					guns[name].effect_def.effects[Effects::Effect_Type::CHARGE].get_counter()->set(temp);
+				if (read_symbol("CHARGE", temp) && temp != 0) {
+					guns[name].effect_def.effects[Effects::Types::CHARGE].get_counter()->set(temp);
 				}
 
 				read_symbol("RECHARGE", guns[name].recharge_time);

@@ -54,7 +54,7 @@ protected:
 	// Ship components
 	std::map<std::string, Gun_Def> guns;
 	std::map<std::string, Hull_Def> hulls;
-	// int is Effect_Type;
+	// int is Types;
 	std::map<int, Effects::Algebraic_Type> types;
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
@@ -74,7 +74,7 @@ protected:
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
-	Effects*         create_effects(Effects_Def, int id);
+	Effects*         create_effects(Effects_Def*);
 
 	// Delete functions
 	void delete_body(b2Body*);

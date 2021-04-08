@@ -62,7 +62,7 @@ void Engine::step(float _dt) {
 	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
 		current_modifier *= boost_modifier;
 	}
-	if (effects->get_effect(Effects::Effect_Type::CHARGE)->get_counter()->get() > b2_epsilon) {
+	if (effects->get_effect(Effects::Types::CHARGE)->get_counter()->get() > b2_epsilon) {
 		current_modifier *= 3;
 	}
 	is_linear_force_used = 0;

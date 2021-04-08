@@ -7,7 +7,7 @@ struct Effects_Def;
 
 class Effects {
 public:
-    enum Effect_Type {
+    enum Types {
         LASER_BURN,
         BERSERK,
         CHARGE,
@@ -19,15 +19,16 @@ public:
         ADDITIVE,
         MAXIMAL
     };
-    class Effect : public iId {
+    class Effect {
     private:
         Counter duration;
         Algebraic_Type type;
+        float strength = 0;
     public:
         Effect();
         Effect(Algebraic_Type);
-        Effect(Counter, Algebraic_Type = Algebraic_Type::MAXIMAL);
-        Effect(float, Algebraic_Type = Algebraic_Type::MAXIMAL);
+        Effect(Counter, Algebraic_Type = Algebraic_Type::ADDITIVE);
+        Effect(float, Algebraic_Type = Algebraic_Type::ADDITIVE);
 
         Algebraic_Type get_type();
         Counter* get_counter();
@@ -42,27 +43,20 @@ public:
         Effect operator+(Effect effect);
     };
 
-public:
+private:
     std::deque<Effect> effects;
-
-    Effects& operator+=(Effects other);
-    Effects& operator+=(Effects_Def other);
-    Effects operator+(Effects effect);
-    Effects operator+(Effects_Def effect);
 
 public:
 
     Effects();
-    Effects(Effects_Def, int id);
-    Effects(Effects_Def*, int id);
+    Effects(Effects_Def*);
 
-    Effect* get_effect(Effect_Type type);
-    void set_effect(Effect*, Effect_Type type);
+    Effect* get_effect(Types type);
+    void set_effect(Effect*, Types type);
 
     void step(float dt);
-    void set_id(int id);
 
-    void update(Effects_Def* effects, int id);
+    void update(Effects_Def* effects);
 
 };
 

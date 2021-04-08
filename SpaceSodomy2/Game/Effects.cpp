@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "Effects.h"
 
+
 Effects::Effect::Effect() {
-    type = Algebraic_Type::ANNULATOR;
     duration.set_change_vel(-1);
+
 }
 Effects::Effect::Effect(Algebraic_Type _type) {
     type = _type;
@@ -47,6 +48,7 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (type == Algebraic_Type::ANNULATOR) {
         return *this;
     }
+
     //TO REMOVE LATER: FOR DEBUG
     if (type != other.type) {
         std::cout << "Error adding effects: Algebraic types are ";
@@ -80,7 +82,6 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (other.duration.get() < b2_epsilon) {
         return *this;
     }
-    set_id(other.get_id());
     switch (type) {
     case Algebraic_Type::MAXIMAL:
         duration.set(std::max(duration.get(), other.duration.get()));
@@ -88,8 +89,9 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     case Algebraic_Type::ADDITIVE:
         duration.modify(other.duration.get());
         break;
-        return *this;
     }
+    return *this;
+
 }
 Effects::Effect Effects::Effect::operator+(Effect effect) {
     auto left = *this;
@@ -99,76 +101,46 @@ Effects::Effect Effects::Effect::operator+(Effect effect) {
 
 
 
-Effects::Effects() : effects(Effects::Effect_Type::COUNT) {
+Effects::Effects() : effects(Effects::Types::COUNT) {
 }
-Effects::Effects(Effects_Def def, int id) : effects(Effects::Effect_Type::COUNT) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects[i] = (def.effects[i]);
-    }
-    set_id(id);
-}
-Effects::Effects(Effects_Def* def, int id) : effects(Effects::Effect_Type::COUNT) {
+
+Effects::Effects(Effects_Def* def) : effects(Effects::Types::COUNT) {
     for (int i = 0; i < def->effects.size(); i++) {
         effects[i] = (def->effects[i]);
     }
-    set_id(id);
 }
-Effects::Effect* Effects::get_effect(Effect_Type type) {
+Effects::Effect* Effects::get_effect(Types type) {
     return &effects[type];
 }
-void Effects::set_effect(Effect* eff, Effect_Type type) {
+void Effects::set_effect(Effect* eff, Types type) {
     effects[type] = *eff;
 }
 
 void Effects::step(float dt) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+    for (int i = 0; i < Effects::Types::COUNT; i++) {
         effects[i].step(dt);
     }
 }
-void Effects::set_id(int id) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects[i].set_id(id);
-    }
-}
 
-Effects& Effects::operator+=(Effects other) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects[i] += other.effects[i];
+void Effects::update(Effects_Def* _effects) {
+    if (!_effects) {
+        return;
     }
-    return *this;
-}
-Effects& Effects::operator+=(Effects_Def other) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects[i] += other.effects[i];
+    for (int i = 0; i < Types::COUNT; i++) {
+        effects[i] += _effects->effects[i];
     }
-    return *this;
-}
-Effects Effects::operator+(Effects effect) {
-    auto left = *this;
-    left += effect;
-    return left;
-}
-Effects Effects::operator+(Effects_Def effect) {
-    auto left = *this;
-    left += effect;
-    return left;
-}
-
-
-void Effects::update(Effects_Def* _effects, int id) {
-    Effects eff(_effects, id);
-    operator+=(eff);
 }
 
 
 Effects_Def::Effects_Def() {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
-        effects.push_back(Effects::Effect());
+    for (int i = 0; i < Effects::Types::COUNT; i++) {
+        Effects::Effect eff;
+        effects.push_back(eff);
     }
 }
 
 Effects_Def::Effects_Def(Effects::Algebraic_Type type) {
-    for (int i = 0; i < Effects::Effect_Type::COUNT; i++) {
+    for (int i = 0; i < Effects::Types::COUNT; i++) {
         effects.push_back(Effects::Effect(type));
     }
 }
