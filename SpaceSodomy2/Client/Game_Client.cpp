@@ -383,8 +383,6 @@ void Game_Client::load_setup(std::string path) {
 			file >> hull_name;
 		}
 	}
-
-	std::cout << gun_name << "\n";
 }
 
 void Game_Client::save_setup(std::string path) {

@@ -146,7 +146,6 @@ void Menu_Processing::save_sound(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
-	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
 	fout.close();
 }
 
@@ -419,9 +418,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
 	reload = reload_;
-	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	load_sound("sound_settings.conf");
-	std::cout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_sound_volume();
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -473,7 +470,6 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -350 }, -30, { 100, 50 }, 20);
-	std::cout << current_id << " ";
 
 	name_to_id["ApplySounds"] = current_id++;
 	name_to_id["Apply"] = current_id++;
@@ -518,7 +514,6 @@ void Menu_Processing::step() {
 		disactivated = 0;
 	}
 	while (!events.empty()) {
-		std::cout << game->get_hull_name() << "-hull\n";
 		if (name_to_id["NewGame"] == events.front()) { // New game button
 			active = 0;
 		}

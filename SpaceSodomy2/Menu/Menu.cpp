@@ -140,7 +140,6 @@ void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scal
 }
 
 void Menu::step() {
-	std::cout << text_field_active << "\n";
 	if (!active)
 		return;
 	// set clicked val
