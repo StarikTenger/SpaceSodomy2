@@ -18,10 +18,13 @@ private:
 	std::string hull_name = "default";
 	int engine_active = 0;
 
+	// Some drawing parameters
 	// box for drawing the global wall texture;
 	std::string global_wall_name = "";
 	b2Vec2 origin_pos = { 0,0 };
 	b2Vec2 end_pos = { 0,0 };
+	// Wall thickness
+	float outer_wall_thickness = 0.05;
 
 	std::vector <int> engine_commands = {
 				Command_Module::ENGINE_ANG_LEFT,

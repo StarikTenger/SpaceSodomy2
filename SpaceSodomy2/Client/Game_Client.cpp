@@ -62,7 +62,20 @@ void Game_Client::display(int id) {
 			int j = (i + 1) % vertices.size();
 			float thickness = 0.05;
 			draw->thick_line(vertices[i], vertices[j], color, thickness);
-			draw->fill_circle(vertices[i], thickness / 2, color);
+
+			// Drawing wall connection
+			b2Vec2 vec_a = vertices[(i + 1) % vertices.size()] - vertices[i];
+			b2Vec2 vec_b = vertices[(vertices.size() + i - 1) % vertices.size()] - vertices[i];
+			vec_a.Normalize();
+			vec_b.Normalize();
+			b2Vec2 vec_dir = vec_a + vec_b;
+			vec_dir.Normalize();
+			float cos_val = b2Dot(vec_a, vec_b);
+			float sin_val = sqrt(abs(1 - cos_val) / 2);
+			cos_val = sqrt(abs(1 + cos_val) / 2);
+			float size_x = thickness * sin_val / 2;
+			float size_y = thickness * cos_val;
+			draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
 		}
 	}
 
@@ -392,7 +405,8 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 				new_image.setPixel(i, j, base_color);
 			}
 		}
-	}
+	}	
+
 	sf::Texture* tex = new sf::Texture;
 	tex->loadFromImage(new_image);
 	return tex;
