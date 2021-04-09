@@ -141,17 +141,44 @@ void Game_Client::display(int id) {
 			"engine_turn_left",
 			"engine_turn_right"
 		};
+		std::vector<b2Vec2> directions = {		
+			{-1, 0},
+			{1, 0},
+			{0, 1},
+			{0, -1}
+		};
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
-			if (ship->get_player()->get_command_module()->get_command(i))
+			if (ship->get_player()->get_command_module()->get_command(i)) {
 				draw->image(textures[i], ship->get_body()->GetPosition(),
 					{ radius, radius }, ship->get_body()->GetAngle(), color);
+				// Boost animation
+				if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST) && 
+					i < 4 && // Excluding angular engines
+					ship->get_stamina()->get() > 0) {
+					Float_Animation::State state_a;
+					state_a.pos = ship->get_body()->GetPosition();
+					state_a.angle = ship->get_body()->GetAngle();
+					state_a.scale = { radius, radius };
+					state_a.color = color;
+					float animation_time = 0.1;
+					auto state_b = state_a;
+					state_b.color.a = 0;
+					state_b.pos += animation_time * ship->get_body()->GetLinearVelocity();
+					state_b.pos += 0.3 * aux::rotate(directions[i], ship->get_body()->GetAngle());
+					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
+					
+					Float_Animation animation(textures[i], state_a, state_b, animation_time, GAME);
+					draw->create_animation(animation);
+				}
+			}
+			
 		}
 	}
 
 	// Animations
-	draw->step(dt);
 	draw->draw_animations(GAME);
+	draw->step(dt);
 
 	// Projectiles
 	for (auto projectile : projectiles) {
