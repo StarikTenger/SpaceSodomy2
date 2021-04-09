@@ -3,6 +3,7 @@
 #include "Counter.h"
 #include "Player.h"
 #include "iId.h"
+#include "Effects.h"
 
 class Damage_Receiver : public iId {
 private:
@@ -10,6 +11,7 @@ private:
 	Counter* hp = nullptr;
 	Player* last_hit = nullptr;
 	Player* player = nullptr;
+	Effects* effects = nullptr;
 public:
 
 	// Constructor
@@ -20,11 +22,14 @@ public:
 	Counter* get_hp();
 	Player* get_last_hit();
 	Player* get_player();
+	Effects* get_effects();
 
 	// Set methods
 	void set_body(b2Body*);
 	void set_hp(Counter*);
 	void set_player(Player*);
+	void set_effects(Effects*);
+
 
 	// Deals damage
 	void damage(float value, Player* hit_by);

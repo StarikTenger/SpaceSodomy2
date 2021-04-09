@@ -47,37 +47,47 @@ void Control::process_events(sf::Window* window) {
 
 void Control::process_commands() {
 	command_module.reset();
+
+	bool commands_active = !menu_processing.text_field_active;
+
+	if (!draw.get_window()->hasFocus())
+		return;
+
 	// TODO: do it in one std::map
-	if (key_by_name("ENGINE_LIN_FORWARD"))
-		command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
-	if (key_by_name("ENGINE_LIN_BACKWARD"))
-		command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
-	if (key_by_name("ENGINE_LIN_LEFT"))
-		command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
-	if (key_by_name("ENGINE_LIN_RIGHT"))
-		command_module.set_command(Command_Module::ENGINE_LIN_RIGHT, 1);
-	if (key_by_name("ENGINE_ANG_LEFT"))
-		command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
-	if (key_by_name("ENGINE_ANG_RIGHT"))
-		command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
-	if (key_by_name("STABILIZE_ROTATION") || stabilize_rotation_auto)
-		command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
-	if (key_by_name("STABILIZE_ROTATION_AUTO") && !key_prev_by_name("STABILIZE_ROTATION_AUTO"))
-		stabilize_rotation_auto = !stabilize_rotation_auto;
-	if (key_by_name("SHOOT"))
-		command_module.set_command(Command_Module::SHOOT, 1);
-	if (key_by_name("BOOST"))
-		command_module.set_command(Command_Module::BOOST, 1);
-	if (key_by_name("RESPAWN"))
-		command_module.set_command(Command_Module::RESPAWN, 1);
+	if (commands_active) {
+		if (key_by_name("ENGINE_LIN_FORWARD"))
+			command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+		if (key_by_name("ENGINE_LIN_BACKWARD"))
+			command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
+		if (key_by_name("ENGINE_LIN_LEFT"))
+			command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
+		if (key_by_name("ENGINE_LIN_RIGHT"))
+			command_module.set_command(Command_Module::ENGINE_LIN_RIGHT, 1);
+		if (key_by_name("ENGINE_ANG_LEFT"))
+			command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
+		if (key_by_name("ENGINE_ANG_RIGHT"))
+			command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+		if (key_by_name("STABILIZE_ROTATION") || stabilize_rotation_auto)
+			command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
+		if (key_by_name("STABILIZE_ROTATION_AUTO") && !key_prev_by_name("STABILIZE_ROTATION_AUTO"))
+			stabilize_rotation_auto = !stabilize_rotation_auto;
+		if (key_by_name("SHOOT"))
+			command_module.set_command(Command_Module::SHOOT, 1);
+		if (key_by_name("BOOST"))
+			command_module.set_command(Command_Module::BOOST, 1);
+		if (key_by_name("RESPAWN"))
+			command_module.set_command(Command_Module::RESPAWN, 1);
+	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();
 
 	// Zoom out
-	if (key_by_name("ZOOM_OUT"))
-		draw.get_camera()->modify_scale(pow(2, -delay * 0.001 * zoom_vel));
-	if (key_by_name("ZOOM_IN"))
-		draw.get_camera()->modify_scale(pow(2, delay * 0.001 * zoom_vel));
+	if (commands_active) {
+		if (key_by_name("ZOOM_OUT"))
+			draw.get_camera()->modify_scale(pow(2, -delay * 0.001 * zoom_vel));
+		if (key_by_name("ZOOM_IN"))
+			draw.get_camera()->modify_scale(pow(2, delay * 0.001 * zoom_vel));
+	}
 
 	// Menu
 	if (key_by_name("MENU") && !key_prev_by_name("MENU"))

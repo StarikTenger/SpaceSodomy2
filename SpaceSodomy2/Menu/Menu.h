@@ -26,6 +26,8 @@ public:
 	Menu();
 	Menu(Draw* draw_);
 
+	bool text_field_active = 0;
+
 	// Set methods
 	void set_draw(Draw* draw_);
 	void set_active(bool active_);

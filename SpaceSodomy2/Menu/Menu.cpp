@@ -140,6 +140,7 @@ void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scal
 }
 
 void Menu::step() {
+	std::cout << text_field_active << "\n";
 	if (!active)
 		return;
 	// set clicked val
@@ -160,9 +161,12 @@ void Menu::step() {
 
 	// text fields handling
 	for (auto text_field : text_fields) {
+		text_field_active -= text_field->get_keyboard_active();
 		text_field->step();
+		text_field_active += text_field->get_keyboard_active();
 		text_fields_strings->operator[](text_field->get_id()) = text_field->get_text();
 		if (clicked && !text_field->get_active() && text_field->get_keyboard_active()) {
+			text_field_active -= text_field->get_keyboard_active();
 			text_field->set_keyboard_active(0);
 		}
 	}
@@ -170,20 +174,28 @@ void Menu::step() {
 		if (clicked && text_field->get_active()) {
 			while (!text_field->get_keyboard()->text_entered->empty())
 				text_field->get_keyboard()->text_entered->pop();
+			text_field_active -= text_field->get_keyboard_active();
 			text_field->set_keyboard_active(1);
+			text_field_active++;
 		}
 	}
 
 	// keyboard fields handling
 	for (auto keyboard_field : keyboard_fields) {
+		text_field_active -= keyboard_field->get_keyboard_active();
 		keyboard_field->step();
+		text_field_active += keyboard_field->get_keyboard_active();
 		text_fields_strings->operator[](keyboard_field->get_id()) = keyboard_field->get_text();
-		if (clicked && !keyboard_field->get_active() && keyboard_field->get_keyboard_active())
+		if (clicked && !keyboard_field->get_active() && keyboard_field->get_keyboard_active()) {
+			text_field_active -= keyboard_field->get_keyboard_active();
 			keyboard_field->set_keyboard_active(0);
+		}
 	}
 	for (auto keyboard_field : keyboard_fields) {
 		if (clicked && keyboard_field->get_active()) {
+			text_field_active -= keyboard_field->get_keyboard_active();
 			keyboard_field->set_keyboard_active(1);
+			text_field_active++;
 		}
 	}
 

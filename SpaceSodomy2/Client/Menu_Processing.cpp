@@ -4,18 +4,18 @@ Menu_Processing::Menu_Processing() {}
 
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
-	hull->add_image(++current_id, name + "-hull", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
-	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
+	hull->add_image(++current_id, name + "-hull", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
+	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 225), 7, 20,
+	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 325), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Mass: " + std::to_string(mass), b2Vec2(-300, 250), 7, 20,
+	hull->add_constant_text(++current_id, "Mass: " + std::to_string(mass), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Radius: " + std::to_string(radius), b2Vec2(-300, 275), 7, 20,
+	hull->add_constant_text(++current_id, "Radius: " + std::to_string(radius), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Stamina: " + std::to_string(stamina), b2Vec2(-300, 300), 7, 20,
+	hull->add_constant_text(++current_id, "Stamina: " + std::to_string(stamina), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Stamina recovery: " + std::to_string(stamina_recovery), b2Vec2(-300, 325), 7, 20,
+	hull->add_constant_text(++current_id, "Stamina recovery: " + std::to_string(stamina_recovery), b2Vec2(-300, 425), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	menus.push_back(hull);
 }
@@ -343,20 +343,20 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 
 void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
-	gun->add_image(++current_id, name + "-gun", b2Vec2(-100, 100), 7, b2Vec2(100, 100), mouse_pos, 0);
-	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 200), 7, 20,
+	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
+	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 225), 7, 20,
+	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 325), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Recharge: " + std::to_string(recharge), b2Vec2(-300, 250), 7, 20,
+	gun->add_constant_text(++current_id, "Recharge: " + std::to_string(recharge), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 275), 7, 20,
+	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet mass: " + std::to_string(projectile_mass), b2Vec2(-300, 300), 7, 20,
+	gun->add_constant_text(++current_id, "Bullet mass: " + std::to_string(projectile_mass), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet radius: " + std::to_string(projectile_radius), b2Vec2(-300, 325), 7, 20,
+	gun->add_constant_text(++current_id, "Bullet radius: " + std::to_string(projectile_radius), b2Vec2(-300, 425), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-300, 350), 7, 20,
+	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-300, 450), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	menus.push_back(gun);
 }
@@ -500,8 +500,10 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 
 void Menu_Processing::step() {
 	if (active) {
+		text_field_active = 0;
 		for (auto menu : menus) {
 			menu->step();
+			text_field_active |= menu->text_field_active;
 		}
 		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);

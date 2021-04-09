@@ -49,6 +49,7 @@ private:
 public:
 	Menu_Processing();
 	bool active = 1;
+	int text_field_active = 0;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, bool* reload_,
 		Game_Client* game_);

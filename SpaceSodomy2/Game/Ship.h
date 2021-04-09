@@ -17,6 +17,7 @@ private:
 	Counter* hp = nullptr;
 	Counter* stamina = nullptr;
 	Damage_Receiver* damage_receiver = nullptr;
+	Effects* effects;
 
 public:
 	Ship();
@@ -30,6 +31,7 @@ public:
 	Counter* get_hp();
 	Counter* get_stamina();
 	Damage_Receiver* get_damage_receiver();
+	Effects* get_effects();
 
 	// Set methods
 	void set_player(Player*);
@@ -39,5 +41,6 @@ public:
 	void set_hp(Counter*);
 	void set_stamina(Counter*);
 	void set_damage_receiver(Damage_Receiver*);
+	void set_effects(Effects*);
 };
 

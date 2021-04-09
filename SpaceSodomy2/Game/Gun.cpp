@@ -14,6 +14,7 @@ void Gun::import_gun_def(Gun_Def def) {
 	projectile_vel = def.projectile_vel;
 	projectile_radius = def.projectile_radius;
 	projectile_hp = def.projectile_hp;
+	effects = &def.effect_def;
 }
 
 void Gun::activate() {
@@ -31,7 +32,7 @@ void Gun::activate() {
 	projectile_def.radius = projectile_radius;
 	projectile_def.mass = projectile_mass;
 	projectile_def.hp = projectile_hp;
-
+	projectile_def.effects_def = effects;
 	// Recoil
 	body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
 

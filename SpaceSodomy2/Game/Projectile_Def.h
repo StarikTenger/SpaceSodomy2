@@ -1,6 +1,7 @@
 #pragma once
 #include <box2d/box2d.h>
 #include "Player.h"
+#include "Effects.h"
 
 // Projectile defenition
 struct Projectile_Def {
@@ -12,6 +13,7 @@ struct Projectile_Def {
 	float mass = 0.05;
 	float radius = 0.2;
 	float hp = 20;
+	Effects_Def* effects_def  = nullptr;
 
 	Projectile_Def();
 };
