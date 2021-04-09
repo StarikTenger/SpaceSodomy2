@@ -50,6 +50,9 @@ void Control::process_commands() {
 
 	bool commands_active = !menu_processing.text_field_active;
 
+	if (!draw.get_window()->hasFocus())
+		return;
+
 	// TODO: do it in one std::map
 	if (commands_active) {
 		if (key_by_name("ENGINE_LIN_FORWARD"))
