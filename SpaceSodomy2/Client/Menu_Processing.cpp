@@ -500,8 +500,10 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 
 void Menu_Processing::step() {
 	if (active) {
+		text_field_active = 0;
 		for (auto menu : menus) {
 			menu->step();
+			text_field_active |= menu->text_field_active;
 		}
 		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
