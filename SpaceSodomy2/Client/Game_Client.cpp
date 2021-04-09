@@ -152,10 +152,12 @@ void Game_Client::display(int id) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
 				draw->image(textures[i], ship->get_body()->GetPosition(),
 					{ radius, radius }, ship->get_body()->GetAngle(), color);
-				// Boost animation
-				if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST) && 
-					i < 4 && // Excluding angular engines
-					ship->get_stamina()->get() > 0) {
+				// Animation
+				float engine_len = 0.1;
+				if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST) 
+					&& ship->get_stamina()->get() > 0)
+					engine_len = 0.4;
+				if (i < 4) { // Excluding angular engines
 					Float_Animation::State state_a;
 					state_a.pos = ship->get_body()->GetPosition();
 					state_a.angle = ship->get_body()->GetAngle();
@@ -165,11 +167,16 @@ void Game_Client::display(int id) {
 					auto state_b = state_a;
 					state_b.color.a = 0;
 					state_b.pos += animation_time * ship->get_body()->GetLinearVelocity();
-					state_b.pos += 0.3 * aux::rotate(directions[i], ship->get_body()->GetAngle());
+					state_b.pos += engine_len * aux::rotate(directions[i], ship->get_body()->GetAngle());
 					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
+					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST))
+						state_b.color = { 255, 255, 255, 0};
 					
 					Float_Animation animation(textures[i], state_a, state_b, animation_time, GAME);
+					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
+					Float_Animation animation_1(textures[i], state_a, state_b, animation_time, GAME);
 					draw->create_animation(animation);
+					draw->create_animation(animation_1);
 				}
 			}
 			
@@ -307,20 +314,7 @@ void Game_Client::decode(std::string source) {
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
-				/*if (commands[i]) {
-					for (int j = 0; j < engine_commands.size(); j++) {
-						if (engine_commands[j] == i) {
-							loc_engine_active++;
-							break;
-						}
-					}
-				}*/
 			}
-			//std::cout << "ship id: " << id << "\n";
-			/*if (loc_engine_active != engine_active) {
-				engine_active = loc_engine_active;
-				audio->update_sound(id, "engine", pos, engine_active / 4.0, 1);
-			}*/
 		}
 		// Projectile
 		if (symbol == "p") {
