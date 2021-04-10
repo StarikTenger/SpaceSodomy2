@@ -111,12 +111,58 @@ std::string Control::commands_to_string() {
 Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
+	draw.load_fonts("fonts.conf");
+	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
+	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
+		sf::Color(0, 0, 0, 255), 0);
+	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
+	Constant_Text loading_stage;
+	loading_stage.set_color(sf::Color::Green);
+	loading_stage.set_draw(&draw);
+	loading_stage.set_pos({ 0, 50 });
+	loading_stage.set_text_character_pixel_size(30);
+	loading_stage.set_text("Loading textures...");
+	loading_stage.step();
+	Bar progress_bar;
+	progress_bar.set_back_color(sf::Color(140, 140, 140, 255));
+	progress_bar.set_front_color(sf::Color(200, 200, 200, 255));
+	progress_bar.set_scale({ 700, 50 });
+	progress_bar.set_pos({ 0, 0 });
+	progress_bar.set_character_size(0);
+	progress_bar.set_draw(&draw);
+	progress_bar.set_max_value(100);
+	progress_bar.set_value(0);
+	progress_bar.step();
+	draw.display();
+	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
+		sf::Color(0, 0, 0, 255), 0);
 	//draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
-	draw.load_fonts("fonts.conf");
+	loading_stage.set_text("Loading setup...");
+	loading_stage.step();
+	progress_bar.set_value(25);
+	progress_bar.step();
+	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
+	draw.display();
+	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
+		sf::Color(0, 0, 0, 255), 0);
 	game.load_setup("setup.conf");
 	audio.set_draw(&draw);
+	loading_stage.set_text("Loading sounds...");
+	loading_stage.step();
+	progress_bar.set_value(50);
+	progress_bar.step();
+	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
+	draw.display();
+	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
+		sf::Color(0, 0, 0, 255), 0);
 	audio.load_sounds();
+	loading_stage.set_text("Loading tracks...");
+	loading_stage.step();
+	progress_bar.set_value(75);
+	progress_bar.step();
+	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
+	draw.display();
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
@@ -142,7 +188,10 @@ Control::Control() {
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
-
+	draw.display();
+	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
+		sf::Color(0, 0, 0, 255), 0);
+	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
 }
