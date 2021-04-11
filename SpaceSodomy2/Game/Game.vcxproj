@@ -158,6 +158,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Active_Module.h" />
+    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="Bonus_Manager.h" />
+    <ClInclude Include="Bonus_Slot.h" />
     <ClInclude Include="Collision_Filter.h" />
     <ClInclude Include="Command_Module.h" />
     <ClInclude Include="Contact_Table.h" />
@@ -185,6 +188,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Active_Module.cpp" />
+    <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="Bonus_Slot.cpp" />
     <ClCompile Include="Collision_Filter.cpp" />
     <ClCompile Include="Command_Module.cpp" />
     <ClCompile Include="Contact_Table.cpp" />

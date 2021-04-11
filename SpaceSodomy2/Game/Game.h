@@ -13,6 +13,8 @@
 #include "Contact_Table.h"
 #include "Gun_Def.h"
 #include "Hull_Def.h"
+#include "Bonus_Slot.h"
+#include "Bonus_Manager.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
@@ -40,6 +42,7 @@ protected:
 	std::set<Damage_Receiver*> damage_receivers;
 	std::set<Sound*> sounds;
 	std::set<Effects*> effects;
+	std::set<Bonus*> bonuses;
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -49,13 +52,15 @@ protected:
 	Projectile_Manager projectile_manager;
 	Event_Manager sound_manager;
 	Id_Manager id_manager;
+	Bonus_Manager bonus_manager;
+	
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Ship components
 	std::map<std::string, Gun_Def> guns;
 	std::map<std::string, Hull_Def> hulls;
-	// int is Types;
-	std::map<int, Effects::Algebraic_Type> types;
+	// Stores effect Algebraic types and strengths
+	Effects_Def effect_params;
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
 
@@ -75,6 +80,7 @@ protected:
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
 	Effects*         create_effects(Effects_Def*);
+	Bonus*           create_bonus(b2Vec2 pos, Bonus_Def*);
 
 	// Delete functions
 	void delete_body(b2Body*);
@@ -86,6 +92,7 @@ protected:
 	void delete_counter(Counter*);
 	void delete_sound(Sound*);
 	void delete_effects(Effects*);
+	void delete_bonus(Bonus*);
 
 	 // Processing functions
 	void process_players();
@@ -99,6 +106,7 @@ protected:
 	void process_counters();
 	void process_sounds();
 	void process_effects();
+	void process_bonuses();
 
 public:
 	Game();

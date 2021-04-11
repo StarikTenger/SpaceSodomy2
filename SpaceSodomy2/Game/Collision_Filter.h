@@ -17,13 +17,13 @@ private:
 	// IDs: 1 equal, -1 not equal
 	std::vector<std::vector<int>> collide_pairs{
 		{STANDART, STANDART, 0},
-		{STANDART, WALL, 0}
+		{STANDART, WALL, 0},
 	};
 public:
 	enum Collision_Type {
 		STANDART,
 		WALL,
-		PROJECTILE
+		PROJECTILE,
 	};
 
 	Collision_Filter();

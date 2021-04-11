@@ -129,7 +129,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Create effects
 	Effects_Def effects_def;
 	for (int i = 0; i < Effects::Types::COUNT; i++) {
-		effects_def.effects[i].set_type(types[i]);
+		effects_def.effects[i].set_type(effect_params.effects[i].get_type());
+		effects_def.effects[i].set_strength(effect_params.effects[i].get_strength());
 	}
 	auto effs = create_effects(&effects_def);
 	ship->set_effects(effs);
@@ -325,7 +326,8 @@ void Game::process_ships() {
 		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > b2_epsilon) {
 			std::cout << ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() << '\n';
 
-			ship->get_damage_receiver()->damage(dt * 5, ship->get_damage_receiver()->get_last_hit());
+			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
+				                                ship->get_damage_receiver()->get_last_hit());
 		}
 
 		// Checking for < zero hp
@@ -600,20 +602,55 @@ bool Game::load_parameters(std::string path) {
 			}
 			return true;
 		};
+
+		auto read_effect_type = [&](std::string symbol_name) {
+			if (symbol_name == "INSTANT_HP")
+				return Effects::Types::INSTANT_HP;
+			if (symbol_name == "INSTANT_STAMINA")
+				return Effects::Types::INSTANT_STAMINA;
+			if (symbol_name == "LASER")
+				return Effects::Types::LASER;
+			if (symbol_name == "LASER_BURN")
+				return Effects::Types::LASER_BURN;
+			if (symbol_name == "CHARGE")
+				return Effects::Types::CHARGE;
+			if (symbol_name == "BERSERK")
+				return Effects::Types::BERSERK;
+			if (symbol_name == "INSTANT_HP")
+				return Effects::Types::INSTANT_HP;
+			else {
+				std::cout << "incorrect effect type";
+				return Effects::Types::INSTANT_HP;
+			}
+		};
 		if (symbol == "EFFECT_TYPES") {
-			for (int i = 0; i < Effects::Types::COUNT; i++) {
-				std::string devnull;
-				input >> devnull;
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				std::string type;
+				input >> type;
+				int type_ = read_effect_type(type);
+
 				std::string temp;
 				input >> temp;
 				if (temp == "MAXIMAL") {
-					types[i] = Effects::Algebraic_Type::MAXIMAL;
+					effect_params.effects[type_].set_type(Effects::Algebraic_Type::MAXIMAL);
 				}
 				else if (temp == "ADDITIVE") {
-					types[i] = Effects::Algebraic_Type::ADDITIVE;
+					effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
 				}
 				else {
 					std::cerr << "Game::load_parameters: failed to read Algebraic_Type name\n";
+				}
+
+				input >> temp;
+				if (temp != "STRENGTH") {
+					std::cerr << "Game::load_parameters: incorrect syntax\n";
+				}
+				else {
+					float val;
+					input >> val;
+					effect_params.effects[type_].set_strength(val);
 				}
 			}
 			continue;
@@ -626,25 +663,10 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			for (int i = 0; i < Effects::Types::COUNT; i++) {
-				guns[name].effect_def.effects[i].get_counter()->set(0);
-				guns[name].effect_def.effects[i].set_type((types[i]));
-			}
+			guns[name].effect_def = effect_params;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				float temp = 0;
-				if (read_symbol("LASER_BURN", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::LASER_BURN].get_counter()->set(temp);
-					std::cout << name << " " << temp << '\n';
-				}
-				if (read_symbol("BERSERK", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::BERSERK].get_counter()->set(temp);
-				}
-				if (read_symbol("CHARGE", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::CHARGE].get_counter()->set(temp);
-				}
-
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);

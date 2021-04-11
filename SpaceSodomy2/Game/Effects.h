@@ -8,10 +8,13 @@ struct Effects_Def;
 class Effects {
 public:
     enum Types {
+        INSTANT_HP,
+        INSTANT_STAMINA,
+        LASER,
         LASER_BURN,
-        BERSERK,
         CHARGE,
-
+        BERSERK,
+        IMMORTALITY,
         COUNT
     };
     enum Algebraic_Type {
@@ -22,8 +25,8 @@ public:
     class Effect {
     private:
         Counter duration;
+        float strength;
         Algebraic_Type type;
-        float strength = 0;
     public:
         Effect();
         Effect(Algebraic_Type);
@@ -32,9 +35,11 @@ public:
 
         Algebraic_Type get_type();
         Counter* get_counter();
+        float get_strength();
 
         void set_type(Algebraic_Type);
         void set_counter(Counter);
+        void set_strength(float);
 
 
         void step(float dt);

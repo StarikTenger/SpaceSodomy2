@@ -11,7 +11,7 @@ private:
 	Player* player = nullptr;
 	Counter* hp = nullptr;
 	Damage_Receiver* damage_receiver = nullptr;
-	Effects_Def* effects_def;
+	Effects_Def* effects_def = nullptr;
 
 	// Some characteristics
 	float damage = 0;
