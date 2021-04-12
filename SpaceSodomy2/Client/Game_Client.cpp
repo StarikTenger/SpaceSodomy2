@@ -1,5 +1,6 @@
 #include "Game_Client.h"
 #include <iostream>
+#include <thread>
 
 void Game_Client::set_draw(Draw* _draw) {
 	draw = _draw;
@@ -236,7 +237,11 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
-				load_wall_textures();
+				auto load_func = [](Game_Client* game_client) {
+					game_client->load_wall_textures();
+				};
+				std::thread load_thread(load_func, this);
+				load_thread.detach();
 			}
 		}
 		// Player

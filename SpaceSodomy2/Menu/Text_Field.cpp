@@ -67,7 +67,7 @@ void Text_Field::step() {
 		height = aux::get_text_max_height(text);
 	}
 	// Text entering
-	if (keyboard_active) {
+	if (keyboard_active && active_field) {
 		while (!get_keyboard()->text_entered->empty()) {
 			new_text = text.getString();
 			wchar_t symbol = get_keyboard()->text_entered->front();
@@ -109,11 +109,9 @@ void Text_Field::step() {
 		set_cur_pos(get_pos());
 		break;
 	}
-	if (keyboard_active)
+	if (keyboard_active && active_field)
 		get_draw()->stroke_rect(get_cur_pos() + get_screen_mode() * (b2Vec2(indent.x / 2.0, indent.y / 2.0)),
 			get_screen_mode() * (get_scale() + indent), sf::Color::White);
-	//std::cout << "Text: " << get_active() << " " << keyboard_active << " " << text.getString().toAnsiString() << "\n";
-	auto CURPOS = get_cur_pos();
 	text.setOrigin(sf::Vector2f(text.getLocalBounds().width / 2.0, text.getLocalBounds().height / 2.0));
 	text.setPosition(aux::to_Vector2f(get_cur_pos()));
 	get_draw()->display_text(&text);

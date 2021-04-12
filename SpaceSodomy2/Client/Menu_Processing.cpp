@@ -176,7 +176,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	for (int i = current_id; !file.eof(); i++) {
 		current_id++;
 		std::string type, next;
-		int typenum = 0;
+		int typenum = 0, align = 0;
 		std::string texture_name, button_name, name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
@@ -228,6 +228,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			use_window_cords = 0;
 			pos = { 0,0 };
 			character_size = 20;
+			align = 1;
 			file >> next;
 			while (next != "END") {
 				if (next == "TEXTURE_NAME")
@@ -238,10 +239,12 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				1, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 3:
 			name = "default";
@@ -278,6 +281,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			use_window_cords = 0;
 			pos = { 0,0 };
 			character_size = 20;
+			align = 1;
 			file >> next;
 			while (next != "END") {
 				if (next == "TEXTURE_NAME")
@@ -288,16 +292,19 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				1, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 5:
 			use_window_cords = 0;
 			pos = { 0, 0 };
 			character_size = 20;
 			file >> next;
+			align = 2;
 			while (next != "END") {
 				if (next == "USE_WINDOWS_CORDS")
 					file >> use_window_cords;
@@ -305,10 +312,12 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
-				2, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 6:
 			file >> next;

@@ -184,9 +184,8 @@ void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickn
 }
 
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
-	float angle, sf::Color color)
-	{
-	if (textures.find(name) == textures.end())
+	float angle, sf::Color color) {
+	if (!is_texture_exist(name))
 		return;
 	sf::Texture& tex = *textures[name];
 	b2Vec2 scale = { box.x / tex.getSize().x  , box.y / tex.getSize().y };
