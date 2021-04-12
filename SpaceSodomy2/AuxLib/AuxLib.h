@@ -82,8 +82,10 @@ public:
 	static float dist_from_line(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
 	// Distance from segment given as two points
 	static float dist_from_segment(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
-	//Distance from polygon. Is always positive
+	// Distance from polygon. Is always positive
 	static float dist_from_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon);
+	// Segment intersection
+	static std::pair<bool, b2Vec2> segment_intersection(std::pair<b2Vec2, b2Vec2> segment_a, std::pair<b2Vec2, b2Vec2> segment_b);
 
 	// Integer bounding box for polygons. 
 	static b2Vec2 box_size(const std::vector<b2Vec2>& polygon);
@@ -99,15 +101,16 @@ public:
     // WINDOWS ONLY
 	static void mk_dir(std::string map_name);
 	
+	// Converts 2d vector to float angle
 	static float vec_to_angle(b2Vec2 vec);
 
+	// Gets resolution of the screen
 	static std::pair<int, int> get_screen_resolution();
 
 
-
-	// Python-like format
+	// Python-like format (replaces * with custom word?)
 	static std::string format(std::string base, std::string word);
 
-	// COMMANDS must be caps
+	// Checks whether word fits the style of commands, COMMANDS must be caps
 	static bool is_command(std::string word);
 };

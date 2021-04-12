@@ -31,6 +31,7 @@ private:
 				Command_Module::ENGINE_LIN_LEFT,
 				Command_Module::ENGINE_LIN_RIGHT
 	};
+
 public:
 	enum Animation_Layers {
 		GAME,

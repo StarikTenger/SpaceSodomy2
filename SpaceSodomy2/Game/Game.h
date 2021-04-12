@@ -100,6 +100,10 @@ protected:
 	void process_sounds();
 	void process_effects();
 
+	// Misc
+	// Calculates where beam intersects walls
+	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
+
 public:
 	Game();
 	// Sets command to player with id=id

@@ -113,19 +113,15 @@ void Game_Client::display(int id) {
 					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
 			}
 		}
+		// Trace
 		else {
-			// Trace
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
-			float lenstep = 0.5;
-			int steps = 40;
-			for (int i = 0; i < steps; i++) {
-				auto col = sf::Color::Red;
-				col.a = 255 / steps;
-				draw->thin_line(ship->get_body()->GetPosition(), 
-					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
-			}
+			b2Vec2 intersection = get_beam_intersection(ship->get_body()->GetPosition(), aux::vec_to_angle(dir));
+			auto color = ship->get_player()->get_color();
+			color.a = 150;
+			draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
 		}
 
 		// Hull

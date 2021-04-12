@@ -352,7 +352,7 @@ void Game::process_projectiles() {
 		// Dealing damage
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
-				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id() * 0) {
+				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				if (damage_receiver->get_effects() && projectile->get_effects_def()) {
 					damage_receiver->get_effects()->update(projectile->get_effects_def());
@@ -429,6 +429,27 @@ void Game::process_effects() {
 	for (auto eff : effects) {
 		eff->step(dt);
 	}
+}
+
+b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
+	b2Vec2 closest_intersection;
+	float closest_distance = 1e9;
+	b2Vec2 finish = start + 1e3 * aux::angle_to_vec(angle);
+	for (auto wall : walls) {
+		auto polygon = wall->get_vertices();
+		for (int i = 0; i < polygon.size(); i++) {
+			int j = (i + 1) % polygon.size();
+			auto intersection = aux::segment_intersection({ start, finish }, {polygon[i], polygon[j]});
+			if (intersection.first) {
+				float distance = b2Distance(start, intersection.second);
+				if (distance < closest_distance) {
+					closest_distance = distance;
+					closest_intersection = intersection.second;
+				}
+			}
+		}
+	}
+	return closest_intersection;
 }
 
 void Game::apply_command(int id, int command, int val) {
