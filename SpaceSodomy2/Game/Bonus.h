@@ -5,10 +5,9 @@
 
 struct Bonus_Prototype;
 
-class Bonus : public iId {
+class Bonus : iId {
 public:
     enum Types {
-        NONE,
         INSTANT_HP,
         INSTANT_STAMINA,
         LASER,
@@ -31,7 +30,7 @@ public:
 
 struct Bonus_Prototype {
     bool is_instant = 0;
-    Bonus::Types type = Bonus::Types::NONE;
+    Bonus::Types type;
     Effects_Prototype effects_prototype;
 };
 

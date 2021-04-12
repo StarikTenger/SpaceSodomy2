@@ -677,6 +677,8 @@ bool Game::load_parameters(std::string path) {
 			}
 		};
 
+
+
 		if (symbol == "EFFECT_TYPES") {
 			while (input >> symbol) {
 				if (symbol == "END")
