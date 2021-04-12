@@ -14,6 +14,8 @@ private:
 	std::string hull_name = "default";
 	int my_id = 0;
 	int engine_active = 0;
+	int aim_conf = 1;
+	int aim_opacity = 150;
 
 	// Some drawing parameters
 	// box for drawing the global wall texture;
@@ -38,19 +40,25 @@ public:
 		HUD
 	};
 
-	// Set methods
-	void set_draw(Draw* _draw);
-	void set_audio(Audio* _audio);
-	
 	// Get methods
 	Draw* get_draw();
 	Audio* get_audio();
+
 	std::string get_gun_name();
 	std::string get_hull_name();
+
+	int get_aim_conf();
+	int get_aim_opacity();
 
 	// Set methods
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
+
+	void set_draw(Draw* _draw);
+	void set_audio(Audio* _audio);
+
+	void set_aim_conf(int _conf);
+	void set_aim_opacity(int _opacity);
 
 	void display(int id);
 
@@ -71,6 +79,4 @@ public:
 		std::string base_texture, float wall_width);
 	// load wall textures
 	void load_wall_textures();
-
-
 };

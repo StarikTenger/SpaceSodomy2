@@ -71,6 +71,7 @@ void Menu_Processing::close_settings_menus() {
 	sound_menu.set_active(0);
 	gun_menu.set_active(0);
 	hull_menu.set_active(0);
+	HUD_menu.set_active(0);
 	for (auto it = guns.begin(); it != guns.end(); it++)
 		guns[it->first].set_active(0);
 	for (auto it = hulls.begin(); it != hulls.end(); it++)
@@ -130,6 +131,23 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 			config >> cur;
 		}
 	}
+}
+
+void Menu_Processing::load_aim_settings(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	double next;
+	config >> next;
+	game->set_aim_conf(next);
+	config >> next;
+	game->set_aim_opacity(next);
+}
+
+void Menu_Processing::save_aim_settings(std::string path) {
+	std::ofstream fout;
+	fout.open(path);
+	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity();
+	fout.close();
 }
 
 void Menu_Processing::load_sound(std::string path) {
@@ -428,6 +446,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	mouse_pos = mouse_pos_;
 	reload = reload_;
 	load_sound("sound_settings.conf");
+	load_aim_settings("HUD_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -485,6 +504,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	name_to_id["ApplySetup"] = current_id++;
 	name_to_id["ApplyKeys"] = current_id++;
 	name_to_id["ApplyClientConfig"] = current_id++;
+	name_to_id["ApplyHUD"] = current_id++;
 	// set gun menu fields
 	gun_menu.set_draw(draw);
 	gun_menu.set_active(0);
@@ -501,6 +521,18 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	hull_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&hull_menu);
 	init_hull_menu(b2Vec2(300, 100), "parameters.conf");
+	// set HUD menu fields
+	HUD_menu.set_draw(draw);
+	HUD_menu.set_active(0);
+	HUD_menu.set_events(&events);
+	HUD_menu.set_sliders_vals(&sliders_vals);
+	HUD_menu.set_text_fields_strings(&text_fields_strings);
+	text_fields_strings[current_id] = "Aim Configuration:";
+	text_fields_strings[current_id + 2] = "Aim Opacity:";
+	sliders_vals[current_id + 1] = game->get_aim_conf();
+	sliders_vals[current_id + 3] = game->get_aim_opacity();
+	init_menu("menu_configs/HUD.conf", &HUD_menu);
+	menus.push_back(&HUD_menu);
 }
 
 void Menu_Processing::step() {
@@ -514,6 +546,8 @@ void Menu_Processing::step() {
 		}
 		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
+		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
+		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
 		disactivated = 1;
 	}
 	if (!active) {
@@ -575,6 +609,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplySound"]);
 			events.push(name_to_id["ApplySetup"]);
+			events.push(name_to_id["ApplyHUD"]);
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
@@ -585,6 +620,14 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["Hull"] == events.front()) {
 			events.push(name_to_id[game->get_hull_name() + "-hull"]);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["ApplyHUD"] == events.front()) {
+			save_aim_settings("HUD_settings.conf");
+		}
+		if (name_to_id["HUD"] == events.front()) {
+			close_settings_menus();
+			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		for (auto it = guns.begin(); it != guns.end(); it++) {
