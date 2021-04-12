@@ -8,7 +8,7 @@ public:
 		std::string image = "";
 		b2Vec2 pos;
 		b2Vec2 scale;
-		sf::Color color;
+		sf::Color color = sf::Color(255, 255, 255);
 		float angle = 0;
 		State operator+(const State& x);
 		State operator*(const float x);

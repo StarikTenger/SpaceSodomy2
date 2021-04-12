@@ -8,14 +8,11 @@
 
 class Game_Client : public Game {
 private:
-	enum Animation_Layers {
-		GAME,
-		HUD
-	};
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
+	int my_id = 0;
 	int engine_active = 0;
 
 	// Some drawing parameters
@@ -35,6 +32,11 @@ private:
 				Command_Module::ENGINE_LIN_RIGHT
 	};
 public:
+	enum Animation_Layers {
+		GAME,
+		HUD
+	};
+
 	// Set methods
 	void set_draw(Draw* _draw);
 	void set_audio(Audio* _audio);

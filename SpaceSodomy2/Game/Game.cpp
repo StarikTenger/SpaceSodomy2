@@ -352,7 +352,7 @@ void Game::process_projectiles() {
 		// Dealing damage
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
-				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id() * 0) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				if (damage_receiver->get_effects() && projectile->get_effects_def()) {
 					damage_receiver->get_effects()->update(projectile->get_effects_def());

@@ -41,6 +41,19 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Menu", "Menu\Menu.vcxproj", "{ECABE3AE-574A-45EA-896B-136623EFF771}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{D5AA8D3F-8E3D-4E21-8367-1EE77575CDE8}"
+	ProjectSection(SolutionItems) = preProject
+		env\client_config.conf = env\client_config.conf
+		env\config.conf = env\config.conf
+		env\fonts.conf = env\fonts.conf
+		env\HUD.conf = env\HUD.conf
+		env\keys.conf = env\keys.conf
+		env\musics.conf = env\musics.conf
+		env\parameters.conf = env\parameters.conf
+		env\setup.conf = env\setup.conf
+		env\sound_settings.conf = env\sound_settings.conf
+		env\sounds.conf = env\sounds.conf
+		env\textures.conf = env\textures.conf
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Audio\Audio.vcxproj", "{BC9ACEFF-3B10-46A8-B818-5BD87A94516F}"
 	ProjectSection(ProjectDependencies) = postProject
