@@ -431,6 +431,27 @@ void Game::process_effects() {
 	}
 }
 
+b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
+	b2Vec2 closest_intersection;
+	float closest_distance = 1e9;
+	b2Vec2 finish = start + 1e3 * aux::angle_to_vec(angle);
+	for (auto wall : walls) {
+		auto polygon = wall->get_vertices();
+		for (int i = 0; i < polygon.size(); i++) {
+			int j = (i + 1) % polygon.size();
+			auto intersection = aux::segment_intersection({ start, finish }, {polygon[i], polygon[j]});
+			if (intersection.first) {
+				float distance = b2Distance(start, intersection.second);
+				if (distance < closest_distance) {
+					closest_distance = distance;
+					closest_intersection = intersection.second;
+				}
+			}
+		}
+	}
+	return closest_intersection;
+}
+
 void Game::apply_command(int id, int command, int val) {
 	players[id]->get_command_module()->set_command(command, val);
 }

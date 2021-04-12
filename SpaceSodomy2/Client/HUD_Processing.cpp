@@ -149,4 +149,5 @@ void HUD_Processing::step() {
 		stamina_bar.step();
 	}
 	table_step();
+	draw->draw_animations(Game_Client::HUD);
 }

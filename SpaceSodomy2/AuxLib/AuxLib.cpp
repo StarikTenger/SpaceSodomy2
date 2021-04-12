@@ -329,6 +329,25 @@ float aux::dist_from_polygon(b2Vec2 point, const std::vector<b2Vec2>& polygon) {
 	return ans;
 }
 
+std::pair<bool, b2Vec2> aux::segment_intersection(std::pair<b2Vec2, b2Vec2> segment_a, std::pair<b2Vec2, b2Vec2> segment_b) {
+	// I used formula from here: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+	float x1 = segment_a.first.x;
+	float x2 = segment_a.second.x;
+	float x3 = segment_b.first.x;
+	float x4 = segment_b.second.x;
+	float y1 = segment_a.first.y;
+	float y2 = segment_a.second.y;
+	float y3 = segment_b.first.y;
+	float y4 = segment_b.second.y;
+	
+	float denominator = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+	float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+	float u = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+	b2Vec2 intersection = segment_a.first + t * (segment_a.second - segment_a.first);
+	bool is_cross = t >= 0 && t <= 1 && u >= 0 && u <= 1;
+	return {is_cross, intersection};
+}
+
 b2Vec2 aux::box_size(const std::vector<b2Vec2>& polygon) {
 	float max_x = polygon[0].x;
 	for (int i = 0; i < polygon.size(); i++) {

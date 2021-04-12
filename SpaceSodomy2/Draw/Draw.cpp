@@ -183,6 +183,13 @@ void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickn
 	fill_rect(mid, {len, thickness}, color, ang);
 }
 
+void Draw::textured_line(std::string texture, b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness) {
+	auto mid = 0.5 * (start + finish);
+	float len = b2Distance(start, finish);
+	float ang = aux::vec_to_angle(finish - start);
+	image(texture, mid, { len, thickness }, ang, color);
+}
+
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 	float angle, sf::Color color) {
 	if (!is_texture_exist(name))

@@ -34,6 +34,9 @@ void Game_Client::set_hull_name(std::string val) {
 }
 
 void Game_Client::display(int id) {
+	// Setting id
+	my_id = id;
+
 	// Finding cam target
 	auto ship = get_ship(id);
 	if (ship) {
@@ -111,19 +114,15 @@ void Game_Client::display(int id) {
 					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
 			}
 		}
+		// Trace
 		else {
-			// Trace
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
-			float lenstep = 0.5;
-			int steps = 40;
-			for (int i = 0; i < steps; i++) {
-				auto col = sf::Color::Red;
-				col.a = 255 / steps;
-				draw->thin_line(ship->get_body()->GetPosition(), 
-					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
-			}
+			b2Vec2 intersection = get_beam_intersection(ship->get_body()->GetPosition(), aux::vec_to_angle(dir));
+			auto color = ship->get_player()->get_color();
+			color.a = 150;
+			draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
 		}
 
 		// Hull
@@ -215,6 +214,12 @@ void Game_Client::display(int id) {
 }
 
 void Game_Client::decode(std::string source) {
+	// Hp value to compare, is used to catch damage event
+	float hp_prev = 0;
+	if (get_ship(my_id)) {
+		hp_prev = get_ship(my_id)->get_hp()->get();
+	}
+
 	// First clear
 	clear();
 
@@ -319,6 +324,22 @@ void Game_Client::decode(std::string source) {
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+			}
+
+			// Damage animation
+			if (ship->get_hp()->get() < hp_prev) {
+				// Animation
+				Float_Animation::State state_a;
+				state_a.angle = 0;
+				state_a.pos = { 0, 0 };
+				state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
+				auto state_b = state_a;
+				float min_alpha = 0.2;
+				state_a.color.a = (min_alpha + ((hp_prev - ship->get_hp()->get()) / ship->get_hp()->get_max()) * (1 - min_alpha)) * 255;
+				state_b.color.a = 0;
+				draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
+				// Sound
+				// TODO: add sound here
 			}
 		}
 		// Projectile
