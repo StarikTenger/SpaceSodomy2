@@ -218,6 +218,18 @@ void Game_Client::decode(std::string source) {
 	if (get_ship(my_id)) {
 		hp_prev = get_ship(my_id)->get_hp()->get();
 	}
+	// Projectiles that are not destroyed will be erased
+	struct Projectile_Animation {
+		b2Vec2 pos;
+		sf::Color color;
+		float radius;
+	};
+	std::map<int, Projectile_Animation> destroyed_projectiles;
+	for (auto projectile : projectiles) {
+		destroyed_projectiles[projectile->get_id()].pos = projectile->get_body()->GetPosition();
+		destroyed_projectiles[projectile->get_id()].color = projectile->get_player()->get_color();
+		destroyed_projectiles[projectile->get_id()].radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius;
+	}
 
 	// First clear
 	clear();
@@ -358,6 +370,9 @@ void Game_Client::decode(std::string source) {
 			projectile_def.player = players[player_id];
 			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
+			projectile->set_id(id);
+			if (destroyed_projectiles.count(id))
+				destroyed_projectiles.erase(destroyed_projectiles.find(id));
 		}
 		// Event
 		if (symbol == "e") {
@@ -368,6 +383,30 @@ void Game_Client::decode(std::string source) {
 			stream >> id >> name >> pos.x >> pos.y;
 			
 			audio->update_sound(id, name, pos, 1, 0);
+		}
+	}
+
+	// Projectile hit sounds
+	for (auto projectile : destroyed_projectiles) {
+		audio->update_sound(aux::random_int(0, 1000), "projectile_hit", projectile.second.pos, 1, 0);
+		// Animation
+		for (int i = 0; i < 10; i++) {
+			Float_Animation::State state_begin;
+			state_begin.pos = projectile.second.pos;
+			state_begin.scale = projectile.second.radius * b2Vec2(4, 4);
+			state_begin.angle = 0;
+			state_begin.color = projectile.second.color;
+			Float_Animation::State state_end = state_begin;
+			if (i != 0) {
+				state_end.scale = b2Vec2_zero;
+				state_end.pos += aux::rotate({ 0, 0.4 }, aux::random_float(0, 2, 2) * b2_pi);
+			}
+			else {
+				state_begin.color = state_end.color = { 255, 255, 255 };
+			}
+			state_end.color.a = 0;
+			Float_Animation animation("bullet", state_begin, state_end, 0.1, GAME);
+			draw->create_animation(animation);
 		}
 	}
 }
