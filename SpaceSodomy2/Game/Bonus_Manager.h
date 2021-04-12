@@ -1,17 +1,22 @@
 #pragma once
 #include "Bonus.h"
 #include <deque>
-#include <stack>
+#include <vector>
+
 class Bonus_Manager {
 private:
-    std::map<Bonus::Types, std::vector<b2Vec2>> spawnpoints;
+    // First is Types, second is a set
+    std::vector<std::vector<b2Vec2>> spawnpoints;
+    std::vector<std::vector<bool>> is_spawnpoint_free;
     std::vector<Counter> cooldowns;
-    std::stack<std::pair<b2Vec2, Bonus_Def*>> bonuses_to_create;
-    std::vector<Bonus_Def> bonus_defs;
+    std::deque<Bonus_Def> bonuses_to_create;
+    std::vector<Bonus_Prototype> bonus_prototypes;
 public:
     Bonus_Manager();
-    void set_cooldown(Bonus::Types);
+    void add_prototype(Bonus_Prototype);
+    void set_cooldown(Bonus::Types, float);
     void step(float dt);
     void add_spawnpoint(Bonus::Types, b2Vec2);
-    std::pair<b2Vec2, Bonus_Def*> get_next();
+    bool get_next(Bonus_Def&);
+    void spawnpoint_freed(Bonus::Types, int id);
 };

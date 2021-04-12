@@ -113,7 +113,7 @@ Effects::Effect Effects::Effect::operator+(Effect effect) {
 Effects::Effects() : effects(Effects::Types::COUNT) {
 }
 
-Effects::Effects(Effects_Def* def) : effects(Effects::Types::COUNT) {
+Effects::Effects(Effects_Prototype* def) : effects(Effects::Types::COUNT) {
     for (int i = 0; i < def->effects.size(); i++) {
         effects[i] = (def->effects[i]);
     }
@@ -131,7 +131,7 @@ void Effects::step(float dt) {
     }
 }
 
-void Effects::update(Effects_Def* _effects) {
+void Effects::update(Effects_Prototype* _effects) {
     if (!_effects) {
         return;
     }
@@ -141,14 +141,14 @@ void Effects::update(Effects_Def* _effects) {
 }
 
 
-Effects_Def::Effects_Def() {
+Effects_Prototype::Effects_Prototype() {
     for (int i = 0; i < Effects::Types::COUNT; i++) {
         Effects::Effect eff;
         effects.push_back(eff);
     }
 }
 
-Effects_Def::Effects_Def(Effects::Algebraic_Type type) {
+Effects_Prototype::Effects_Prototype(Effects::Algebraic_Type type) {
     for (int i = 0; i < Effects::Types::COUNT; i++) {
         effects.push_back(Effects::Effect(type));
     }

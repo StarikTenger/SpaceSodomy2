@@ -6,7 +6,7 @@ void Gun::set_projectile_manager(Projectile_Manager* _projectile_manager) {
 	projectile_manager = _projectile_manager;
 }
 
-void Gun::import_gun_def(Gun_Def def) {
+void Gun::import_Gun_Prototype(Gun_Prototype def) {
 	damage = def.damage;
 	recharge_time = def.recharge_time;
 	stamina_consumption = def.stamina_consumption;
@@ -14,7 +14,7 @@ void Gun::import_gun_def(Gun_Def def) {
 	projectile_vel = def.projectile_vel;
 	projectile_radius = def.projectile_radius;
 	projectile_hp = def.projectile_hp;
-	effects = &def.effect_def;
+	effects_prototype = &def.effect_prototype;
 }
 
 void Gun::activate() {
@@ -32,7 +32,7 @@ void Gun::activate() {
 	projectile_def.radius = projectile_radius;
 	projectile_def.mass = projectile_mass;
 	projectile_def.hp = projectile_hp;
-	projectile_def.effects_def = effects;
+	projectile_def.effects_prototype = effects_prototype;
 	// Recoil
 	body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
 

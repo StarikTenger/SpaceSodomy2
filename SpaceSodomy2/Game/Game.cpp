@@ -58,7 +58,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	return body;
 }
 
-Gun* Game::create_gun(Gun_Def def) {
+Gun* Game::create_gun(Gun_Prototype def) {
 	auto gun = new Gun();
 	active_modules.insert(gun);
 	// Counter
@@ -69,8 +69,8 @@ Gun* Game::create_gun(Gun_Def def) {
 	gun->set_projectile_manager(&projectile_manager);
 	gun->set_event_manager(&sound_manager);
 	// Characteristics
-	gun->import_gun_def(def);
-	gun->set_effects(&def.effect_def);
+	gun->import_Gun_Prototype(def);
+	gun->set_effects_prototype(&def.effect_prototype);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -127,24 +127,28 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	Effects_Def effects_def;
+	Effects_Prototype effects_prototype;
 	for (int i = 0; i < Effects::Types::COUNT; i++) {
-		effects_def.effects[i].set_type(effect_params.effects[i].get_type());
-		effects_def.effects[i].set_strength(effect_params.effects[i].get_strength());
+		effects_prototype.effects[i].set_type(effect_params.effects[i].get_type());
+		effects_prototype.effects[i].set_strength(effect_params.effects[i].get_strength());
 	}
-	auto effs = create_effects(&effects_def);
+	auto effs = create_effects(&effects_prototype);
 	ship->set_effects(effs);
+
+	// Bonus slot
+	ship->set_bonus_slot(create_bonus_slot());
+	ship->get_bonus_slot()->set_effects(effs);
 
 	// Player
 	ship->set_player(player);
 
 	// Hull def
-	Hull_Def def;
+	Hull_Prototype hull_prototype;
 	if (hulls.count(player->get_hull_name()))
-		def = hulls[player->get_hull_name()];
+		hull_prototype = hulls[player->get_hull_name()];
 
 	// Body
-	auto body = create_round_body(pos, angle, def.radius, def.mass);
+	auto body = create_round_body(pos, angle, hull_prototype.radius, hull_prototype.mass);
 	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	ship->set_body(body);
 
@@ -153,28 +157,28 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	player->set_command_module(command_module);
 
 	// Gun
-	Gun_Def gun_def;
+	Gun_Prototype gun_prototype;
 	if (guns.count(player->get_gun_name())) {
-		gun_def = guns[player->get_gun_name()];
+		gun_prototype = guns[player->get_gun_name()];
 
 	}
-	auto gun = create_gun(gun_def);
+	auto gun = create_gun(gun_prototype);
 	gun->set(body, player);
-	gun->set_effects(nullptr);
+	gun->set_effects_prototype(nullptr);
 	if (guns.count(player->get_gun_name())) {
-		gun->set_effects(&guns[player->get_gun_name()].effect_def);
+		gun->set_effects_prototype(&guns[player->get_gun_name()].effect_prototype);
 	}
 	gun->set_ship_effects(effs);
 	ship->set_gun(gun);
 
 	// Hp
-	auto hp = create_counter(def.hp);
-	hp->set_max(def.hp);
+	auto hp = create_counter(hull_prototype.hp);
+	hp->set_max(hull_prototype.hp);
 	ship->set_hp(hp);
 
 	// Stamina
-	auto stamina = create_counter(def.stamina, def.stamina_recovery);
-	stamina->set_max(def.stamina);
+	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
+	stamina->set_max(hull_prototype.stamina);
 	stamina->set_delay(0.7);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
@@ -214,7 +218,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_damage(projectile_def.damage);
 	projectile->set_hp(create_counter(projectile_def.hp, 0));
 	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), nullptr));
-	projectile->set_effects_def(projectile_def.effects_def);
+	projectile->set_effects_prototype(projectile_def.effects_prototype);
 
 	// Adding to vectors
 	projectiles.insert(projectile);
@@ -233,10 +237,25 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 	return sound;
 }
 
-Effects* Game::create_effects(Effects_Def* val) {
+Effects* Game::create_effects(Effects_Prototype* val) {
 	auto _effects = new Effects(val);
 	effects.insert(_effects);
 	return _effects;
+}
+
+Bonus* Game::create_bonus(Bonus_Def val) {
+	auto ans = new Bonus;
+	auto body = create_round_body(val.pos, 0, val.radius, 1);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE, 0);
+	ans->set_id(val.get_id());
+	ans->set_body(body);
+	ans->set_bonus_prototype(val.bonus);
+	bonuses.insert(ans);
+	return ans;
+}
+
+Bonus_Slot* Game::create_bonus_slot() {
+	return new Bonus_Slot;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -271,6 +290,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
 	delete_effects(ship->get_effects());
+	delete_bonus_slot(ship->get_bonus_slot());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -293,11 +313,21 @@ void Game::delete_sound(Sound* sound) {
 	delete sound;
 }
 
-void Game::delete_effects(Effects* val) {
-	effects.erase(val);
-	delete val;
+void Game::delete_effects(Effects* _effects) {
+	effects.erase(_effects);
+	delete _effects;
 }
 
+void Game::delete_bonus(Bonus* bonus) {
+	bonuses.erase(bonus);
+	delete_body(bonus->get_body());
+	bonus_manager.spawnpoint_freed(bonus->get_type(), bonus->get_id());
+	delete bonus;
+}
+
+void Game::delete_bonus_slot(Bonus_Slot* bonus_slot) {
+	delete bonus_slot;
+}
 
 void Game::process_players() {
 	// Creating ships
@@ -433,6 +463,27 @@ void Game::process_effects() {
 	}
 }
 
+void Game::process_bonuses() {
+	std::deque<Bonus*> bonuses_to_delete;
+	for (auto bonus : bonuses) {
+		for (auto ship : ships) {
+			if (contact_table.check(bonus->get_body(), ship->get_body())) {
+				ship->get_bonus_slot()->add_bonus(bonus->get_bonus_prototype());
+				bonuses_to_delete.push_back(bonus);
+			}
+		}
+	}
+	for (auto bonus : bonuses_to_delete)
+		delete_bonus(bonus);
+}
+void Game::process_bonus_manager() {
+	bonus_manager.step(dt);
+	Bonus_Def def;
+	while (bonus_manager.get_next(def)) {
+		create_bonus(def);
+	}
+}
+
 void Game::apply_command(int id, int command, int val) {
 	players[id]->get_command_module()->set_command(command, val);
 }
@@ -450,6 +501,8 @@ void Game::step(float _dt) {
 	process_counters();
 	process_sounds();
 	process_effects();
+	process_bonuses();
+	process_bonus_manager();
 }
 
 void Game::set_dt(float _dt) {
@@ -623,6 +676,7 @@ bool Game::load_parameters(std::string path) {
 				return Effects::Types::INSTANT_HP;
 			}
 		};
+
 		if (symbol == "EFFECT_TYPES") {
 			while (input >> symbol) {
 				if (symbol == "END")
@@ -663,7 +717,7 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			guns[name].effect_def = effect_params;
+			guns[name].effect_prototype = effect_params;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;

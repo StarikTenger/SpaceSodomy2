@@ -3,7 +3,7 @@
 #include <AuxLib/AuxLib.h>
 #include "Counter.h"
 
-struct Effects_Def;
+struct Effects_Prototype;
 
 class Effects {
 public:
@@ -54,21 +54,21 @@ private:
 public:
 
     Effects();
-    Effects(Effects_Def*);
+    Effects(Effects_Prototype*);
 
     Effect* get_effect(Types type);
     void set_effect(Effect*, Types type);
 
     void step(float dt);
 
-    void update(Effects_Def* effects);
+    void update(Effects_Prototype* effects);
 
 };
 
-struct Effects_Def {
+struct Effects_Prototype {
 public:
     std::deque<Effects::Effect> effects;
 
-    Effects_Def();
-    Effects_Def(Effects::Algebraic_Type);
+    Effects_Prototype();
+    Effects_Prototype(Effects::Algebraic_Type);
 };

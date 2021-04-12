@@ -11,8 +11,8 @@
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
-#include "Gun_Def.h"
-#include "Hull_Def.h"
+#include "Gun_Prototype.h"
+#include "Hull_Prototype.h"
 #include "Bonus_Slot.h"
 #include "Bonus_Manager.h"
 #include <box2d/box2d.h>
@@ -43,6 +43,7 @@ protected:
 	std::set<Sound*> sounds;
 	std::set<Effects*> effects;
 	std::set<Bonus*> bonuses;
+	//std::set<Bonus_Slot*> bonus_slots
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -57,10 +58,10 @@ protected:
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Ship components
-	std::map<std::string, Gun_Def> guns;
-	std::map<std::string, Hull_Def> hulls;
+	std::map<std::string, Gun_Prototype> guns;
+	std::map<std::string, Hull_Prototype> hulls;
 	// Stores effect Algebraic types and strengths
-	Effects_Def effect_params;
+	Effects_Prototype effect_params;
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
 
@@ -70,7 +71,7 @@ protected:
 	// Create functions
 	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
-	Gun*             create_gun(Gun_Def);
+	Gun*             create_gun(Gun_Prototype);
 	Command_Module*  create_command_module();
 	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr, Effects* = nullptr);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
@@ -79,8 +80,9 @@ protected:
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
-	Effects*         create_effects(Effects_Def*);
-	Bonus*           create_bonus(b2Vec2 pos, Bonus_Def*);
+	Effects*         create_effects(Effects_Prototype*);
+	Bonus*           create_bonus(Bonus_Def);
+	Bonus_Slot*      create_bonus_slot();
 
 	// Delete functions
 	void delete_body(b2Body*);
@@ -93,6 +95,7 @@ protected:
 	void delete_sound(Sound*);
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
+	void delete_bonus_slot(Bonus_Slot*);
 
 	 // Processing functions
 	void process_players();
@@ -107,6 +110,8 @@ protected:
 	void process_sounds();
 	void process_effects();
 	void process_bonuses();
+	void process_bonus_manager();
+	//void process_bonus_slot      //nothing to process for now
 
 public:
 	Game();

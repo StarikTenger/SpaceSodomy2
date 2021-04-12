@@ -25,9 +25,9 @@ protected:
 	// Stamina
 	Counter* stamina;
 	// Dispensable effects
-	Effects_Def* effects;
+	Effects_Prototype* effects_prototype;
 	// Effects affecting this
-	Effects* ship_effects;
+	Effects* effects;
 
 public:
 	Active_Module();
@@ -40,7 +40,7 @@ public:
 	Counter* get_stamina_cooldown_delay_counter();
 	Event_Manager* get_event_manager();
 	Counter* get_stamina();
-	Effects_Def* get_effects();
+	Effects_Prototype* get_effects();
 
 	// Set methods
 	void set_recharge_time(float);
@@ -49,7 +49,7 @@ public:
 	void set_bind(int);
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);
-	void set_effects(Effects_Def*);
+	void set_effects_prototype(Effects_Prototype*);
 	void set_ship_effects(Effects*);
 
 
