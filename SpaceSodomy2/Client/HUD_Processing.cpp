@@ -144,8 +144,10 @@ void HUD_Processing::step() {
 		else
 			press_r_to_respawn.step();
 	}
-	HP_bar.step();
-	stamina_bar.step();
+	else {
+		HP_bar.step();
+		stamina_bar.step();
+	}
 	table_step();
 	draw->draw_animations(Game_Client::HUD);
 }

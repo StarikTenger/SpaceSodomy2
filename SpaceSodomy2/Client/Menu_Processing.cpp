@@ -496,6 +496,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 
 void Menu_Processing::step() {
 	if (active) {
+		game->get_draw()->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(game->get_draw()->get_window()->getSize())),
+			sf::Color(0, 0, 0, 90), 0);
 		text_field_active = 0;
 		for (auto menu : menus) {
 			menu->step();

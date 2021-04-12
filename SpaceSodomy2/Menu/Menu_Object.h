@@ -15,8 +15,8 @@ private:
 	b2Vec2 cur_pos;
 	// Is object active (mouse pointed on it)
 	bool active = 0;
-	b2Vec2* mouse_pos;
-	aux::Keyboard* keyboard;
+	b2Vec2* mouse_pos = new b2Vec2(0, 0);
+	aux::Keyboard* keyboard = new aux::Keyboard;
 	// Use image scale in pixels
 	bool use_picture_scale = 1;
 	// Rendering active
