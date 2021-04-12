@@ -1,13 +1,6 @@
 #include "Game_Client.h"
 #include <iostream>
-
-void Game_Client::set_draw(Draw* _draw) {
-	draw = _draw;
-	draw->apply_camera({ 0, 0 }, 100, 0);
-}
-void Game_Client::set_audio(Audio* _audio) {
-	audio = _audio;
-}
+#include <thread>
 
 Draw* Game_Client::get_draw() {
 	return draw;
@@ -24,12 +17,37 @@ std::string Game_Client::get_hull_name() {
 	return hull_name;
 }
 
+int Game_Client::get_aim_conf() {
+	return aim_conf;
+}
+
+int Game_Client::get_aim_opacity() {
+	return aim_opacity;
+}
+
 void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
 
 void Game_Client::set_hull_name(std::string val) {
 	hull_name = val;
+}
+
+void Game_Client::set_draw(Draw* _draw) {
+	draw = _draw;
+	draw->apply_camera({ 0, 0 }, 100, 0);
+}
+
+void Game_Client::set_audio(Audio* _audio) {
+	audio = _audio;
+}
+
+void Game_Client::set_aim_conf(int _conf) {
+	aim_conf = _conf;
+}
+
+void Game_Client::set_aim_opacity(int _opacity) {
+	aim_opacity = _opacity;
 }
 
 void Game_Client::display(int id) {
@@ -118,10 +136,25 @@ void Game_Client::display(int id) {
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
-			b2Vec2 intersection = get_beam_intersection(ship->get_body()->GetPosition(), aux::vec_to_angle(dir));
+			b2Vec2 body_pos = ship->get_body()->GetPosition();
+			b2Vec2 right_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
+			right_pos = body_pos + aux::rotate(right_pos, b2_pi / 2);
+			b2Vec2 left_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
+			left_pos = body_pos + aux::rotate(left_pos, -b2_pi / 2);
+			b2Vec2 intersection_right = get_beam_intersection(right_pos, aux::vec_to_angle(dir));
+			b2Vec2 intersection_left = get_beam_intersection(left_pos, aux::vec_to_angle(dir));
+			b2Vec2 intersection = get_beam_intersection(body_pos, aux::vec_to_angle(dir));
+			intersection = std::min(std::min(b2Distance(body_pos, intersection_right), b2Distance(body_pos, intersection_left)),
+				b2Distance(body_pos, intersection)) * dir;
+			intersection += body_pos;
 			auto color = ship->get_player()->get_color();
-			color.a = 150;
-			draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
+			color.a = aim_opacity;
+			if (aim_conf % 2 == 1)
+				draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
+			if (aim_conf > 1) {
+				draw->thin_line(right_pos, intersection_right, color);
+				draw->thin_line(left_pos, intersection_left, color);
+			}
 		}
 
 		// Hull
@@ -253,7 +286,11 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
-				load_wall_textures();
+				auto load_func = [](Game_Client* game_client) {
+					game_client->load_wall_textures();
+				};
+				std::thread load_thread(load_func, this);
+				load_thread.detach();
 			}
 		}
 		// Player

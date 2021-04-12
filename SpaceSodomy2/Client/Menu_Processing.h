@@ -15,6 +15,7 @@ private:
 	std::map <std::string, Menu> guns; // guns
 	Menu hull_menu; // hull menu objects
 	std::map <std::string, Menu> hulls; // hulls
+	Menu HUD_menu;
 
 	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
@@ -33,6 +34,8 @@ private:
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
+	void load_aim_settings(std::string path);
+	void save_aim_settings(std::string path);
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);

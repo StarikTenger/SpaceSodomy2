@@ -71,6 +71,7 @@ void Menu_Processing::close_settings_menus() {
 	sound_menu.set_active(0);
 	gun_menu.set_active(0);
 	hull_menu.set_active(0);
+	HUD_menu.set_active(0);
 	for (auto it = guns.begin(); it != guns.end(); it++)
 		guns[it->first].set_active(0);
 	for (auto it = hulls.begin(); it != hulls.end(); it++)
@@ -132,6 +133,23 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
+void Menu_Processing::load_aim_settings(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	double next;
+	config >> next;
+	game->set_aim_conf(next);
+	config >> next;
+	game->set_aim_opacity(next);
+}
+
+void Menu_Processing::save_aim_settings(std::string path) {
+	std::ofstream fout;
+	fout.open(path);
+	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity();
+	fout.close();
+}
+
 void Menu_Processing::load_sound(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -176,7 +194,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	for (int i = current_id; !file.eof(); i++) {
 		current_id++;
 		std::string type, next;
-		int typenum = 0;
+		int typenum = 0, align = 0;
 		std::string texture_name, button_name, name;
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
@@ -228,6 +246,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			use_window_cords = 0;
 			pos = { 0,0 };
 			character_size = 20;
+			align = 1;
 			file >> next;
 			while (next != "END") {
 				if (next == "TEXTURE_NAME")
@@ -238,10 +257,12 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				1, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 3:
 			name = "default";
@@ -278,6 +299,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			use_window_cords = 0;
 			pos = { 0,0 };
 			character_size = 20;
+			align = 1;
 			file >> next;
 			while (next != "END") {
 				if (next == "TEXTURE_NAME")
@@ -288,16 +310,19 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				1, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 5:
 			use_window_cords = 0;
 			pos = { 0, 0 };
 			character_size = 20;
 			file >> next;
+			align = 2;
 			while (next != "END") {
 				if (next == "USE_WINDOWS_CORDS")
 					file >> use_window_cords;
@@ -305,10 +330,12 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
+				if (next == "ALIGN")
+					file >> align;
 				file >> next;
 			}
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
-				2, mouse_pos, keyboard);
+				align, mouse_pos, keyboard);
 			break;
 		case 6:
 			file >> next;
@@ -419,6 +446,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	mouse_pos = mouse_pos_;
 	reload = reload_;
 	load_sound("sound_settings.conf");
+	load_aim_settings("HUD_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -476,6 +504,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	name_to_id["ApplySetup"] = current_id++;
 	name_to_id["ApplyKeys"] = current_id++;
 	name_to_id["ApplyClientConfig"] = current_id++;
+	name_to_id["ApplyHUD"] = current_id++;
 	// set gun menu fields
 	gun_menu.set_draw(draw);
 	gun_menu.set_active(0);
@@ -492,6 +521,18 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	hull_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&hull_menu);
 	init_hull_menu(b2Vec2(300, 100), "parameters.conf");
+	// set HUD menu fields
+	HUD_menu.set_draw(draw);
+	HUD_menu.set_active(0);
+	HUD_menu.set_events(&events);
+	HUD_menu.set_sliders_vals(&sliders_vals);
+	HUD_menu.set_text_fields_strings(&text_fields_strings);
+	text_fields_strings[current_id] = "Aim Configuration:";
+	text_fields_strings[current_id + 2] = "Aim Opacity:";
+	sliders_vals[current_id + 1] = game->get_aim_conf();
+	sliders_vals[current_id + 3] = game->get_aim_opacity();
+	init_menu("menu_configs/HUD.conf", &HUD_menu);
+	menus.push_back(&HUD_menu);
 }
 
 void Menu_Processing::step() {
@@ -505,6 +546,8 @@ void Menu_Processing::step() {
 		}
 		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
+		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
+		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
 		disactivated = 1;
 	}
 	if (!active) {
@@ -566,6 +609,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["ApplyClientConfig"]);
 			events.push(name_to_id["ApplySound"]);
 			events.push(name_to_id["ApplySetup"]);
+			events.push(name_to_id["ApplyHUD"]);
 		}
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
@@ -576,6 +620,14 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["Hull"] == events.front()) {
 			events.push(name_to_id[game->get_hull_name() + "-hull"]);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["ApplyHUD"] == events.front()) {
+			save_aim_settings("HUD_settings.conf");
+		}
+		if (name_to_id["HUD"] == events.front()) {
+			close_settings_menus();
+			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
 		for (auto it = guns.begin(); it != guns.end(); it++) {
