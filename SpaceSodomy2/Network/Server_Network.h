@@ -26,6 +26,8 @@ private:
 	std::map<sf::IpAddress, int> ports; // getting port by player IP address
 	std::map<std::string, sf::IpAddress> IPconvert; // getting IP address by it's string form
 	std::deque<std::string> messages; // deque of received messages
+	std::string replay_path;
+	std::ofstream fout;
 public:
 	Server_Network();
 	Server_Network(int port_);
@@ -33,6 +35,7 @@ public:
 	std::deque<std::string> get_messages(); // return deque of received messages
 	std::string get_last_message(); // return message on the top of deque (last message)
 	void set_port(int port_); // set receiving message port
+	void set_replay_path(std::string replay_path_);
 	void del_last_message(); // delete message on the top of deque (last message)
 	void clear_messages(); // delete all messages from deque
 	void del_address(std::string address_); // delete address from set

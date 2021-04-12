@@ -43,6 +43,19 @@ std::queue<int>* Menu::get_events() {
 	return events;
 }
 
+void Menu::add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
+	sf::Color back_color, int max, float* val) {
+	bars.push_back(new Bar);
+	bars.back()->set_id(id);
+	bars.back()->set_pos(pos);
+	bars.back()->set_use_window_cords(use_window_cords);
+	bars.back()->set_draw(draw);
+	bars.back()->set_scale(scale);
+	bars.back()->set_clicked(&clicked);
+	bars.back()->set_max_value(max);
+	bars.back()->set_value(val);
+}
+
 void Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 	b2Vec2* mouse_pos, bool use_image_scale) {
 	objects.push_back(new Menu_Object);
@@ -139,12 +152,18 @@ void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scal
 	sliders.back()->init();
 }
 
+
+
 void Menu::step() {
 	if (!active)
 		return;
 	// set clicked val
 	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+
+	for (auto bar : bars) {
+		bar->step();
+	}
 
 	for (auto object : objects) {
 		object->primitive_step();

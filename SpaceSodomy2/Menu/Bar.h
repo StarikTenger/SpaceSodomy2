@@ -8,7 +8,7 @@ private:
 	Constant_Text text;
 	sf::Color current_back_color;
 	float max_value = 100;
-	float value = 50;
+	float* value = new float(50);
 	float critical_value = 30;
 	float angle = 0;
 	unsigned int character_size = 10;
@@ -22,7 +22,7 @@ public:
 
 	// Set methods
 	void set_max_value(float max_value_);
-	void set_value(float value_);
+	void set_value(float* value_);
 	void set_character_size(unsigned int character_size_);
 	void set_back_color(sf::Color back_color_);
 	void set_front_color(sf::Color front_color_);
@@ -31,7 +31,7 @@ public:
 
 	// Get methods
 	float get_max_value();
-	float get_value();
+	float* get_value();
 	unsigned int get_character_size();
 	sf::Color get_back_color();
 	sf::Color get_front_color();

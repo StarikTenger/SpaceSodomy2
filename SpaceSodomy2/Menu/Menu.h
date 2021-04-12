@@ -4,6 +4,7 @@
 #include "Keyboard_Field.h"
 #include "Constant_Text.h"
 #include "Slider.h"
+#include "Bar.h"
 #include <vector>
 #include <queue>
 
@@ -15,6 +16,7 @@ private:
 	std::vector<Keyboard_Field*> keyboard_fields;
 	std::vector<Constant_Text*> constant_texts;
 	std::vector<Slider*> sliders;
+	std::vector<Bar*> bars;
 	Draw* draw;
 	std::queue<int>* events;
 	std::map<int, std::string>* text_fields_strings;
@@ -40,6 +42,8 @@ public:
 	bool get_active();
 	std::queue<int>* get_events();
 
+	void add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
+		sf::Color back_color, int max, float* val);
 	void add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 		b2Vec2* mouse_pos, bool use_image_scale);
 	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,

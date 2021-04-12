@@ -11,7 +11,7 @@ void Bar::set_max_value(float max_value_) {
 	max_value = max_value_;
 	critical_value = 0.3 * max_value;
 }
-void Bar::set_value(float value_) {
+void Bar::set_value(float* value_) {
 	value = value_;
 }
 void Bar::set_character_size(unsigned int character_size_) {
@@ -35,7 +35,7 @@ void Bar::set_angle(float angle_) {
 float Bar::get_max_value() {
 	return max_value;
 }
-float Bar::get_value() {
+float* Bar::get_value() {
 	return value;
 }
 unsigned int Bar::get_character_size() {
@@ -52,13 +52,15 @@ sf::Color Bar::get_text_color() {
 }
 
 bool Bar::is_critical() {
-	return value < critical_value;
+	if (value == nullptr)
+		return 0;
+	return *value < critical_value;
 }
 
 void Bar::step() {
 	if (draw_text) {
 		text.set_pos(1.0 / get_screen_mode() *get_pos());
-		text.set_text(std::to_string(int(value)));
+		text.set_text(std::to_string((value == nullptr)? 0 : int(*value)));
 		text.set_color(text_color);
 		text.set_text_character_pixel_size(character_size);
 		text.set_draw(get_draw());
@@ -79,8 +81,8 @@ void Bar::step() {
 	primitive_step();
 	//std::cout << get_pos().x << " " << get_pos().y << " " << get_scale().x << " " << get_scale().y << "\n";
 	get_draw()->fill_rect(get_pos(), get_screen_mode() * get_scale(), current_back_color, angle);
-	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - value) / max_value / 2 , 0),
-		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0)), front_color, angle);
+	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - ((value == nullptr)? 0 : *value)) / max_value / 2 , 0),
+		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - ((value == nullptr) ? 0 : *value)) / max_value, 0)), front_color, angle);
 	if (draw_text) 
 		text.step();
 }

@@ -201,6 +201,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		int min_val, max_val, val;
 		int use_window_cords, use_image_scale;
 		int character_size;
+		sf::Color back_color, front_color;
 		file >> type;
 		if (type == "Button")
 			typenum = 1;
@@ -214,6 +215,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 5;
 		if (type == "Image")
 			typenum = 6;
+		if (type == "Bar")
+			typenum = 7;
 		switch (typenum) {
 		case 1:
 			file >> next;
@@ -358,6 +361,34 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				file >> next;
 			}
 			object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
+			break;
+		case 7:
+			file >> next;
+			name = "default";
+			use_window_cords = 4;
+			pos = { 0, 0 };
+			scale = { 0, 0 };
+			character_size = 0;
+			back_color = sf::Color(140, 140, 140, 255);
+			front_color = sf::Color(200, 200, 200, 255);
+			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				if (next == "SCALE")
+					file >> scale.x >> scale.y;
+				if (next == "CHARACTER_SIZE")
+					file >> character_size;
+				if (next == "BACK_COLOR")
+					file >> back_color.r >> back_color.g >> back_color.b >> back_color.a;
+				if (next == "FRONT_COLOR")
+					file >> front_color.r >> front_color.g >> front_color.b >> front_color.a;
+			}
+			name_to_id[name] = i;
+			object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, bars_vals[i].second, &bars_vals[i].first);
 			break;
 		default:
 			i--;
@@ -533,6 +564,15 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	sliders_vals[current_id + 3] = game->get_aim_opacity();
 	init_menu("menu_configs/HUD.conf", &HUD_menu);
 	menus.push_back(&HUD_menu);
+	// set replay_menu
+	replay_menu.set_draw(draw);
+	replay_menu.set_active(0);
+	replay_menu.set_events(&events);
+	replay_menu.set_active(&sliders_vals);
+	sliders_vals[current_id + 1] = 0;
+	bars_vals[current_id] = { 0, 1000000 };
+	init_menu("menu_configs/replay.conf", &replay_menu);
+	menus.push_back(&replay_menu);
 }
 
 void Menu_Processing::step() {
@@ -548,6 +588,7 @@ void Menu_Processing::step() {
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
 		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
 		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
+		bars_vals[name_to_id["ReplayBar"]].first = sliders_vals[name_to_id["ReplaySlider"]];
 		disactivated = 1;
 	}
 	if (!active) {

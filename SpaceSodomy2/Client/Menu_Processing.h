@@ -16,6 +16,7 @@ private:
 	Menu hull_menu; // hull menu objects
 	std::map <std::string, Menu> hulls; // hulls
 	Menu HUD_menu;
+	Menu replay_menu;
 
 	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
@@ -26,6 +27,7 @@ private:
 	std::map<int, std::string> text_fields_strings; // texts from text fields
 	std::map<int, int> sliders_vals; // vals from sliders
 	std::map<std::string, int> name_to_id;
+	std::map<int, std::pair<float, float>> bars_vals;
 	std::map<int, std::string> id_to_name;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);

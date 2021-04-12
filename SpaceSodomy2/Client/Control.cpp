@@ -140,7 +140,7 @@ Control::Control() {
 	draw.load_textures("textures.conf");
 	loading_stage.set_text("Loading setup...");
 	loading_stage.step();
-	progress_bar.set_value(25);
+	progress_bar.set_value(new float(25));
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
@@ -150,7 +150,7 @@ Control::Control() {
 	audio.set_draw(&draw);
 	loading_stage.set_text("Loading sounds...");
 	loading_stage.step();
-	progress_bar.set_value(50);
+	progress_bar.set_value(new float(50));
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
@@ -159,7 +159,7 @@ Control::Control() {
 	audio.load_sounds();
 	loading_stage.set_text("Loading tracks...");
 	loading_stage.step();
-	progress_bar.set_value(75);
+	progress_bar.set_value(new float(75));
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
