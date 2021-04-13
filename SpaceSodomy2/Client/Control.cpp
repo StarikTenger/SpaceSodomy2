@@ -185,7 +185,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, &replay_frame);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -194,6 +194,14 @@ Control::Control() {
 	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
+	if (replay_active) {
+		std::ifstream file(replay_path);
+		std::string k;
+		while (!getline(file, k).eof()) {
+			replay.push_back(k);
+		}
+		replay_frame.set_max(replay.size() - 2);
+	}
 }
 
 int Control::get_is_running() {
@@ -214,7 +222,10 @@ void Control::step() {
 		time_prev = time_current;
 
 		// Pass message to game object
-		game.decode(network.get_message());
+		if (replay_active)
+			game.decode(replay[replay_frame.get()]);
+		else
+			game.decode(network.get_message());
 
 		// Draw		
 		game.display(network.get_id());

@@ -225,6 +225,7 @@ void Menu::step() {
 
 	// sliders handling
 	for (auto slider : sliders) {
+		slider->set_slider_value(sliders_vals->operator[](slider->get_id()));
 		slider->step();
 		sliders_vals->operator[](slider->get_id()) = slider->get_slider_value();
 	}

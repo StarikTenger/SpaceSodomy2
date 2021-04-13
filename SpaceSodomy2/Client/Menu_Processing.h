@@ -50,6 +50,7 @@ private:
 		int stamina, int stamina_recovery, Menu* hull);
 	Draw* draw;
 	Game_Client* game;
+	Counter* replay_frame = new Counter;
 	bool disactivated = 0;
 public:
 	Menu_Processing();
@@ -57,7 +58,7 @@ public:
 	int text_field_active = 0;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, bool* reload_,
-		Game_Client* game_);
+		Game_Client* game_, Counter* replay_frame_);
 	void step();
 };
 

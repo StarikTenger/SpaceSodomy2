@@ -498,12 +498,13 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
-	Game_Client* game_) {
+	Game_Client* game_, Counter* replay_frame_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
 	reload = reload_;
+	replay_frame = replay_frame_;
 	load_sound("sound_settings.conf");
 	load_aim_settings("HUD_settings.conf");
 	// set main menu fields
@@ -601,13 +602,17 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	bars_vals[current_id + 1] = { 50, 100000 };
 	init_menu("menu_configs/replay.conf", &replay_menu);
 	menus.push_back(&replay_menu);
+	replay_frame->set_change_vel(1);
+	replay_frame->set_max(100000);
 }
 
 void Menu_Processing::step() {
+	replay_frame->step(1);
 	if (active) {
 		game->get_draw()->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(game->get_draw()->get_window()->getSize())),
 			sf::Color(0, 0, 0, 90), 0);
 		text_field_active = 0;
+		sliders_vals[name_to_id["ReplaySlider"]] = replay_frame->get();
 		for (auto menu : menus) {
 			menu->step();
 			text_field_active |= menu->text_field_active;
@@ -617,6 +622,7 @@ void Menu_Processing::step() {
 		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
 		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
 		bars_vals[name_to_id["ReplayBar"]].first = sliders_vals[name_to_id["ReplaySlider"]];
+		replay_frame->set(sliders_vals[name_to_id["ReplaySlider"]]);
 		disactivated = 1;
 	}
 	if (!active) {

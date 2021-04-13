@@ -69,6 +69,12 @@ private:
 
 	// Music name
 	std::string track;
+
+	// Replay
+	bool replay_active = 1;
+	std::string replay_path = "replays/14.04.2021_1.28.rep";
+	std::vector<std::string> replay;
+	Counter replay_frame;
 public:
 	// Default constructor
 	Control();
