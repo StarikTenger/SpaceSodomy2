@@ -44,7 +44,7 @@ std::queue<int>* Menu::get_events() {
 }
 
 void Menu::add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
-	sf::Color back_color, int max, float* val) {
+	sf::Color back_color, int max, float* val, int critical) {
 	bars.push_back(new Bar);
 	bars.back()->set_id(id);
 	bars.back()->set_pos(pos);
@@ -54,6 +54,7 @@ void Menu::add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float
 	bars.back()->set_clicked(&clicked);
 	bars.back()->set_max_value(max);
 	bars.back()->set_value(val);
+	bars.back()->set_critical_value(critical);
 }
 
 void Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,

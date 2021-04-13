@@ -147,8 +147,10 @@ void HUD_Processing::step() {
 	else {
 		HP_bar.step();
 		stamina_bar.step();
-		delete HP_bar.get_value();
-		delete stamina_bar.get_value();
+		//if (HP_bar.get_value() != nullptr)
+		//	delete HP_bar.get_value();
+		//if (stamina_bar.get_value() != nullptr)
+		//	delete stamina_bar.get_value();
 	}
 	table_step();
 	draw->draw_animations(Game_Client::HUD);

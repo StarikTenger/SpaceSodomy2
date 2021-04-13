@@ -30,6 +30,9 @@ void Bar::set_angle(float angle_) {
 	text.set_text_angle(angle_);
 	angle = angle_;
 }
+void Bar::set_critical_value(float critical_value_) {
+	critical_value = critical_value_;
+}
 
 // Get methods
 float Bar::get_max_value() {

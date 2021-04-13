@@ -28,6 +28,7 @@ public:
 	void set_front_color(sf::Color front_color_);
 	void set_text_color(sf::Color text_color_);
 	void set_angle(float angle_);
+	void set_critical_value(float critical_value_);
 
 	// Get methods
 	float get_max_value();

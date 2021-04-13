@@ -199,7 +199,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		b2Vec2 pos, scale;
 		b2Vec2 axis_scale, slider_scale;
 		int min_val, max_val, val;
-		int use_window_cords, use_image_scale;
+		int use_window_cords, use_image_scale, critical;
 		int character_size;
 		sf::Color back_color, front_color;
 		file >> type;
@@ -241,6 +241,10 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				}
 				file >> next;
 			}
+			if (scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (scale.y == -1)
+				sf::VideoMode::getDesktopMode().height;
 			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
 			name_to_id[button_name] = i;
 			break;
@@ -293,6 +297,14 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> max_val;
 				file >> next;
 			}
+			if (axis_scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (axis_scale.y == -1)
+				axis_scale.y = sf::VideoMode::getDesktopMode().height;
+			if (slider_scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (slider_scale.y == -1)
+				slider_scale.y = sf::VideoMode::getDesktopMode().height;
 			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
 				min_val, max_val, sliders_vals[i], mouse_pos);
 			name_to_id[name] = i;
@@ -337,6 +349,10 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> align;
 				file >> next;
 			}
+			if (scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (scale.y == -1)
+				scale.y = sf::VideoMode::getDesktopMode().height;
 			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
 				align, mouse_pos, keyboard);
 			break;
@@ -360,6 +376,10 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				}
 				file >> next;
 			}
+			if (scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (scale.y == -1)
+				scale.y = sf::VideoMode::getDesktopMode().height;
 			object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
 			break;
 		case 7:
@@ -371,6 +391,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			character_size = 0;
 			back_color = sf::Color(140, 140, 140, 255);
 			front_color = sf::Color(200, 200, 200, 255);
+			critical = 0;
 			while (next != "END") {
 				if (next == "NAME")
 					file >> name;
@@ -380,15 +401,22 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> pos.x >> pos.y;
 				if (next == "SCALE")
 					file >> scale.x >> scale.y;
+				if (next == "CRITICAL")
+					file >> critical;
 				if (next == "CHARACTER_SIZE")
 					file >> character_size;
 				if (next == "BACK_COLOR")
 					file >> back_color.r >> back_color.g >> back_color.b >> back_color.a;
 				if (next == "FRONT_COLOR")
 					file >> front_color.r >> front_color.g >> front_color.b >> front_color.a;
+				file >> next;
 			}
+			if (scale.x == -1)
+				scale.x = sf::VideoMode::getDesktopMode().width;
+			if (scale.y == -1)
+				scale.y = sf::VideoMode::getDesktopMode().height;
 			name_to_id[name] = i;
-			object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, bars_vals[i].second, &bars_vals[i].first);
+			object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, bars_vals[i].second, &bars_vals[i].first, critical);
 			break;
 		default:
 			i--;
@@ -530,7 +558,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	init_menu("menu_configs/keys.conf", &keys_menu);
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -350 }, -30, { 100, 50 }, 20);
 
-	name_to_id["ApplySounds"] = current_id++;
+	name_to_id["ApplySound"] = current_id++;
 	name_to_id["Apply"] = current_id++;
 	name_to_id["ApplySetup"] = current_id++;
 	name_to_id["ApplyKeys"] = current_id++;
@@ -568,9 +596,9 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	replay_menu.set_draw(draw);
 	replay_menu.set_active(0);
 	replay_menu.set_events(&events);
-	replay_menu.set_active(&sliders_vals);
-	sliders_vals[current_id + 1] = 0;
-	bars_vals[current_id] = { 0, 1000000 };
+	replay_menu.set_sliders_vals(&sliders_vals);
+	sliders_vals[current_id] = 0;
+	bars_vals[current_id + 1] = { 50, 100000 };
 	init_menu("menu_configs/replay.conf", &replay_menu);
 	menus.push_back(&replay_menu);
 }
@@ -616,8 +644,8 @@ void Menu_Processing::step() {
 			draw->get_window()->close();
 		}
 		if (name_to_id["ApplyClientConfig"] == events.front()) { // Apply button
-			save_config("client_config.conf", text_fields_strings[6], atoi(text_fields_strings[8].c_str()),
-				atoi(text_fields_strings[10].c_str()), text_fields_strings[12]);
+			save_config("client_config.conf", text_fields_strings[7], atoi(text_fields_strings[9].c_str()),
+				atoi(text_fields_strings[11].c_str()), text_fields_strings[13]);
 			*reload = 1;
 		}
 		if (name_to_id["Back"] == events.front()) { // Back button
@@ -670,6 +698,10 @@ void Menu_Processing::step() {
 			close_settings_menus();
 			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["Replay"] == events.front()) {
+			main_menu.set_active(0);
+			replay_menu.set_active(1);
 		}
 		for (auto it = guns.begin(); it != guns.end(); it++) {
 			if (name_to_id[it->first + "-gun"] == events.front()) {

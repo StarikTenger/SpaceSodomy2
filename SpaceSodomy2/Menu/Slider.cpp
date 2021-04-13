@@ -11,7 +11,7 @@ Slider::Slider() {
 }
 
 void Slider::init() {
-	cord = { get_pos().x , get_pos().y };
+	cord = { get_pos().x - axis_scale.x / 2 , get_pos().y - axis_scale.y / 2};
 
 	// set axis params
 	axis.setPosition(cord.x, cord.y);
@@ -43,8 +43,10 @@ void Slider::logic(sf::RenderWindow* window)
 {
 	// Creating a new slider rect for logic
 	sf::FloatRect SliderRect = axis.getGlobalBounds();
-	if (SliderRect.height < slider.getGlobalBounds().height)
+	if (SliderRect.height < slider.getGlobalBounds().height) {
+		SliderRect.top += (SliderRect.height / 2 - slider.getGlobalBounds().height / 2);
 		SliderRect.height = slider.getGlobalBounds().height;
+	}
 	// if slider was clicked -> slider active
 	if (SliderRect.contains(mouse_pos_) && *get_clicked())
 		slider_active = 1;
@@ -124,9 +126,11 @@ b2Vec2 Slider::get_slider_scale() {
 
 void Slider::step() {
 	primitive_step();
-	set_slider_value(get_slider_value());
 	set_slider_scale(real_slider_scale);
 	set_axis_scale(real_axis_scale);
+	cord = { get_pos().x - axis_scale.x / 2 , get_pos().y - axis_scale.y / 2 };
+	axis.setPosition(cord.x, cord.y);
+	set_slider_value(get_slider_value());
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;
