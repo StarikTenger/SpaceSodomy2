@@ -321,7 +321,7 @@ void Game::delete_effects(Effects* _effects) {
 void Game::delete_bonus(Bonus* bonus) {
 	bonuses.erase(bonus);
 	delete_body(bonus->get_body());
-	bonus_manager.spawnpoint_freed(bonus->get_type(), bonus->get_id());
+	bonus_manager.free_bonus_spawn(bonus->get_type(), bonus->get_id());
 	delete bonus;
 }
 
@@ -339,7 +339,7 @@ void Game::process_players() {
 
 			// creating ship
 			auto ship = create_ship(player, {0,0}/*get_rand_respawn_pos()*/, aux::random_float(0, 2 * b2_pi, 3));
-			ship->get_hp()->modify(-50);
+			ship->get_hp()->modify(-95);
 			//auto_damage = 0;
 		}
 	}
@@ -351,6 +351,7 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
+		std::cout << "ship hp : " << ship->get_hp()->get() << '\n';
 		if (ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get() > 0) {
 			std::cout << "pokemon \"INSTANT_HP\" caught!\n";
 			ship->get_hp()->modify(ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get());
@@ -363,7 +364,7 @@ void Game::process_ships() {
 			(ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->set(0));
 		}
 
-		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > b2_epsilon) {
+		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > 0) {
 			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
 				                                ship->get_damage_receiver()->get_last_hit());
 		}
@@ -651,12 +652,12 @@ bool Game::load_map(std::string path) {
 				}
 				if (symbol == "POINT") {
 					b2Vec2 to_append;
-					input >> symbol;
 					input >> to_append.x >> to_append.y;
 					bonus_manager.add_spawnpoint(type, to_append);
+					continue;
 				}
 			}
-
+			continue;
 		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
 		return false;
