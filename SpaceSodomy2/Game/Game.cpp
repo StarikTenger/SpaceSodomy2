@@ -380,7 +380,10 @@ void Game::process_ships() {
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-					damage_receiver->damage(300, ship->get_player());            // KOSTYL
+					damage_receiver->damage(0, ship->get_player());            // TODO
+					if (damage_receiver->get_effects()) {
+						damage_receiver->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->set(0.5);
+					}
 				}
 			}
 		}
