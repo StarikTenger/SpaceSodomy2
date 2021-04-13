@@ -153,3 +153,25 @@ Effects_Prototype::Effects_Prototype(Effects::Algebraic_Type type) {
         effects.push_back(Effects::Effect(type));
     }
 }
+
+
+Effects::Types Effects::get_effect_type(std::string effect_name) {
+    if (effect_name == "INSTANT_HP")
+        return Effects::Types::INSTANT_HP;
+    if (effect_name == "INSTANT_STAMINA")
+        return Effects::Types::INSTANT_STAMINA;
+    if (effect_name == "LASER")
+        return Effects::Types::LASER;
+    if (effect_name == "LASER_BURN")
+        return Effects::Types::LASER_BURN;
+    if (effect_name == "CHARGE")
+        return Effects::Types::CHARGE;
+    if (effect_name == "BERSERK")
+        return Effects::Types::BERSERK;
+    if (effect_name == "IMMORTALITY")
+        return Effects::Types::IMMORTALITY;
+    else {
+        std::cerr << "incorrect effect type : " << effect_name << '\n';
+        return Effects::Types::INSTANT_HP;
+    }
+}

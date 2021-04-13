@@ -5,7 +5,7 @@
 
 struct Bonus_Prototype;
 
-class Bonus : iId {
+class Bonus : public iId {
 public:
     enum Types {
         INSTANT_HP,
@@ -16,6 +16,7 @@ public:
         IMMORTALITY,
         COUNT
     };
+    static Bonus::Types get_bonus_type(std::string name);
 private:
     b2Body* body = nullptr;
     Bonus_Prototype* bonus_prototype = nullptr;
@@ -30,12 +31,12 @@ public:
 
 struct Bonus_Prototype {
     bool is_instant = 0;
-    Bonus::Types type;
+    Bonus::Types type = Bonus::Types::INSTANT_HP;
+    float radius = 0.2;
     Effects_Prototype effects_prototype;
 };
 
 struct Bonus_Def : iId {
-    Bonus_Prototype* bonus;
+    Bonus_Prototype* bonus = nullptr;
     b2Vec2 pos;
-    float radius;
 };

@@ -80,8 +80,8 @@ void Active_Module::step(float dt) {
 		float cur_recharge_time = recharge_time;
 		float cur_stamina_consumption = stamina_consumption;
 		if (effects->get_effect(Effects::Types::BERSERK)->get_counter()->get() > b2_epsilon) {
-			cur_recharge_time /= 2;
-			cur_stamina_consumption /= 2;
+			cur_recharge_time /= effects->get_effect(Effects::Types::BERSERK)->get_strength();
+			cur_stamina_consumption /= effects->get_effect(Effects::Types::BERSERK)->get_strength();
 		}
 		recharge_counter->set(cur_recharge_time);
 		stamina->modify(-cur_stamina_consumption);

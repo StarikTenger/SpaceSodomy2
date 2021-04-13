@@ -245,7 +245,7 @@ Effects* Game::create_effects(Effects_Prototype* val) {
 
 Bonus* Game::create_bonus(Bonus_Def val) {
 	auto ans = new Bonus;
-	auto body = create_round_body(val.pos, 0, val.radius, 1);
+	auto body = create_round_body(val.pos, 0, val.bonus->radius, 1);
 	collision_filter.add_body(body, Collision_Filter::PROJECTILE, 0);
 	ans->set_id(val.get_id());
 	ans->set_body(body);
@@ -338,7 +338,8 @@ void Game::process_players() {
 			player->set_is_alive(1);
 
 			// creating ship
-			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			auto ship = create_ship(player, {0,0}/*get_rand_respawn_pos()*/, aux::random_float(0, 2 * b2_pi, 3));
+			ship->get_hp()->modify(-50);
 			//auto_damage = 0;
 		}
 	}
@@ -350,12 +351,19 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
+		if (ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get() > 0) {
+			std::cout << "pokemon \"INSTANT_HP\" caught!\n";
+			ship->get_hp()->modify(ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get());
+			(ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->set(0));
 
-
+		}
+		if (ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->get() > 0) {
+			std::cout << "pokemon \"INSTANT_STAMINA\" caught!\n";
+			ship->get_stamina()->modify(ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->get());
+			(ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->set(0));
+		}
 
 		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > b2_epsilon) {
-			std::cout << ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() << '\n';
-
 			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
 				                                ship->get_damage_receiver()->get_last_hit());
 		}
@@ -366,6 +374,14 @@ void Game::process_ships() {
 			ship->get_player()->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+		}
+		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {
+			for (auto damage_receiver : damage_receivers) {
+				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
+					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+					damage_receiver->damage(300, ship->get_player());            // KOSTYL
+				}
+			}
 		}
 	}
 	for (auto ship : ships_to_delete)
@@ -381,7 +397,7 @@ void Game::process_projectiles() {
 	std::set<Projectile*> projectiles_to_delete;
 	// Dealing damage
 	for (auto projectile : projectiles) {
-		// Dealing damage
+		// Dealing damage & applying effects
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
@@ -626,6 +642,22 @@ bool Game::load_map(std::string path) {
 			wall_id++;
 			continue;
 		}
+		if (symbol == "BONUS") {
+			input >> symbol;
+			auto type = Bonus::get_bonus_type(symbol);
+			while (input >> symbol) {
+				if (symbol == "END") {
+					break;
+				}
+				if (symbol == "POINT") {
+					b2Vec2 to_append;
+					input >> symbol;
+					input >> to_append.x >> to_append.y;
+					bonus_manager.add_spawnpoint(type, to_append);
+				}
+			}
+
+		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
 		return false;
 	}
@@ -641,7 +673,9 @@ bool Game::load_parameters(std::string path) {
 	while (input >> symbol) {
 		if (symbol == "END")
 			break;
-		// Lambda for reading symbols
+
+
+		// Lambdas for reading symbols
 		auto read_symbol = [&](std::string symbol_name, float& var) {
 			if (symbol == symbol_name) {
 				float val;
@@ -655,37 +689,46 @@ bool Game::load_parameters(std::string path) {
 			}
 			return true;
 		};
+		auto read_symbol_bool = [&](std::string symbol_name, bool& var) {
+			if (symbol == symbol_name) {
+				bool val;
+				if (!(input >> val)) {
+					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
 
-		auto read_effect_type = [&](std::string symbol_name) {
-			if (symbol_name == "INSTANT_HP")
-				return Effects::Types::INSTANT_HP;
-			if (symbol_name == "INSTANT_STAMINA")
-				return Effects::Types::INSTANT_STAMINA;
-			if (symbol_name == "LASER")
-				return Effects::Types::LASER;
-			if (symbol_name == "LASER_BURN")
-				return Effects::Types::LASER_BURN;
-			if (symbol_name == "CHARGE")
-				return Effects::Types::CHARGE;
-			if (symbol_name == "BERSERK")
-				return Effects::Types::BERSERK;
-			if (symbol_name == "INSTANT_HP")
-				return Effects::Types::INSTANT_HP;
-			else {
-				std::cout << "incorrect effect type";
-				return Effects::Types::INSTANT_HP;
+					return false;
+				}
+				var = val;
 			}
+			return true;
 		};
 
 
-
+		auto read_effect_prototype = [&]() {
+			auto _effects = effect_params;
+			input >> symbol;
+			if (symbol == "NO_EFFECTS") {
+				return _effects;
+			}
+			if (symbol != "EFFECTS") {
+				std::cerr << "Game::load_parametes : incorrect effect syntax " << symbol << "\n";
+			}
+			while (input >> symbol) {
+				if (symbol == "END") {
+					break;
+				}
+				int type_ = Effects::get_effect_type(symbol);
+				float temp;
+				input >> temp;
+				_effects.effects[type_].get_counter()->set(temp);
+			}
+			return _effects;
+		};
 		if (symbol == "EFFECT_TYPES") {
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				std::string type;
-				input >> type;
-				int type_ = read_effect_type(type);
+				int type_ = Effects::get_effect_type(symbol);
 
 				std::string temp;
 				input >> temp;
@@ -701,7 +744,7 @@ bool Game::load_parameters(std::string path) {
 
 				input >> temp;
 				if (temp != "STRENGTH") {
-					std::cerr << "Game::load_parameters: incorrect syntax\n";
+					std::cerr << "Game::load_parameters: effect strength not set\n";
 				}
 				else {
 					float val;
@@ -709,6 +752,29 @@ bool Game::load_parameters(std::string path) {
 					effect_params.effects[type_].set_strength(val);
 				}
 			}
+			continue;
+		}
+		// Bonuses
+		if (symbol == "BONUS") {
+			std::string name;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to load BONUS name\n";
+			}
+			Bonus_Prototype bonus_prototype;
+			bonus_prototype.effects_prototype = read_effect_prototype();
+			bonus_prototype.type = Bonus::get_bonus_type(name);
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				read_symbol_bool("IS_INSTANT", bonus_prototype.is_instant);
+				read_symbol("RADIUS", bonus_prototype.radius);
+				float cd = 0;
+				read_symbol("COOLDOWN", cd);
+				if (cd != 0) {
+					bonus_manager.set_cooldown(bonus_prototype.type, cd);
+				}
+			}
+			bonus_manager.add_prototype(bonus_prototype);
 			continue;
 		}
 		// Gun
@@ -719,7 +785,7 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			guns[name].effect_prototype = effect_params;
+			guns[name].effect_prototype = read_effect_prototype();;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;

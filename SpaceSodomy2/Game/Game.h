@@ -11,7 +11,7 @@
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
-#include "Gun_Prototype.h"
+#include "Gun.h"
 #include "Hull_Prototype.h"
 #include "Bonus_Slot.h"
 #include "Bonus_Manager.h"

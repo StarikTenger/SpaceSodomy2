@@ -17,6 +17,7 @@ public:
         IMMORTALITY,
         COUNT
     };
+    static Effects::Types get_effect_type(std::string effect_name);
     enum Algebraic_Type {
         ANNULATOR,         // multiplicative zero
         ADDITIVE,

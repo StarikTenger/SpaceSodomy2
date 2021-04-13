@@ -1,9 +1,15 @@
+#include "pch.h"
 #include "Bonus_Manager.h"
 
 
-Bonus_Manager::Bonus_Manager() : 
-    cooldowns(Bonus::Types::COUNT), 
-    spawnpoints(Bonus::Types::COUNT) {
+Bonus_Manager::Bonus_Manager() :
+    cooldowns(Bonus::Types::COUNT),
+    spawnpoints(Bonus::Types::COUNT),
+    is_spawnpoint_free(Bonus::Types::COUNT),
+    bonus_prototypes(Bonus::Types::COUNT) {
+    for (int i = 0; i < Bonus::Types::COUNT; i++) {
+        cooldowns[i].set_max(10);
+    }
 }
 void Bonus_Manager::set_cooldown(Bonus::Types i, float t) {
     cooldowns[i].set_max(t);
@@ -27,10 +33,9 @@ void Bonus_Manager::step(float dt) {
             if (possibles.size() == 0) {
                 continue;
             }
-            int i = aux::random_int(0, possibles.size());
+            int i = aux::random_int(0, possibles.size() - 1);
             Bonus_Def def;
             def.pos = possibles[i].first;
-            def.radius = 0.2;
             def.bonus = &bonus_prototypes[i];
             def.set_id(possibles[i].second);
             is_spawnpoint_free[i][possibles[i].second] = false;
@@ -38,7 +43,10 @@ void Bonus_Manager::step(float dt) {
         }
     }
 }
-void Bonus_Manager::add_spawnpoint(Bonus::Types, b2Vec2) {}
+void Bonus_Manager::add_spawnpoint(Bonus::Types type, b2Vec2 pos) {
+    spawnpoints[type].push_back(pos);
+    is_spawnpoint_free[type].push_back(true);
+}
 bool Bonus_Manager::get_next(Bonus_Def& val) {
     if (!bonuses_to_create.size()) {
         return false;
@@ -53,5 +61,5 @@ void Bonus_Manager::spawnpoint_freed(Bonus::Types type, int id) {
 }
 
 void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {
-    bonus_prototypes.push_back(prototypes);
+    bonus_prototypes[prototypes.type] = (prototypes);
 }
