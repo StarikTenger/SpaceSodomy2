@@ -56,16 +56,18 @@ void Control::process_commands() {
 	// TODO: do it in one std::map
 	if (commands_active) {
 		if (key_by_name("ENGINE_LIN_FORWARD")) {
-			if (replay_active)
+			if (replay.get_replay_active()) {
 				if (!key_prev_by_name("ENGINE_LIN_FORWARD"))
 					replay.increase_speed();
+			}
 			else
 				command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 		}
 		if (key_by_name("ENGINE_LIN_BACKWARD")) {
-			if (replay_active)
+			if (replay.get_replay_active()) {
 				if (!key_prev_by_name("ENGINE_LIN_BACKWARD"))
 					replay.decrease_speed();
+			}
 			else
 				command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
 		}
@@ -195,7 +197,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, replay.get_replay_frame());
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, &replay);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -204,8 +206,8 @@ Control::Control() {
 	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
-	if (replay_active) {
-		replay = Replay("replays/14.04.2021_1.28.rep");
+	if (replay.get_replay_active()) {
+		replay = Replay(replay_path);
 	}
 }
 
@@ -214,7 +216,7 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
-	std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
+	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
 		load_config("client_config.conf");
@@ -228,7 +230,7 @@ void Control::step() {
 		time_prev = time_current;
 
 		// Pass message to game object
-		if (replay_active)
+		if (replay.get_replay_active())
 			game.decode(replay.get_cur_frame());
 		else
 			game.decode(network.get_message());

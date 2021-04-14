@@ -72,7 +72,7 @@ private:
 	std::string track;
 
 	// Replay
-	bool replay_active = 1;
+	std::string replay_path = "replays/14.04.2021_1.28.rep";
 	Replay replay;
 public:
 	// Default constructor

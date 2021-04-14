@@ -49,10 +49,18 @@ void Replay::decrease_speed() {
 	}
 }
 
+void Replay::set_replay_active(bool val) {
+	replay_active = val;
+}
+
 std::string Replay::get_cur_frame() {
 	return (frames[replay_frame.get()]);
 }
 
 Counter* Replay::get_replay_frame() {
 	return &replay_frame;
+}
+
+bool Replay::get_replay_active() {
+	return replay_active;
 }

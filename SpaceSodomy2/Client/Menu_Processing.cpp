@@ -501,13 +501,13 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, bool* reload_,
-	Game_Client* game_, Counter* replay_frame_) {
+	Game_Client* game_, Replay* replay_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
 	reload = reload_;
-	replay_frame = replay_frame_;
+	replay = replay_;
 	load_sound("sound_settings.conf");
 	load_aim_settings("HUD_settings.conf");
 	// set main menu fields
@@ -608,15 +608,16 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 }
 
 void Menu_Processing::step() {
-	replay_frame->step(1);
+	replay->get_replay_frame()->step(1);
 	if (active) {
 		if (shader_active)
 			game->get_draw()->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(game->get_draw()->get_window()->getSize())),
 				sf::Color(0, 0, 0, 90), 0);
 		text_field_active = 0;
-		max_vals[name_to_id["ReplaySlider"]] = replay_frame->get_max();
-		max_vals[name_to_id["ReplayBar"]] = replay_frame->get_max();
-		sliders_vals[name_to_id["ReplaySlider"]] = replay_frame->get();
+		max_vals[name_to_id["ReplaySlider"]] = replay->get_replay_frame()->get_max();
+		max_vals[name_to_id["ReplayBar"]] = replay->get_replay_frame()->get_max();
+		if (replay->get_replay_active())
+			sliders_vals[name_to_id["ReplaySlider"]] = replay->get_replay_frame()->get();
 		for (auto menu : menus) {
 			menu->step();
 			text_field_active |= menu->text_field_active;
@@ -625,8 +626,11 @@ void Menu_Processing::step() {
 		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
 		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
 		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
-		bars_vals[name_to_id["ReplayBar"]] = sliders_vals[name_to_id["ReplaySlider"]];
-		replay_frame->set(sliders_vals[name_to_id["ReplaySlider"]] + replay_frame->get() - int(replay_frame->get()));
+		if (replay->get_replay_active()) {
+			bars_vals[name_to_id["ReplayBar"]] = sliders_vals[name_to_id["ReplaySlider"]];
+			replay->get_replay_frame()->set(sliders_vals[name_to_id["ReplaySlider"]]
+				+ replay->get_replay_frame()->get() - int(replay->get_replay_frame()->get()));
+		}
 		disactivated = 1;
 	}
 	if (!active) {
@@ -712,6 +716,8 @@ void Menu_Processing::step() {
 		if (name_to_id["Replay"] == events.front()) {
 			shader_active = 0;
 			main_menu.set_active(0);
+			replay->set_replay_active(1);
+			replay->set_replay_path("replays/14.04.2021_1.28.rep");
 			replay_menu.set_active(1);
 		}
 		for (auto it = guns.begin(); it != guns.end(); it++) {
@@ -735,6 +741,12 @@ void Menu_Processing::step() {
 		if (name_to_id["ApplySetup"] == events.front()) {
 			//set_current_gun("setup.conf", cur_gun);
 			game->save_setup("setup.conf");
+		}
+		if (name_to_id["ReplayBack"] == events.front()) {
+			shader_active = 1;
+			main_menu.set_active(1);
+			replay->set_replay_active(0);
+			replay_menu.set_active(0);
 		}
 		events.pop();
 	}
