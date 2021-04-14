@@ -25,6 +25,11 @@ private:
 	std::string get_respawn_button_name(std::string path);
 	void apply_bar(Bar* bar, std::stringstream* config);
 	void table_step();
+
+	int HP_bar_max_val;
+	int stamina_bar_max_val;
+	float HP_bar_val;
+	float stamina_bar_val;
 public:
 	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_, Client_Network* player_network_);
 

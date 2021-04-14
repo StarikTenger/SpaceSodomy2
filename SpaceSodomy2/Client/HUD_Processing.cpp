@@ -123,14 +123,19 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	press_r_to_respawn.set_use_window_cords(0);
 	press_r_to_respawn.set_text_character_pixel_size(60);
 	press_r_to_respawn.set_text_scale(0.5);
+
+	HP_bar.set_value(&HP_bar_val);
+	HP_bar.set_max_value(&HP_bar_max_val);
+	stamina_bar.set_value(&stamina_bar_val);
+	stamina_bar.set_max_value(&stamina_bar_max_val);
 }
 
 void HUD_Processing::step() {
 	if (game->get_ship(player_network->get_id()) != nullptr) {
-		HP_bar.set_value(new float(game->get_ship(player_network->get_id())->get_hp()->get()));
-		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());
-		stamina_bar.set_value(new float(game->get_ship(player_network->get_id())->get_stamina()->get()));
-		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
+		HP_bar_val = game->get_ship(player_network->get_id())->get_hp()->get();
+		HP_bar_max_val = game->get_ship(player_network->get_id())->get_hp()->get_max();
+		stamina_bar_val = game->get_ship(player_network->get_id())->get_stamina()->get();
+		stamina_bar_max_val = game->get_ship(player_network->get_id())->get_stamina()->get_max();
 	}
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {
@@ -147,10 +152,6 @@ void HUD_Processing::step() {
 	else {
 		HP_bar.step();
 		stamina_bar.step();
-		//if (HP_bar.get_value() != nullptr)
-		//	delete HP_bar.get_value();
-		//if (stamina_bar.get_value() != nullptr)
-		//	delete stamina_bar.get_value();
 	}
 	table_step();
 	draw->draw_animations(Game_Client::HUD);

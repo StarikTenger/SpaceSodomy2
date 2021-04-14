@@ -8,6 +8,7 @@
 #include "HUD_Processing.h"
 #include "Menu_Processing.h"
 #include "Game_Client.h"
+#include "Replay.h"
 #include <string>
 #include <fstream>
 #include <queue>
@@ -72,9 +73,7 @@ private:
 
 	// Replay
 	bool replay_active = 1;
-	std::string replay_path = "replays/14.04.2021_1.28.rep";
-	std::vector<std::string> replay;
-	Counter replay_frame;
+	Replay replay;
 public:
 	// Default constructor
 	Control();

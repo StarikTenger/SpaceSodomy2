@@ -43,7 +43,7 @@ public:
 	std::queue<int>* get_events();
 
 	void add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
-		sf::Color back_color, int max, float* val, int critical);
+		sf::Color back_color, int* max, float* val, int critical);
 	void add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 		b2Vec2* mouse_pos, bool use_image_scale);
 	void add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
@@ -55,6 +55,6 @@ public:
 	void add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 		sf::Color color, b2Vec2* mouse_pos, bool use_image_scale);
 	void add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
-		int min, int max, int val, b2Vec2* mouse_pos);
+		int min, int* max, int val, b2Vec2* mouse_pos);
 	void step();
 };

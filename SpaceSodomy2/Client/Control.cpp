@@ -55,10 +55,18 @@ void Control::process_commands() {
 
 	// TODO: do it in one std::map
 	if (commands_active) {
-		if (key_by_name("ENGINE_LIN_FORWARD"))
-			command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
-		if (key_by_name("ENGINE_LIN_BACKWARD"))
-			command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
+		if (key_by_name("ENGINE_LIN_FORWARD")) {
+			if (replay_active)
+				replay.increase_speed();
+			else
+				command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+		}
+		if (key_by_name("ENGINE_LIN_BACKWARD")) {
+			if (replay_active)
+				replay.decrease_speed();
+			else
+				command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
+		}
 		if (key_by_name("ENGINE_LIN_LEFT"))
 			command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
 		if (key_by_name("ENGINE_LIN_RIGHT"))
@@ -130,7 +138,7 @@ Control::Control() {
 	progress_bar.set_pos({ 0, 0 });
 	progress_bar.set_character_size(0);
 	progress_bar.set_draw(&draw);
-	progress_bar.set_max_value(100);
+	progress_bar.set_max_value(new int(100));
 	progress_bar.set_value(0);
 	progress_bar.step();
 	draw.display();
@@ -185,7 +193,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, &replay_frame);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, replay.get_replay_frame());
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -195,12 +203,7 @@ Control::Control() {
 	// Dt
 	game.set_dt(delay * 0.001);
 	if (replay_active) {
-		std::ifstream file(replay_path);
-		std::string k;
-		while (!getline(file, k).eof()) {
-			replay.push_back(k);
-		}
-		replay_frame.set_max(replay.size() - 2);
+		replay = Replay("replays/14.04.2021_1.28.rep");
 	}
 }
 
@@ -223,7 +226,7 @@ void Control::step() {
 
 		// Pass message to game object
 		if (replay_active)
-			game.decode(replay[replay_frame.get()]);
+			game.decode(replay.get_cur_frame());
 		else
 			game.decode(network.get_message());
 

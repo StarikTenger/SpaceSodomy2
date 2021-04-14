@@ -20,6 +20,9 @@ float Counter::get() {
 float Counter::get_max() {
 	return max_value;
 }
+float Counter::get_change_vel() {
+	return change_vel;
+}
 
 void Counter::set(float _value) {
 	value = _value;

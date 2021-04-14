@@ -15,6 +15,7 @@ public:
 	Counter(float _value, float _max_value);
 	float get();
 	float get_max();
+	float get_change_vel();
 
 	void set(float);
 	void set_max(float);

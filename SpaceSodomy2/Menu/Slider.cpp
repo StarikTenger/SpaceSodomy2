@@ -33,7 +33,7 @@ sf::Text Slider::returnText(b2Vec2 pos_, std::string z, int fontSize)
 	return text;
 }
 
-void Slider::create(int min, int max)
+void Slider::create(int min, int* max)
 {
 	min_value = min;
 	max_value = max;
@@ -63,7 +63,7 @@ void Slider::logic(sf::RenderWindow* window)
 		if (new_pos_x > cord.x + axis_scale.x)
 			new_pos_x = cord.x + axis_scale.x;
 		slider.setPosition(new_pos_x, cord.y);
-		slider_value = (min_value + ((slider.getPosition().x - cord.x) / axis_scale.x * (max_value - min_value)));
+		slider_value = (min_value + ((slider.getPosition().x - cord.x) / axis_scale.x * (*max_value - min_value)));
 	}
 }
 
@@ -73,10 +73,10 @@ float Slider::get_slider_value() {
 
 void Slider::set_slider_value(float value_)
 {
-	if (value_ >= min_value && value_ <= max_value)
+	if (value_ >= min_value && value_ <= *max_value)
 	{
 		slider_value = value_;
-		float diff = max_value - min_value;
+		float diff = *max_value - min_value;
 		float diff2 = value_ - min_value;
 		float zzz = axis_scale.x / diff;
 		float pos_x = zzz * diff2;
@@ -88,7 +88,7 @@ void Slider::set_slider_value(float value_)
 void Slider::set_slider_percent_value(float percent_value_)
 {
 	if (percent_value_ >= 0 && percent_value_ <= 100) {
-		slider_value = percent_value_ / 100 * max_value;
+		slider_value = percent_value_ / 100 * (*max_value);
 		slider.setPosition(cord.x + (axis_scale.x * percent_value_ / 100), cord.y);
 	}
 }
@@ -98,7 +98,7 @@ void Slider::draw(sf::RenderWindow* window)
 	logic(window);
 	window->draw(returnText({ cord.x - 10, cord.y + 5 }, std::to_string(min_value), get_screen_mode() * 20));
 	window->draw(axis);
-	window->draw(returnText({ cord.x + axis_scale.x - 10, cord.y + 5 }, std::to_string(max_value), get_screen_mode() * 20));
+	window->draw(returnText({ cord.x + axis_scale.x - 10, cord.y + 5 }, std::to_string(*max_value), get_screen_mode() * 20));
 	window->draw(slider);
 	window->draw(returnText({ slider.getPosition().x - slider_scale.x, 
 		slider.getPosition().y - slider_scale.y }, std::to_string((int)slider_value), get_screen_mode() * 15));

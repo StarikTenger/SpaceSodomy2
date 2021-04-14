@@ -27,7 +27,8 @@ private:
 	std::map<int, std::string> text_fields_strings; // texts from text fields
 	std::map<int, int> sliders_vals; // vals from sliders
 	std::map<std::string, int> name_to_id;
-	std::map<int, std::pair<float, float>> bars_vals;
+	std::map<int, float> bars_vals;
+	std::map<int, int> max_vals;
 	std::map<int, std::string> id_to_name;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
@@ -52,6 +53,7 @@ private:
 	Game_Client* game;
 	Counter* replay_frame = new Counter;
 	bool disactivated = 0;
+	bool shader_active = 1;
 public:
 	Menu_Processing();
 	bool active = 1;

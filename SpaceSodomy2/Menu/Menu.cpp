@@ -44,7 +44,7 @@ std::queue<int>* Menu::get_events() {
 }
 
 void Menu::add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
-	sf::Color back_color, int max, float* val, int critical) {
+	sf::Color back_color, int* max, float* val, int critical) {
 	bars.push_back(new Bar);
 	bars.back()->set_id(id);
 	bars.back()->set_pos(pos);
@@ -138,7 +138,7 @@ void Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_windo
 }
 
 void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
-	int min, int max, int val, b2Vec2* mouse_pos) {
+	int min, int* max, int val, b2Vec2* mouse_pos) {
 	sliders.push_back(new Slider);
 	sliders.back()->set_id(id);
 	sliders.back()->set_pos(pos);
