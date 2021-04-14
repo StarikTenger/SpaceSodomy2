@@ -57,13 +57,15 @@ void Control::process_commands() {
 	if (commands_active) {
 		if (key_by_name("ENGINE_LIN_FORWARD")) {
 			if (replay_active)
-				replay.increase_speed();
+				if (!key_prev_by_name("ENGINE_LIN_FORWARD"))
+					replay.increase_speed();
 			else
 				command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 		}
 		if (key_by_name("ENGINE_LIN_BACKWARD")) {
 			if (replay_active)
-				replay.decrease_speed();
+				if (!key_prev_by_name("ENGINE_LIN_BACKWARD"))
+					replay.decrease_speed();
 			else
 				command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
 		}
@@ -212,6 +214,7 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
+	std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
 		load_config("client_config.conf");

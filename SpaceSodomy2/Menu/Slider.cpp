@@ -135,10 +135,10 @@ void Slider::step() {
 	mid.x /= 2;
 	mid.y /= 2;
 	mouse_pos_ = aux::to_Vector2f(*get_mouse_pos() - mid);
-	std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
-		slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
-		slider.getGlobalBounds().contains(mouse_pos_) << " " <<
-		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
+	//std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
+	//	slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
+	//	slider.getGlobalBounds().contains(mouse_pos_) << " " <<
+	//	sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
 	if (!font_active) {
 		text.setFont(*(get_draw()->get_font("neon")));
 		font_active = 1;

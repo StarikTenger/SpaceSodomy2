@@ -52,15 +52,10 @@ void Counter::restart_delay() {
 void Counter::step(float dt) {
 	current_delay -= dt;
 	if (current_delay < b2_epsilon) {
-		if (value < max_value - b2_epsilon) {
-
-			value = value + dt * change_vel;
-
-		}
-		else {
-			value = max_value;
-		}
+		value = value + dt * change_vel;
 	}
+	if (value > max_value)
+		value = max_value;
 	if (value < 0) {
 		value = -b2_epsilon;
 	}

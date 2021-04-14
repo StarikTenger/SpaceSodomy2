@@ -626,7 +626,7 @@ void Menu_Processing::step() {
 		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
 		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
 		bars_vals[name_to_id["ReplayBar"]] = sliders_vals[name_to_id["ReplaySlider"]];
-		replay_frame->set(sliders_vals[name_to_id["ReplaySlider"]]);
+		replay_frame->set(sliders_vals[name_to_id["ReplaySlider"]] + replay_frame->get() - int(replay_frame->get()));
 		disactivated = 1;
 	}
 	if (!active) {

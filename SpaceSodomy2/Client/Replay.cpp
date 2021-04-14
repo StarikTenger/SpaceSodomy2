@@ -16,11 +16,37 @@ void Replay::set_replay_path(std::string path) {
 }
 
 void Replay::increase_speed() {
-	replay_frame.set_change_vel(replay_frame.get_change_vel() + acceleration);
+	if (replay_frame.get_change_vel() > -b2_epsilon && replay_frame.get_change_vel() < b2_epsilon) {
+		replay_frame.set_change_vel(0.5);
+		return;
+	}
+	if (replay_frame.get_change_vel() > b2_epsilon) {
+		replay_frame.set_change_vel(replay_frame.get_change_vel() * 2);
+		return;
+	}
+	if (replay_frame.get_change_vel() < -b2_epsilon) {
+		if (replay_frame.get_change_vel() > -0.5 - b2_epsilon)
+			replay_frame.set_change_vel(0);
+		else
+			replay_frame.set_change_vel(replay_frame.get_change_vel() / 2);
+	}
 }
 
 void Replay::decrease_speed() {
-	replay_frame.set_change_vel(replay_frame.get_change_vel() - acceleration);
+	if (replay_frame.get_change_vel() > -b2_epsilon && replay_frame.get_change_vel() < b2_epsilon) {
+		replay_frame.set_change_vel(-0.5);
+		return;
+	}
+	if (replay_frame.get_change_vel() < -b2_epsilon) {
+		replay_frame.set_change_vel(replay_frame.get_change_vel() * 2);
+		return;
+	}
+	if (replay_frame.get_change_vel() > b2_epsilon) {
+		if (replay_frame.get_change_vel() < 0.5 + b2_epsilon)
+			replay_frame.set_change_vel(0);
+		else
+			replay_frame.set_change_vel(replay_frame.get_change_vel() / 2);
+	}
 }
 
 std::string Replay::get_cur_frame() {

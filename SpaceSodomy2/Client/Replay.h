@@ -3,12 +3,12 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <box2d/box2d.h>
 class Replay {
 private:
 	Counter replay_frame;
 	float speed;
 	std::vector<std::string> frames;
-	float acceleration = 0.01;
 public:
 	Replay();
 	Replay(std::string);
