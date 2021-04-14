@@ -19,6 +19,8 @@ private:
 	std::map<std::string, sf::Font*> fonts;
 	// Animations
 	std::set<Float_Animation*> animations;
+	// Name of the window
+	std::string window_name = "Space Sodomy II";
 
 public:
 	// Load single texture
