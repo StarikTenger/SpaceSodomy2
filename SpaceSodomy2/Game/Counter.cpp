@@ -58,7 +58,4 @@ void Counter::step(float dt) {
 			value = max_value;
 		}
 	}
-	if (value < 0) {
-		value = -b2_epsilon;
-	}
 }
