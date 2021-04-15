@@ -62,6 +62,7 @@ void Draw::set_camera(Camera _cam) {
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
+	window_name = name;
 	window = new sf::RenderWindow(sf::VideoMode(width, height), name);
 	return window;
 }
@@ -70,10 +71,10 @@ void Draw::fullscreen_toggle() {
 	auto res = aux::get_screen_resolution();
 	if (fullscreen) {
 		window->close();
-		create_window(600, 600, "Space Sodomy II");
+		create_window(600, 600, window_name);
 	}
 	else
-		window->create(sf::VideoMode::getDesktopMode(), "Space Sodomy II", sf::Style::Fullscreen);
+		window->create(sf::VideoMode::getDesktopMode(), window_name, sf::Style::Fullscreen);
 	fullscreen = !fullscreen;
 }
 

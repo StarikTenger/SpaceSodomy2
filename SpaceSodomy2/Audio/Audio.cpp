@@ -86,12 +86,12 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume, 
 	sf::Listener::setPosition(0.f, 0.f, 0.f);
 	sf::Sound* sound = new sf::Sound();
 	*sound = *sounds[name];
-	sound->setPosition(z, pos.x, pos.y);
+	sound->setPosition(pos.x, pos.y, z);
 	sound->setVolume(volume);
 	sound->setRelativeToListener(1);
 	sound->setLoop(looped);
- 	sound->play();
 	activeSounds[id] = sound;
+	sound->play();
 	if (!looped)
 		sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
 	//std::cout << sound_timeouts.size() << sound_timeouts.top().first << " " << sound_timeouts.top().second << "\n";
