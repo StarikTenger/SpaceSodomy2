@@ -57,6 +57,9 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (type == Algebraic_Type::ANNULATOR) {
         return *this;
     }
+    if (duration.get() < 0) {
+        duration.set(0);
+    }
 
     ////TO REMOVE LATER: FOR DEBUG
     //if (type != other.type) {
