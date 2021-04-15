@@ -71,6 +71,10 @@ void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
     std::cout << "bonus_returned\n";
 }
 
+Bonus_Prototype* Bonus_Manager::prototype_by_id(int type) {
+    return &bonus_prototypes[type];
+}
+
 void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {
     bonus_prototypes[prototypes.type] = (prototypes);
 }

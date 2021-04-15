@@ -831,13 +831,12 @@ bool Game::load_parameters(std::string path) {
 }
 
 std::string Game::encode() {
-	// Encoding ships
 	std::string message = "";
 
 	// Map path
 	message += "M " + map_path + " ";
 
-	// Players
+	// Players (P)
 	for (auto player : players) {
 		message += "P ";
 		// Id
@@ -859,7 +858,7 @@ std::string Game::encode() {
 		message += std::to_string(int(player.second->get_is_alive())) + " ";
 	}
 
-	// Ships
+	// Ships (S)
 	for (auto ship : ships) {
 		message += "S ";
 		// Id
@@ -886,7 +885,7 @@ std::string Game::encode() {
 		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
 	}
 
-	// Projectiles
+	// Projectiles (p)
 	for (auto projectile : projectiles) {
 		message += "p ";
 		// Id
@@ -902,7 +901,19 @@ std::string Game::encode() {
 		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 
-	// Events
+	// Bonuses (b)
+	for (auto bonus : bonuses) {
+		message += "b ";
+		// Id
+		message += std::to_string(bonus->get_id()) + " ";
+		// Position
+		message += aux::float_to_string(bonus->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(bonus->get_body()->GetPosition().y, 2) + " ";
+		// Type
+		message += std::to_string(bonus->get_type()) + " ";
+	}
+
+	// Events (e)
 	for (auto sound : sounds) {
 		message += "e ";
 		// Id

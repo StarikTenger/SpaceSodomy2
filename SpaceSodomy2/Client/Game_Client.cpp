@@ -210,7 +210,10 @@ void Game_Client::display(int id) {
 		draw->create_animation(animation);
 	}
 
-	
+	// Bonuses
+	for (auto bonus : bonuses) {
+		draw->fill_circle(bonus->get_body()->GetPosition(), 0.4, sf::Color::White);
+	}
 }
 
 void Game_Client::decode(std::string source) {
@@ -337,6 +340,25 @@ void Game_Client::decode(std::string source) {
 			projectile_def.player = players[player_id];
 			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
+		}
+		// Bonus
+		if (symbol == "b") {
+			// Id
+			int id;
+			stream >> id;
+			// Pos
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			// Type
+			int type;
+			stream >> type;
+			// Bonus def
+			Bonus_Def bonus_def;
+			bonus_def.pos = pos;
+			bonus_def.bonus = bonus_manager.prototype_by_id(type);
+			// Creating bonus
+			auto bonus = create_bonus(bonus_def);
+			bonus->set_bonus_prototype(bonus_manager.prototype_by_id(type));
 		}
 		// Event
 		if (symbol == "e") {
