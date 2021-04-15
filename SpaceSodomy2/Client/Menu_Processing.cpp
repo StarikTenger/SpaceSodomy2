@@ -565,6 +565,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	name_to_id["ApplyKeys"] = current_id++;
 	name_to_id["ApplyClientConfig"] = current_id++;
 	name_to_id["ApplyHUD"] = current_id++;
+	name_to_id["ApplyReplay"] = current_id++;
 	// set gun menu fields
 	gun_menu.set_draw(draw);
 	gun_menu.set_active(0);
@@ -606,7 +607,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	replay_setup_menu.set_events(&events);
 	init_menu("menu_configs/replay_setup.conf", &replay_setup_menu);
 	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
-	text_fields[name_to_id["ReplayPath"]]->set_text("14.04.2021_1.28.rep");
+	text_fields[name_to_id["ReplayPath"]]->set_text("example.ex");
 	menus.push_back(&replay_setup_menu);
 }
 
@@ -637,23 +638,27 @@ void Menu_Processing::step() {
 			if (atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()) != network->get_id()) {
 				network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
 				if (game->get_ship(network->get_id()) != nullptr && game->get_ship(network->get_id())->get_player() != nullptr)
-					text_fields[name_to_id["ReplayName"]]->set_text(game->get_ship(network->get_id())->get_player()->get_name());
+					network->set_name(game->get_ship(network->get_id())->get_player()->get_name());
 				else
-					text_fields[name_to_id["ReplayName"]]->set_text("default");
+					network->set_name("default");
+				text_fields[name_to_id["ReplayName"]]->set_text(network->get_name());
 			}
 			if (text_fields[name_to_id["ReplayName"]]->get_text() != network->get_name()) {
 				network->set_id(game->get_player_id(text_fields[name_to_id["ReplayName"]]->get_text()));
 				text_fields[name_to_id["ReplayID"]]->set_text(std::to_string(network->get_id()));
 			}
 			bars[name_to_id["ReplayBar"]]->set_value(sliders[name_to_id["ReplaySlider"]]->get_slider_value());
-			replay->get_replay_frame()->set(sliders[name_to_id["ReplaySlider"]]->get_slider_value()
-				+ replay->get_replay_frame()->get() - int(replay->get_replay_frame()->get()));
+			replay->get_replay_frame()->set(sliders[name_to_id["ReplaySlider"]]->get_slider_value());
+				//- replay->get_replay_frame()->get() - int(replay->get_replay_frame()->get()));
 		}
 		disactivated = 1;
 	}
 	if (!active) {
 		if (disactivated) {
-			events.push(name_to_id["Apply"]);
+			if (!replay->get_replay_active())
+				events.push(name_to_id["Apply"]);
+			else
+				events.push(name_to_id["ApplyReplay"]);
 		}
 		while (keyboard->text_entered->size())
 			keyboard->text_entered->pop();
@@ -777,6 +782,10 @@ void Menu_Processing::step() {
 		if (name_to_id["Replay"] == events.front()) {
 			replay_setup_menu.set_active(1);
 			main_menu.set_active(0);
+		}
+		if (name_to_id["ApplyReplay"] == events.front()) {
+			network->set_name(text_fields[name_to_id["ReplayName"]]->get_text());
+			network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
 		}
 		events.pop();
 	}
