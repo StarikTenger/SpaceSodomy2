@@ -420,6 +420,13 @@ std::map<int, Player*>* Game_Client::get_players() {
 	return &players;
 }
 
+int Game_Client::get_player_id(std::string name) {
+	for (auto it = players.begin(); it != players.end(); it++)
+		if (it->second != nullptr && it->second->get_name() == name)
+			return it->second->get_id();
+	return -1;
+}
+
 void Game_Client::load_setup(std::string path) {
 	std::ifstream fileInput(path);
 	std::stringstream file = (aux::comment(fileInput));

@@ -142,7 +142,7 @@ Control::Control() {
 	progress_bar.set_pos({ 0, 0 });
 	progress_bar.set_character_size(0);
 	progress_bar.set_draw(&draw);
-	progress_bar.set_max_value(new int(100));
+	progress_bar.set_max_value(100);
 	progress_bar.set_value(0);
 	progress_bar.step();
 	draw.display();
@@ -152,7 +152,7 @@ Control::Control() {
 	draw.load_textures("textures.conf");
 	loading_stage.set_text("Loading setup...");
 	loading_stage.step();
-	progress_bar.set_value(new float(25));
+	progress_bar.set_value(25);
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
@@ -162,7 +162,7 @@ Control::Control() {
 	audio.set_draw(&draw);
 	loading_stage.set_text("Loading sounds...");
 	loading_stage.step();
-	progress_bar.set_value(new float(50));
+	progress_bar.set_value(50);
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
@@ -171,7 +171,7 @@ Control::Control() {
 	audio.load_sounds();
 	loading_stage.set_text("Loading tracks...");
 	loading_stage.step();
-	progress_bar.set_value(new float(75));
+	progress_bar.set_value(75);
 	progress_bar.step();
 	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
 	draw.display();
@@ -197,7 +197,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game, &replay);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -206,9 +206,6 @@ Control::Control() {
 	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
-	if (replay.get_replay_active()) {
-		replay = Replay(replay_path);
-	}
 }
 
 int Control::get_is_running() {
@@ -219,7 +216,7 @@ void Control::step() {
 	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
-		load_config("client_config.conf");
+		load_keys("keys.conf");
 	}
 	// Receiving
 	network.receive();

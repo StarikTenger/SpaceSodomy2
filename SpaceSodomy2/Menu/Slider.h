@@ -7,7 +7,7 @@ private:
 	sf::Font font;
 	sf::Text text;
 	int min_value;
-	int* max_value;
+	int max_value;
 	b2Vec2 cord; // slider pointer pos
 	b2Vec2 axis_scale;
 	b2Vec2 slider_scale;
@@ -25,7 +25,7 @@ public:
 	void init();
 
 	// Set methods
-	void create(int min, int* max); // set min max vals
+	void create(int min, int max); // set min max vals
 	void set_slider_value(float value_); // set val
 	void set_slider_percent_value(float percent_value_); // set percent val
 	void set_axis_scale(b2Vec2 axis_scale_);

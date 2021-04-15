@@ -57,8 +57,6 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 		hulls[name].set_draw(draw);
 		hulls[name].set_active(0);
 		hulls[name].set_events(&events);
-		hulls[name].set_sliders_vals(&sliders_vals);
-		hulls[name].set_text_fields_strings(&text_fields_strings);
 		init_hull(name, hp, mass, radius,
 			stamina, stamina_recovery, &hulls[name]);
 		config >> next;
@@ -119,15 +117,15 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 				current_id++;
 			}
 			if (j == keys->operator[](i).size()) {
-				keys->operator[](i).push_back(&text_fields_strings[current_id]);
-				text_fields_strings[current_id] = cur;
-				menu->add_keyboard_field(current_id, text_fields_strings[current_id], "TextField",
-					b2Vec2(pos.x + indent.x * (j + 1), pos.y + indent.y * i), 0, character_size, sf::Color::White,
-					1, mouse_pos, keyboard);
+				keys->operator[](i).push_back(new std::string(cur));
+				
+				keyboard_fields[current_id] = menu->add_keyboard_field(current_id, cur, "TextField", b2Vec2(pos.x + indent.x * (j + 1), pos.y + indent.y * i),
+					0, character_size, sf::Color::White, 1, mouse_pos, keyboard);
 				current_id++;
 			}
 			else
 				*(keys->operator[](i)[j]) = cur;
+			id_to_keyit[current_id - 1] = {i, j};
 			config >> cur;
 		}
 	}
@@ -245,10 +243,11 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				scale.x = sf::VideoMode::getDesktopMode().width;
 			if (scale.y == -1)
 				sf::VideoMode::getDesktopMode().height;
-			object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
+			buttons[i] = object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
 			name_to_id[button_name] = i;
 			break;
 		case 2:
+			name = "default";
 			texture_name = "TextField";
 			use_window_cords = 0;
 			pos = { 0,0 };
@@ -256,6 +255,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			align = 1;
 			file >> next;
 			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
 				if (next == "TEXTURE_NAME")
 					file >> texture_name;
 				if (next == "USE_WINDOWS_CORDS")
@@ -268,7 +269,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> align;
 				file >> next;
 			}
-			object->add_text_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
+			name_to_id[name] = i;
+			text_fields[i] = object->add_text_field(i, "", texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				align, mouse_pos, keyboard);
 			break;
 		case 3:
@@ -279,7 +281,6 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			slider_scale = {10, 10};
 			min_val = 0;
 			max_val = 100;
-			max_vals[i] = max_val;
 			file >> next;
 			while (next != "END") {
 				if (next == "NAME")
@@ -296,7 +297,6 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> min_val;
 				if (next == "MAX") {
 					file >> max_val;
-					max_vals[i] = max_val;
 				}
 				file >> next;
 			}
@@ -308,8 +308,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				scale.x = sf::VideoMode::getDesktopMode().width;
 			if (slider_scale.y == -1)
 				slider_scale.y = sf::VideoMode::getDesktopMode().height;
-			object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
-				min_val, &max_vals[i], sliders_vals[i], mouse_pos);
+			sliders[i] = object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
+				min_val, max_val, 0, mouse_pos);
 			name_to_id[name] = i;
 			break;
 		case 4:
@@ -332,16 +332,19 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> align;
 				file >> next;
 			}
-			object->add_keyboard_field(i, text_fields_strings[i], texture_name, pos, use_window_cords, character_size, sf::Color::White,
+			keyboard_fields[i] = object->add_keyboard_field(i, "", texture_name, pos, use_window_cords, character_size, sf::Color::White,
 				align, mouse_pos, keyboard);
 			break;
 		case 5:
+			name = "default";
 			use_window_cords = 0;
 			pos = { 0, 0 };
 			character_size = 20;
 			file >> next;
 			align = 2;
 			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
 				if (next == "USE_WINDOWS_CORDS")
 					file >> use_window_cords;
 				if (next == "POS")
@@ -356,7 +359,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				scale.x = sf::VideoMode::getDesktopMode().width;
 			if (scale.y == -1)
 				scale.y = sf::VideoMode::getDesktopMode().height;
-			object->add_constant_text(i, text_fields_strings[i], pos, use_window_cords, character_size, sf::Color::White,
+			name_to_id[name] = i;
+			constant_texts[i] = object->add_constant_text(i, "", pos, use_window_cords, character_size, sf::Color::White,
 				align, mouse_pos, keyboard);
 			break;
 		case 6:
@@ -383,7 +387,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				scale.x = sf::VideoMode::getDesktopMode().width;
 			if (scale.y == -1)
 				scale.y = sf::VideoMode::getDesktopMode().height;
-			object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
+			images[i] = object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
 			break;
 		case 7:
 			file >> next;
@@ -419,7 +423,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			if (scale.y == -1)
 				scale.y = sf::VideoMode::getDesktopMode().height;
 			name_to_id[name] = i;
-			object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, &max_vals[i], &bars_vals[i], critical);
+			bars[i] = object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, 0, 0, critical);
 			break;
 		default:
 			i--;
@@ -490,8 +494,6 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 			guns[name].set_draw(draw);
 			guns[name].set_active(0);
 			guns[name].set_events(&events);
-			guns[name].set_sliders_vals(&sliders_vals);
-			guns[name].set_text_fields_strings(&text_fields_strings);
 			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
 				projectile_radius, projectile_vel, &guns[name]);
 			config >> next;
@@ -500,64 +502,59 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 }
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
-	aux::Keyboard* keyboard_, bool* reload_,
-	Game_Client* game_, Replay* replay_) {
+	aux::Keyboard* keyboard_, Client_Network* network_,
+	Game_Client* game_, Replay* replay_, bool* reload_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
 	mouse_pos = mouse_pos_;
-	reload = reload_;
+	network = network_;
 	replay = replay_;
+	reload = reload_;
 	load_sound("sound_settings.conf");
 	load_aim_settings("HUD_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
 	main_menu.set_events(&events);
-	main_menu.set_sliders_vals(&sliders_vals);
-	main_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&main_menu);
 	init_menu("menu_configs/main.conf", &main_menu);
 	// set client config menu fields
 	config_menu.set_draw(draw);
 	config_menu.set_active(0);
 	config_menu.set_events(&events);
-	config_menu.set_sliders_vals(&sliders_vals);
-	config_menu.set_text_fields_strings(&text_fields_strings);
-	text_fields_strings[current_id] = "Server IP:";
-	text_fields_strings[current_id + 2] = "Port:";
-	text_fields_strings[current_id + 4] = "ID:";
-	text_fields_strings[current_id + 6] = "Name:";
-	load_config("client_config.conf", &text_fields_strings[current_id + 1], &text_fields_strings[current_id + 3],
-		&text_fields_strings[current_id + 5], &text_fields_strings[current_id + 7]);
+	std::string ServerIP, Port, ID, Name;
+	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
+	constant_texts[name_to_id["ServerIPText"]]->set_text("Server IP:");
+	constant_texts[name_to_id["PortText"]]->set_text("Port:");
+	constant_texts[name_to_id["IDText"]]->set_text("ID:");
+	constant_texts[name_to_id["NameText"]]->set_text("Name:");
+	text_fields[name_to_id["ServerIP"]]->set_text(ServerIP);
+	text_fields[name_to_id["Port"]]->set_text(Port);
+	constant_texts[name_to_id["ID"]]->set_text(ID);
+	text_fields[name_to_id["Name"]]->set_text(Name);
 	// set settigs menu 
 	settings_menu.set_draw(draw);
 	settings_menu.set_active(0);
 	settings_menu.set_events(&events);
-	settings_menu.set_sliders_vals(&sliders_vals);
-	settings_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&settings_menu);
 	init_menu("menu_configs/settings.conf", &settings_menu);
 	// sound menu settings
 	sound_menu.set_draw(draw);
 	sound_menu.set_active(0);
 	sound_menu.set_events(&events);
-	sound_menu.set_sliders_vals(&sliders_vals);
-	sound_menu.set_text_fields_strings(&text_fields_strings);
-	text_fields_strings[current_id] = "Sound Volume:";
-	text_fields_strings[current_id + 2] = "Music Volume:";
 	menus.push_back(&sound_menu);
-	sliders_vals[current_id + 1] = game->get_audio()->get_sound_volume();
-	sliders_vals[current_id + 3] = game->get_audio()->get_music_volume();
 	init_menu("menu_configs/sound.conf", &sound_menu);
+	constant_texts[name_to_id["SoundVolumeText"]]->set_text("Sound Volume:");
+	constant_texts[name_to_id["MusicVolumeText"]]->set_text("Music Volume:");
+	sliders[name_to_id["SoundVolume"]]->set_slider_value(game->get_audio()->get_sound_volume());
+	sliders[name_to_id["MusicVolume"]]->set_slider_value(game->get_audio()->get_music_volume());
 	// set keys menu fields
 	keys_menu.set_draw(draw);
 	keys_menu.set_active(0);
 	keys_menu.set_events(&events);
-	keys_menu.set_sliders_vals(&sliders_vals);
-	keys_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
 	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -350 }, -30, { 100, 50 }, 20);
@@ -572,39 +569,45 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	gun_menu.set_draw(draw);
 	gun_menu.set_active(0);
 	gun_menu.set_events(&events);
-	gun_menu.set_sliders_vals(&sliders_vals);
-	gun_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&gun_menu);
 	init_gun_menu(b2Vec2(300, 100), "parameters.conf");
 	// set hull menu fields
 	hull_menu.set_draw(draw);
 	hull_menu.set_active(0);
 	hull_menu.set_events(&events);
-	hull_menu.set_sliders_vals(&sliders_vals);
-	hull_menu.set_text_fields_strings(&text_fields_strings);
 	menus.push_back(&hull_menu);
 	init_hull_menu(b2Vec2(300, 100), "parameters.conf");
 	// set HUD menu fields
 	HUD_menu.set_draw(draw);
 	HUD_menu.set_active(0);
 	HUD_menu.set_events(&events);
-	HUD_menu.set_sliders_vals(&sliders_vals);
-	HUD_menu.set_text_fields_strings(&text_fields_strings);
-	text_fields_strings[current_id] = "Aim Configuration:";
-	text_fields_strings[current_id + 2] = "Aim Opacity:";
-	sliders_vals[current_id + 1] = game->get_aim_conf();
-	sliders_vals[current_id + 3] = game->get_aim_opacity();
 	init_menu("menu_configs/HUD.conf", &HUD_menu);
+	constant_texts[name_to_id["AimConfigurationText"]]->set_text("Aim Configuration:");
+	constant_texts[name_to_id["AimOpacityText"]]->set_text("Aim Opacity:");
+	sliders[name_to_id["AimConfiguration"]]->set_slider_value(game->get_aim_conf());
+	sliders[name_to_id["AimOpacity"]]->set_slider_value(game->get_aim_opacity());
 	menus.push_back(&HUD_menu);
 	// set replay_menu
 	replay_menu.set_draw(draw);
 	replay_menu.set_active(0);
 	replay_menu.set_events(&events);
-	replay_menu.set_sliders_vals(&sliders_vals);
-	sliders_vals[current_id] = 0;
-	bars_vals[current_id + 1] = 50;
 	init_menu("menu_configs/replay.conf", &replay_menu);
+	sliders[name_to_id["ReplaySlider"]]->set_slider_value(0);
+	bars[name_to_id["ReplayBar"]]->set_value(0);
+	bars[name_to_id["ReplayBar"]]->set_critical_value(-1);
+	constant_texts[name_to_id["ReplayNameText"]]->set_text("Name:");
+	constant_texts[name_to_id["ReplayIDText"]]->set_text("ID:");
+	text_fields[name_to_id["ReplayName"]]->set_text(text_fields[name_to_id["Name"]]->get_text());
+	text_fields[name_to_id["ReplayID"]]->set_text(constant_texts[name_to_id["ID"]]->get_text());
 	menus.push_back(&replay_menu);
+	// set replay_setup_menu
+	replay_setup_menu.set_draw(draw);
+	replay_setup_menu.set_active(0);
+	replay_setup_menu.set_events(&events);
+	init_menu("menu_configs/replay_setup.conf", &replay_setup_menu);
+	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
+	text_fields[name_to_id["ReplayPath"]]->set_text("14.04.2021_1.28.rep");
+	menus.push_back(&replay_setup_menu);
 }
 
 void Menu_Processing::step() {
@@ -614,21 +617,36 @@ void Menu_Processing::step() {
 			game->get_draw()->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(game->get_draw()->get_window()->getSize())),
 				sf::Color(0, 0, 0, 90), 0);
 		text_field_active = 0;
-		max_vals[name_to_id["ReplaySlider"]] = replay->get_replay_frame()->get_max();
-		max_vals[name_to_id["ReplayBar"]] = replay->get_replay_frame()->get_max();
+		sliders[name_to_id["ReplaySlider"]]->create(0, replay->get_replay_frame()->get_max());
+		bars[name_to_id["ReplayBar"]]->set_max_value(replay->get_replay_frame()->get_max());
 		if (replay->get_replay_active())
-			sliders_vals[name_to_id["ReplaySlider"]] = replay->get_replay_frame()->get();
+			sliders[name_to_id["ReplaySlider"]]->set_slider_value(replay->get_replay_frame()->get());
 		for (auto menu : menus) {
 			menu->step();
 			text_field_active |= menu->text_field_active;
 		}
-		game->get_audio()->set_sound_volume(sliders_vals[name_to_id["SoundVolume"]]);
-		game->get_audio()->set_music_volume(sliders_vals[name_to_id["MusicVolume"]]);
-		game->set_aim_conf(sliders_vals[name_to_id["AimConfiguration"]]);
-		game->set_aim_opacity(sliders_vals[name_to_id["AimOpacity"]]);
+		for (auto keyboard_field : keyboard_fields) {
+			auto it = id_to_keyit[keyboard_field.first];
+			*keys_menu_vec[it.first][it.second] = keyboard_field.second->get_text();
+		}
+		game->get_audio()->set_sound_volume(sliders[name_to_id["SoundVolume"]]->get_slider_value());
+		game->get_audio()->set_music_volume(sliders[name_to_id["MusicVolume"]]->get_slider_value());
+		game->set_aim_conf(sliders[name_to_id["AimConfiguration"]]->get_slider_value());
+		game->set_aim_opacity(sliders[name_to_id["AimOpacity"]]->get_slider_value());
 		if (replay->get_replay_active()) {
-			bars_vals[name_to_id["ReplayBar"]] = sliders_vals[name_to_id["ReplaySlider"]];
-			replay->get_replay_frame()->set(sliders_vals[name_to_id["ReplaySlider"]]
+			if (atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()) != network->get_id()) {
+				network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
+				if (game->get_ship(network->get_id()) != nullptr && game->get_ship(network->get_id())->get_player() != nullptr)
+					text_fields[name_to_id["ReplayName"]]->set_text(game->get_ship(network->get_id())->get_player()->get_name());
+				else
+					text_fields[name_to_id["ReplayName"]]->set_text("default");
+			}
+			if (text_fields[name_to_id["ReplayName"]]->get_text() != network->get_name()) {
+				network->set_id(game->get_player_id(text_fields[name_to_id["ReplayName"]]->get_text()));
+				text_fields[name_to_id["ReplayID"]]->set_text(std::to_string(network->get_id()));
+			}
+			bars[name_to_id["ReplayBar"]]->set_value(sliders[name_to_id["ReplaySlider"]]->get_slider_value());
+			replay->get_replay_frame()->set(sliders[name_to_id["ReplaySlider"]]->get_slider_value()
 				+ replay->get_replay_frame()->get() - int(replay->get_replay_frame()->get()));
 		}
 		disactivated = 1;
@@ -658,9 +676,12 @@ void Menu_Processing::step() {
 			draw->get_window()->close();
 		}
 		if (name_to_id["ApplyClientConfig"] == events.front()) { // Apply button
-			save_config("client_config.conf", text_fields_strings[7], atoi(text_fields_strings[9].c_str()),
-				atoi(text_fields_strings[11].c_str()), text_fields_strings[13]);
-			*reload = 1;
+			save_config("client_config.conf", text_fields[name_to_id["ServerIP"]]->get_text(), atoi(text_fields[name_to_id["Port"]]->get_text().c_str()),
+				atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()), text_fields[name_to_id["Name"]]->get_text());
+			network->set_server(text_fields[name_to_id["ServerIP"]]->get_text());
+			network->set_port(atoi(text_fields[name_to_id["Port"]]->get_text().c_str()));
+			network->set_id(atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()));
+			network->set_name(text_fields[name_to_id["Name"]]->get_text());
 		}
 		if (name_to_id["Back"] == events.front()) { // Back button
 			main_menu.set_active(1);
@@ -713,11 +734,11 @@ void Menu_Processing::step() {
 			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
-		if (name_to_id["Replay"] == events.front()) {
+		if (name_to_id["PlayReplay"] == events.front()) {
 			shader_active = 0;
-			main_menu.set_active(0);
+			replay_setup_menu.set_active(0);
 			replay->set_replay_active(1);
-			replay->set_replay_path("replays/14.04.2021_1.28.rep");
+			replay->set_replay_path("replays/" + text_fields[name_to_id["ReplayPath"]]->get_text());
 			replay_menu.set_active(1);
 		}
 		for (auto it = guns.begin(); it != guns.end(); it++) {
@@ -744,9 +765,18 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["ReplayBack"] == events.front()) {
 			shader_active = 1;
-			main_menu.set_active(1);
+			replay_setup_menu.set_active(1);
 			replay->set_replay_active(0);
 			replay_menu.set_active(0);
+			events.push(name_to_id["Apply"]);
+		}
+		if (name_to_id["ReplaySetupBack"] == events.front()) {
+			replay_setup_menu.set_active(0);
+			main_menu.set_active(1);
+		}
+		if (name_to_id["Replay"] == events.front()) {
+			replay_setup_menu.set_active(1);
+			main_menu.set_active(0);
 		}
 		events.pop();
 	}
