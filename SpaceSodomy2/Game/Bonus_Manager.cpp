@@ -17,23 +17,15 @@ void Bonus_Manager::set_cooldown(Bonus::Types i, float t) {
     cooldowns[i].set_max(t);
 }
 void Bonus_Manager::step(float dt) {
-    std::cout << "cooldown" << cooldowns[0].get() << "\n";
-    for (int i = 0; i < spawnpoints[0].size(); i++) {
-        std::cout << is_spawnpoint_free[0][i] << ' ';
-    }
-    std::cout << '\n';
-
-
-
     for (int bonus_type = 0; bonus_type < cooldowns.size(); bonus_type++) {
         if (spawnpoints[bonus_type].size() == 0) {
             continue;
         }
         std::vector<std::pair<b2Vec2, int>> possibles;
         cooldowns[bonus_type].step(dt);
-        if (cooldowns[bonus_type].get() >= cooldowns[bonus_type].get_max() - b2_epsilon) {
-            for (int pos_index = 0; pos_index < spawnpoints[bonus_type].size(); pos_index++) {
 
+        if (cooldowns[bonus_type].get() >= cooldowns[bonus_type].get_max() - b2_epsilon) {
+            for (int pos_index = 0; pos_index < spawnpoints[bonus_type].size(); pos_index++) { //find all available spawnpoints
                 if (is_spawnpoint_free[bonus_type][pos_index]) {
                     possibles.push_back(std::make_pair(spawnpoints[bonus_type][pos_index], pos_index));
                 }
@@ -41,12 +33,13 @@ void Bonus_Manager::step(float dt) {
             if (possibles.size() == 0) {
                 continue;
             }
-            std::cout << "bonus created\n";
+            // Add bonus to creation deque
+            //std::cout << "bonus type " << bonus_type << " their number " << spawnpoints[bonus_type].size() << " possible number "<< possibles.size() << '\n';
             cooldowns[bonus_type].set(0);
             int i = aux::random_int(0, possibles.size() - 1);
             Bonus_Def def;
             def.pos = possibles[i].first;
-            def.bonus = &bonus_prototypes[i];
+            def.bonus = &(bonus_prototypes[bonus_type]);
             def.set_id(possibles[i].second);
             is_spawnpoint_free[bonus_type][possibles[i].second] = false;
             bonuses_to_create.push_back(def);
@@ -62,13 +55,15 @@ bool Bonus_Manager::get_next(Bonus_Def& val) {
         return false;
     }
     val = bonuses_to_create.back();
+
+    //std::cout << "exported bonus with type " << val.bonus->type << " & id " << val.get_id() << '\n';
     bonuses_to_create.pop_back();
     return true;
 
 }
 void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
+    //std::cout << "bonus_returned with type " << type << "& id " << id <<"\n";
     is_spawnpoint_free[type][id] = true;
-    std::cout << "bonus_returned\n";
 }
 
 void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {

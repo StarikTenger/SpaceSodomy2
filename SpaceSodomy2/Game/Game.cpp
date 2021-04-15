@@ -351,19 +351,22 @@ void Game::process_ships() {
 	for (auto ship : ships) {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
-		std::cout << "ship hp : " << ship->get_hp()->get() << '\n';
-		if (ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get() > 0) {
-			std::cout << "pokemon \"INSTANT_HP\" caught!\n";
-			ship->get_hp()->modify(ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->get());
-			(ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter()->set(0));
+
+		// Apply INSTANT_HP
+		auto hp_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter();
+		if (hp_eff > 0) {
+			ship->get_hp()->modify(hp_eff->get());
+			hp_eff->set(0);
 
 		}
-		if (ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->get() > 0) {
-			std::cout << "pokemon \"INSTANT_STAMINA\" caught!\n";
-			ship->get_stamina()->modify(ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->get());
-			(ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter()->set(0));
-		}
+		// Apply INSTANT_STAMINA
+		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter();
+		if (hp_eff > 0) {
+			ship->get_stamina()->modify(st_eff->get());
+			st_eff->set(0);
 
+		}
+		// Apply LASER_BURN
 		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > 0) {
 			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
 				                                ship->get_damage_receiver()->get_last_hit());
