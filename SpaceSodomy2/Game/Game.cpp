@@ -561,6 +561,10 @@ void Game::clear() {
 	for (auto sound : sounds)
 		delete sound;
 	sounds = {};
+	// Clear bonuses
+	for (auto bonus : bonuses)
+		delete bonus;
+	bonuses = {};
 	for (auto effect : effects) {
 		delete effect;
 	}

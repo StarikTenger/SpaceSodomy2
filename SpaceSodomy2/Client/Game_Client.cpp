@@ -212,7 +212,17 @@ void Game_Client::display(int id) {
 
 	// Bonuses
 	for (auto bonus : bonuses) {
-		draw->fill_circle(bonus->get_body()->GetPosition(), 0.4, sf::Color::White);
+		std::map<int, std::string> bonus_textures = { 
+			{Bonus::INSTANT_HP, "bonusHp"},
+			{Bonus::BERSERK, "bonusBerserk"},
+			{Bonus::IMMORTALITY, "bonusImmortal"},
+			{Bonus::CHARGE, "bonusCharge"},
+			{Bonus::LASER, "bonusLaser"}
+		};
+		//draw->fill_circle(bonus->get_body()->GetPosition(), 0.4, sf::Color::White);
+		draw->image(bonus_textures[bonus->get_type()],
+			bonus->get_body()->GetPosition(), { 0.4, 0.4 },
+			draw->get_camera()->get_angle(), sf::Color::White);
 	}
 }
 
