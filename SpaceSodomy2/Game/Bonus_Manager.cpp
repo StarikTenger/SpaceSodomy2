@@ -63,6 +63,10 @@ void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
     is_spawnpoint_free[type][id] = true;
 }
 
+Bonus_Prototype* Bonus_Manager::prototype_by_id(int type) {
+    return &bonus_prototypes[type];
+}
+
 void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {
     bonus_prototypes[prototypes.type] = (prototypes);
 }
