@@ -194,6 +194,7 @@ Control::Control() {
 	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
+	game.load_parameters("parameters.conf");
 }
 
 int Control::get_is_running() {

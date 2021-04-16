@@ -214,15 +214,16 @@ void Game_Client::display(int id) {
 	for (auto bonus : bonuses) {
 		std::map<int, std::string> bonus_textures = { 
 			{Bonus::INSTANT_HP, "bonusHp"},
+			{Bonus::INSTANT_STAMINA, "bonusEnergy"},
 			{Bonus::BERSERK, "bonusBerserk"},
 			{Bonus::IMMORTALITY, "bonusImmortal"},
 			{Bonus::CHARGE, "bonusCharge"},
 			{Bonus::LASER, "bonusLaser"}
 		};
-		//draw->fill_circle(bonus->get_body()->GetPosition(), 0.4, sf::Color::White);
+		
 		draw->image(bonus_textures[bonus->get_type()],
-			bonus->get_body()->GetPosition(), { 0.4, 0.4 },
-			draw->get_camera()->get_angle(), sf::Color::White);
+			bonus->get_body()->GetPosition(), { 0.3, 0.3 },
+			draw->get_camera()->get_angle() + b2_pi/2, sf::Color::White);
 	}
 }
 
@@ -231,7 +232,7 @@ void Game_Client::decode(std::string source) {
 	clear();
 
 	// Creating stringstream
-	//std::cout << source << "\n";
+	std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
