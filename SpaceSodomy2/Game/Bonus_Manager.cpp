@@ -27,7 +27,7 @@ void Bonus_Manager::step(float dt) {
         if (cooldowns[bonus_type].get() >= cooldowns[bonus_type].get_max() - b2_epsilon) {
             int i = aux::random_int(0, spawnpoints[bonus_type].size() - 1);
             if (!is_spawnpoint_free[bonus_type][i]) {
-                return;
+                continue;
             }
             cooldowns[bonus_type].set(0);
             Bonus_Def def;

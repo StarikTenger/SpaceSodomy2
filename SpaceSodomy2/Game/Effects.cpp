@@ -134,6 +134,14 @@ void Effects::step(float dt) {
     }
 }
 
+std::vector<int> Effects::get_mask() {
+    std::vector<int> mask(COUNT);
+    for (int i = 0; i < COUNT; i++) {
+        mask[i] = (effects[i].get_counter()->get() > b2_epsilon);
+    }
+    return mask;
+}
+
 void Effects::update(Effects_Prototype* _effects) {
     if (!_effects) {
         return;

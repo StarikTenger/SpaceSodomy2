@@ -185,6 +185,21 @@ void Game_Client::display(int id) {
 			}
 			
 		}
+
+		// Effects
+		if (ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = 1. * b2Vec2(radius, radius);
+			state_begin.angle = 0;
+			state_begin.color = color;
+			Float_Animation::State state_end = state_begin;
+			state_end.scale = b2Vec2_zero;
+			state_end.color.a = 0;
+			state_end.pos += aux::rotate({ 0, radius / 4 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("bullet", state_begin, state_end, 0.15, GAME);
+			draw->create_animation(animation);
+		}
 	}
 
 	// Animations
@@ -299,6 +314,9 @@ void Game_Client::decode(std::string source) {
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
+			// Effects
+			std::string effects_stringed;
+			stream >> effects_stringed;
 			// Bonus slot
 			int bonus;
 			stream >> bonus;
@@ -323,10 +341,15 @@ void Game_Client::decode(std::string source) {
 			ship->get_bonus_slot()->set_current_bonus(bonus);
 
 			// Decoding commands
-			int loc_engine_active = 0;
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+			}
+			// Decoding effects
+			std::vector<int> effects = aux::string_to_mask(effects_stringed);
+			for (int i = 0; i < effects.size(); i++) {
+				float val = effects[i];
+				ship->get_effects()->get_effect((Effects::Types)i)->get_counter()->set(val);
 			}
 		}
 		// Projectile
