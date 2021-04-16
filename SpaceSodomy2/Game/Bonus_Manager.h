@@ -14,7 +14,7 @@ private:
 
     struct Global_Spawnability {
         Counter cooldown;
-        Counter max_count;
+        Counter count;
 
     };
     std::vector<Global_Spawnability> spawnable;

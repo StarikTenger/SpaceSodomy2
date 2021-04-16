@@ -175,6 +175,6 @@ Effects::Types Effects::get_effect_type(std::string effect_name) {
         return Effects::Types::IMMORTALITY;
     else {
         std::cerr << "incorrect effect type : " << effect_name << '\n';
-        return Effects::Types::INSTANT_HP;
+        return Effects::Types::COUNT;
     }
 }
