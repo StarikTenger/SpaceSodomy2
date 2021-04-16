@@ -600,6 +600,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	constant_texts[name_to_id["ReplayIDText"]]->set_text("ID:");
 	text_fields[name_to_id["ReplayName"]]->set_text(text_fields[name_to_id["Name"]]->get_text());
 	text_fields[name_to_id["ReplayID"]]->set_text(constant_texts[name_to_id["ID"]]->get_text());
+	constant_texts[name_to_id["ReplaySpeed"]]->set_text("Speed: " + aux::float_to_string(replay->get_replay_frame()->get_change_vel(), 0));
 	menus.push_back(&replay_menu);
 	// set replay_setup_menu
 	replay_setup_menu.set_draw(draw);
@@ -620,6 +621,12 @@ void Menu_Processing::step() {
 		text_field_active = 0;
 		sliders[name_to_id["ReplaySlider"]]->create(0, replay->get_replay_frame()->get_max());
 		bars[name_to_id["ReplayBar"]]->set_max_value(replay->get_replay_frame()->get_max());
+		bars[name_to_id["ReplayBar"]]->set_critical_value(-1);
+		float foo = replay->get_replay_frame()->get_change_vel() * replay->get_replay_frame()->get_change_vel();
+		if (foo < 1 - b2_epsilon && foo > b2_epsilon)
+			constant_texts[name_to_id["ReplaySpeed"]]->set_text("Speed: " + aux::float_to_string(replay->get_replay_frame()->get_change_vel(), 1));
+		else
+			constant_texts[name_to_id["ReplaySpeed"]]->set_text("Speed: " + aux::float_to_string(replay->get_replay_frame()->get_change_vel(), 0));
 		if (replay->get_replay_active())
 			sliders[name_to_id["ReplaySlider"]]->set_slider_value(replay->get_replay_frame()->get());
 		for (auto menu : menus) {
