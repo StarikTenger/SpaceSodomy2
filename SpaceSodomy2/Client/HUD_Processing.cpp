@@ -123,6 +123,14 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	press_r_to_respawn.set_use_window_cords(0);
 	press_r_to_respawn.set_text_character_pixel_size(60);
 	press_r_to_respawn.set_text_scale(0.5);
+
+	bonus.set_draw(draw);
+	bonus.set_use_window_cords(5);
+	bonus.set_use_picture_scale(0);
+	bonus.set_scale({ 100, 100 });
+	bonus.set_pos({ -100, 100 });
+	bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()));
+
 }
 
 void HUD_Processing::step() {
