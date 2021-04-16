@@ -77,11 +77,6 @@ void Control::process_commands() {
 			command_module.set_command(Command_Module::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(Command_Module::RESPAWN, 1);
-		if (key_by_name("REPLAY_SPEED_UP"))
-			if (replay.get_replay_active()) {
-				if (!key_prev_by_name("REPLAY_SPEED_UP"))
-					replay.increase_speed();
-			}
 		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP"))
 			replay.increase_speed();
 		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
