@@ -77,6 +77,8 @@ void Control::process_commands() {
 			command_module.set_command(Command_Module::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(Command_Module::RESPAWN, 1);
+		if (key_by_name("BONUS_ACTIVATION"))
+			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
 	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();

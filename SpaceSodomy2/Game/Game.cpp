@@ -372,6 +372,12 @@ void Game::process_ships() {
 				                                ship->get_damage_receiver()->get_last_hit());
 		}
 
+		// Bonus activating
+		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
+			if (ship->get_bonus_slot())
+				ship->get_bonus_slot()->activate();
+		}
+
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
