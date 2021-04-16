@@ -24,6 +24,10 @@ std::string Game_Client::get_hull_name() {
 	return hull_name;
 }
 
+std::string Game_Client::get_bonus_texture_name(int val) {
+	return bonus_textures[val];
+}
+
 void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
@@ -211,16 +215,7 @@ void Game_Client::display(int id) {
 	}
 
 	// Bonuses
-	for (auto bonus : bonuses) {
-		std::map<int, std::string> bonus_textures = { 
-			{Bonus::INSTANT_HP, "bonusHp"},
-			{Bonus::INSTANT_STAMINA, "bonusEnergy"},
-			{Bonus::BERSERK, "bonusBerserk"},
-			{Bonus::IMMORTALITY, "bonusImmortal"},
-			{Bonus::CHARGE, "bonusCharge"},
-			{Bonus::LASER, "bonusLaser"}
-		};
-		
+	for (auto bonus : bonuses) {		
 		draw->image(bonus_textures[bonus->get_type()],
 			bonus->get_body()->GetPosition(), { 0.3, 0.3 },
 			draw->get_camera()->get_angle() + b2_pi/2, sf::Color::White);
