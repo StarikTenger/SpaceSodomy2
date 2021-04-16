@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <AuxLib/AuxLib.h>
 #include <Game\Game.h>
 #include <Network\Server_Network.h>
@@ -8,6 +9,7 @@
 #include <map>
 #include <set>
 #include <random>
+#include <ctime>
 
 class Control {
 private:

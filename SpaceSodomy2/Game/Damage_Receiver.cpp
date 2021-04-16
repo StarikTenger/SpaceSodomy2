@@ -45,8 +45,12 @@ void Damage_Receiver::set_effects(Effects* val) {
 
 
 void Damage_Receiver::damage(float value, Player* hit_by) {
-    if (effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {
-        hp->modify(-value);
-        last_hit = hit_by;
+    if (!effects) {
+        return;
     }
+    if (effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {
+        return;
+    }
+    hp->modify(-value);
+    last_hit = hit_by;
 }

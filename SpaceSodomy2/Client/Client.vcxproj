@@ -115,6 +115,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -146,20 +147,25 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Audio.lib;AuxLib.lib;Menu.lib;Draw.lib;Network.lib;Game.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;box2d.lib</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Game_Client.cpp" />
     <ClCompile Include="HUD_Processing.cpp" />
+    <ClCompile Include="Loading_Screen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu_Processing.cpp" />
+    <ClCompile Include="Replay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control.h" />
     <ClInclude Include="Game_Client.h" />
     <ClInclude Include="HUD_Processing.h" />
+    <ClInclude Include="Loading_Screen.h" />
     <ClInclude Include="Menu_Processing.h" />
+    <ClInclude Include="Replay.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

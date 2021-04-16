@@ -23,12 +23,6 @@ void Menu::set_active(bool active_) {
 void Menu::set_events(std::queue<int>* events_) {
 	events = events_;
 }
-void Menu::set_text_fields_strings(std::map<int, std::string>* text_fields_strings_) {
-	text_fields_strings = text_fields_strings_;
-}
-void Menu::set_sliders_vals(std::map<int, int>* sliders_vals_) {
-	sliders_vals = sliders_vals_;
-}
 
 //Get_methods
 Draw* Menu::get_draw() {
@@ -43,7 +37,22 @@ std::queue<int>* Menu::get_events() {
 	return events;
 }
 
-void Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
+Bar* Menu::add_bar(int id, int use_window_cords, b2Vec2 pos, b2Vec2 scale, float character_size, sf::Color front_color,
+	sf::Color back_color, int max, float val, int critical) {
+	bars.push_back(new Bar);
+	bars.back()->set_id(id);
+	bars.back()->set_pos(pos);
+	bars.back()->set_use_window_cords(use_window_cords);
+	bars.back()->set_draw(draw);
+	bars.back()->set_scale(scale);
+	bars.back()->set_clicked(&clicked);
+	bars.back()->set_max_value(max);
+	bars.back()->set_value(val);
+	bars.back()->set_critical_value(critical);
+	return bars.back();
+}
+
+Menu_Object* Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 	b2Vec2* mouse_pos, bool use_image_scale) {
 	objects.push_back(new Menu_Object);
 	objects.back()->set_id(id);
@@ -56,9 +65,10 @@ void Menu::add_image(int id, std::string texture_name, b2Vec2 pos, int use_windo
 	objects.back()->set_mouse_pos(mouse_pos);
 	objects.back()->set_clicked(&clicked);
 	objects.back()->set_use_picture_scale(use_image_scale);
+	return objects.back();
 }
 
-void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
+Button* Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_window_cords, b2Vec2 scale,
 	sf::Color color, b2Vec2* mouse_pos, bool use_image_scale) {
 	buttons.push_back(new Button);
 	buttons.back()->set_id(id);
@@ -71,9 +81,10 @@ void Menu::add_button(int id, std::string texture_name, b2Vec2 pos, int use_wind
 	buttons.back()->set_mouse_pos(mouse_pos);
 	buttons.back()->set_clicked(&clicked);
 	buttons.back()->set_use_picture_scale(use_image_scale);
+	return buttons.back();
 }
 
-void Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
+Text_Field* Menu::add_text_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
 	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	text_fields.push_back(new Text_Field);
 	text_fields.back()->set_id(id);
@@ -88,9 +99,10 @@ void Menu::add_text_field(int id, std::string text, std::string texture_name, b2
 	text_fields.back()->set_mouse_pos(mouse_pos);
 	text_fields.back()->set_keyboard(keyboard);
 	text_fields.back()->set_clicked(&clicked);
+	return text_fields.back();
 }
 
-void Menu::add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
+Keyboard_Field* Menu::add_keyboard_field(int id, std::string text, std::string texture_name, b2Vec2 pos, int use_window_cords,
 	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	keyboard_fields.push_back(new Keyboard_Field);
 	keyboard_fields.back()->set_id(id);
@@ -105,9 +117,10 @@ void Menu::add_keyboard_field(int id, std::string text, std::string texture_name
 	keyboard_fields.back()->set_mouse_pos(mouse_pos);
 	keyboard_fields.back()->set_keyboard(keyboard);
 	keyboard_fields.back()->set_clicked(&clicked);
+	return keyboard_fields.back();
 }
 
-void Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_window_cords,
+Constant_Text* Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_window_cords,
 	int character_size, sf::Color color, int align, b2Vec2* mouse_pos, aux::Keyboard* keyboard) {
 	constant_texts.push_back(new Constant_Text);
 	constant_texts.back()->set_id(id);
@@ -121,9 +134,10 @@ void Menu::add_constant_text(int id, std::string text, b2Vec2 pos, int use_windo
 	constant_texts.back()->set_mouse_pos(mouse_pos);
 	constant_texts.back()->set_keyboard(keyboard);
 	constant_texts.back()->set_clicked(&clicked);
+	return constant_texts.back();
 }
 
-void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
+Slider* Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 	int min, int max, int val, b2Vec2* mouse_pos) {
 	sliders.push_back(new Slider);
 	sliders.back()->set_id(id);
@@ -137,7 +151,10 @@ void Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scal
 	sliders.back()->create(min, max);
 	sliders.back()->set_slider_value(val);
 	sliders.back()->init();
+	return sliders.back();
 }
+
+
 
 void Menu::step() {
 	if (!active)
@@ -145,6 +162,10 @@ void Menu::step() {
 	// set clicked val
 	clicked = (last_mouse_status == 0) && (sf::Mouse::isButtonPressed(sf::Mouse::Left));
 	last_mouse_status = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+
+	for (auto bar : bars) {
+		bar->step();
+	}
 
 	for (auto object : objects) {
 		object->primitive_step();
@@ -163,7 +184,6 @@ void Menu::step() {
 		text_field_active -= text_field->get_keyboard_active();
 		text_field->step();
 		text_field_active += text_field->get_keyboard_active();
-		text_fields_strings->operator[](text_field->get_id()) = text_field->get_text();
 		if (clicked && !text_field->get_active() && text_field->get_keyboard_active()) {
 			text_field_active -= text_field->get_keyboard_active();
 			text_field->set_keyboard_active(0);
@@ -184,7 +204,6 @@ void Menu::step() {
 		text_field_active -= keyboard_field->get_keyboard_active();
 		keyboard_field->step();
 		text_field_active += keyboard_field->get_keyboard_active();
-		text_fields_strings->operator[](keyboard_field->get_id()) = keyboard_field->get_text();
 		if (clicked && !keyboard_field->get_active() && keyboard_field->get_keyboard_active()) {
 			text_field_active -= keyboard_field->get_keyboard_active();
 			keyboard_field->set_keyboard_active(0);
@@ -206,6 +225,5 @@ void Menu::step() {
 	// sliders handling
 	for (auto slider : sliders) {
 		slider->step();
-		sliders_vals->operator[](slider->get_id()) = slider->get_slider_value();
 	}
 }

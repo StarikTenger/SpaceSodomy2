@@ -62,6 +62,7 @@ void Draw::set_camera(Camera _cam) {
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {
+	window_name = name;
 	window = new sf::RenderWindow(sf::VideoMode(width, height), name);
 	return window;
 }
@@ -70,10 +71,10 @@ void Draw::fullscreen_toggle() {
 	auto res = aux::get_screen_resolution();
 	if (fullscreen) {
 		window->close();
-		create_window(600, 600, "Space Sodomy II");
+		create_window(600, 600, window_name);
 	}
 	else
-		window->create(sf::VideoMode::getDesktopMode(), "Space Sodomy II", sf::Style::Fullscreen);
+		window->create(sf::VideoMode::getDesktopMode(), window_name, sf::Style::Fullscreen);
 	fullscreen = !fullscreen;
 }
 
@@ -183,10 +184,16 @@ void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickn
 	fill_rect(mid, {len, thickness}, color, ang);
 }
 
+void Draw::textured_line(std::string texture, b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness) {
+	auto mid = 0.5 * (start + finish);
+	float len = b2Distance(start, finish);
+	float ang = aux::vec_to_angle(finish - start);
+	image(texture, mid, { len, thickness }, ang, color);
+}
+
 void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
-	float angle, sf::Color color)
-	{
-	if (textures.find(name) == textures.end())
+	float angle, sf::Color color) {
+	if (!is_texture_exist(name))
 		return;
 	sf::Texture& tex = *textures[name];
 	b2Vec2 scale = { box.x / tex.getSize().x  , box.y / tex.getSize().y };

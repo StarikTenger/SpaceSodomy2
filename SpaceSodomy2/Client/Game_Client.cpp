@@ -1,13 +1,6 @@
 #include "Game_Client.h"
 #include <iostream>
-
-void Game_Client::set_draw(Draw* _draw) {
-	draw = _draw;
-	draw->apply_camera({ 0, 0 }, 100, 0);
-}
-void Game_Client::set_audio(Audio* _audio) {
-	audio = _audio;
-}
+#include <thread>
 
 Draw* Game_Client::get_draw() {
 	return draw;
@@ -24,6 +17,18 @@ std::string Game_Client::get_hull_name() {
 	return hull_name;
 }
 
+int Game_Client::get_aim_conf() {
+	return aim_conf;
+}
+
+int Game_Client::get_aim_opacity() {
+	return aim_opacity;
+}
+
+std::string Game_Client::get_bonus_texture_name(int val) {
+	return bonus_textures[val];
+}
+
 void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
@@ -32,7 +37,27 @@ void Game_Client::set_hull_name(std::string val) {
 	hull_name = val;
 }
 
+void Game_Client::set_draw(Draw* _draw) {
+	draw = _draw;
+	draw->apply_camera({ 0, 0 }, 100, 0);
+}
+
+void Game_Client::set_audio(Audio* _audio) {
+	audio = _audio;
+}
+
+void Game_Client::set_aim_conf(int _conf) {
+	aim_conf = _conf;
+}
+
+void Game_Client::set_aim_opacity(int _opacity) {
+	aim_opacity = _opacity;
+}
+
 void Game_Client::display(int id) {
+	// Setting id
+	my_id = id;
+
 	// Finding cam target
 	auto ship = get_ship(id);
 	if (ship) {
@@ -110,18 +135,29 @@ void Game_Client::display(int id) {
 					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
 			}
 		}
+		// Trace
 		else {
-			// Trace
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
-			float lenstep = 0.5;
-			int steps = 40;
-			for (int i = 0; i < steps; i++) {
-				auto col = sf::Color::Red;
-				col.a = 255 / steps;
-				draw->thin_line(ship->get_body()->GetPosition(), 
-					ship->get_body()->GetPosition() + (i * lenstep * dir), col);
+			b2Vec2 body_pos = ship->get_body()->GetPosition();
+			b2Vec2 right_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
+			right_pos = body_pos + aux::rotate(right_pos, b2_pi / 2);
+			b2Vec2 left_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
+			left_pos = body_pos + aux::rotate(left_pos, -b2_pi / 2);
+			b2Vec2 intersection_right = get_beam_intersection(right_pos, aux::vec_to_angle(dir));
+			b2Vec2 intersection_left = get_beam_intersection(left_pos, aux::vec_to_angle(dir));
+			b2Vec2 intersection = get_beam_intersection(body_pos, aux::vec_to_angle(dir));
+			intersection = std::min(std::min(b2Distance(body_pos, intersection_right), b2Distance(body_pos, intersection_left)),
+				b2Distance(body_pos, intersection)) * dir;
+			intersection += body_pos;
+			auto color = ship->get_player()->get_color();
+			color.a = aim_opacity;
+			if (aim_conf % 2 == 1)
+				draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
+			if (aim_conf > 1) {
+				draw->thin_line(right_pos, intersection_right, color);
+				draw->thin_line(left_pos, intersection_left, color);
 			}
 		}
 
@@ -181,11 +217,49 @@ void Game_Client::display(int id) {
 			}
 			
 		}
+		radius /= 2;
+		// Effects
+		// Charge
+		if (ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = 2. * b2Vec2(radius, radius);
+			state_begin.angle = 0;
+			state_begin.color = color;
+			Float_Animation::State state_end = state_begin;
+			state_end.scale = b2Vec2_zero;
+			state_end.color.a = 0;
+			state_end.pos += aux::rotate({ 0, radius / 4 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("bullet", state_begin, state_end, 0.4, GAME);
+			draw->create_animation(animation);
+		}
+		// Immortality
+		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = b2Vec2(radius, radius);
+			state_begin.angle = ship->get_body()->GetAngle();
+			state_begin.color = sf::Color::White;
+			Float_Animation::State state_end = state_begin;
+			state_end.color.a = 0;
+			//state_end.pos += aux::rotate({ 0, radius / 8 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("ship_aura_" + ship->get_player()->get_hull_name(), state_begin, state_end, 0.15, GAME);
+			draw->create_animation(animation);
+		}
+		// Berserk
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			draw->image("effect", ship->get_body()->GetPosition(), b2Vec2(radius, radius), time * 10, sf::Color::Red);
+		}
+		// Laser
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			// TODO
+		}
 	}
 
 	// Animations
 	draw->draw_animations(GAME);
 	draw->step(dt);
+	time += dt;
 
 	// Projectiles
 	for (auto projectile : projectiles) {
@@ -211,27 +285,37 @@ void Game_Client::display(int id) {
 	}
 
 	// Bonuses
-	for (auto bonus : bonuses) {
-		std::map<int, std::string> bonus_textures = { 
-			{Bonus::INSTANT_HP, "bonusHp"},
-			{Bonus::BERSERK, "bonusBerserk"},
-			{Bonus::IMMORTALITY, "bonusImmortal"},
-			{Bonus::CHARGE, "bonusCharge"},
-			{Bonus::LASER, "bonusLaser"}
-		};
-		//draw->fill_circle(bonus->get_body()->GetPosition(), 0.4, sf::Color::White);
+	for (auto bonus : bonuses) {		
 		draw->image(bonus_textures[bonus->get_type()],
-			bonus->get_body()->GetPosition(), { 0.4, 0.4 },
-			draw->get_camera()->get_angle(), sf::Color::White);
+			bonus->get_body()->GetPosition(), { 0.3, 0.3 },
+			draw->get_camera()->get_angle() + b2_pi/2, sf::Color::White);
 	}
 }
 
 void Game_Client::decode(std::string source) {
+	// Hp value to compare, is used to catch damage event
+	float hp_prev = 0;
+	if (get_ship(my_id)) {
+		hp_prev = get_ship(my_id)->get_hp()->get();
+	}
+	// Projectiles that are not destroyed will be erased
+	struct Projectile_Animation {
+		b2Vec2 pos;
+		sf::Color color;
+		float radius;
+	};
+	std::map<int, Projectile_Animation> destroyed_projectiles;
+	for (auto projectile : projectiles) {
+		destroyed_projectiles[projectile->get_id()].pos = projectile->get_body()->GetPosition();
+		destroyed_projectiles[projectile->get_id()].color = projectile->get_player()->get_color();
+		destroyed_projectiles[projectile->get_id()].radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius;
+	}
+
 	// First clear
 	clear();
 
 	// Creating stringstream
-	//std::cout << source << "\n";
+	std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
@@ -249,7 +333,11 @@ void Game_Client::decode(std::string source) {
 						path[i] = '_';
 					}
 				}
-				load_wall_textures();
+				auto load_func = [](Game_Client* game_client) {
+					game_client->load_wall_textures();
+				};
+				std::thread load_thread(load_func, this);
+				load_thread.detach();
 			}
 		}
 		// Player
@@ -303,6 +391,12 @@ void Game_Client::decode(std::string source) {
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
+			// Effects
+			std::string effects_stringed;
+			stream >> effects_stringed;
+			// Bonus slot
+			int bonus;
+			stream >> bonus;
 			// Hp
 			float hp;
 			stream >> hp;
@@ -321,12 +415,34 @@ void Game_Client::decode(std::string source) {
 			ship->get_stamina()->set(stamina);
 			ship->get_hp()->set_max(max_hp);
 			ship->get_stamina()->set_max(max_stamina);
+			ship->get_bonus_slot()->set_current_bonus(bonus);
 
 			// Decoding commands
-			int loc_engine_active = 0;
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+			}
+			// Decoding effects
+			std::vector<int> effects = aux::string_to_mask(effects_stringed);
+			for (int i = 0; i < effects.size(); i++) {
+				float val = effects[i];
+				ship->get_effects()->get_effect((Effects::Types)i)->get_counter()->set(val);
+			}
+
+			// Damage animation
+			if (ship->get_hp()->get() < hp_prev) {
+				// Animation
+				Float_Animation::State state_a;
+				state_a.angle = 0;
+				state_a.pos = { 0, 0 };
+				state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
+				auto state_b = state_a;
+				float min_alpha = 0.2;
+				state_a.color.a = (min_alpha + ((hp_prev - ship->get_hp()->get()) / ship->get_hp()->get_max()) * (1 - min_alpha)) * 255;
+				state_b.color.a = 0;
+				draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
+				// Sound
+				// TODO: add sound here
 			}
 		}
 		// Projectile
@@ -350,6 +466,9 @@ void Game_Client::decode(std::string source) {
 			projectile_def.player = players[player_id];
 			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
+			projectile->set_id(id);
+			if (destroyed_projectiles.count(id))
+				destroyed_projectiles.erase(destroyed_projectiles.find(id));
 		}
 		// Bonus
 		if (symbol == "b") {
@@ -380,6 +499,30 @@ void Game_Client::decode(std::string source) {
 			audio->update_sound(id, name, pos, 1, 0);
 		}
 	}
+
+	// Projectile hit sounds
+	for (auto projectile : destroyed_projectiles) {
+		audio->update_sound(aux::random_int(0, 1000), "projectile_hit", projectile.second.pos, 1, 0);
+		// Animation
+		for (int i = 0; i < 10; i++) {
+			Float_Animation::State state_begin;
+			state_begin.pos = projectile.second.pos;
+			state_begin.scale = projectile.second.radius * b2Vec2(4, 4);
+			state_begin.angle = 0;
+			state_begin.color = projectile.second.color;
+			Float_Animation::State state_end = state_begin;
+			if (i != 0) {
+				state_end.scale = b2Vec2_zero;
+				state_end.pos += aux::rotate({ 0, 0.4 }, aux::random_float(0, 2, 2) * b2_pi);
+			}
+			else {
+				state_begin.color = state_end.color = { 255, 255, 255 };
+			}
+			state_end.color.a = 0;
+			Float_Animation animation("bullet", state_begin, state_end, 0.1, GAME);
+			draw->create_animation(animation);
+		}
+	}
 }
 
 Ship* Game_Client::get_ship(int id) {
@@ -391,6 +534,13 @@ Ship* Game_Client::get_ship(int id) {
 
 std::map<int, Player*>* Game_Client::get_players() {
 	return &players;
+}
+
+int Game_Client::get_player_id(std::string name) {
+	for (auto it = players.begin(); it != players.end(); it++)
+		if (it->second != nullptr && it->second->get_name() == name)
+			return it->second->get_id();
+	return 0;
 }
 
 void Game_Client::load_setup(std::string path) {

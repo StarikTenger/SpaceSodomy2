@@ -57,6 +57,9 @@ public:
     Effects();
     Effects(Effects_Prototype*);
 
+    std::vector<int> get_mask();
+
+
     Effect* get_effect(Types type);
     void set_effect(Effect*, Types type);
 

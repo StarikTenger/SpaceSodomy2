@@ -32,3 +32,7 @@ void Bonus_Slot::set_effects(Effects* val) {
 void Bonus_Slot::set_bonus_manager(Bonus_Manager* val) {
     bonus_manager = val;
 }
+
+void Bonus_Slot::set_current_bonus(int val) {
+    current_bonus = (Bonus::Types)val;
+}

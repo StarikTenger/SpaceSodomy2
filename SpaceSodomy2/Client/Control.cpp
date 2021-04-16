@@ -55,7 +55,7 @@ void Control::process_commands() {
 
 	// TODO: do it in one std::map
 	if (commands_active) {
-		if (key_by_name("ENGINE_LIN_FORWARD"))
+		if (key_by_name("ENGINE_LIN_FORWARD")) 
 			command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 		if (key_by_name("ENGINE_LIN_BACKWARD"))
 			command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
@@ -77,6 +77,12 @@ void Control::process_commands() {
 			command_module.set_command(Command_Module::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(Command_Module::RESPAWN, 1);
+		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP"))
+			replay.increase_speed();
+		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
+			replay.decrease_speed();
+		if (key_by_name("BONUS_ACTIVATION"))
+			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
 	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();
@@ -113,79 +119,25 @@ Control::Control() {
 	draw.create_window(600, 600, "Space Sodomy II");
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
-	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
-		sf::Color(0, 0, 0, 255), 0);
-	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
-	Constant_Text loading_stage;
-	loading_stage.set_color(sf::Color::Green);
-	loading_stage.set_draw(&draw);
-	loading_stage.set_pos({ 0, 50 });
-	loading_stage.set_text_character_pixel_size(30);
-	loading_stage.set_text("Loading textures...");
-	loading_stage.step();
-	Bar progress_bar;
-	progress_bar.set_back_color(sf::Color(140, 140, 140, 255));
-	progress_bar.set_front_color(sf::Color(200, 200, 200, 255));
-	progress_bar.set_scale({ 700, 50 });
-	progress_bar.set_pos({ 0, 0 });
-	progress_bar.set_character_size(0);
-	progress_bar.set_draw(&draw);
-	progress_bar.set_max_value(100);
-	progress_bar.set_value(0);
-	progress_bar.step();
-	draw.display();
-	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
-		sf::Color(0, 0, 0, 255), 0);
+	Loading_Screen loading(&draw);
+	loading.step(0, "Loading textures...");	
 	//draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
-	loading_stage.set_text("Loading setup...");
-	loading_stage.step();
-	progress_bar.set_value(25);
-	progress_bar.step();
-	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
-	draw.display();
-	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
-		sf::Color(0, 0, 0, 255), 0);
+	loading.step(25, "Loading setup...");
 	game.load_setup("setup.conf");
 	audio.set_draw(&draw);
-	loading_stage.set_text("Loading sounds...");
-	loading_stage.step();
-	progress_bar.set_value(50);
-	progress_bar.step();
-	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
-	draw.display();
-	draw.fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw.get_window()->getSize())),
-		sf::Color(0, 0, 0, 255), 0);
+	loading.step(50, "Loading sounds...");
 	audio.load_sounds();
-	loading_stage.set_text("Loading tracks...");
-	loading_stage.step();
-	progress_bar.set_value(75);
-	progress_bar.step();
-	draw.text("Loading...", "font", { 0, -50 }, 50, sf::Color::White);
-	draw.display();
+	loading.step(75, "Loading tracks...");
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
-	// Default key matches
-	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
-	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
-	key_matches["ENGINE_LIN_LEFT"] = { sf::Keyboard::Left };
-	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right };
-	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A };
-	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D };
-	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D };
-	key_matches["BOOST"] = { sf::Keyboard::LShift };
-	key_matches["ZOOM_IN"] = { sf::Keyboard::E };
-	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q };
-	key_matches["SHOOT"] = { sf::Keyboard::Space };
-	key_matches["RESPAWN"] = { sf::Keyboard::R };
-	key_matches["MENU"] = { sf::Keyboard::Escape };
 	// SFML key names
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &reload, &game);
+	menu_processing.init(&draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -194,6 +146,7 @@ Control::Control() {
 	// Sleep(10000);
 	// Dt
 	game.set_dt(delay * 0.001);
+	game.load_parameters("parameters.conf");
 }
 
 int Control::get_is_running() {
@@ -201,9 +154,10 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
+	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
-		load_config("client_config.conf");
+		load_keys("keys.conf");
 	}
 	// Receiving
 	network.receive();
@@ -214,7 +168,10 @@ void Control::step() {
 		time_prev = time_current;
 
 		// Pass message to game object
-		game.decode(network.get_message());
+		if (replay.get_replay_active())
+			game.decode(replay.get_cur_frame());
+		else
+			game.decode(network.get_message());
 
 		// Draw		
 		game.display(network.get_id());

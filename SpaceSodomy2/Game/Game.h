@@ -29,6 +29,7 @@ protected:
 
 	// Time step
 	float dt = 0;
+	float time = 0;
 
 	// Objects' systems
 	std::map<int, Player*> players;
@@ -112,6 +113,10 @@ protected:
 	void process_bonuses();
 	void process_bonus_manager();
 	//void process_bonus_slot      //nothing to process for now
+
+	// Misc
+	// Calculates where beam intersects walls
+	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
 
 public:
 	Game();

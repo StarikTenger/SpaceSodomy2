@@ -8,6 +8,8 @@
 #include "HUD_Processing.h"
 #include "Menu_Processing.h"
 #include "Game_Client.h"
+#include "Replay.h"
+#include "Loading_Screen.h"
 #include <string>
 #include <fstream>
 #include <queue>
@@ -69,6 +71,9 @@ private:
 
 	// Music name
 	std::string track;
+
+	// Replay
+	Replay replay;
 public:
 	// Default constructor
 	Control();

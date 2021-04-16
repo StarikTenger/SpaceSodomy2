@@ -11,7 +11,7 @@ Slider::Slider() {
 }
 
 void Slider::init() {
-	cord = { get_pos().x , get_pos().y };
+	cord = { get_pos().x - axis_scale.x / 2 , get_pos().y - axis_scale.y / 2};
 
 	// set axis params
 	axis.setPosition(cord.x, cord.y);
@@ -43,8 +43,10 @@ void Slider::logic(sf::RenderWindow* window)
 {
 	// Creating a new slider rect for logic
 	sf::FloatRect SliderRect = axis.getGlobalBounds();
-	if (SliderRect.height < slider.getGlobalBounds().height)
+	if (SliderRect.height < slider.getGlobalBounds().height) {
+		SliderRect.top += (SliderRect.height / 2 - slider.getGlobalBounds().height / 2);
 		SliderRect.height = slider.getGlobalBounds().height;
+	}
 	// if slider was clicked -> slider active
 	if (SliderRect.contains(mouse_pos_) && *get_clicked())
 		slider_active = 1;
@@ -62,6 +64,10 @@ void Slider::logic(sf::RenderWindow* window)
 			new_pos_x = cord.x + axis_scale.x;
 		slider.setPosition(new_pos_x, cord.y);
 		slider_value = (min_value + ((slider.getPosition().x - cord.x) / axis_scale.x * (max_value - min_value)));
+		if (discrete) {
+			slider_value = round(slider_value);
+			slider.setPosition((slider_value - min_value) / (max_value - min_value) * axis_scale.x + cord.x, slider.getPosition().y);
+		}
 	}
 }
 
@@ -86,7 +92,7 @@ void Slider::set_slider_value(float value_)
 void Slider::set_slider_percent_value(float percent_value_)
 {
 	if (percent_value_ >= 0 && percent_value_ <= 100) {
-		slider_value = percent_value_ / 100 * max_value;
+		slider_value = percent_value_ / 100 * (max_value);
 		slider.setPosition(cord.x + (axis_scale.x * percent_value_ / 100), cord.y);
 	}
 }
@@ -115,6 +121,10 @@ void Slider::set_slider_scale(b2Vec2 slider_scale_) {
 	slider.setSize(aux::to_Vector2f(slider_scale));
 }
 
+void Slider::set_discrete(bool discrete_) {
+	discrete = discrete_;
+}
+
 b2Vec2 Slider::get_axis_scale() {
 	return axis_scale;
 }
@@ -124,17 +134,19 @@ b2Vec2 Slider::get_slider_scale() {
 
 void Slider::step() {
 	primitive_step();
-	set_slider_value(get_slider_value());
 	set_slider_scale(real_slider_scale);
 	set_axis_scale(real_axis_scale);
+	cord = { get_pos().x - axis_scale.x / 2 , get_pos().y - axis_scale.y / 2 };
+	axis.setPosition(cord.x, cord.y);
+	set_slider_value(get_slider_value());
 	b2Vec2 mid = aux::to_b2Vec2(sf::Vector2f(get_draw()->get_window()->getSize()));
 	mid.x /= 2;
 	mid.y /= 2;
 	mouse_pos_ = aux::to_Vector2f(*get_mouse_pos() - mid);
-	std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
-		slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
-		slider.getGlobalBounds().contains(mouse_pos_) << " " <<
-		sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
+	//std::cout << "Slider: " << get_active() << " " << slider.getGlobalBounds().left << " " << 
+	//	slider.getGlobalBounds().top << " " << mouse_pos_.x << " " << mouse_pos_.y << " " <<
+	//	slider.getGlobalBounds().contains(mouse_pos_) << " " <<
+	//	sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) << " " << slider_active << "\n";
 	if (!font_active) {
 		text.setFont(*(get_draw()->get_font("neon")));
 		font_active = 1;

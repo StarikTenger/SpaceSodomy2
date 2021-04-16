@@ -374,6 +374,12 @@ void Game::process_ships() {
 				                                ship->get_damage_receiver()->get_last_hit());
 		}
 
+		// Bonus activating
+		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
+			if (ship->get_bonus_slot())
+				ship->get_bonus_slot()->activate();
+		}
+
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
@@ -488,6 +494,27 @@ void Game::process_effects() {
 	}
 }
 
+b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
+	b2Vec2 closest_intersection;
+	float closest_distance = 1e9;
+	b2Vec2 finish = start + 1e3 * aux::angle_to_vec(angle);
+	for (auto wall : walls) {
+		auto polygon = wall->get_vertices();
+		for (int i = 0; i < polygon.size(); i++) {
+			int j = (i + 1) % polygon.size();
+			auto intersection = aux::segment_intersection({ start, finish }, {polygon[i], polygon[j]});
+			if (intersection.first) {
+				float distance = b2Distance(start, intersection.second);
+				if (distance < closest_distance) {
+					closest_distance = distance;
+					closest_intersection = intersection.second;
+				}
+			}
+		}
+	}
+	return closest_intersection;
+}
+
 void Game::process_bonuses() {
 	std::deque<Bonus*> bonuses_to_delete;
 	for (auto bonus : bonuses) {
@@ -515,6 +542,7 @@ void Game::apply_command(int id, int command, int val) {
 
 void Game::step(float _dt) {
 	dt = _dt;
+	time += dt;
 	process_physics();
 	process_players();
 	process_ships();
@@ -898,6 +926,10 @@ std::string Game::encode() {
 		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
+		// Effects
+		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
+		// Bonus slot
+		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
 		// Hp
 		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		message += std::to_string((int)ship->get_hp()->get_max()) + " ";

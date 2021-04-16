@@ -7,7 +7,7 @@ Bar::Bar() {
 }
 
 // Set methods
-void Bar::set_max_value(float max_value_) {
+void Bar::set_max_value(int max_value_) {
 	max_value = max_value_;
 	critical_value = 0.3 * max_value;
 }
@@ -30,9 +30,12 @@ void Bar::set_angle(float angle_) {
 	text.set_text_angle(angle_);
 	angle = angle_;
 }
+void Bar::set_critical_value(float critical_value_) {
+	critical_value = critical_value_;
+}
 
 // Get methods
-float Bar::get_max_value() {
+int Bar::get_max_value() {
 	return max_value;
 }
 float Bar::get_value() {
@@ -79,7 +82,7 @@ void Bar::step() {
 	primitive_step();
 	//std::cout << get_pos().x << " " << get_pos().y << " " << get_scale().x << " " << get_scale().y << "\n";
 	get_draw()->fill_rect(get_pos(), get_screen_mode() * get_scale(), current_back_color, angle);
-	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - value) / max_value / 2 , 0),
+	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - value) / max_value / 2, 0),
 		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0)), front_color, angle);
 	if (draw_text) 
 		text.step();

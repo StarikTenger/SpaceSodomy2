@@ -3,6 +3,8 @@
 #include<AuxLib/AuxLib.h>
 #include<Client/Game_Client.h>
 #include<string>
+#include<Client/Replay.h>
+#include<Network/Client_Network.h>
 
 class Menu_Processing {
 private:
@@ -15,17 +17,25 @@ private:
 	std::map <std::string, Menu> guns; // guns
 	Menu hull_menu; // hull menu objects
 	std::map <std::string, Menu> hulls; // hulls
+	Menu HUD_menu;
+	Menu replay_menu;
+	Menu replay_setup_menu;
 
 	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
-	bool* reload;
+	Client_Network* network;
+	std::map<int, Bar*> bars;
+	std::map<int, Menu_Object*> images;
+	std::map<int, Button*> buttons;
+	std::map<int, Constant_Text*> constant_texts;
+	std::map<int, Slider*> sliders;
+	std::map<int, Text_Field*> text_fields;
+	std::map<int, Keyboard_Field*> keyboard_fields;
 	std::queue<int> events; // menu events
-	std::map<int, std::string> text_fields_strings; // texts from text fields
-	std::map<int, int> sliders_vals; // vals from sliders
 	std::map<std::string, int> name_to_id;
-	std::map<int, std::string> id_to_name;
+	std::map<int, std::pair<int, int>> id_to_keyit;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
@@ -33,6 +43,8 @@ private:
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
+	void load_aim_settings(std::string path);
+	void save_aim_settings(std::string path);
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
@@ -45,14 +57,18 @@ private:
 		int stamina, int stamina_recovery, Menu* hull);
 	Draw* draw;
 	Game_Client* game;
+	Replay* replay;
 	bool disactivated = 0;
+	bool shader_active = 1;
+	bool* reload;
 public:
 	Menu_Processing();
 	bool active = 1;
 	int text_field_active = 0;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
-		aux::Keyboard* keyboard_, bool* reload_,
-		Game_Client* game_);
+		aux::Keyboard* keyboard_, Client_Network* network_,
+		Game_Client* game_, Replay* replay_,
+		bool* reload_);
 	void step();
 };
 

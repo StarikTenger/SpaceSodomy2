@@ -18,6 +18,10 @@ void Server_Network::set_port(int port_) {
 	socket.setBlocking(0);
 }
 
+void Server_Network::set_replay_path(std::string replay_path_) {
+	replay_path = replay_path_;
+}
+
 //Get methods
 std::deque<std::string> Server_Network::get_messages() {
 	return messages;
@@ -61,6 +65,11 @@ void Server_Network::receive() {
 }
 
 void Server_Network::send(std::string message) {
+	if (replay_path != "") {
+		if (!fout.is_open())
+			fout.open(replay_path);
+		fout << message << "\n";
+	}
 	//send message for all users
 	for (auto addr : addresses) {
 		socket.send(message.c_str(), message.size() + 1, addr, ports[addr]);

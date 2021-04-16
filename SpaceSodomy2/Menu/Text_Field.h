@@ -13,6 +13,7 @@ private:
 	int align = 0;
 public:
 	Text_Field();
+	bool active_field = true;
 	
 	// Get methods
 	std::string get_text();
