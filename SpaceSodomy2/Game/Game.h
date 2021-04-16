@@ -29,6 +29,7 @@ protected:
 
 	// Time step
 	float dt = 0;
+	float time = 0;
 
 	// Objects' systems
 	std::map<int, Player*> players;

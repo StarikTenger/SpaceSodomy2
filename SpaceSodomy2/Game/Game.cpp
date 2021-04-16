@@ -521,6 +521,7 @@ void Game::apply_command(int id, int command, int val) {
 
 void Game::step(float _dt) {
 	dt = _dt;
+	time += dt;
 	process_physics();
 	process_players();
 	process_ships();

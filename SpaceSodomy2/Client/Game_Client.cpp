@@ -185,26 +185,49 @@ void Game_Client::display(int id) {
 			}
 			
 		}
-
+		radius /= 2;
 		// Effects
+		// Charge
 		if (ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > 0) {
 			Float_Animation::State state_begin;
 			state_begin.pos = ship->get_body()->GetPosition();
-			state_begin.scale = 1. * b2Vec2(radius, radius);
+			state_begin.scale = 2. * b2Vec2(radius, radius);
 			state_begin.angle = 0;
 			state_begin.color = color;
 			Float_Animation::State state_end = state_begin;
 			state_end.scale = b2Vec2_zero;
 			state_end.color.a = 0;
 			state_end.pos += aux::rotate({ 0, radius / 4 }, aux::random_float(0, 2, 2) * b2_pi);
-			Float_Animation animation("bullet", state_begin, state_end, 0.15, GAME);
+			Float_Animation animation("bullet", state_begin, state_end, 0.4, GAME);
 			draw->create_animation(animation);
+		}
+		// Immortality
+		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = b2Vec2(radius, radius);
+			state_begin.angle = ship->get_body()->GetAngle();
+			state_begin.color = sf::Color::White;
+			Float_Animation::State state_end = state_begin;
+			state_end.color.a = 0;
+			//state_end.pos += aux::rotate({ 0, radius / 8 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("ship_aura_" + ship->get_player()->get_hull_name(), state_begin, state_end, 0.15, GAME);
+			draw->create_animation(animation);
+		}
+		// Berserk
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			draw->image("effect", ship->get_body()->GetPosition(), b2Vec2(radius, radius), time * 10, sf::Color::Red);
+		}
+		// Laser
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			// TODO
 		}
 	}
 
 	// Animations
 	draw->draw_animations(GAME);
 	draw->step(dt);
+	time += dt;
 
 	// Projectiles
 	for (auto projectile : projectiles) {
