@@ -38,6 +38,10 @@ Effects* Ship::get_effects() {
 	return effects;
 }
 
+Bonus_Slot* Ship::get_bonus_slot() {
+	return bonus_slot;
+}
+
 // Set methods
 void Ship::set_player(Player* val) {
 	player = val;
@@ -71,3 +75,6 @@ void Ship::set_effects(Effects* val) {
 	effects = val;
 }
 
+void Ship::set_bonus_slot(Bonus_Slot* val) {
+	bonus_slot = val;
+}

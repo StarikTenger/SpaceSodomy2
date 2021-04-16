@@ -105,14 +105,20 @@
     <ClInclude Include="Event_Manager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Gun_Def.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hull_Def.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Effects.h">
       <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Bonus.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Bonus_Slot.h">
+      <Filter>Header Files\Active Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Bonus_Manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Hull_Prototype.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +184,15 @@
     </ClCompile>
     <ClCompile Include="Effects.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Bonus.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Bonus_Slot.cpp">
+      <Filter>Source Files\Active Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Bonus_Manager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

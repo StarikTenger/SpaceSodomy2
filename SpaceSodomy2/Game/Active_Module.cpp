@@ -35,8 +35,8 @@ Counter* Active_Module::get_stamina() {
 	return stamina;
 }
 
-Effects_Def* Active_Module::get_effects() {
-	return effects;
+Effects_Prototype* Active_Module::get_effects() {
+	return effects_prototype;
 }
 
 
@@ -64,12 +64,12 @@ void Active_Module::set_stamina(Counter* val) {
 	stamina = val;
 }
 
-void Active_Module::set_effects(Effects_Def* val) {
-	effects = val;
+void Active_Module::set_effects_prototype(Effects_Prototype* val) {
+	effects_prototype = val;
 }
 
 void Active_Module::set_ship_effects(Effects* val) {
-	ship_effects = val;
+	effects = val;
 }
 
 
@@ -79,9 +79,10 @@ void Active_Module::step(float dt) {
 		activate();
 		float cur_recharge_time = recharge_time;
 		float cur_stamina_consumption = stamina_consumption;
-		if (ship_effects->get_effect(Effects::Types::BERSERK)->get_counter()->get() > b2_epsilon) {
-			cur_recharge_time /= 2;
-			cur_stamina_consumption /= 2;
+		// Apply BERSERK
+		if (effects->get_effect(Effects::Types::BERSERK)->get_counter()->get() > b2_epsilon) {
+			cur_recharge_time /= effects->get_effect(Effects::Types::BERSERK)->get_strength();
+			cur_stamina_consumption /= effects->get_effect(Effects::Types::BERSERK)->get_strength();
 		}
 		recharge_counter->set(cur_recharge_time);
 		stamina->modify(-cur_stamina_consumption);

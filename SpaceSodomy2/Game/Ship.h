@@ -5,6 +5,7 @@
 #include "Gun.h"
 #include "Counter.h"
 #include "Damage_Receiver.h"
+#include "Bonus_Slot.h"
 #include "iId.h"
 
 class Ship : public iId{
@@ -18,6 +19,7 @@ private:
 	Counter* stamina = nullptr;
 	Damage_Receiver* damage_receiver = nullptr;
 	Effects* effects;
+	Bonus_Slot* bonus_slot;
 
 public:
 	Ship();
@@ -32,6 +34,7 @@ public:
 	Counter* get_stamina();
 	Damage_Receiver* get_damage_receiver();
 	Effects* get_effects();
+	Bonus_Slot* get_bonus_slot();
 
 	// Set methods
 	void set_player(Player*);
@@ -42,5 +45,6 @@ public:
 	void set_stamina(Counter*);
 	void set_damage_receiver(Damage_Receiver*);
 	void set_effects(Effects*);
+	void set_bonus_slot(Bonus_Slot*);
 };
 

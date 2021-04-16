@@ -25,6 +25,10 @@ int Game_Client::get_aim_opacity() {
 	return aim_opacity;
 }
 
+std::string Game_Client::get_bonus_texture_name(int val) {
+	return bonus_textures[val];
+}
+
 void Game_Client::set_gun_name(std::string val) {
 	gun_name = val;
 }
@@ -213,11 +217,49 @@ void Game_Client::display(int id) {
 			}
 			
 		}
+		radius /= 2;
+		// Effects
+		// Charge
+		if (ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = 2. * b2Vec2(radius, radius);
+			state_begin.angle = 0;
+			state_begin.color = color;
+			Float_Animation::State state_end = state_begin;
+			state_end.scale = b2Vec2_zero;
+			state_end.color.a = 0;
+			state_end.pos += aux::rotate({ 0, radius / 4 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("bullet", state_begin, state_end, 0.4, GAME);
+			draw->create_animation(animation);
+		}
+		// Immortality
+		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0) {
+			Float_Animation::State state_begin;
+			state_begin.pos = ship->get_body()->GetPosition();
+			state_begin.scale = b2Vec2(radius, radius);
+			state_begin.angle = ship->get_body()->GetAngle();
+			state_begin.color = sf::Color::White;
+			Float_Animation::State state_end = state_begin;
+			state_end.color.a = 0;
+			//state_end.pos += aux::rotate({ 0, radius / 8 }, aux::random_float(0, 2, 2) * b2_pi);
+			Float_Animation animation("ship_aura_" + ship->get_player()->get_hull_name(), state_begin, state_end, 0.15, GAME);
+			draw->create_animation(animation);
+		}
+		// Berserk
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			draw->image("effect", ship->get_body()->GetPosition(), b2Vec2(radius, radius), time * 10, sf::Color::Red);
+		}
+		// Laser
+		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+			// TODO
+		}
 	}
 
 	// Animations
 	draw->draw_animations(GAME);
 	draw->step(dt);
+	time += dt;
 
 	// Projectiles
 	for (auto projectile : projectiles) {
@@ -242,7 +284,12 @@ void Game_Client::display(int id) {
 		draw->create_animation(animation);
 	}
 
-	
+	// Bonuses
+	for (auto bonus : bonuses) {		
+		draw->image(bonus_textures[bonus->get_type()],
+			bonus->get_body()->GetPosition(), { 0.3, 0.3 },
+			draw->get_camera()->get_angle() + b2_pi/2, sf::Color::White);
+	}
 }
 
 void Game_Client::decode(std::string source) {
@@ -268,7 +315,7 @@ void Game_Client::decode(std::string source) {
 	clear();
 
 	// Creating stringstream
-	//std::cout << source << "\n";
+	std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
@@ -344,6 +391,12 @@ void Game_Client::decode(std::string source) {
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
+			// Effects
+			std::string effects_stringed;
+			stream >> effects_stringed;
+			// Bonus slot
+			int bonus;
+			stream >> bonus;
 			// Hp
 			float hp;
 			stream >> hp;
@@ -362,12 +415,18 @@ void Game_Client::decode(std::string source) {
 			ship->get_stamina()->set(stamina);
 			ship->get_hp()->set_max(max_hp);
 			ship->get_stamina()->set_max(max_stamina);
+			ship->get_bonus_slot()->set_current_bonus(bonus);
 
 			// Decoding commands
-			int loc_engine_active = 0;
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
 			for (int i = 0; i < commands.size(); i++) {
 				ship->get_player()->get_command_module()->set_command(i, commands[i]);
+			}
+			// Decoding effects
+			std::vector<int> effects = aux::string_to_mask(effects_stringed);
+			for (int i = 0; i < effects.size(); i++) {
+				float val = effects[i];
+				ship->get_effects()->get_effect((Effects::Types)i)->get_counter()->set(val);
 			}
 
 			// Damage animation
@@ -410,6 +469,24 @@ void Game_Client::decode(std::string source) {
 			projectile->set_id(id);
 			if (destroyed_projectiles.count(id))
 				destroyed_projectiles.erase(destroyed_projectiles.find(id));
+		}
+		// Bonus
+		if (symbol == "b") {
+			// Id
+			int id;
+			stream >> id;
+			// Pos
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			// Type
+			int type;
+			stream >> type;
+			// Bonus def
+			Bonus_Def bonus_def;
+			bonus_def.pos = pos;
+			bonus_def.type = static_cast<Bonus::Types>(type);
+			// Creating bonus
+			auto bonus = create_bonus(bonus_def);
 		}
 		// Event
 		if (symbol == "e") {

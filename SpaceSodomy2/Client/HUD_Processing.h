@@ -8,6 +8,7 @@ class HUD_Processing {
 private:
 	Bar HP_bar, stamina_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn;
+	Menu_Object bonus;
 
 	int table_use_windows_cords;
 	b2Vec2 table_pos;

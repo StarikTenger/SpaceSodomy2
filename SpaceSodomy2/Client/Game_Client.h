@@ -8,6 +8,19 @@
 
 class Game_Client : public Game {
 private:
+	enum Animation_Layers {
+		GAME,
+		HUD
+	};
+	std::map<int, std::string> bonus_textures = {
+		{Bonus::COUNT, "bonusEmpty"},
+		{Bonus::INSTANT_HP, "bonusHp"},
+		{Bonus::INSTANT_STAMINA, "bonusEnergy"},
+		{Bonus::BERSERK, "bonusBerserk"},
+		{Bonus::IMMORTALITY, "bonusImmortal"},
+		{Bonus::CHARGE, "bonusCharge"},
+		{Bonus::LASER, "bonusLaser"}
+	};
 	Draw* draw = nullptr;
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
@@ -46,6 +59,7 @@ public:
 
 	std::string get_gun_name();
 	std::string get_hull_name();
+	std::string get_bonus_texture_name(int val);
 
 	int get_aim_conf();
 	int get_aim_opacity();

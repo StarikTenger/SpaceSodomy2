@@ -58,7 +58,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	return body;
 }
 
-Gun* Game::create_gun(Gun_Def def) {
+Gun* Game::create_gun(Gun_Prototype def) {
 	auto gun = new Gun();
 	active_modules.insert(gun);
 	// Counter
@@ -69,8 +69,8 @@ Gun* Game::create_gun(Gun_Def def) {
 	gun->set_projectile_manager(&projectile_manager);
 	gun->set_event_manager(&sound_manager);
 	// Characteristics
-	gun->import_gun_def(def);
-	gun->set_effects(&def.effect_def);
+	gun->import_Gun_Prototype(def);
+	gun->set_effects_prototype(&def.effect_prototype);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -127,23 +127,28 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	Effects_Def effects_def;
+	Effects_Prototype effects_prototype;
 	for (int i = 0; i < Effects::Types::COUNT; i++) {
-		effects_def.effects[i].set_type(types[i]);
+		effects_prototype.effects[i].set_type(effect_params.effects[i].get_type());
+		effects_prototype.effects[i].set_strength(effect_params.effects[i].get_strength());
 	}
-	auto effs = create_effects(&effects_def);
+	auto effs = create_effects(&effects_prototype);
 	ship->set_effects(effs);
+
+	// Bonus slot
+	ship->set_bonus_slot(create_bonus_slot());
+	ship->get_bonus_slot()->set_effects(effs);
 
 	// Player
 	ship->set_player(player);
 
 	// Hull def
-	Hull_Def def;
+	Hull_Prototype hull_prototype;
 	if (hulls.count(player->get_hull_name()))
-		def = hulls[player->get_hull_name()];
+		hull_prototype = hulls[player->get_hull_name()];
 
 	// Body
-	auto body = create_round_body(pos, angle, def.radius, def.mass);
+	auto body = create_round_body(pos, angle, hull_prototype.radius, hull_prototype.mass);
 	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
 	ship->set_body(body);
 
@@ -152,28 +157,28 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	player->set_command_module(command_module);
 
 	// Gun
-	Gun_Def gun_def;
+	Gun_Prototype gun_prototype;
 	if (guns.count(player->get_gun_name())) {
-		gun_def = guns[player->get_gun_name()];
+		gun_prototype = guns[player->get_gun_name()];
 
 	}
-	auto gun = create_gun(gun_def);
+	auto gun = create_gun(gun_prototype);
 	gun->set(body, player);
-	gun->set_effects(nullptr);
+	gun->set_effects_prototype(nullptr);
 	if (guns.count(player->get_gun_name())) {
-		gun->set_effects(&guns[player->get_gun_name()].effect_def);
+		gun->set_effects_prototype(&guns[player->get_gun_name()].effect_prototype);
 	}
 	gun->set_ship_effects(effs);
 	ship->set_gun(gun);
 
 	// Hp
-	auto hp = create_counter(def.hp);
-	hp->set_max(def.hp);
+	auto hp = create_counter(hull_prototype.hp);
+	hp->set_max(hull_prototype.hp);
 	ship->set_hp(hp);
 
 	// Stamina
-	auto stamina = create_counter(def.stamina, def.stamina_recovery);
-	stamina->set_max(def.stamina);
+	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
+	stamina->set_max(hull_prototype.stamina);
 	stamina->set_delay(0.7);
 	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
@@ -213,7 +218,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	projectile->set_damage(projectile_def.damage);
 	projectile->set_hp(create_counter(projectile_def.hp, 0));
 	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), nullptr));
-	projectile->set_effects_def(projectile_def.effects_def);
+	projectile->set_effects_prototype(projectile_def.effects_prototype);
 
 	// Adding to vectors
 	projectiles.insert(projectile);
@@ -232,10 +237,27 @@ Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) 
 	return sound;
 }
 
-Effects* Game::create_effects(Effects_Def* val) {
+Effects* Game::create_effects(Effects_Prototype* val) {
 	auto _effects = new Effects(val);
 	effects.insert(_effects);
 	return _effects;
+}
+
+Bonus* Game::create_bonus(Bonus_Def val) {
+	auto ans = new Bonus;
+	auto body = create_round_body(val.pos, 0, bonus_manager.get_prototype(val.type)->radius, 1);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE, 0);
+	ans->set_id(val.get_id());
+	ans->set_body(body);
+	ans->set_type(val.type);
+	bonuses.insert(ans);
+	return ans;
+}
+
+Bonus_Slot* Game::create_bonus_slot() {
+	auto ans = new Bonus_Slot;
+	ans->set_bonus_manager(&bonus_manager);
+	return ans;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -270,6 +292,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
 	delete_effects(ship->get_effects());
+	delete_bonus_slot(ship->get_bonus_slot());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -292,11 +315,21 @@ void Game::delete_sound(Sound* sound) {
 	delete sound;
 }
 
-void Game::delete_effects(Effects* val) {
-	effects.erase(val);
-	delete val;
+void Game::delete_effects(Effects* _effects) {
+	effects.erase(_effects);
+	delete _effects;
 }
 
+void Game::delete_bonus(Bonus* bonus) {
+	bonuses.erase(bonus);
+	delete_body(bonus->get_body());
+	bonus_manager.free_bonus_spawn(bonus->get_type(), bonus->get_id());
+	delete bonus;
+}
+
+void Game::delete_bonus_slot(Bonus_Slot* bonus_slot) {
+	delete bonus_slot;
+}
 
 void Game::process_players() {
 	// Creating ships
@@ -307,7 +340,8 @@ void Game::process_players() {
 			player->set_is_alive(1);
 
 			// creating ship
-			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			auto ship = create_ship(player, {0,0}/*get_rand_respawn_pos()*/, aux::random_float(0, 2 * b2_pi, 3));
+			ship->get_hp()->modify(-95);
 			//auto_damage = 0;
 		}
 	}
@@ -320,12 +354,30 @@ void Game::process_ships() {
 		if (auto_damage)
 			ship->get_hp()->modify(-dt*20);
 
+		// Apply INSTANT_HP
+		auto hp_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter();
+		if (hp_eff->get() > 0) {
+			ship->get_hp()->modify(hp_eff->get());
+			hp_eff->set(0);
 
+		}
+		// Apply INSTANT_STAMINA
+		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter();
+		if (st_eff->get() > 0) {
+			ship->get_stamina()->modify(st_eff->get());
+			st_eff->set(0);
 
-		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > b2_epsilon) {
-			std::cout << ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() << '\n';
+		}
+		// Apply LASER_BURN
+		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > 0) {
+			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
+				                                ship->get_damage_receiver()->get_last_hit());
+		}
 
-			ship->get_damage_receiver()->damage(dt * 5, ship->get_damage_receiver()->get_last_hit());
+		// Bonus activating
+		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
+			if (ship->get_bonus_slot())
+				ship->get_bonus_slot()->activate();
 		}
 
 		// Checking for < zero hp
@@ -334,6 +386,17 @@ void Game::process_ships() {
 			ship->get_player()->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+		}
+		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {
+			for (auto damage_receiver : damage_receivers) {
+				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
+					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+					damage_receiver->damage(0, ship->get_player());            // TODO
+					if (damage_receiver->get_effects()) {
+						damage_receiver->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->set(0.5);
+					}
+				}
+			}
 		}
 	}
 	for (auto ship : ships_to_delete)
@@ -349,7 +412,7 @@ void Game::process_projectiles() {
 	std::set<Projectile*> projectiles_to_delete;
 	// Dealing damage
 	for (auto projectile : projectiles) {
-		// Dealing damage
+		// Dealing damage & applying effects
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
@@ -452,12 +515,34 @@ b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 	return closest_intersection;
 }
 
+void Game::process_bonuses() {
+	std::deque<Bonus*> bonuses_to_delete;
+	for (auto bonus : bonuses) {
+		for (auto ship : ships) {
+			if (contact_table.check(bonus->get_body(), ship->get_body())) {
+				ship->get_bonus_slot()->add_bonus(bonus->get_type());
+				bonuses_to_delete.push_back(bonus);
+			}
+		}
+	}
+	for (auto bonus : bonuses_to_delete)
+		delete_bonus(bonus);
+}
+void Game::process_bonus_manager() {
+	bonus_manager.step(dt);
+	Bonus_Def def;
+	while (bonus_manager.get_next(def)) {
+		create_bonus(def);
+	}
+}
+
 void Game::apply_command(int id, int command, int val) {
 	players[id]->get_command_module()->set_command(command, val);
 }
 
 void Game::step(float _dt) {
 	dt = _dt;
+	time += dt;
 	process_physics();
 	process_players();
 	process_ships();
@@ -469,6 +554,8 @@ void Game::step(float _dt) {
 	process_counters();
 	process_sounds();
 	process_effects();
+	process_bonuses();
+	process_bonus_manager();
 }
 
 void Game::set_dt(float _dt) {
@@ -504,6 +591,10 @@ void Game::clear() {
 	for (auto sound : sounds)
 		delete sound;
 	sounds = {};
+	// Clear bonuses
+	for (auto bonus : bonuses)
+		delete bonus;
+	bonuses = {};
 	for (auto effect : effects) {
 		delete effect;
 	}
@@ -592,6 +683,22 @@ bool Game::load_map(std::string path) {
 			wall_id++;
 			continue;
 		}
+		if (symbol == "BONUS") {
+			input >> symbol;
+			auto type = Bonus::get_bonus_type(symbol);
+			while (input >> symbol) {
+				if (symbol == "END") {
+					break;
+				}
+				if (symbol == "POINT") {
+					b2Vec2 to_append;
+					input >> to_append.x >> to_append.y;
+					bonus_manager.add_spawnpoint(type, to_append);
+					continue;
+				}
+			}
+			continue;
+		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
 		return false;
 	}
@@ -607,7 +714,9 @@ bool Game::load_parameters(std::string path) {
 	while (input >> symbol) {
 		if (symbol == "END")
 			break;
-		// Lambda for reading symbols
+
+
+		// Lambdas for reading symbols
 		auto read_symbol = [&](std::string symbol_name, float& var) {
 			if (symbol == symbol_name) {
 				float val;
@@ -621,22 +730,92 @@ bool Game::load_parameters(std::string path) {
 			}
 			return true;
 		};
+		auto read_symbol_bool = [&](std::string symbol_name, bool& var) {
+			if (symbol == symbol_name) {
+				bool val;
+				if (!(input >> val)) {
+					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+
+					return false;
+				}
+				var = val;
+			}
+			return true;
+		};
+
+
+		auto read_effect_prototype = [&]() {
+			auto _effects = effect_params;
+			input >> symbol;
+			if (symbol == "NO_EFFECTS") {
+				return _effects;
+			}
+			if (symbol != "EFFECTS") {
+				std::cerr << "Game::load_parametes : incorrect effect syntax " << symbol << "\n";
+			}
+			while (input >> symbol) {
+				if (symbol == "END") {
+					break;
+				}
+				int type_ = Effects::get_effect_type(symbol);
+				float temp;
+				input >> temp;
+				_effects.effects[type_].get_counter()->set(temp);
+			}
+			return _effects;
+		};
 		if (symbol == "EFFECT_TYPES") {
-			for (int i = 0; i < Effects::Types::COUNT; i++) {
-				std::string devnull;
-				input >> devnull;
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				int type_ = Effects::get_effect_type(symbol);
+
 				std::string temp;
 				input >> temp;
 				if (temp == "MAXIMAL") {
-					types[i] = Effects::Algebraic_Type::MAXIMAL;
+					effect_params.effects[type_].set_type(Effects::Algebraic_Type::MAXIMAL);
 				}
 				else if (temp == "ADDITIVE") {
-					types[i] = Effects::Algebraic_Type::ADDITIVE;
+					effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
 				}
 				else {
 					std::cerr << "Game::load_parameters: failed to read Algebraic_Type name\n";
 				}
+
+				input >> temp;
+				if (temp != "STRENGTH") {
+					std::cerr << "Game::load_parameters: effect strength not set\n";
+				}
+				else {
+					float val;
+					input >> val;
+					effect_params.effects[type_].set_strength(val);
+				}
 			}
+			continue;
+		}
+		// Bonuses
+		if (symbol == "BONUS") {
+			std::string name;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to load BONUS name\n";
+			}
+			Bonus_Prototype bonus_prototype;
+			bonus_prototype.effects_prototype = read_effect_prototype();
+			bonus_prototype.type = Bonus::get_bonus_type(name);
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				read_symbol_bool("IS_INSTANT", bonus_prototype.is_instant);
+				read_symbol("RADIUS", bonus_prototype.radius);
+				float cd = 0;
+				read_symbol("COOLDOWN", cd);
+				if (cd != 0) {
+					bonus_manager.set_cooldown(bonus_prototype.type, cd);
+				}
+			}
+			bonus_manager.add_prototype(bonus_prototype);
 			continue;
 		}
 		// Gun
@@ -647,25 +826,10 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			for (int i = 0; i < Effects::Types::COUNT; i++) {
-				guns[name].effect_def.effects[i].get_counter()->set(0);
-				guns[name].effect_def.effects[i].set_type((types[i]));
-			}
+			guns[name].effect_prototype = read_effect_prototype();;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				float temp = 0;
-				if (read_symbol("LASER_BURN", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::LASER_BURN].get_counter()->set(temp);
-					std::cout << name << " " << temp << '\n';
-				}
-				if (read_symbol("BERSERK", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::BERSERK].get_counter()->set(temp);
-				}
-				if (read_symbol("CHARGE", temp) && temp != 0) {
-					guns[name].effect_def.effects[Effects::Types::CHARGE].get_counter()->set(temp);
-				}
-
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);
@@ -704,13 +868,12 @@ bool Game::load_parameters(std::string path) {
 }
 
 std::string Game::encode() {
-	// Encoding ships
 	std::string message = "";
 
 	// Map path
 	message += "M " + map_path + " ";
 
-	// Players
+	// Players (P)
 	for (auto player : players) {
 		message += "P ";
 		// Id
@@ -732,7 +895,7 @@ std::string Game::encode() {
 		message += std::to_string(int(player.second->get_is_alive())) + " ";
 	}
 
-	// Ships
+	// Ships (S)
 	for (auto ship : ships) {
 		message += "S ";
 		// Id
@@ -751,6 +914,10 @@ std::string Game::encode() {
 		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
+		// Effects
+		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
+		// Bonus slot
+		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
 		// Hp
 		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		message += std::to_string((int)ship->get_hp()->get_max()) + " ";
@@ -759,7 +926,7 @@ std::string Game::encode() {
 		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
 	}
 
-	// Projectiles
+	// Projectiles (p)
 	for (auto projectile : projectiles) {
 		message += "p ";
 		// Id
@@ -775,7 +942,19 @@ std::string Game::encode() {
 		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 
-	// Events
+	// Bonuses (b)
+	for (auto bonus : bonuses) {
+		message += "b ";
+		// Id
+		message += std::to_string(bonus->get_id()) + " ";
+		// Position
+		message += aux::float_to_string(bonus->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(bonus->get_body()->GetPosition().y, 2) + " ";
+		// Type
+		message += std::to_string(bonus->get_type()) + " ";
+	}
+
+	// Events (e)
 	for (auto sound : sounds) {
 		message += "e ";
 		// Id

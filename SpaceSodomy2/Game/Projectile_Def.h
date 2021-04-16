@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Effects.h"
 
-// Projectile defenition
+// Projectile definition
 struct Projectile_Def {
 	Player* player = nullptr;
 	b2Vec2 pos;
@@ -13,7 +13,7 @@ struct Projectile_Def {
 	float mass = 0.05;
 	float radius = 0.2;
 	float hp = 20;
-	Effects_Def* effects_def  = nullptr;
+	Effects_Prototype* effects_prototype  = nullptr;
 
 	Projectile_Def();
 };

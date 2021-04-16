@@ -3,17 +3,21 @@
 #include <AuxLib/AuxLib.h>
 #include "Counter.h"
 
-struct Effects_Def;
+struct Effects_Prototype;
 
 class Effects {
 public:
     enum Types {
+        INSTANT_HP,
+        INSTANT_STAMINA,
+        LASER,
         LASER_BURN,
-        BERSERK,
         CHARGE,
-
+        BERSERK,
+        IMMORTALITY,
         COUNT
     };
+    static Effects::Types get_effect_type(std::string effect_name);
     enum Algebraic_Type {
         ANNULATOR,         // multiplicative zero
         ADDITIVE,
@@ -22,8 +26,8 @@ public:
     class Effect {
     private:
         Counter duration;
+        float strength;
         Algebraic_Type type;
-        float strength = 0;
     public:
         Effect();
         Effect(Algebraic_Type);
@@ -32,9 +36,11 @@ public:
 
         Algebraic_Type get_type();
         Counter* get_counter();
+        float get_strength();
 
         void set_type(Algebraic_Type);
         void set_counter(Counter);
+        void set_strength(float);
 
 
         void step(float dt);
@@ -49,21 +55,24 @@ private:
 public:
 
     Effects();
-    Effects(Effects_Def*);
+    Effects(Effects_Prototype*);
+
+    std::vector<int> get_mask();
+
 
     Effect* get_effect(Types type);
     void set_effect(Effect*, Types type);
 
     void step(float dt);
 
-    void update(Effects_Def* effects);
+    void update(Effects_Prototype* effects);
 
 };
 
-struct Effects_Def {
+struct Effects_Prototype {
 public:
     std::deque<Effects::Effect> effects;
 
-    Effects_Def();
-    Effects_Def(Effects::Algebraic_Type);
+    Effects_Prototype();
+    Effects_Prototype(Effects::Algebraic_Type);
 };

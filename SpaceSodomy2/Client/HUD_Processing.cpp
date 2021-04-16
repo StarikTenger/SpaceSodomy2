@@ -124,6 +124,18 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	press_r_to_respawn.set_text_character_pixel_size(60);
 	press_r_to_respawn.set_text_scale(0.5);
 
+	bonus.set_draw(draw);
+	bonus.set_use_window_cords(5);
+	bonus.set_use_picture_scale(0);
+	bonus.set_scale({ 150, 150 });
+	bonus.set_color(sf::Color::White);
+	bonus.set_pos({ -100, -100 });
+	if (game->get_ship(player_network->get_id()) != nullptr)
+		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
+	else
+		bonus.set_texture_name("bonusEmpty");
+
+
 	HP_bar.set_value(HP_bar_val);
 	HP_bar.set_max_value(HP_bar_max_val);
 	stamina_bar.set_value(stamina_bar_val);
@@ -136,6 +148,7 @@ void HUD_Processing::step() {
 		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
 		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
+		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
 	}
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {
@@ -152,6 +165,7 @@ void HUD_Processing::step() {
 	else {
 		HP_bar.step();
 		stamina_bar.step();
+		bonus.primitive_step();
 	}
 	table_step();
 	draw->draw_animations(Game_Client::HUD);

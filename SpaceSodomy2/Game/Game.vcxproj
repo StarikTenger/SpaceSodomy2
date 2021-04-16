@@ -158,6 +158,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Active_Module.h" />
+    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="Bonus_Manager.h" />
+    <ClInclude Include="Bonus_Slot.h" />
     <ClInclude Include="Collision_Filter.h" />
     <ClInclude Include="Command_Module.h" />
     <ClInclude Include="Contact_Table.h" />
@@ -169,7 +172,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gun.h" />
-    <ClInclude Include="Gun_Def.h" />
+    <ClInclude Include="Hull_Prototype.h" />
     <ClInclude Include="Id_Manager.h" />
     <ClInclude Include="iId.h" />
     <ClInclude Include="pch.h" />
@@ -178,13 +181,15 @@
     <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="Hull_Def.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Event_Manager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Active_Module.cpp" />
+    <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="Bonus_Manager.cpp" />
+    <ClCompile Include="Bonus_Slot.cpp" />
     <ClCompile Include="Collision_Filter.cpp" />
     <ClCompile Include="Command_Module.cpp" />
     <ClCompile Include="Contact_Table.cpp" />
