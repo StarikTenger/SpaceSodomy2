@@ -381,7 +381,7 @@ void Game::process_ships() {
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 		}
-		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {
+		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {

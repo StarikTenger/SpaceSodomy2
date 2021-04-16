@@ -33,7 +33,7 @@ void Bonus_Manager::step(float dt) {
             spawnable[bonus_type].count.get() >= spawnable[bonus_type].count.get_max() - b2_epsilon) {
             int i = aux::random_int(0, spawnpoints[bonus_type].size() - 1);
             if (!spawnpoints[bonus_type][i].is_free) {
-                return;
+                continue;
             }
             spawnable[bonus_type].cooldown.set(0);
             Bonus_Def def;
