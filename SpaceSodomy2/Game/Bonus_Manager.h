@@ -6,15 +6,25 @@
 class Bonus_Manager {
 private:
     // First is Types, second is a set
-    std::vector<std::vector<b2Vec2>> spawnpoints;
-    std::vector<std::vector<bool>> is_spawnpoint_free;
-    std::vector<Counter> cooldowns;
+    struct Spawnpoint {
+        b2Vec2 pos;
+        bool is_free = true;
+    };
+    std::vector<std::vector<Spawnpoint>> spawnpoints;
+
+    struct Global_Spawnability {
+        Counter cooldown;
+        Counter max_count;
+
+    };
+    std::vector<Global_Spawnability> spawnable;
     std::deque<Bonus_Def> bonuses_to_create;
     std::vector<Bonus_Prototype> bonus_prototypes;
 public:
     Bonus_Manager();
     void add_prototype(Bonus_Prototype);
     void set_cooldown(Bonus::Types, float);
+    void set_max_count(Bonus::Types, int);
     void step(float dt);
     void add_spawnpoint(Bonus::Types, b2Vec2);
     bool get_next(Bonus_Def&);
