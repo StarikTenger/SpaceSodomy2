@@ -130,20 +130,6 @@ Control::Control() {
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
-	// Default key matches
-	key_matches["ENGINE_LIN_FORWARD"] = { sf::Keyboard::W, sf::Keyboard::Up };
-	key_matches["ENGINE_LIN_BACKWARD"] = { sf::Keyboard::S, sf::Keyboard::Down };
-	key_matches["ENGINE_LIN_LEFT"] = { sf::Keyboard::Left };
-	key_matches["ENGINE_LIN_RIGHT"] = { sf::Keyboard::Right };
-	key_matches["ENGINE_ANG_LEFT"] = { sf::Keyboard::A };
-	key_matches["ENGINE_ANG_RIGHT"] = { sf::Keyboard::D };
-	key_matches["STABILIZE_ROTATION"] = { sf::Keyboard::D };
-	key_matches["BOOST"] = { sf::Keyboard::LShift };
-	key_matches["ZOOM_IN"] = { sf::Keyboard::E };
-	key_matches["ZOOM_OUT"] = { sf::Keyboard::Q };
-	key_matches["SHOOT"] = { sf::Keyboard::Space };
-	key_matches["RESPAWN"] = { sf::Keyboard::R };
-	key_matches["MENU"] = { sf::Keyboard::Escape };
 	// SFML key names
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});
