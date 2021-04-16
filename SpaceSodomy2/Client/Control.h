@@ -9,6 +9,7 @@
 #include "Menu_Processing.h"
 #include "Game_Client.h"
 #include "Replay.h"
+#include "Loading_Screen.h"
 #include <string>
 #include <fstream>
 #include <queue>
