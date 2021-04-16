@@ -363,7 +363,7 @@ void Game::process_ships() {
 		}
 		// Apply INSTANT_STAMINA
 		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter();
-		if (hp_eff->get() > 0) {
+		if (st_eff->get() > 0) {
 			ship->get_stamina()->modify(st_eff->get());
 			st_eff->set(0);
 
