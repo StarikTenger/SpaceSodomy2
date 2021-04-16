@@ -26,17 +26,13 @@ void Bonus_Manager::step(float dt) {
 
         if (cooldowns[bonus_type].get() >= cooldowns[bonus_type].get_max() - b2_epsilon) {
             int i = aux::random_int(0, spawnpoints[bonus_type].size() - 1);
-            for (;;i = aux::random_int(0, spawnpoints[bonus_type].size() - 1)) {
-                if (is_spawnpoint_free[bonus_type][i]) {
-                    break;
-                }
+            if (!is_spawnpoint_free[bonus_type][i]) {
+                return;
             }
-            // Add bonus to creation deque
-            std::cout << i << '\n';
             cooldowns[bonus_type].set(0);
             Bonus_Def def;
             def.pos = spawnpoints[bonus_type][i];
-            def.bonus = &(bonus_prototypes[bonus_type]);
+            def.type = static_cast<Bonus::Types>(bonus_type);
             def.set_id(i);
             is_spawnpoint_free[bonus_type][i] = false;
             bonuses_to_create.push_back(def);
@@ -63,7 +59,7 @@ void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
     is_spawnpoint_free[type][id] = true;
 }
 
-Bonus_Prototype* Bonus_Manager::prototype_by_id(int type) {
+Bonus_Prototype* Bonus_Manager::get_prototype(int type) {
     return &bonus_prototypes[type];
 }
 

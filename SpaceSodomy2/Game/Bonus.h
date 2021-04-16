@@ -19,11 +19,10 @@ public:
     static Bonus::Types get_bonus_type(std::string name);
 private:
     b2Body* body = nullptr;
-    Bonus_Prototype* bonus_prototype = nullptr;
+    Bonus::Types type;
 public:
-    void set_bonus_prototype(Bonus_Prototype* _bonus_prototype);
+    void set_type(Bonus::Types type);
     void set_body(b2Body*);
-    Bonus_Prototype* get_bonus_prototype();
     Bonus::Types get_type();
     b2Body* get_body();
     Bonus() = default;
@@ -31,12 +30,12 @@ public:
 
 struct Bonus_Prototype {
     bool is_instant = 0;
-    Bonus::Types type = Bonus::Types::INSTANT_HP;
     float radius = 0.2;
+    Bonus::Types type = Bonus::Types::INSTANT_HP;
     Effects_Prototype effects_prototype;
 };
 
-struct Bonus_Def : iId {
-    Bonus_Prototype* bonus = nullptr;
+struct Bonus_Def : public iId {
+    Bonus::Types type;
     b2Vec2 pos;
 };
