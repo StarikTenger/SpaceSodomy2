@@ -245,17 +245,19 @@ Effects* Game::create_effects(Effects_Prototype* val) {
 
 Bonus* Game::create_bonus(Bonus_Def val) {
 	auto ans = new Bonus;
-	auto body = create_round_body(val.pos, 0, val.bonus->radius, 1);
+	auto body = create_round_body(val.pos, 0, bonus_manager.get_prototype(val.type)->radius, 1);
 	collision_filter.add_body(body, Collision_Filter::PROJECTILE, 0);
 	ans->set_id(val.get_id());
 	ans->set_body(body);
-	ans->set_bonus_prototype(val.bonus);
+	ans->set_type(val.type);
 	bonuses.insert(ans);
 	return ans;
 }
 
 Bonus_Slot* Game::create_bonus_slot() {
-	return new Bonus_Slot;
+	auto ans = new Bonus_Slot;
+	ans->set_bonus_manager(&bonus_manager);
+	return ans;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -497,7 +499,7 @@ void Game::process_bonuses() {
 	for (auto bonus : bonuses) {
 		for (auto ship : ships) {
 			if (contact_table.check(bonus->get_body(), ship->get_body())) {
-				ship->get_bonus_slot()->add_bonus(bonus->get_bonus_prototype());
+				ship->get_bonus_slot()->add_bonus(bonus->get_type());
 				bonuses_to_delete.push_back(bonus);
 			}
 		}

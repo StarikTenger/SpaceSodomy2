@@ -19,5 +19,5 @@ public:
     void add_spawnpoint(Bonus::Types, b2Vec2);
     bool get_next(Bonus_Def&);
     void free_bonus_spawn(Bonus::Types, int id);
-    Bonus_Prototype* prototype_by_id(int type);
+    Bonus_Prototype* get_prototype(int type);
 };

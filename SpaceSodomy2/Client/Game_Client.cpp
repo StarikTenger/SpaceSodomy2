@@ -361,10 +361,9 @@ void Game_Client::decode(std::string source) {
 			// Bonus def
 			Bonus_Def bonus_def;
 			bonus_def.pos = pos;
-			bonus_def.bonus = bonus_manager.prototype_by_id(type);
+			bonus_def.type = static_cast<Bonus::Types>(type);
 			// Creating bonus
 			auto bonus = create_bonus(bonus_def);
-			bonus->set_bonus_prototype(bonus_manager.prototype_by_id(type));
 		}
 		// Event
 		if (symbol == "e") {
