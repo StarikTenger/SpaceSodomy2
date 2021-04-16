@@ -199,6 +199,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 		int min_val, max_val, val;
 		int use_window_cords, use_image_scale, critical;
 		int character_size;
+		int discrete = 0;
 		sf::Color back_color, front_color;
 		file >> type;
 		if (type == "Button")
@@ -280,6 +281,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			axis_scale = { 100, 5 };
 			slider_scale = {10, 10};
 			min_val = 0;
+			discrete = 0;
 			max_val = 100;
 			file >> next;
 			while (next != "END") {
@@ -295,9 +297,10 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 					file >> slider_scale.x >> slider_scale.y;
 				if (next == "MIN")
 					file >> min_val;
-				if (next == "MAX") {
+				if (next == "MAX")
 					file >> max_val;
-				}
+				if (next == "DISCRETE")
+					file >> discrete;
 				file >> next;
 			}
 			if (axis_scale.x == -1)
@@ -310,6 +313,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 				slider_scale.y = sf::VideoMode::getDesktopMode().height;
 			sliders[i] = object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
 				min_val, max_val, 0, mouse_pos);
+			sliders[i]->set_discrete(discrete);
 			name_to_id[name] = i;
 			break;
 		case 4:

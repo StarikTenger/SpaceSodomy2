@@ -20,6 +20,7 @@ private:
 	sf::Text returnText(b2Vec2 pos_, std::string z, int font_size); // return text object with params
 	void logic(sf::RenderWindow* window); // work with mouse
 	void draw(sf::RenderWindow* window); // rendering slider
+	bool discrete = false;
 public:
 	Slider();
 	void init();
@@ -30,6 +31,7 @@ public:
 	void set_slider_percent_value(float percent_value_); // set percent val
 	void set_axis_scale(b2Vec2 axis_scale_);
 	void set_slider_scale(b2Vec2 slider_scale_);
+	void set_discrete(bool discrete_);
 
 	// Get methods
 	float get_slider_value();

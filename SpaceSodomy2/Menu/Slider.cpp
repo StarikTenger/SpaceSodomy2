@@ -64,6 +64,10 @@ void Slider::logic(sf::RenderWindow* window)
 			new_pos_x = cord.x + axis_scale.x;
 		slider.setPosition(new_pos_x, cord.y);
 		slider_value = (min_value + ((slider.getPosition().x - cord.x) / axis_scale.x * (max_value - min_value)));
+		if (discrete) {
+			slider_value = round(slider_value);
+			slider.setPosition((slider_value - min_value) / (max_value - min_value) * axis_scale.x + cord.x, slider.getPosition().y);
+		}
 	}
 }
 
@@ -115,6 +119,10 @@ void Slider::set_slider_scale(b2Vec2 slider_scale_) {
 	slider_scale = get_screen_mode() * slider_scale_;
 	slider.setOrigin(slider_scale.x / 2, slider_scale.y / 2);
 	slider.setSize(aux::to_Vector2f(slider_scale));
+}
+
+void Slider::set_discrete(bool discrete_) {
+	discrete = discrete_;
 }
 
 b2Vec2 Slider::get_axis_scale() {
