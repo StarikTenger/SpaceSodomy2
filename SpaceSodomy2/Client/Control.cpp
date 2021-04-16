@@ -55,22 +55,10 @@ void Control::process_commands() {
 
 	// TODO: do it in one std::map
 	if (commands_active) {
-		if (key_by_name("ENGINE_LIN_FORWARD")) {
-			if (replay.get_replay_active()) {
-				if (!key_prev_by_name("ENGINE_LIN_FORWARD"))
-					replay.increase_speed();
-			}
-			else
-				command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
-		}
-		if (key_by_name("ENGINE_LIN_BACKWARD")) {
-			if (replay.get_replay_active()) {
-				if (!key_prev_by_name("ENGINE_LIN_BACKWARD"))
-					replay.decrease_speed();
-			}
-			else
-				command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
-		}
+		if (key_by_name("ENGINE_LIN_FORWARD")) 
+			command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+		if (key_by_name("ENGINE_LIN_BACKWARD"))
+			command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
 		if (key_by_name("ENGINE_LIN_LEFT"))
 			command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
 		if (key_by_name("ENGINE_LIN_RIGHT"))
@@ -89,6 +77,15 @@ void Control::process_commands() {
 			command_module.set_command(Command_Module::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(Command_Module::RESPAWN, 1);
+		if (key_by_name("REPLAY_SPEED_UP"))
+			if (replay.get_replay_active()) {
+				if (!key_prev_by_name("REPLAY_SPEED_UP"))
+					replay.increase_speed();
+			}
+		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP"))
+			replay.increase_speed();
+		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
+			replay.decrease_speed();
 	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();
