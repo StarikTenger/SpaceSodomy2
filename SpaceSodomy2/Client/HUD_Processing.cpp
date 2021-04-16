@@ -127,7 +127,8 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	bonus.set_draw(draw);
 	bonus.set_use_window_cords(5);
 	bonus.set_use_picture_scale(0);
-	bonus.set_scale({ 100, 100 });
+	bonus.set_scale({ 150, 150 });
+	bonus.set_color(sf::Color::White);
 	bonus.set_pos({ -100, -100 });
 	if (game->get_ship(player_network->get_id()) != nullptr)
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
