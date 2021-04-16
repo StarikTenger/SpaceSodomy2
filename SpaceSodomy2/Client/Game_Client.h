@@ -8,10 +8,6 @@
 
 class Game_Client : public Game {
 private:
-	enum Animation_Layers {
-		GAME,
-		HUD
-	};
 	std::map<int, std::string> bonus_textures = {
 		{Bonus::COUNT, "bonusEmpty"},
 		{Bonus::INSTANT_HP, "bonusHp"},

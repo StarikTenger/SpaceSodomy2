@@ -81,7 +81,6 @@ void Control::process_commands() {
 			replay.increase_speed();
 		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
 			replay.decrease_speed();
-	}
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
 	}
