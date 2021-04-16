@@ -13,5 +13,6 @@ public:
     bool activate();
     void set_effects(Effects*);
     void set_bonus_manager(Bonus_Manager*);
+    void set_current_bonus(int val);
 };
 

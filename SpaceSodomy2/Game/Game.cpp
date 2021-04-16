@@ -892,6 +892,8 @@ std::string Game::encode() {
 		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
+		// Bonus slot
+		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
 		// Hp
 		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		message += std::to_string((int)ship->get_hp()->get_max()) + " ";

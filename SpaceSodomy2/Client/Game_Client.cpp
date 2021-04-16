@@ -304,6 +304,9 @@ void Game_Client::decode(std::string source) {
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
+			// Bonus slot
+			int bonus;
+			stream >> bonus;
 			// Hp
 			float hp;
 			stream >> hp;
@@ -322,6 +325,7 @@ void Game_Client::decode(std::string source) {
 			ship->get_stamina()->set(stamina);
 			ship->get_hp()->set_max(max_hp);
 			ship->get_stamina()->set_max(max_stamina);
+			ship->get_bonus_slot()->set_current_bonus(bonus);
 
 			// Decoding commands
 			int loc_engine_active = 0;
