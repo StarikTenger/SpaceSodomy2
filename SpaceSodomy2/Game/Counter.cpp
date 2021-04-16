@@ -39,6 +39,8 @@ void Counter::set_change_vel(float val) {
 
 void Counter::modify(float delta) {
 	value += delta;
+	if (value > max_value)
+		value = max_value;
 	restart_delay();
 }
 
