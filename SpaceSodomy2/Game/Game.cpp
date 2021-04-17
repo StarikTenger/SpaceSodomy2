@@ -373,6 +373,23 @@ void Game::process_ships() {
 				                                ship->get_damage_receiver()->get_last_hit());
 		}
 
+		// Apply laser
+		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
+			for (auto damage_receiver : damage_receivers) {
+				if (ship->get_player()->get_id() == damage_receiver->get_player()->get_id())
+					continue;
+				float angle = ship->get_body()->GetAngle();
+				b2Vec2 pos = ship->get_body()->GetPosition();
+				b2Vec2 target_pos = damage_receiver->get_body()->GetPosition();
+				b2Vec2 intersection = get_beam_intersection(pos, angle);
+				if (aux::dist_from_segment(target_pos, pos, intersection) < 
+					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
+					damage_receiver->damage(0, ship->get_player());
+					damage_receiver->get_effects()->get_effect(Effects::LASER_BURN)->get_counter()->set(0.5);
+				}
+			}
+		}
+
 		// Bonus activating
 		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
 			if (ship->get_bonus_slot())

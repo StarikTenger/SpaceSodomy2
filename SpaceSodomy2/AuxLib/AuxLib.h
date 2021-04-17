@@ -79,6 +79,8 @@ public:
 
 	//
 	static bool is_left_from_line(b2Vec2 point, b2Vec2 line_beg, b2Vec2 line_end);
+	//
+	static bool is_in_one_halfplane(b2Vec2 a, b2Vec2 b);
 
 	// Distance from line given as two points. Is safe
 	static float dist_from_line(b2Vec2 point, b2Vec2 segment_beg, b2Vec2 segment_end);
