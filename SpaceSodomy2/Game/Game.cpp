@@ -384,8 +384,8 @@ void Game::process_ships() {
 				b2Vec2 intersection = get_beam_intersection(pos, angle);
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
 					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
-					damage_receiver->damage(0, ship->get_player());
-					damage_receiver->get_effects()->get_effect(Effects::LASER_BURN)->get_counter()->set(0.5);
+					damage_receiver->damage(dt * 1000, ship->get_player());
+					//damage_receiver->get_effects()->get_effect(Effects::LASER_BURN)->get_counter()->set(0.5);
 				}
 			}
 		}

@@ -445,22 +445,6 @@ void Game_Client::decode(std::string source) {
 				float val = effects[i];
 				ship->get_effects()->get_effect((Effects::Types)i)->get_counter()->set(val);
 			}
-
-			// Damage animation
-			if (ship->get_hp()->get() < hp_prev) {
-				// Animation
-				Float_Animation::State state_a;
-				state_a.angle = 0;
-				state_a.pos = { 0, 0 };
-				state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
-				auto state_b = state_a;
-				float min_alpha = 0.2;
-				state_a.color.a = (min_alpha + ((hp_prev - ship->get_hp()->get()) / ship->get_hp()->get_max()) * (1 - min_alpha)) * 255;
-				state_b.color.a = 0;
-				draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
-				// Sound
-				// TODO: add sound here
-			}
 		}
 		// Projectile
 		if (symbol == "p") {
@@ -517,6 +501,22 @@ void Game_Client::decode(std::string source) {
 		}
 	}
 
+	// Damage animation
+	if (get_ship(my_id) && get_ship(my_id)->get_hp()->get() < hp_prev) {
+		// Animation
+		Float_Animation::State state_a;
+		state_a.angle = 0;
+		state_a.pos = { 0, 0 };
+		state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
+		auto state_b = state_a;
+		float min_alpha = 0.2;
+		state_a.color.a = (min_alpha + ((hp_prev - get_ship(my_id)->get_hp()->get()) / get_ship(my_id)->get_hp()->get_max()) * (1 - min_alpha)) * 255;
+		state_b.color.a = 0;
+		draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
+		// Sound
+		// TODO: add sound here
+	}
+
 	// Projectile hit sounds
 	for (auto projectile : destroyed_projectiles) {
 		audio->update_sound(aux::random_int(0, 1000), "projectile_hit", projectile.second.pos, 1, 0);
@@ -544,7 +544,7 @@ void Game_Client::decode(std::string source) {
 
 Ship* Game_Client::get_ship(int id) {
 	for (auto ship : ships)
-		if (ship->get_player() == players[id])
+		if (ship->get_player()->get_id() == id)
 			return ship;
 	return nullptr;
 }
