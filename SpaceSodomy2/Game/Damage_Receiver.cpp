@@ -44,7 +44,7 @@ void Damage_Receiver::set_effects(Effects* val) {
 }
 
 
-void Damage_Receiver::damage(float value, Player* hit_by) {
+void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
     if (!effects) {
         return;
     }

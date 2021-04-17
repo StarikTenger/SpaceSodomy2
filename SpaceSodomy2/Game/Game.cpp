@@ -340,8 +340,7 @@ void Game::process_players() {
 			player->set_is_alive(1);
 
 			// creating ship
-			auto ship = create_ship(player, {0,0}/*get_rand_respawn_pos()*/, aux::random_float(0, 2 * b2_pi, 3));
-			ship->get_hp()->modify(-95);
+			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
 			//auto_damage = 0;
 		}
 	}
