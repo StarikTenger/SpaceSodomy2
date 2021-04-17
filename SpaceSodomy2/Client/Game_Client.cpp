@@ -293,10 +293,19 @@ void Game_Client::display(int id) {
 	}
 
 	// Bonuses
-	for (auto bonus : bonuses) {		
+	for (auto bonus : bonuses) {	
+		float angle = draw->get_camera()->get_angle() + b2_pi / 2;
 		draw->image(bonus_textures[bonus->get_type()],
 			bonus->get_body()->GetPosition(), { 0.3, 0.3 },
-			draw->get_camera()->get_angle() + b2_pi/2, sf::Color::White);
+			angle, sf::Color::White);
+		draw->fadeout_animation(bonus_textures[bonus->get_type()],
+			bonus->get_body()->GetPosition(), // Position
+			{ 0, 0.1 }, // Shift
+			{ 0.3, 0.3 }, // Size
+			{ angle, angle }, // Angle
+			{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+			0.15, GAME // Duration, layer
+		);
 	}
 }
 
