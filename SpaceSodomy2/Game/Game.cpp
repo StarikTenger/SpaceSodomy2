@@ -387,7 +387,7 @@ void Game::process_ships() {
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 		}
-		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {
+		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
@@ -696,6 +696,16 @@ bool Game::load_map(std::string path) {
 					bonus_manager.add_spawnpoint(type, to_append);
 					continue;
 				}
+				if (symbol == "COOLDOWN") {
+					float temp;
+					input >> temp;
+					bonus_manager.set_cooldown(type, temp);
+				}
+				if (symbol == "MAX_COUNT") {
+					int temp;
+					input >> temp;
+					bonus_manager.set_max_count(type, temp);
+				}
 			}
 			continue;
 		}
@@ -747,13 +757,6 @@ bool Game::load_parameters(std::string path) {
 
 		auto read_effect_prototype = [&]() {
 			auto _effects = effect_params;
-			input >> symbol;
-			if (symbol == "NO_EFFECTS") {
-				return _effects;
-			}
-			if (symbol != "EFFECTS") {
-				std::cerr << "Game::load_parametes : incorrect effect syntax " << symbol << "\n";
-			}
 			while (input >> symbol) {
 				if (symbol == "END") {
 					break;
@@ -770,27 +773,29 @@ bool Game::load_parameters(std::string path) {
 				if (symbol == "END")
 					break;
 				int type_ = Effects::get_effect_type(symbol);
-
-				std::string temp;
-				input >> temp;
-				if (temp == "MAXIMAL") {
-					effect_params.effects[type_].set_type(Effects::Algebraic_Type::MAXIMAL);
-				}
-				else if (temp == "ADDITIVE") {
-					effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
-				}
-				else {
-					std::cerr << "Game::load_parameters: failed to read Algebraic_Type name\n";
-				}
-
-				input >> temp;
-				if (temp != "STRENGTH") {
-					std::cerr << "Game::load_parameters: effect strength not set\n";
-				}
-				else {
-					float val;
-					input >> val;
-					effect_params.effects[type_].set_strength(val);
+				effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
+				effect_params.effects[type_].set_strength(0);
+				while (input >> symbol) {
+					if (symbol == "END")
+						break;
+					if (symbol == "ALGEBRA_TYPE") {
+						std::string temp;
+						input >> temp;
+						if (temp == "MAXIMAL") {
+							effect_params.effects[type_].set_type(Effects::Algebraic_Type::MAXIMAL);
+						}
+						else if (temp == "ADDITIVE") {
+							effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
+						}
+						else if (temp == "ANNULATOR") {
+							effect_params.effects[type_].set_type(Effects::Algebraic_Type::ANNULATOR);
+						}
+					}
+					if (symbol == "STRENGTH") {
+						float temp;
+						input >> temp;
+						effect_params.effects[type_].set_strength(temp);
+					}
 				}
 			}
 			continue;
@@ -802,11 +807,15 @@ bool Game::load_parameters(std::string path) {
 				std::cerr << "Game::load_parameters: failed to load BONUS name\n";
 			}
 			Bonus_Prototype bonus_prototype;
-			bonus_prototype.effects_prototype = read_effect_prototype();
+			bonus_prototype.effects_prototype = effect_params;
 			bonus_prototype.type = Bonus::get_bonus_type(name);
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
+				if (symbol == "EFFECTS") {
+					bonus_prototype.effects_prototype = read_effect_prototype();
+
+				}
 				read_symbol_bool("IS_INSTANT", bonus_prototype.is_instant);
 				read_symbol("RADIUS", bonus_prototype.radius);
 				float cd = 0;
@@ -826,10 +835,13 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			guns[name] = {};
-			guns[name].effect_prototype = read_effect_prototype();;
+			guns[name].effect_prototype = effect_params;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
+				if (symbol == "EFFECTS") {
+					guns[name].effect_prototype = read_effect_prototype();
+				}
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);
