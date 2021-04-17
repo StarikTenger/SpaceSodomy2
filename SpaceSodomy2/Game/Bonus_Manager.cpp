@@ -10,16 +10,15 @@ Bonus_Manager::Bonus_Manager() :
         spawnable[i].cooldown.set_max(10);
         spawnable[i].cooldown.set(10);
         spawnable[i].cooldown.set_change_vel(1);
-        spawnable[i].count.set(0);
-        spawnable[i].count.set_max(10000);
-        spawnable[i].count.set_change_vel(0);
+        spawnable[i].count = 0;
+        spawnable[i].count_max = 100;
     }
 }
 void Bonus_Manager::set_cooldown(Bonus::Types i, float t) {
     spawnable[i].cooldown.set_max(t);
 }
 void Bonus_Manager::set_max_count(Bonus::Types i, int t) {
-    spawnable[i].count.set_max(t);
+    spawnable[i].count_max = t;
 }
 
 void Bonus_Manager::step(float dt) {
@@ -30,7 +29,7 @@ void Bonus_Manager::step(float dt) {
         spawnable[bonus_type].cooldown.step(dt);
 
         if (spawnable[bonus_type].cooldown.get() >= spawnable[bonus_type].cooldown.get_max() - b2_epsilon &&
-            spawnable[bonus_type].count.get() <= spawnable[bonus_type].count.get_max() - b2_epsilon) {
+            spawnable[bonus_type].count < spawnable[bonus_type].count_max) {
             int i = aux::random_int(0, spawnpoints[bonus_type].size() - 1);
             if (!spawnpoints[bonus_type][i].is_free) {
                 continue;
@@ -41,7 +40,7 @@ void Bonus_Manager::step(float dt) {
             def.type = static_cast<Bonus::Types>(bonus_type);
             def.set_id(i);
             spawnpoints[bonus_type][i].is_free = false;
-            spawnable[bonus_type].count.modify(1);
+            spawnable[bonus_type].count++;
             bonuses_to_create.push_back(def);
         }
     }
@@ -62,7 +61,7 @@ bool Bonus_Manager::get_next(Bonus_Def& val) {
 }
 void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
     //std::cout << "bonus_returned with type " << type << "& id " << id <<"\n";
-    spawnable[type].count.modify(-1);
+    spawnable[type].count--;
     spawnpoints[type][id].is_free = true;
 }
 

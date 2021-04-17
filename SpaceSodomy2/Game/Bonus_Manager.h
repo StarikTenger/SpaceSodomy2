@@ -14,8 +14,8 @@ private:
 
     struct Global_Spawnability {
         Counter cooldown;
-        Counter count;
-
+        int count = 0;
+        int count_max = 10;
     };
     std::vector<Global_Spawnability> spawnable;
     std::deque<Bonus_Def> bonuses_to_create;

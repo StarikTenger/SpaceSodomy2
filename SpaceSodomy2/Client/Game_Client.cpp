@@ -323,7 +323,7 @@ void Game_Client::decode(std::string source) {
 	clear();
 
 	// Creating stringstream
-	std::cout << source << "\n";
+	//std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
