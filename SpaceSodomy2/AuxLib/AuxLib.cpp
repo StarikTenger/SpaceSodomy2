@@ -53,6 +53,11 @@ sf::Color aux::from_hsv(float H, float S, float V) {
 	return color;
 }
 
+sf::Color aux::make_transparent(sf::Color color) {
+	color.a = 0;
+	return color;
+}
+
 // Absolute time in ms
 int aux::get_milli_count() {
 	timeb tb;

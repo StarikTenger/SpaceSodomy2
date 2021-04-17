@@ -80,6 +80,13 @@ public:
 	// Animations
 	void create_animation(Float_Animation);
 	void draw_animations(int layer = 0);
+	void fadeout_animation(std::string image_name, b2Vec2 pos, 
+		std::pair<float, float> shift_disp, 
+		std::pair<float, float> size,
+		std::pair<float, float> angle,
+		std::pair<sf::Color, sf::Color> color,
+		float duration,
+		int layer = 0);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 

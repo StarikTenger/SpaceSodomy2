@@ -181,7 +181,9 @@ void Game_Client::display(int id) {
 			{-1, 0},
 			{1, 0},
 			{0, 1},
-			{0, -1}
+			{0, -1},
+			{0, 0},
+			{0, 0}
 		};
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
@@ -193,7 +195,6 @@ void Game_Client::display(int id) {
 				if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST) 
 					&& ship->get_stamina()->get() > 0)
 					engine_len = 0.4;
-				if (i < 4) { // Excluding angular engines
 					Float_Animation::State state_a;
 					state_a.pos = ship->get_body()->GetPosition();
 					state_a.angle = ship->get_body()->GetAngle();
@@ -213,46 +214,53 @@ void Game_Client::display(int id) {
 					Float_Animation animation_1(textures[i], state_a, state_b, animation_time, GAME);
 					draw->create_animation(animation);
 					draw->create_animation(animation_1);
-				}
 			}
 			
 		}
 		radius /= 2;
+
 		// Effects
+
 		// Charge
 		if (ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > 0) {
-			Float_Animation::State state_begin;
-			state_begin.pos = ship->get_body()->GetPosition();
-			state_begin.scale = 2. * b2Vec2(radius, radius);
-			state_begin.angle = 0;
-			state_begin.color = color;
-			Float_Animation::State state_end = state_begin;
-			state_end.scale = b2Vec2_zero;
-			state_end.color.a = 0;
-			state_end.pos += aux::rotate({ 0, radius / 4 }, aux::random_float(0, 2, 2) * b2_pi);
-			Float_Animation animation("bullet", state_begin, state_end, 0.4, GAME);
-			draw->create_animation(animation);
+			draw->fadeout_animation("bullet", 
+				ship->get_body()->GetPosition(), // Position
+				{0, radius / 4 }, // Shift
+				{radius * 2, 0}, // Size
+				{0, 0}, // Angle
+				{color, aux::make_transparent(color)}, // Color
+				0.4, GAME // Duration, layer
+				);
 		}
 		// Immortality
 		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0) {
-			Float_Animation::State state_begin;
-			state_begin.pos = ship->get_body()->GetPosition();
-			state_begin.scale = b2Vec2(radius, radius);
-			state_begin.angle = ship->get_body()->GetAngle();
-			state_begin.color = sf::Color::White;
-			Float_Animation::State state_end = state_begin;
-			state_end.color.a = 0;
-			//state_end.pos += aux::rotate({ 0, radius / 8 }, aux::random_float(0, 2, 2) * b2_pi);
-			Float_Animation animation("ship_aura_" + ship->get_player()->get_hull_name(), state_begin, state_end, 0.15, GAME);
-			draw->create_animation(animation);
+			draw->fadeout_animation("ship_aura_" + ship->get_player()->get_hull_name(),
+				ship->get_body()->GetPosition(), // Position
+				{ 0, radius / 16 }, // Shift
+				{ radius, radius }, // Size
+				{ ship->get_body()->GetAngle(), ship->get_body()->GetAngle() }, // Angle
+				{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+				0.15, GAME // Duration, layer
+			);
 		}
 		// Berserk
 		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
 			draw->image("effect", ship->get_body()->GetPosition(), b2Vec2(radius, radius), time * 10, sf::Color::Red);
 		}
 		// Laser
-		if (ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
-			// TODO
+		if (ship->get_effects()->get_effect(Effects::LASER)->get_counter()->get() > 0) {
+			b2Vec2 intersection = get_beam_intersection(ship->get_body()->GetPosition(), ship->get_body()->GetAngle());
+			float thickness = 0.5;
+			draw->textured_line("laser_aura", ship->get_body()->GetPosition(), intersection, color, thickness);
+			draw->textured_line("laser_kernel", ship->get_body()->GetPosition(), intersection, sf::Color::White, thickness);
+			draw->fadeout_animation("bullet",
+				intersection, // Position
+				{ 0, 0.3 }, // Shift
+				{ thickness, 0 }, // Size
+				{ 0, 0 }, // Angle
+				{ sf::Color::White, color }, // Color
+				0.15, GAME // Duration, layer
+			);
 		}
 	}
 

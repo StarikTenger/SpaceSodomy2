@@ -16,6 +16,8 @@ class aux {
 public:
 	// Converts color from hsv to rgb
 	static sf::Color from_hsv(float H, float S, float V);
+	// Sets alpha chanel of color to 0
+	static sf::Color make_transparent(sf::Color color);
 	// Absolute time in ms
 	static int get_milli_count();
 	// Converts ms time to string format
