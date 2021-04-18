@@ -494,7 +494,8 @@ void Game::process_physics() {
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
 		// Hit sound
 		if (contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
-			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody())) {
+			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
+			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())) {
 			event_manager.create_event(Event_Def("hit", nullptr, contact->GetManifold()->localPoint));
 			std::cout << "hit\n";
 		}
