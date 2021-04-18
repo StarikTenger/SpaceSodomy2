@@ -621,6 +621,7 @@ void Game::clear() {
 }
 
 bool Game::load_map(std::string path) {
+	walls.clear();
 	map_path = path;
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
