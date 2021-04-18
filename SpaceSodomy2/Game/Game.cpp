@@ -67,7 +67,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	gun->set_recharge_counter(counter);
 	// Managers
 	gun->set_projectile_manager(&projectile_manager);
-	gun->set_event_manager(&sound_manager);
+	gun->set_event_manager(&event_manager);
 	// Characteristics
 	gun->import_Gun_Prototype(def);
 	gun->set_effects_prototype(&def.effect_prototype);
@@ -392,8 +392,11 @@ void Game::process_ships() {
 
 		// Bonus activating
 		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
-			if (ship->get_bonus_slot())
-				ship->get_bonus_slot()->activate();
+			if (ship->get_bonus_slot()) {
+				if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER)
+					event_manager.create_event(Event_Def("laser", ship->get_body()));
+				ship->get_bonus_slot()->activate();				
+			}
 		}
 
 		// Checking for < zero hp
@@ -474,7 +477,7 @@ void Game::process_projectlie_manager() {
 
 void Game::process_sound_manager() {
 	Event_Def event_def;
-	while (sound_manager.get_next(event_def)) {
+	while (event_manager.get_next(event_def)) {
 		create_event(event_def.name, event_def.body);
 	}
 }

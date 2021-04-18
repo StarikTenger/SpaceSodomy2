@@ -52,7 +52,7 @@ protected:
 
 	// Managers
 	Projectile_Manager projectile_manager;
-	Event_Manager sound_manager;
+	Event_Manager event_manager;
 	Id_Manager id_manager;
 	Bonus_Manager bonus_manager;
 	

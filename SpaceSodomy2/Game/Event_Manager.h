@@ -6,6 +6,11 @@
 struct Event_Def {
 	std::string name = "_";
 	b2Body* body = nullptr;
+	Event_Def() {}
+	Event_Def(std::string _name, b2Body* _body) {
+		name = _name;
+		body = _body;
+	}
 };
 
 /// <summary>
