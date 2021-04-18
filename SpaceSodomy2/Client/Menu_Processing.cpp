@@ -9,9 +9,9 @@ void Menu_Processing::init_hull(std::string name, int hp, float mass, float radi
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 325), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Mass: " + std::to_string(mass), b2Vec2(-300, 350), 7, 20,
+	hull->add_constant_text(++current_id, "Mass: " + aux::float_to_string(mass, 2), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	hull->add_constant_text(++current_id, "Radius: " + std::to_string(radius), b2Vec2(-300, 375), 7, 20,
+	hull->add_constant_text(++current_id, "Radius: " + aux::float_to_string(radius, 2), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Stamina: " + std::to_string(stamina), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
@@ -444,13 +444,13 @@ void Menu_Processing::init_gun(std::string name, int damage, float recharge, int
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 325), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Recharge: " + std::to_string(recharge), b2Vec2(-300, 350), 7, 20,
+	gun->add_constant_text(++current_id, "Recharge: " + aux::float_to_string(recharge, 2), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet mass: " + std::to_string(projectile_mass), b2Vec2(-300, 400), 7, 20,
+	gun->add_constant_text(++current_id, "Bullet mass: " + aux::float_to_string(projectile_mass, 2), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet radius: " + std::to_string(projectile_radius), b2Vec2(-300, 425), 7, 20,
+	gun->add_constant_text(++current_id, "Bullet radius: " + aux::float_to_string(projectile_radius, 2), b2Vec2(-300, 425), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-300, 450), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
