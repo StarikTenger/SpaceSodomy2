@@ -80,7 +80,7 @@ protected:
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
 	Projectile*      create_projectile(Projectile_Def);
-	Sound*           create_event(std::string name = "_", b2Body* body = nullptr, float playing_offset = 0);
+	Sound*           create_event(Event_Def, float playing_offset = 0);
 	Effects*         create_effects(Effects_Prototype*);
 	Bonus*           create_bonus(Bonus_Def);
 	Bonus_Slot*      create_bonus_slot();

@@ -227,10 +227,11 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-Sound* Game::create_event(std::string name, b2Body* body, float playing_offset) {
+Sound* Game::create_event(Event_Def event_def, float playing_offset) {
 	auto sound = new Sound();
-	sound->set_body(body);
-	sound->set_name(name);
+	sound->set_body(event_def.body);
+	sound->set_name(event_def.name);
+	sound->set_pos(event_def.pos);
 	sound->set_playing_offset(create_counter(playing_offset, 1));
 	id_manager.set_id(sound);
 	sounds.insert(sound);
@@ -478,18 +479,26 @@ void Game::process_projectlie_manager() {
 void Game::process_sound_manager() {
 	Event_Def event_def;
 	while (event_manager.get_next(event_def)) {
-		create_event(event_def.name, event_def.body);
+		create_event(event_def);
 	}
 }
 
 void Game::process_physics() {
+	auto contact_table_prev = contact_table;
 	contact_table.reset();
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
-
 		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() *
 			contact->GetFixtureB()->GetRestitution());
 	}
 	physics.Step(dt, 10, 10);
+	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
+		// Hit sound
+		if (contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
+			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody())) {
+			event_manager.create_event(Event_Def("hit", nullptr, contact->GetManifold()->localPoint));
+			std::cout << "hit\n";
+		}
+	}
 }
 
 void Game::process_counters() {
@@ -994,8 +1003,8 @@ std::string Game::encode() {
 		// Name
 		message += sound->get_name() + " ";
 		// Pos
-		message += aux::float_to_string(sound->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(sound->get_body()->GetPosition().y, 2) + " ";
+		message += aux::float_to_string(sound->get_pos().x, 2) + " ";
+		message += aux::float_to_string(sound->get_pos().y, 2) + " ";
 	}
 
 	return message;

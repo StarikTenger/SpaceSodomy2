@@ -12,8 +12,10 @@ Counter* Sound::get_playing_offset() {
 	return playing_offset;
 }
 
-b2Body* Sound::get_body() {	
-	return body;
+b2Vec2 Sound::get_pos() {
+	if (body)
+		return body->GetPosition();
+	return pos;
 }
 
 void Sound::set_name(std::string val) {
@@ -26,6 +28,10 @@ void Sound::set_playing_offset(Counter* val) {
 
 void Sound::set_body(b2Body* val) {
 	body = val;
+}
+
+void Sound::set_pos(b2Vec2 val) {
+	pos = val;
 }
 
 bool Sound::is_alive() {
