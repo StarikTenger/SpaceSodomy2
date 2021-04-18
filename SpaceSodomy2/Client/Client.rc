@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "resource.h"
+#include "resource2.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian (Russia) resources
+// Русский (Россия) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
@@ -27,7 +27,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 1 TEXTINCLUDE 
 BEGIN
-    "resource.h\0"
+    "resource2.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -47,12 +47,14 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// PNG
+// Icon
 //
 
-IDB_PNG1                PNG                     "C:\\Users\\ilyin\\Documents\\images\\ss_logo.png"
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "C:\\Users\\mea25\\Desktop\\SpaceSodomy\\SpaceSodomy2\\SpaceSodomy2\\env\\textures\\ship_lWo_icon.ico"
 
-#endif    // Russian (Russia) resources
+#endif    // Русский (Россия) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
