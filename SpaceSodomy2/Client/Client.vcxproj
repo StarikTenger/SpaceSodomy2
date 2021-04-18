@@ -166,6 +166,13 @@
     <ClInclude Include="Loading_Screen.h" />
     <ClInclude Include="Menu_Processing.h" />
     <ClInclude Include="Replay.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Documents\images\ss_logo.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

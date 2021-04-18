@@ -14,7 +14,7 @@
 
 class Client_Network {
 private:
-	char buffer[2048]; // receiving buffer
+	char buffer[4096]; // receiving buffer
 	std::string serverIP = "localhost"; // Server IP address
 	int port = 8001; // sending port
 	sf::UdpSocket socket;

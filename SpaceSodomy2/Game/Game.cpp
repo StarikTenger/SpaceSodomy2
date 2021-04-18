@@ -848,6 +848,7 @@ bool Game::load_parameters(std::string path) {
 				}
 				read_symbol_bool("IS_INSTANT", bonus_prototype.is_instant);
 				read_symbol("RADIUS", bonus_prototype.radius);
+				float strength = 1;
 				float cd = 0;
 				read_symbol("COOLDOWN", cd);
 				if (cd != 0) {

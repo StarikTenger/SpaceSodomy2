@@ -85,6 +85,8 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume, 
 	sf::Listener::setDirection(1.f, 0.f, 0.f);
 	sf::Listener::setPosition(0.f, 0.f, 0.f);
 	sf::Sound* sound = new sf::Sound();
+	if (!sounds.count(name))
+		return;
 	*sound = *sounds[name];
 	sound->setPosition(pos.x, pos.y, z);
 	sound->setVolume(volume);
@@ -110,6 +112,8 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume_mod
 		activeSounds[id]->setVolume(sound_volume * activeSounds_mode[id]);
 	}
 	else {
+		if (!sounds.count(name))
+			return;
 		play(id, name, pos, sound_volume * activeSounds_mode[id], looped);
 	}
 	activeSounds[id]->setLoop(looped);
