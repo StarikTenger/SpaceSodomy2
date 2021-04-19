@@ -26,7 +26,9 @@ void Bonus_Manager::step(float dt) {
         if (spawnpoints[bonus_type].size() == 0) {
             continue;
         }
-        spawnable[bonus_type].cooldown.step(dt);
+        if (spawnable[bonus_type].count < spawnable[bonus_type].count_max) {
+            spawnable[bonus_type].cooldown.step(dt);
+        }
 
         if (spawnable[bonus_type].cooldown.get() >= spawnable[bonus_type].cooldown.get_max() - b2_epsilon &&
             spawnable[bonus_type].count < spawnable[bonus_type].count_max) {
