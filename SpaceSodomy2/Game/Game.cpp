@@ -195,9 +195,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	return ship;
 }
 
-Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float restitution) {
+Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float restitution, int type) {
 	Wall* wall = new Wall();
-	wall->set(&physics, vertices, orientation);
+	wall->set(&physics, vertices, orientation, type);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
 	walls.insert(wall);
@@ -385,8 +385,20 @@ void Game::process_ships() {
 				b2Vec2 intersection = get_beam_intersection(pos, angle);
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
 					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
-					damage_receiver->damage(dt * 1000, ship->get_player());
-					//damage_receiver->get_effects()->get_effect(Effects::LASER_BURN)->get_counter()->set(0.5);
+					if (!damage_receiver->add_effect(Effects::LASER_BURN, ship->get_effects()->get_effect(Effects::Types::LASER)->get_strength())) {
+						damage_receiver->damage(1000, ship->get_player());
+					}
+					else {
+						damage_receiver->damage(0, ship->get_player());
+					}
+				}
+			}
+		}
+
+		for (auto wall : walls) {
+			if (contact_table.check(ship->get_body(), wall->get_body())) {
+				if (wall->get_type() == Wall::SPIKED) {
+					ship->get_damage_receiver()->add_effect(Effects::LASER_BURN, 0.1);
 				}
 			}
 		}
@@ -399,7 +411,15 @@ void Game::process_ships() {
 				ship->get_bonus_slot()->activate();				
 			}
 		}
-
+		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
+			for (auto damage_receiver : damage_receivers) {
+				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
+					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+					damage_receiver->damage(0, ship->get_player());            // TODO
+					damage_receiver->add_effect(Effects::LASER_BURN, 0.5);
+				}
+			}
+		}
 		// Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
@@ -407,17 +427,7 @@ void Game::process_ships() {
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 		}
-		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
-			for (auto damage_receiver : damage_receivers) {
-				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
-					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-					damage_receiver->damage(0, ship->get_player());            // TODO
-					if (damage_receiver->get_effects()) {
-						damage_receiver->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->set(0.5);
-					}
-				}
-			}
-		}
+		
 	}
 	for (auto ship : ships_to_delete)
 		delete_ship(ship);
@@ -437,9 +447,7 @@ void Game::process_projectiles() {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
-				if (damage_receiver->get_effects() && projectile->get_effects_def()) {
-					damage_receiver->get_effects()->update(projectile->get_effects_def());
-				}
+				damage_receiver->apply_effects(projectile->get_effects_def());
 			}
 		}
 		// Checking for wall collision
@@ -651,10 +659,19 @@ bool Game::load_map(std::string path) {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
 			int orientation = Wall::OUTER;
+			int type = Wall::STANDART;
 			float restitution = 0.5;
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;
+				if (symbol_1 == "SPIKED") {
+					type = Wall::SPIKED;
+					continue;
+				}
+				if (symbol_1 == "STANDART") {
+					type = Wall::STANDART;
+					continue;
+				}
 				if (symbol_1 == "POINT") {
 					b2Vec2 point;
 					if (!(input >> point.x >> point.y)) { // Error
@@ -684,7 +701,7 @@ bool Game::load_map(std::string path) {
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points, orientation, restitution)->set_id(wall_id);
+			create_wall(points, orientation, restitution, type)->set_id(wall_id);
 
 			if (orientation == Wall::INNER) {
 				for (auto point : points) {

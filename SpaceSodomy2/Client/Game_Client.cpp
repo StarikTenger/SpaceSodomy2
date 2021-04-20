@@ -82,6 +82,9 @@ void Game_Client::display(int id) {
 	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
+		if (wall->get_type() == Wall::SPIKED) {
+			color = sf::Color(151, 255, 0);
+		}
 		auto vertices = wall->get_vertices();
 		for (int i = 0; i < vertices.size(); i++) {
 			int j = (i + 1) % vertices.size();
@@ -619,6 +622,11 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 					transparency_modifier = 0;
 				}
 				base_color.a *= transparency_modifier;
+				if (wall->get_type() == Wall::SPIKED) {
+					auto temp = base_color.b;
+					base_color.b = base_color.r;
+					base_color.r = temp;
+				}
 				new_image.setPixel(i, j, base_color);
 			}
 		}
