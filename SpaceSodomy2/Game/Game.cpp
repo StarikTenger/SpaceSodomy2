@@ -185,6 +185,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 	// Engine
 	auto engine = create_engine(body, command_module, stamina, effs);
+	engine->set_force_angular(hull_prototype.force_angular);
+	engine->set_force_linear(hull_prototype.force_linear);
 	ship->set_engine(engine);
 
 	// Damage receiver
@@ -918,6 +920,8 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("RADIUS", hulls[name].radius);
 				read_symbol("STAMINA", hulls[name].stamina);
 				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
+				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
+				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
 			}
 			continue;
 		}
