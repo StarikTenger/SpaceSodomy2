@@ -83,7 +83,7 @@ void Game_Client::display(int id) {
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
 		if (wall->get_type() == Wall::SPIKED) {
-			color = sf::Color(151, 255, 0);
+			color = sf::Color(255, 255, 255);
 		}
 		auto vertices = wall->get_vertices();
 		for (int i = 0; i < vertices.size(); i++) {
@@ -608,29 +608,55 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 
 	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
 
-	for (int i = 0; i < image_size.x; i++) {
-		for (int j = 0; j < image_size.y; j++) {
+	if (wall->get_type() == Wall::SPIKED) {
+		for (int i = 0; i < image_size.x; i++) {
+			for (int j = 0; j < image_size.y; j++) {
 
-			point.x = origin.x + i / scale.x;
-			point.y = origin.y + j / scale.y;
+				point.x = origin.x + i / scale.x;
+				point.y = origin.y + j / scale.y;
 
-			if (aux::is_in_polygon(point, polygon, is_outer)) {
-				auto base_color = base_image.getPixel(i % base_image.getSize().x,
-					j % base_image.getSize().y);
-				float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
-				if (transparency_modifier < 0) {
-					transparency_modifier = 0;
+				if (aux::is_in_polygon(point, polygon, is_outer)) {
+					auto base_color = base_image.getPixel(i % base_image.getSize().x,
+						j % base_image.getSize().y);
+					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
+					if (transparency_modifier < 0) {
+						transparency_modifier = 0;
+					}
+					base_color.a *= transparency_modifier;
+					new_image.setPixel(i, j, base_color);
 				}
-				base_color.a *= transparency_modifier;
-				if (wall->get_type() == Wall::SPIKED) {
-					auto temp = base_color.b;
-					base_color.b = base_color.r;
-					base_color.r = temp;
+				else {
+					auto base_color = sf::Color(255, 0, 0);
+					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
+					if (transparency_modifier < 0) {
+						transparency_modifier = 0;
+					}
+					base_color.a *= transparency_modifier;
+					new_image.setPixel(i, j, base_color);
 				}
-				new_image.setPixel(i, j, base_color);
 			}
 		}
-	}	
+	}
+	else {
+		for (int i = 0; i < image_size.x; i++) {
+			for (int j = 0; j < image_size.y; j++) {
+
+				point.x = origin.x + i / scale.x;
+				point.y = origin.y + j / scale.y;
+
+				if (aux::is_in_polygon(point, polygon, is_outer)) {
+					auto base_color = base_image.getPixel(i % base_image.getSize().x,
+						j % base_image.getSize().y);
+					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
+					if (transparency_modifier < 0) {
+						transparency_modifier = 0;
+					}
+					base_color.a *= transparency_modifier;
+					new_image.setPixel(i, j, base_color);
+				}
+			}
+		}
+	}
 
 	sf::Texture* tex = new sf::Texture;
 	tex->loadFromImage(new_image);
