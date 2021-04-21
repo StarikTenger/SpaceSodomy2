@@ -201,7 +201,12 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	Wall* wall = new Wall();
 	wall->set(&physics, vertices, orientation, type);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
-	collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
+	if (type == Wall::GHOST) {
+		collision_filter.add_body(wall->get_body(), Collision_Filter::PROJECTILE);
+	}
+	else {
+		collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
+	}
 	walls.insert(wall);
 	id_manager.set_id(wall);
 	return wall;
@@ -672,6 +677,10 @@ bool Game::load_map(std::string path) {
 				}
 				if (symbol_1 == "STANDART") {
 					type = Wall::STANDART;
+					continue;
+				}
+				if (symbol_1 == "GHOST") {
+					type = Wall::GHOST;
 					continue;
 				}
 				if (symbol_1 == "POINT") {

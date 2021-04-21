@@ -27,6 +27,7 @@ WALL
 END
 WALL
     OUTER
+    GHOST
     POINT -17.5 -12.23
     POINT -17.56 -11.34
     POINT -17.15 -10.61

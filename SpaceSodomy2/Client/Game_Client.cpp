@@ -82,7 +82,7 @@ void Game_Client::display(int id) {
 	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
 	for (auto wall : walls) {
 		auto color = sf::Color(0, 151, 255);
-		if (wall->get_type() == Wall::SPIKED) {
+		if (wall->get_type() == Wall::SPIKED || wall->get_type() == Wall::GHOST) {
 			color = sf::Color(255, 255, 255);
 		}
 		auto vertices = wall->get_vertices();
@@ -607,6 +607,12 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 	origin = aux::origin_pos(polygon) - b2Vec2(wall_width, wall_width);
 
 	new_image.create(image_size.x, image_size.y, sf::Color::Transparent);
+
+	if (wall->get_type() == Wall::GHOST) {
+		sf::Texture* tex = new sf::Texture;
+		tex->loadFromImage(new_image);
+		return tex;
+	}
 
 	if (wall->get_type() == Wall::SPIKED) {
 		for (int i = 0; i < image_size.x; i++) {

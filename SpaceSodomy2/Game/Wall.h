@@ -17,7 +17,8 @@ private:
 public:
 	enum Type {
 		STANDART,
-		SPIKED
+		SPIKED,
+		GHOST
 	};
 	enum Orientation {
 		INNER, OUTER
