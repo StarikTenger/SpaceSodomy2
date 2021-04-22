@@ -33,5 +33,8 @@ public:
 
 	// Deals damage
 	void damage(float value, Player* hit_by);
+	// Apply effects. Returns false if impossible
+	bool apply_effects(Effects_Prototype*);
+	bool add_effect(Effects::Types, float val);
 };
 
