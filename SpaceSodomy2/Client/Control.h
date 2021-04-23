@@ -85,6 +85,7 @@ public:
 	int load_keys(std::string path);
 	// Config
 	void load_config(std::string path);
+	void load_token(std::string path);
 	bool reload = 1; // need to reload configs
 };
 
