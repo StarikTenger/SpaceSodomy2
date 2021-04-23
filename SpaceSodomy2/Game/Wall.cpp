@@ -17,14 +17,18 @@ int Wall::get_orientation() {
 	return orientation;
 }
 
-void Wall::set(b2World* world, std::vector<b2Vec2> _vertices, int _orientation) {
+int Wall::get_type() {
+	return type;
+}
+
+void Wall::set(b2World* world, std::vector<b2Vec2> _vertices, int _orientation, int _type) {
 	vertices = _vertices;
 	// Check for orientation
 	float area = aux::area(vertices);
 	orientation = _orientation;
 	if (area * (orientation == OUTER ? 1 : -1) < 0)
 		std::reverse(vertices.begin(), vertices.end());
-
+	type = _type;
 	if (!body) {
 		b2BodyDef body_def;
 		body_def.position.Set(0.0f, 0.0f);

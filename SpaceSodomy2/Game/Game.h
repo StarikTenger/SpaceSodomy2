@@ -78,7 +78,7 @@ protected:
 	Counter*         create_counter(float val = 0, float change_vel = 0);
 	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
-	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5);
+	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5, int type = Wall::STANDART);
 	Projectile*      create_projectile(Projectile_Def);
 	Sound*           create_event(Event_Def, float playing_offset = 0);
 	Effects*         create_effects(Effects_Prototype*);
