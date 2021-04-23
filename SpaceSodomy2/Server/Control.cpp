@@ -37,6 +37,7 @@ Control::Control() {
 	network.set_replay_path("replays/" + std::to_string(dt->tm_mday) + "." + ((dt->tm_mon + 1 <10)?
 		"0" + std::to_string(dt->tm_mon + 1) : std::to_string(dt->tm_mon + 1)) + "." + std::to_string(dt->tm_year + 1900) +
 		"_" + std::to_string(dt->tm_hour) + "." + std::to_string(dt->tm_min) + ".rep");
+	game.set_time(&time_by_id);
 }
 
 void Control::receive() {

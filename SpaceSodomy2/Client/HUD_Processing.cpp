@@ -110,6 +110,24 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	config >> table_use_windows_cords >> table_pos.x >> table_pos.y >> table_character_size >>
 		table_name_indent >> table_indent.x >> table_indent.y;
 
+	ping.set_draw(draw);
+	ping.set_mouse_pos(mouse_pos);
+	ping.set_keyboard(keyboard);
+	ping.set_use_window_cords(1);
+	ping.set_text_character_pixel_size(17);
+	ping.set_align(2);
+	ping.set_pos({ 190, 50 });
+	ping.set_text_scale(1);
+
+	ping_text.set_draw(draw);
+	ping_text.set_mouse_pos(mouse_pos);
+	ping_text.set_keyboard(keyboard);
+	ping_text.set_use_window_cords(1);
+	ping_text.set_text_character_pixel_size(60);
+	ping_text.set_text("Ping:");
+	ping_text.set_pos({ 100, 50 });
+	ping_text.set_text_scale(0.3);
+
 	time_to_respawn.set_draw(draw);
 	time_to_respawn.set_mouse_pos(mouse_pos);
 	time_to_respawn.set_keyboard(keyboard);
@@ -163,6 +181,12 @@ void HUD_Processing::step() {
 			press_r_to_respawn.step();
 	}
 	else {
+		if (game->player_by_id(player_network->get_id()) != nullptr) {
+			ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
+			//std::cout << ping.get_text() << "\n";
+		}
+		ping_text.step();
+		ping.step();
 		HP_bar.step();
 		stamina_bar.step();
 		bonus.primitive_step();

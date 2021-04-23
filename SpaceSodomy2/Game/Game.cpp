@@ -606,6 +606,10 @@ void Game::set_dt(float _dt) {
 	dt = _dt;
 }
 
+void Game::set_time(std::map<int, int>* _time) {
+	connection_time = _time;
+}
+
 void Game::clear() {
 	// Clear ships
 	for (auto ship : ships)
@@ -966,6 +970,8 @@ std::string Game::encode() {
 		message += std::to_string(int(player.second->get_time_to_respawn()->get() + 0.99)) + " ";
 		// Is alive
 		message += std::to_string(int(player.second->get_is_alive())) + " ";
+		// Last connection time
+		message += std::to_string(connection_time->operator[](player.first));
 	}
 
 	// Ships (S)

@@ -16,6 +16,7 @@ private:
 	std::string hull_name = "default";
 	Command_Module* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
+	int ping = 0;
 public:
 	Player();
 	Player(int id_, sf::Color color_, std::string name_);
@@ -29,6 +30,7 @@ public:
 	Counter* get_time_to_respawn();
 	int get_deaths();
 	int get_kills();
+	int get_ping();
 	
 	void set_is_alive(bool);
 	void set_color(sf::Color color_);
@@ -39,6 +41,7 @@ public:
 	void set_time_to_respawn(Counter*);
 	void set_deaths(int deaths_);
 	void set_kills(int kills_);
+	void set_ping(int ping_);
 
 	void add_death();
 	void add_kill();

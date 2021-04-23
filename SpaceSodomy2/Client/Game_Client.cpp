@@ -377,8 +377,8 @@ void Game_Client::decode(std::string source) {
 			std::string hull;
 			stream >> hull;
 			// Deaths, kills & etc
-			int deaths, kills, time_to_respawn, is_alive;
-			stream >> deaths >> kills >> time_to_respawn >> is_alive;
+			int deaths, kills, time_to_respawn, is_alive, connection_time;
+			stream >> deaths >> kills >> time_to_respawn >> is_alive >> connection_time;
 			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
 			Player* player = create_player(id);
@@ -389,7 +389,8 @@ void Game_Client::decode(std::string source) {
 			player->set_kills(kills);
 			player->set_is_alive(is_alive);
 			player->get_time_to_respawn()->set(float(time_to_respawn));
-			//std::cout << player->get_time_to_respawn()->get() << "\n";
+			player->set_ping(aux::get_milli_count() - connection_time);
+			//std::cout << aux::get_milli_count() - connection_time << "\n";
 		}
 		// Ship
 		if (symbol == "S") {

@@ -33,6 +33,7 @@ protected:
 
 	// Objects' systems
 	std::map<int, Player*> players;
+	std::map<int, int>* connection_time;
 	std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<Command_Module*> command_modules;
@@ -125,6 +126,7 @@ public:
 	void step(float dt);
 	// Set
 	void set_dt(float);
+	void set_time(std::map<int, int>*);
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
