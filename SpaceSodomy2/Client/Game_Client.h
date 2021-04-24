@@ -94,7 +94,10 @@ public:
 	void save_setup(std::string path);
 
 	sf::Texture* make_polygonal_texture(Wall* wall, sf::Vector2f scale, 
-		std::string base_texture, float wall_width);
+		std::string base_texture, float wall_width, sf::Color overlay_color);
 	// load wall textures
-	void load_wall_textures();
+	void load_wall_textures(sf::Color overlay_color = sf::Color(0, 151, 255), 
+		                    sf::Vector2f scale = {100, 100}, 
+		                    float wall_width = 1.0,
+		                    std::string wall_name = "wall");
 };

@@ -597,7 +597,7 @@ void Game_Client::save_setup(std::string path) {
 
 sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 	sf::Vector2f scale, std::string base_texture,
-	float wall_width) {
+	float wall_width, sf::Color overlay_color) {
 
 	auto polygon = wall->get_vertices();
 	bool is_outer = wall->get_orientation();
@@ -633,20 +633,14 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 				if (aux::is_in_polygon(point, polygon, is_outer)) {
 					auto base_color = base_image.getPixel(i % base_image.getSize().x,
 						j % base_image.getSize().y);
-					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
-					if (transparency_modifier < 0) {
-						transparency_modifier = 0;
-					}
-					base_color.a *= transparency_modifier;
-					new_image.setPixel(i, j, base_color);
+					auto new_color = sf::Color(base_color.r * overlay_color.r / 255,
+						base_color.g * overlay_color.g / 255,
+						base_color.b * overlay_color.b / 255,
+						std::max((1 - (aux::dist_from_polygon(point, polygon) / wall_width)) * 255, 0.f));
+					new_image.setPixel(i, j, new_color);
 				}
 				else {
-					auto base_color = sf::Color(255, 0, 0);
-					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
-					if (transparency_modifier < 0) {
-						transparency_modifier = 0;
-					}
-					base_color.a *= transparency_modifier;
+					auto base_color = sf::Color(255, 0, 0, std::max((1 - (aux::dist_from_polygon(point, polygon) / wall_width)) * 255, 0.f));
 					new_image.setPixel(i, j, base_color);
 				}
 			}
@@ -662,12 +656,11 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 				if (aux::is_in_polygon(point, polygon, is_outer)) {
 					auto base_color = base_image.getPixel(i % base_image.getSize().x,
 						j % base_image.getSize().y);
-					float transparency_modifier = 1 - (aux::dist_from_polygon(point, polygon) / wall_width);
-					if (transparency_modifier < 0) {
-						transparency_modifier = 0;
-					}
-					base_color.a *= transparency_modifier;
-					new_image.setPixel(i, j, base_color);
+					auto new_color = sf::Color(base_color.r * overlay_color.r / 255,
+						base_color.g * overlay_color.g / 255,
+						base_color.b * overlay_color.b / 255,
+						std::max((1 - (aux::dist_from_polygon(point, polygon) / wall_width)) * 255, 0.f));
+					new_image.setPixel(i, j, new_color);
 				}
 			}
 		}
@@ -679,19 +672,13 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 }
 
 
-void Game_Client::load_wall_textures() {
+void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale, float wall_width, std::string wall_name) {
 	auto path = map_path;
 	for (int i = 0; i < path.size(); i++) {
 		if (path[i] == '/' || path[i] == '.') {
 			path[i] = '_';
 		}
 	}
-
-	auto color = sf::Color(0, 151, 255);
-	//auto color = sf::Color(0, 151, 255);
-	sf::Vector2f scale(100, 100);
-	float wall_width = 1.0;
-	std::string wall_name = "wall";
 
 	global_wall_name = "wall_" + path;
 
@@ -721,8 +708,8 @@ void Game_Client::load_wall_textures() {
 		base.clear(sf::Color::Transparent);
 		for (auto wall : walls) {
 			std::cout << "making wall with id " << wall->get_id() << "\n";
-			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width);
-			draw->overlay_texture(base, temp, color,
+			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width, overlay_color);
+			draw->overlay_texture(base, temp, sf::Color::White,
 				sf::Vector2i((wall->get_origin_pos().x - origin_pos.x) * scale.x, 
 				             (wall->get_origin_pos().y - origin_pos.y) * scale.y));
 			base.display();
