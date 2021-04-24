@@ -147,6 +147,7 @@ Control::Control() {
 	// Dt
 	game.set_dt(delay * 0.001);
 	game.load_parameters("parameters.conf");
+	load_token("token.conf");
 }
 
 int Control::get_is_running() {
@@ -172,9 +173,10 @@ void Control::step() {
 			game.decode(replay.get_cur_frame());
 		else
 			game.decode(network.get_message());
-
 		// Draw		
 		game.display(network.get_id());
+		//FPS
+		frame_marks.push(aux::get_milli_count());
 		// Camera backup
 		Camera camera_backup = *game.get_draw()->get_camera();
 		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
@@ -267,4 +269,19 @@ void Control::load_config(std::string path) {
 	// Key config
 	load_keys("keys.conf");
 	game.load_setup("setup.conf");
+}
+
+void Control::load_token(std::string path) {
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	int token;
+	config >> token;
+	if (token == 0) {
+		token = aux::random_int(0, 100000000);
+		std::ofstream fout;
+		fout.open(path);
+		fout << token;
+		fout.close();
+	}
+	network.set_token(token);
 }

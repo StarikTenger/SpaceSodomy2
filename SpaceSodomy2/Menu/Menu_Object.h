@@ -11,7 +11,7 @@ private:
 	std::string texture_name;
 	sf::Color color;
 	Draw* draw;
-	b2Vec2 pos, scale;
+	b2Vec2 pos, scale = { 1, 1 };
 	b2Vec2 cur_pos;
 	// Is object active (mouse pointed on it)
 	bool active = 0;

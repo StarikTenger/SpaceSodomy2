@@ -25,6 +25,7 @@ private:
 	int engine_active = 0;
 	int aim_conf = 1;
 	int aim_opacity = 150;
+	bool network_information_active = false;
 
 	// Some drawing parameters
 	// box for drawing the global wall texture;
@@ -69,6 +70,7 @@ public:
 
 	void set_aim_conf(int _conf);
 	void set_aim_opacity(int _opacity);
+	void set_network_information_active(bool _active);
 
 	void display(int id);
 
@@ -83,6 +85,9 @@ public:
 
 	// Get player id by name
 	int get_player_id(std::string name);
+
+	// Get network information active
+	bool get_network_information_active();
 
 	// Load setup
 	void load_setup(std::string path);

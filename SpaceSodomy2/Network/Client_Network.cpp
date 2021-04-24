@@ -7,13 +7,14 @@ Client_Network::Client_Network() {
 	socket.setBlocking(0);
 }
 
-Client_Network::Client_Network(std::string serverIP_, int port_, int id_, std::string name_) {
+Client_Network::Client_Network(std::string serverIP_, int port_, int id_, std::string name_, int token_) {
 	port = port_;
 	serverIP = serverIP_;
 	id = id_;
 	name = name_;
 	socket.setBlocking(0);
 	socket_receiving.setBlocking(0);
+	token = token_;
 }
 
 //Set modules
@@ -33,6 +34,10 @@ void Client_Network::set_name(std::string name_) {
 	name = name_;
 }
 
+void Client_Network::set_token(int token_) {
+	token = token_;
+}
+
 //Get modules
 int Client_Network::get_port() {
 	return port;
@@ -49,12 +54,15 @@ int Client_Network::get_id() {
 std::string Client_Network::get_name() {
 	return name;
 }
+int Client_Network::get_token() {
+	return token;
+}
 
 void Client_Network::send(std::string data) {
 	// Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
-		name + " " +
+		name + " " + std::to_string(token) + " " +
 		data;
 	// Sending
 	auto func = [](sf::UdpSocket* socket, std::string data,

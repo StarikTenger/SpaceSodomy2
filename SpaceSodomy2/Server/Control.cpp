@@ -37,6 +37,7 @@ Control::Control() {
 	network.set_replay_path("replays/" + std::to_string(dt->tm_mday) + "." + ((dt->tm_mon + 1 <10)?
 		"0" + std::to_string(dt->tm_mon + 1) : std::to_string(dt->tm_mon + 1)) + "." + std::to_string(dt->tm_year + 1900) +
 		"_" + std::to_string(dt->tm_hour) + "." + std::to_string(dt->tm_min) + ".rep");
+	game.set_time(&time_by_id);
 }
 
 void Control::receive() {
@@ -51,24 +52,28 @@ void Control::receive() {
 	network.del_last_message();
 	std::string IP_address_, name_, time, gun_name, hull_name;
 	message >> IP_address_;
-	int id_;
+	int id_, token;
 	message >> id_;
 	message >> time;
 	message >> name_;
+	message >> token;
 	message >> gun_name;
 	message >> hull_name;
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
-	if (!addresses.count(IP_by_id[id_])) {
+	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
 		addresses.insert(IP_address_);
 		IP_by_id[id_] = IP_address_;
 		id_by_IP[IP_address_] = id_;
+		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 		game.new_player(id_, new_color, name_, gun_name, hull_name);
 	}
 	// Applying commands
-	if (IP_by_id[id_] == IP_address_) {
+	if (token_by_id[id_] == token) {
+		IP_by_id[id_] = IP_address_;
+		id_by_IP[IP_address_] = id_;
 		time_by_id[id_] = aux::get_milli_count();
 		std::string command_string;
 		message >> command_string;

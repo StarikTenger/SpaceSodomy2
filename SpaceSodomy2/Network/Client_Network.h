@@ -21,20 +21,23 @@ private:
 	sf::UdpSocket socket_receiving;
 	int id = 1; // player id
 	std::string name = "UnknownPlayer";
+	int token = 0;
 
 public:
 	Client_Network();
-	Client_Network(std::string serverIP_, int port_, int id_, std::string name_);
+	Client_Network(std::string serverIP_, int port_, int id_, std::string name_, int token_);
 
 	void set_port(int port_ = 8001); // setting a new sending port
 	void set_server(std::string serverIP_ = "localhost"); // setting a new server IP address
 	void set_id(int id_ = 1); // setting a new id for player
 	void set_name(std::string name_ = "UnknownPlayer"); // setting a new name for player
+	void set_token(int token_);
 
 	int get_port(); // getting sending port
 	std::string get_serverIP(); // getting server IP address
 	int get_id(); // getting player id
 	std::string get_name(); // getting player name
+	int get_token(); // getting player token
 
 	// Sends data in format: "PlayerId LocalTime PlayerName # data"
 	void send(std::string data);

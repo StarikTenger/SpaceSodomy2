@@ -22,6 +22,7 @@ private:
 	std::set <std::string> addresses; // IP addresses of active players
 	std::map <int, std::string> IP_by_id; // getting IP by id
 	std::map <std::string, int> id_by_IP; // getting id by IP
+	std::map <int, int> token_by_id; // getting token by id
 	std::map <int, int> time_by_id; // getting last connection time by IP
 
 	void load_config(std::string path); // loading configurations from .conf file

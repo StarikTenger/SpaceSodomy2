@@ -44,6 +44,10 @@ int Player::get_kills() {
 	return kills;
 }
 
+int Player::get_ping() {
+	return ping;
+}
+
 // Set methods
 void Player::set_is_alive(bool val) {
 	if (!val) {
@@ -82,6 +86,10 @@ void Player::set_deaths(int deaths_) {
 }
 void Player::set_kills(int kills_) {
 	kills = kills_;
+}
+
+void Player::set_ping(int ping_) {
+	ping = ping_;
 }
 
 void Player::add_death() {

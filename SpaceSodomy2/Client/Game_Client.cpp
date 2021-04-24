@@ -25,6 +25,10 @@ int Game_Client::get_aim_opacity() {
 	return aim_opacity;
 }
 
+void Game_Client::set_network_information_active(bool _active) {
+	network_information_active = _active;
+}
+
 std::string Game_Client::get_bonus_texture_name(int val) {
 	return bonus_textures[val];
 }
@@ -377,8 +381,8 @@ void Game_Client::decode(std::string source) {
 			std::string hull;
 			stream >> hull;
 			// Deaths, kills & etc
-			int deaths, kills, time_to_respawn, is_alive;
-			stream >> deaths >> kills >> time_to_respawn >> is_alive;
+			int deaths, kills, time_to_respawn, is_alive, connection_time;
+			stream >> deaths >> kills >> time_to_respawn >> is_alive >> connection_time;
 			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
 			Player* player = create_player(id);
@@ -389,7 +393,8 @@ void Game_Client::decode(std::string source) {
 			player->set_kills(kills);
 			player->set_is_alive(is_alive);
 			player->get_time_to_respawn()->set(float(time_to_respawn));
-			//std::cout << player->get_time_to_respawn()->get() << "\n";
+			player->set_ping(aux::get_milli_count() - connection_time);
+			//std::cout << aux::get_milli_count() - connection_time << "\n";
 		}
 		// Ship
 		if (symbol == "S") {
@@ -561,6 +566,10 @@ int Game_Client::get_player_id(std::string name) {
 		if (it->second != nullptr && it->second->get_name() == name)
 			return it->second->get_id();
 	return 0;
+}
+
+bool Game_Client::get_network_information_active() {
+	return network_information_active;
 }
 
 void Game_Client::load_setup(std::string path) {
