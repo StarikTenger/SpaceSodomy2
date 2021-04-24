@@ -96,7 +96,9 @@ void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config) {
 	bar->set_keyboard(keyboard);
 }
 
-HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_, Client_Network* player_network_) {
+HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
+	Game_Client* game_, Client_Network* player_network_, std::queue<int>* frame_marks_) {
+	frame_marks = frame_marks_;
 	game = game_;
 	player_network = player_network_;
 	std::ifstream file_to_comment("HUD.conf");
@@ -127,6 +129,24 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	ping_text.set_text("Ping:");
 	ping_text.set_pos({ 100, 50 });
 	ping_text.set_text_scale(0.3);
+
+	fps.set_draw(draw);
+	fps.set_mouse_pos(mouse_pos);
+	fps.set_keyboard(keyboard);
+	fps.set_use_window_cords(1);
+	fps.set_text_character_pixel_size(17);
+	fps.set_align(2);
+	fps.set_pos({ 190, 75 });
+	fps.set_text_scale(1);
+
+	fps_text.set_draw(draw);
+	fps_text.set_mouse_pos(mouse_pos);
+	fps_text.set_keyboard(keyboard);
+	fps_text.set_use_window_cords(1);
+	fps_text.set_text_character_pixel_size(60);
+	fps_text.set_text("FPS:");
+	fps_text.set_pos({ 100, 73 });
+	fps_text.set_text_scale(0.3);
 
 	time_to_respawn.set_draw(draw);
 	time_to_respawn.set_mouse_pos(mouse_pos);
@@ -185,6 +205,11 @@ void HUD_Processing::step() {
 			ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
 			//std::cout << ping.get_text() << "\n";
 		}
+		while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
+			frame_marks->pop();
+		fps.set_text(std::to_string(frame_marks->size()));
+		fps_text.step();
+		fps.step();
 		ping_text.step();
 		ping.step();
 		HP_bar.step();

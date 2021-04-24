@@ -173,9 +173,10 @@ void Control::step() {
 			game.decode(replay.get_cur_frame());
 		else
 			game.decode(network.get_message());
-
 		// Draw		
 		game.display(network.get_id());
+		//FPS
+		frame_marks.push(aux::get_milli_count());
 		// Camera backup
 		Camera camera_backup = *game.get_draw()->get_camera();
 		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);

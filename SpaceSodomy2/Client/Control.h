@@ -61,7 +61,7 @@ private:
 	// Converts commands into single string
 	std::string commands_to_string();
 	// HUD
-	HUD_Processing hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network);
+	HUD_Processing hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;
@@ -74,6 +74,9 @@ private:
 
 	// Replay
 	Replay replay;
+
+	// FPS
+	std::queue<int> frame_marks;
 public:
 	// Default constructor
 	Control();
