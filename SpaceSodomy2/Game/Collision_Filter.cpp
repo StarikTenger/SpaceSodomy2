@@ -42,3 +42,9 @@ bool Collision_Filter::ShouldCollide(b2Fixture* fixture_a, b2Fixture* fixture_b)
 
 	return false;
 }
+
+void Collision_Filter::change_body(b2Body* body, Collision_Type newtype) {
+	if (collision_table.find(body) == collision_table.end())
+		return;
+	collision_table[body].type = newtype;
+}

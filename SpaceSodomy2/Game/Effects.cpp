@@ -174,7 +174,7 @@ Effects::Types Effects::get_effect_type(std::string effect_name) {
     if (effect_name == "LASER")
         return Effects::Types::LASER;
     if (effect_name == "LASER_BURN")
-        return Effects::Types::LASER_BURN;
+        return Effects::Types::WALL_BURN;
     if (effect_name == "CHARGE")
         return Effects::Types::CHARGE;
     if (effect_name == "BERSERK")

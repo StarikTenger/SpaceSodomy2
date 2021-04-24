@@ -202,7 +202,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	wall->set(&physics, vertices, orientation, type);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	if (type == Wall::GHOST) {
-		collision_filter.add_body(wall->get_body(), Collision_Filter::PROJECTILE);
+		collision_filter.add_body(wall->get_body(), Collision_Filter::GHOST);
 	}
 	else {
 		collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
@@ -254,7 +254,7 @@ Effects* Game::create_effects(Effects_Prototype* val) {
 Bonus* Game::create_bonus(Bonus_Def val) {
 	auto ans = new Bonus;
 	auto body = create_round_body(val.pos, 0, bonus_manager.get_prototype(val.type)->radius, 1);
-	collision_filter.add_body(body, Collision_Filter::PROJECTILE, 0);
+	collision_filter.add_body(body, Collision_Filter::GHOST, 0);
 	ans->set_id(val.get_id());
 	ans->set_body(body);
 	ans->set_type(val.type);
@@ -375,11 +375,6 @@ void Game::process_ships() {
 			st_eff->set(0);
 
 		}
-		// Apply LASER_BURN
-		if (ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_counter()->get() > 0) {
-			ship->get_damage_receiver()->damage(dt * ship->get_effects()->get_effect(Effects::Types::LASER_BURN)->get_strength(), 
-				                                ship->get_damage_receiver()->get_last_hit());
-		}
 
 		// Apply laser
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
@@ -392,20 +387,17 @@ void Game::process_ships() {
 				b2Vec2 intersection = get_beam_intersection(pos, angle);
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
 					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
-					if (!damage_receiver->add_effect(Effects::LASER_BURN, ship->get_effects()->get_effect(Effects::Types::LASER)->get_strength())) {
-						damage_receiver->damage(1000, ship->get_player());
-					}
-					else {
-						damage_receiver->damage(0, ship->get_player());
-					}
+					damage_receiver->damage(1000, ship->get_player());  // +inf
 				}
 			}
 		}
 
 		for (auto wall : walls) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
-				if (wall->get_type() == Wall::SPIKED) {
-					ship->get_damage_receiver()->add_effect(Effects::LASER_BURN, 0.1);
+				if (wall->get_type() == Wall::SPIKED && 
+					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
+					ship->get_damage_receiver()->damage(40, ship->get_damage_receiver()->get_last_hit());
+					ship->get_damage_receiver()->add_effect(Effects::WALL_BURN, 0.1);
 				}
 			}
 		}
@@ -419,11 +411,15 @@ void Game::process_ships() {
 			}
 		}
 		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
+			collision_filter.change_body(ship->get_body(), Collision_Filter::PROJECTILE);
+			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.1) {
+				collision_filter.change_body(ship->get_body(), Collision_Filter::STANDART);
+				ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->set(0);
+			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-					damage_receiver->damage(0, ship->get_player());            // TODO
-					damage_receiver->add_effect(Effects::LASER_BURN, 0.5);
+					damage_receiver->damage(1000, ship->get_player());            // TODO
 				}
 			}
 		}
@@ -877,11 +873,6 @@ bool Game::load_parameters(std::string path) {
 				read_symbol_bool("IS_INSTANT", bonus_prototype.is_instant);
 				read_symbol("RADIUS", bonus_prototype.radius);
 				float strength = 1;
-				float cd = 0;
-				read_symbol("COOLDOWN", cd);
-				if (cd != 0) {
-					bonus_manager.set_cooldown(bonus_prototype.type, cd);
-				}
 			}
 			bonus_manager.add_prototype(bonus_prototype);
 			continue;

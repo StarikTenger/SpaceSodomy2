@@ -18,11 +18,13 @@ private:
 	std::vector<std::vector<int>> collide_pairs{
 		{STANDART, STANDART, 0},
 		{STANDART, WALL, 0},
+		{PROJECTILE, WALL, 0},
 	};
 public:
 	enum Collision_Type {
 		STANDART,
 		WALL,
+		GHOST,
 		PROJECTILE,
 	};
 
@@ -30,5 +32,6 @@ public:
 	void add_body(b2Body*, int type = STANDART, int id = 0);
 	void delete_body(b2Body*);
 	bool ShouldCollide(b2Fixture*, b2Fixture*);
+	void change_body(b2Body*, Collision_Type);
 };
 

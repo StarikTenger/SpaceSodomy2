@@ -11,7 +11,7 @@ public:
         INSTANT_HP,
         INSTANT_STAMINA,
         LASER,
-        LASER_BURN,
+        WALL_BURN,
         CHARGE,
         BERSERK,
         IMMORTALITY,

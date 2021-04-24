@@ -34,7 +34,9 @@ void Gun::activate() {
 	projectile_def.hp = projectile_hp;
 	projectile_def.effects_prototype = effects_prototype;
 	// Recoil
-	body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
+	if (!(effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
+		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
+	}
 
 	Event_Def event_def;
 	event_def.name = "gn";
