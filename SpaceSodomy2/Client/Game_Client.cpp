@@ -25,6 +25,10 @@ int Game_Client::get_aim_opacity() {
 	return aim_opacity;
 }
 
+void Game_Client::set_network_information_active(bool _active) {
+	network_information_active = _active;
+}
+
 std::string Game_Client::get_bonus_texture_name(int val) {
 	return bonus_textures[val];
 }
@@ -562,6 +566,10 @@ int Game_Client::get_player_id(std::string name) {
 		if (it->second != nullptr && it->second->get_name() == name)
 			return it->second->get_id();
 	return 0;
+}
+
+bool Game_Client::get_network_information_active() {
+	return network_information_active;
 }
 
 void Game_Client::load_setup(std::string path) {

@@ -154,6 +154,16 @@ Slider* Menu::add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_s
 	return sliders.back();
 }
 
+Check_Box* Menu::add_check_box(int id, b2Vec2 pos, int use_window_cords, b2Vec2* mouse_pos) {
+	check_boxes.push_back(new Check_Box);
+	check_boxes.back()->set_id(id);
+	check_boxes.back()->set_pos(pos);
+	check_boxes.back()->set_use_window_cords(use_window_cords);
+	check_boxes.back()->set_draw(draw);
+	check_boxes.back()->set_mouse_pos(mouse_pos);
+	check_boxes.back()->set_clicked(&clicked);
+	return check_boxes.back();
+}
 
 
 void Menu::step() {
@@ -225,5 +235,10 @@ void Menu::step() {
 	// sliders handling
 	for (auto slider : sliders) {
 		slider->step();
+	}
+
+	// check boxes handling
+	for (auto check_box : check_boxes) {
+		check_box->step();
 	}
 }

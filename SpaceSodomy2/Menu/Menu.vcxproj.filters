@@ -48,6 +48,9 @@
     <ClInclude Include="Scroll_Bar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Check_Box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Menu.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scroll_Bar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Check_Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -33,6 +33,7 @@ private:
 	std::map<int, Slider*> sliders;
 	std::map<int, Text_Field*> text_fields;
 	std::map<int, Keyboard_Field*> keyboard_fields;
+	std::map<int, Check_Box*> check_boxes;
 	std::queue<int> events; // menu events
 	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
@@ -43,8 +44,8 @@ private:
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
-	void load_aim_settings(std::string path);
-	void save_aim_settings(std::string path);
+	void load_HUD_settings(std::string path);
+	void save_HUD_settings(std::string path);
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);

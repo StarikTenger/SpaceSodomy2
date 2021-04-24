@@ -63,6 +63,74 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	}
 }
 
+void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
+	float projectile_radius, int projectile_vel, Menu* gun) {
+	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
+	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 325), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Recharge: " + aux::float_to_string(recharge, 2), b2Vec2(-300, 350), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet mass: " + aux::float_to_string(projectile_mass, 2), b2Vec2(-300, 400), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet radius: " + aux::float_to_string(projectile_radius, 2), b2Vec2(-300, 425), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-300, 450), 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	menus.push_back(gun);
+}
+
+void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_description) {
+	int cur_but_id = 0;
+	std::ifstream file_to_comment(path_to_guns_description);
+	std::stringstream config = aux::comment(file_to_comment);
+	while (!config.eof()) {
+		int damage, stamina_consumption, projectile_vel;
+		float recharge, projectile_mass, projectile_radius;
+		std::string name, next;
+		config >> next;
+		while (next == "GUN") {
+			config >> name >> next;
+			name_to_id[name + "-gun"] = current_id;
+			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			cur_but_id++;
+			while (next != "END") {
+				if (next == "DAMAGE") {
+					config >> damage;
+				}
+				if (next == "RECHARGE") {
+					config >> recharge;
+				}
+				if (next == "STAMINA_CONSUMPTION") {
+					config >> stamina_consumption;
+				}
+				if (next == "PROJECTILE_MASS") {
+					config >> projectile_mass;
+				}
+				if (next == "PROJECTILE_RADIUS") {
+					config >> projectile_radius;
+				}
+				if (next == "PROJECTILE_VEL") {
+					config >> projectile_vel;
+				}
+				config >> next;
+			}
+			guns[name].set_draw(draw);
+			guns[name].set_active(0);
+			guns[name].set_events(&events);
+			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
+				projectile_radius, projectile_vel, &guns[name]);
+			config >> next;
+		}
+	}
+}
+
 void Menu_Processing::close_settings_menus() {
 	config_menu.set_active(0);
 	keys_menu.set_active(0);
@@ -131,7 +199,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
-void Menu_Processing::load_aim_settings(std::string path) {
+void Menu_Processing::load_HUD_settings(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double next;
@@ -139,12 +207,14 @@ void Menu_Processing::load_aim_settings(std::string path) {
 	game->set_aim_conf(next);
 	config >> next;
 	game->set_aim_opacity(next);
+	config >> next;
+	game->set_network_information_active(next);
 }
 
-void Menu_Processing::save_aim_settings(std::string path) {
+void Menu_Processing::save_HUD_settings(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
-	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity();
+	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity() << "\n" << game->get_network_information_active();
 	fout.close();
 }
 
@@ -216,6 +286,8 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			typenum = 6;
 		if (type == "Bar")
 			typenum = 7;
+		if (type == "CheckBox")
+			typenum = 8;
 		switch (typenum) {
 		case 1:
 			file >> next;
@@ -429,78 +501,30 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 			name_to_id[name] = i;
 			bars[i] = object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, 0, 0, critical);
 			break;
+		case 8:
+			file >> next;
+			name = "default";
+			use_window_cords = 0;
+			pos = { 0, 0 };
+			while (next != "END") {
+				if (next == "NAME")
+					file >> name;
+				if (next == "USE_WINDOWS_CORDS")
+					file >> use_window_cords;
+				if (next == "POS")
+					file >> pos.x >> pos.y;
+				file >> next;
+			}
+			name_to_id[name] = i;
+			check_boxes[i] = object->add_check_box(i, pos, use_window_cords, mouse_pos);
+			check_boxes[i]->set_use_picture_scale(0);
+			check_boxes[i]->set_scale({ 30, 30 });
+			check_boxes[i]->set_color(sf::Color::White);
+
 		default:
 			i--;
 			current_id--;
 			break;
-		}
-	}
-}
-
-void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
-	float projectile_radius, int projectile_vel, Menu* gun) {
-	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
-	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Damage: " + std::to_string(damage), b2Vec2(-300, 325), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Recharge: " + aux::float_to_string(recharge, 2), b2Vec2(-300, 350), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet mass: " + aux::float_to_string(projectile_mass, 2), b2Vec2(-300, 400), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet radius: " + aux::float_to_string(projectile_radius, 2), b2Vec2(-300, 425), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Bullet velocity: " + std::to_string(projectile_vel), b2Vec2(-300, 450), 7, 20,
-		sf::Color::White, 1, mouse_pos, keyboard);
-	menus.push_back(gun);
-}
-
-void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_description) {
-	int cur_but_id = 0;
-	std::ifstream file_to_comment(path_to_guns_description);
-	std::stringstream config = aux::comment(file_to_comment);
-	while (!config.eof()) {
-		int damage, stamina_consumption, projectile_vel;
-		float recharge, projectile_mass, projectile_radius;
-		std::string name, next;
-		config >> next;
-		while (next == "GUN") {
-			config >> name >> next;
-			name_to_id[name + "-gun"] = current_id;
-			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
-			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
-				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
-			cur_but_id++;
-			while (next != "END") {
-				if (next == "DAMAGE") {
-					config >> damage;
-				}
-				if (next == "RECHARGE") {
-					config >> recharge;
-				}
-				if (next == "STAMINA_CONSUMPTION") {
-					config >> stamina_consumption;
-				}
-				if (next == "PROJECTILE_MASS") {
-					config >> projectile_mass;
-				}
-				if (next == "PROJECTILE_RADIUS") {
-					config >> projectile_radius;
-				}
-				if (next == "PROJECTILE_VEL") {
-					config >> projectile_vel;
-				}
-				config >> next;
-			}
-			guns[name].set_draw(draw);
-			guns[name].set_active(0);
-			guns[name].set_events(&events);
-			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
-				projectile_radius, projectile_vel, &guns[name]);
-			config >> next;
 		}
 	}
 }
@@ -516,7 +540,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	replay = replay_;
 	reload = reload_;
 	load_sound("sound_settings.conf");
-	load_aim_settings("HUD_settings.conf");
+	load_HUD_settings("HUD_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
@@ -589,8 +613,10 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	init_menu("menu_configs/HUD.conf", &HUD_menu);
 	constant_texts[name_to_id["AimConfigurationText"]]->set_text("Aim Configuration:");
 	constant_texts[name_to_id["AimOpacityText"]]->set_text("Aim Opacity:");
+	constant_texts[name_to_id["NetworkInformationText"]]->set_text("Network Information:");
 	sliders[name_to_id["AimConfiguration"]]->set_slider_value(game->get_aim_conf());
 	sliders[name_to_id["AimOpacity"]]->set_slider_value(game->get_aim_opacity());
+	check_boxes[name_to_id["NetworkInformation"]]->set_state(game->get_network_information_active());
 	menus.push_back(&HUD_menu);
 	// set replay_menu
 	replay_menu.set_draw(draw);
@@ -645,6 +671,7 @@ void Menu_Processing::step() {
 		game->get_audio()->set_music_volume(sliders[name_to_id["MusicVolume"]]->get_slider_value());
 		game->set_aim_conf(sliders[name_to_id["AimConfiguration"]]->get_slider_value());
 		game->set_aim_opacity(sliders[name_to_id["AimOpacity"]]->get_slider_value());
+		game->set_network_information_active(check_boxes[name_to_id["NetworkInformation"]]->get_state());
 		if (replay->get_replay_active()) {
 			if (atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()) != network->get_id()) {
 				network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
@@ -743,7 +770,7 @@ void Menu_Processing::step() {
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["ApplyHUD"] == events.front()) {
-			save_aim_settings("HUD_settings.conf");
+			save_HUD_settings("HUD_settings.conf");
 		}
 		if (name_to_id["HUD"] == events.front()) {
 			close_settings_menus();

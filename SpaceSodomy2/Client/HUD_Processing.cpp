@@ -208,10 +208,12 @@ void HUD_Processing::step() {
 		while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
 			frame_marks->pop();
 		fps.set_text(std::to_string(frame_marks->size()));
-		fps_text.step();
-		fps.step();
-		ping_text.step();
-		ping.step();
+		if (game->get_network_information_active()) {
+			fps_text.step();
+			fps.step();
+			ping_text.step();
+			ping.step();
+		}
 		HP_bar.step();
 		stamina_bar.step();
 		bonus.primitive_step();

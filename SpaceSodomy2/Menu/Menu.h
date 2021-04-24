@@ -5,6 +5,7 @@
 #include "Constant_Text.h"
 #include "Slider.h"
 #include "Bar.h"
+#include "Check_Box.h"
 #include <vector>
 #include <queue>
 
@@ -17,6 +18,7 @@ private:
 	std::vector<Constant_Text*> constant_texts;
 	std::vector<Slider*> sliders;
 	std::vector<Bar*> bars;
+	std::vector<Check_Box*> check_boxes;
 	Draw* draw;
 	std::queue<int>* events;
 	bool active = 0;
@@ -52,5 +54,6 @@ public:
 		sf::Color color, b2Vec2* mouse_pos, bool use_image_scale);
 	Slider* add_slider(int id, b2Vec2 pos, int use_window_cords, b2Vec2 axis_scale, b2Vec2 slider_scale,
 		int min, int max, int val, b2Vec2* mouse_pos);
+	Check_Box* add_check_box(int id, b2Vec2 pos, int use_window_cords, b2Vec2* mouse_pos);
 	void step();
 };
