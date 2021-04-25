@@ -10,13 +10,13 @@ b2Vec2 Game::get_rand_respawn_pos() {
 	bool acceptable = 0;
 	b2Vec2 respawn_point;
 	while (!acceptable) {
-		acceptable = 1;
+		acceptable = true;
 		respawn_point = b2Vec2(aux::random_int(lower_left_corner.x, upper_right_corner.x) + aux::random_float(-1, 1, 4),
 			aux::random_int(lower_left_corner.y, upper_right_corner.y) + aux::random_float(-1, 1, 4));
 		//respawn_point = b2Vec2(0, 0);
 		for (auto wall : walls) {
-			acceptable = !aux::is_in_polygon(respawn_point, wall->get_vertices(),
-				wall->get_orientation());
+			acceptable = !aux::is_in_polygon(respawn_point, wall->get_vertices(), wall->get_orientation());
+			acceptable &= (aux::dist_from_polygon(respawn_point, wall->get_vertices()) > 1);      // TODO
 			if (!acceptable)
 				break;
 		}
