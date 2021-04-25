@@ -60,37 +60,6 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (duration.get() < 0) {
         duration.set(0);
     }
-
-    ////TO REMOVE LATER: FOR DEBUG
-    //if (type != other.type) {
-    //    std::cout << "Error adding effects: Algebraic types are ";
-    //    switch (type) {
-    //    case Algebraic_Type::MAXIMAL:
-    //        std::cout << "MAXIMAL ";
-    //        break;
-    //    case Algebraic_Type::ADDITIVE:
-    //        std::cout << "ADDITIVE ";
-    //        break;
-    //    case Algebraic_Type::ANNULATOR:
-    //        std::cout << "ANNULATOR ";
-    //        break;
-    //    }
-    //    std::cout << "and ";
-    //    switch (type) {
-    //    case Algebraic_Type::MAXIMAL:
-    //        std::cout << "MAXIMAL ";
-    //        break;
-    //    case Algebraic_Type::ADDITIVE:
-    //        std::cout << "ADDITIVE ";
-    //        break;
-    //    case Algebraic_Type::ANNULATOR:
-    //        std::cout << "ANNULATOR ";
-    //        break;
-    //    }
-    //    std::cout << "\n";
-    //}
-
-
     if (other.duration.get() < b2_epsilon) {
         return *this;
     }
@@ -100,6 +69,11 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
         break;
     case Algebraic_Type::ADDITIVE:
         duration.modify(other.duration.get());
+        break;
+    case Algebraic_Type::NO_OVERLAY:
+        if (!(duration.get() > 0.01)) {
+            duration.set(other.duration.get());
+        }
         break;
     }
     return *this;

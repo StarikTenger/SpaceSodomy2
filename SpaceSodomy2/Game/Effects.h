@@ -21,7 +21,8 @@ public:
     enum Algebraic_Type {
         ANNULATOR,         // multiplicative zero
         ADDITIVE,
-        MAXIMAL
+        MAXIMAL,
+        NO_OVERLAY
     };
     class Effect {
     private:

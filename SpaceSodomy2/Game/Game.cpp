@@ -394,11 +394,13 @@ void Game::process_ships() {
 
 		for (auto wall : walls) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
+				auto effs = effect_params;
+				effs.effects[Effects::WALL_BURN].get_counter()->set(0.1);
 				if (wall->get_type() == Wall::SPIKED && 
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
 					ship->get_damage_receiver()->damage(40, ship->get_damage_receiver()->get_last_hit());
-					ship->get_damage_receiver()->add_effect(Effects::WALL_BURN, 0.1);
 				}
+				ship->get_effects()->update(&effs);
 			}
 		}
 
@@ -847,6 +849,9 @@ bool Game::load_parameters(std::string path) {
 						}
 						else if (temp == "ANNULATOR") {
 							effect_params.effects[type_].set_type(Effects::Algebraic_Type::ANNULATOR);
+						}
+						else if (temp == "NO_OVERLAY") {
+							effect_params.effects[type_].set_type(Effects::Algebraic_Type::NO_OVERLAY);
 						}
 					}
 					if (symbol == "STRENGTH") {
