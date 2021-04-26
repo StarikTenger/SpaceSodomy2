@@ -163,7 +163,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Stamina
 	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
 	stamina->set_max(hull_prototype.stamina);
-	stamina->set_delay(0.7);
+	stamina->set_delay(hull_prototype.stamina_pause); // TODO
 	ship->set_stamina(stamina);
 
 	// Engine
@@ -945,6 +945,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
 				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
 				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
+				read_symbol("STAMINA_PAUSE", hulls[name].stamina_pause);
 			}
 			continue;
 		}

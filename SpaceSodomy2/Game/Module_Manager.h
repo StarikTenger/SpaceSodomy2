@@ -8,5 +8,6 @@ private:
 public:
     Module_Manager();
     void add_prototype(Module_Prototype);
-    Module_Manager* get_prototype(Module::Type);
+    Module_Prototype* get_prototype(Module::Type);
+    Module* new_module(Module::Type);
 };

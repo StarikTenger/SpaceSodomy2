@@ -20,7 +20,6 @@ public:
 		BOOST,
 		BONUS_ACTIVATION,
 		RESPAWN,
-
 		COMMAND_COUNT
 	};
 	// Constructor

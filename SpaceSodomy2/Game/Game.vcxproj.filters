@@ -121,7 +121,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Modules.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Active Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Module_Manager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +201,9 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Modules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Module_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

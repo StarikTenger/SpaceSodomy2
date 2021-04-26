@@ -7,4 +7,5 @@ struct Hull_Prototype {
 	float stamina_recovery = 50;
 	float force_linear = 1.5;
 	float force_angular = 2;
+	float stamina_pause = 0.7;
 };

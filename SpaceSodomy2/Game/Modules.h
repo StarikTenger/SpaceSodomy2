@@ -1,27 +1,44 @@
 #pragma once
 #include "pch.h"
 #include "Active_Module.h"
+#include "Projectile_Manager.h"
 
 struct Module_Prototype;
 
+class Shotgun_Module;
+class Immortality_Module;
+class Invisibility_Module;
+class Dash_Module;
+
 class Module : public Active_Module {
 public:
-    Module(Module_Prototype*);
     enum Type {
         SHOTGUN,
-        ROCKET,
         IMMORTALITY,
         INVISIBILITY,
-        BLINK,
         DASH,
-        FORCE,
         COUNT
     };
 private:
     Type type = COUNT;
+    Projectile_Manager* projectile_manager;
+    float strength = 0;
 public:
     Type get_type();
-    void set_bind(bool is_left);
+    float get_strength();
+    void set_strength(float);
+    void set_type(Type);
+    void set_projectile_manager(Projectile_Manager*);
+    Projectile_Manager* get_projectile_manager();
+};
+
+struct Module_Prototype {
+    Effects_Prototype effects_prototype;
+    float stamina_cost;
+    float energy_cost;
+    float cooldown;
+    float strength;
+    Module::Type type;
 };
 
 class Shotgun_Module : public Module {
@@ -30,10 +47,20 @@ public:
     void activate_side_effects() override;
 };
 
-struct Module_Prototype {
-    Effects_Prototype effects_prototype;
-    float stamina_cost;
-    float energy_cost;
-    float cooldown;
-    Module::Type type;
+class Immortality_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Invisibility_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Dash_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
 };
