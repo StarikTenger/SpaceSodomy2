@@ -97,7 +97,6 @@ protected:
 	void delete_sound(Sound*);
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
-	void delete_bonus_slot(Bonus_Slot*);
 
 	 // Processing functions
 	void process_players();

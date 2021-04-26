@@ -18,6 +18,7 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 }
 
 void Gun::activate() {
+	activate_side_effects();
 	Projectile_Def projectile_def;
 
 	float vel_val = projectile_vel;
@@ -37,11 +38,20 @@ void Gun::activate() {
 	if (!(effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
 		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
 	}
+	projectile_manager->create_projectile(projectile_def);
+}
 
+void Gun::activate_side_effects() {
 	Event_Def event_def;
 	event_def.name = "gn";
 	event_def.body = body;
 	event_manager->create_event(event_def);
-
-	projectile_manager->create_projectile(projectile_def);
+	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_strength());
+		stamina->modify(-stamina_consumption / effects->get_effect(Effects::BERSERK)->get_strength());
+	}
+	else {
+		activate_default_side_effects();
+	}
+	
 }

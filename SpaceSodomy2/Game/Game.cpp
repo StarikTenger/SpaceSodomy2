@@ -134,10 +134,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	}
 	auto effs = create_effects(&effects_prototype);
 	ship->set_effects(effs);
-
-	// Bonus slot
-	ship->set_bonus_slot(create_bonus_slot());
-	ship->get_bonus_slot()->set_effects(effs);
+	
 
 	// Player
 	ship->set_player(player);
@@ -156,20 +153,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto command_module = new Command_Module();
 	player->set_command_module(command_module);
 
-	// Gun
-	Gun_Prototype gun_prototype;
-	if (guns.count(player->get_gun_name())) {
-		gun_prototype = guns[player->get_gun_name()];
-
-	}
-	auto gun = create_gun(gun_prototype);
-	gun->set(body, player);
-	gun->set_effects_prototype(nullptr);
-	if (guns.count(player->get_gun_name())) {
-		gun->set_effects_prototype(&guns[player->get_gun_name()].effect_prototype);
-	}
-	gun->set_ship_effects(effs);
-	ship->set_gun(gun);
+	
 
 	// Hp
 	auto hp = create_counter(hull_prototype.hp);
@@ -180,7 +164,6 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
 	stamina->set_max(hull_prototype.stamina);
 	stamina->set_delay(0.7);
-	gun->set_stamina(stamina);
 	ship->set_stamina(stamina);
 
 	// Engine
@@ -193,6 +176,31 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto damage_receiver = create_damage_receiver(body, hp, player, effs);
 	ship->set_damage_receiver(damage_receiver);
 
+
+	// Bonus slot
+	auto bonus_slot = create_bonus_slot();
+	ship->set_bonus_slot(bonus_slot);
+	bonus_slot->set_effects(effs);
+	bonus_slot->set(body, player);
+	bonus_slot->set_stamina(stamina);
+
+
+
+	// Gun
+	Gun_Prototype gun_prototype;
+	if (guns.count(player->get_gun_name())) {
+		gun_prototype = guns[player->get_gun_name()];
+
+	}
+	auto gun = create_gun(gun_prototype);
+	gun->set(body, player);
+	gun->set_effects_prototype(nullptr);
+	if (guns.count(player->get_gun_name())) {
+		gun->set_effects_prototype(&guns[player->get_gun_name()].effect_prototype);
+	}
+	gun->set_effects(effs);
+	gun->set_stamina(stamina);
+	ship->set_gun(gun);
 
 	return ship;
 }
@@ -263,9 +271,19 @@ Bonus* Game::create_bonus(Bonus_Def val) {
 }
 
 Bonus_Slot* Game::create_bonus_slot() {
-	auto ans = new Bonus_Slot;
-	ans->set_bonus_manager(&bonus_manager);
-	return ans;
+	auto bonus_slot = new Bonus_Slot;
+	active_modules.insert(bonus_slot);
+
+	auto counter = create_counter();
+	counter->set_change_vel(-1);
+	bonus_slot->set_recharge_counter(counter);
+
+	bonus_slot->set_bonus_manager(&bonus_manager);
+	bonus_slot->set_event_manager(&event_manager);
+
+	id_manager.set_id(bonus_slot);
+
+	return bonus_slot;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -300,7 +318,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
 	delete_effects(ship->get_effects());
-	delete_bonus_slot(ship->get_bonus_slot());
+	delete_active_module(ship->get_bonus_slot());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -333,10 +351,6 @@ void Game::delete_bonus(Bonus* bonus) {
 	delete_body(bonus->get_body());
 	bonus_manager.free_bonus_spawn(bonus->get_type(), bonus->get_id());
 	delete bonus;
-}
-
-void Game::delete_bonus_slot(Bonus_Slot* bonus_slot) {
-	delete bonus_slot;
 }
 
 void Game::process_players() {

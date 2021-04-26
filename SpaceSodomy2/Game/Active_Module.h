@@ -25,9 +25,9 @@ protected:
 	// Stamina
 	Counter* stamina;
 	// Dispensable effects
-	Effects_Prototype* effects_prototype;
+	Effects_Prototype* effects_prototype = nullptr;
 	// Effects affecting this
-	Effects* effects;
+	Effects* effects = nullptr;
 
 public:
 	Active_Module();
@@ -50,12 +50,16 @@ public:
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);
 	void set_effects_prototype(Effects_Prototype*);
-	void set_ship_effects(Effects*);
+	void set_effects(Effects*);
 
 
 	// Activates module
 	virtual void activate() = 0;
+	// Side effects of activation
+	virtual void activate_side_effects() = 0;
+	void activate_default_side_effects();
 	// Func to call regularly
 	void step(float dt);
+	virtual ~Active_Module() = default;
 };
 
