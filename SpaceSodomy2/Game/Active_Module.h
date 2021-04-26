@@ -60,6 +60,5 @@ public:
 	void activate_default_side_effects();
 	// Func to call regularly
 	void step(float dt);
-	virtual ~Active_Module() = default;
 };
 

@@ -15,6 +15,7 @@ public:
         CHARGE,
         BERSERK,
         IMMORTALITY,
+        INVISIBILITY,
         COUNT
     };
     static Effects::Types get_effect_type(std::string effect_name);
