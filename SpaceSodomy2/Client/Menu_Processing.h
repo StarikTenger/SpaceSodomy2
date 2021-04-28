@@ -57,8 +57,8 @@ private:
 	void init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description);
 	void init_hull(std::string name, int hp, float mass, float radius,
 		int stamina, int stamina_recovery, Menu* hull);
-	void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
-	voif init_module(std::string name);
+	//void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
+	//voif init_module(std::string name);
 	Draw* draw;
 	Game_Client* game;
 	Replay* replay;
