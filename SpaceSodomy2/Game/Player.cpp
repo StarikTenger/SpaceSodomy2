@@ -84,7 +84,7 @@ void Player::set_left_module_name(std::string val) {
 	left_module_name = val;
 }
 void Player::set_right_module_name(std::string val) {
-	left_module_name = val;
+	right_module_name = val;
 }
 
 void Player::set_command_module(Command_Module* val) {

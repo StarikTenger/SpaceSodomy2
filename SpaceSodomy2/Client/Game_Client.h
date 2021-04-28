@@ -21,6 +21,8 @@ private:
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
+	std::string left_module_name = "default";
+	std::string right_module_name = "default";
 	int my_id = 0;
 	int engine_active = 0;
 	int aim_conf = 1;
@@ -56,6 +58,9 @@ public:
 
 	std::string get_gun_name();
 	std::string get_hull_name();
+	std::string get_left_module_name();
+	std::string get_right_module_name();
+
 	std::string get_bonus_texture_name(int val);
 
 	int get_aim_conf();

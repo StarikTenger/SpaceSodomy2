@@ -1059,6 +1059,16 @@ std::string Game::encode() {
 		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
 		// Bonus slot
 		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
+		// Modules
+		message += std::to_string(ship->get_left_module()->get_type()) + " ";
+		message += aux::float_to_string(ship->get_left_module()->get_recharge_counter()->get(), 3) + " ";
+		message += aux::float_to_string(ship->get_left_module()->get_recharge_time(), 3) + " ";
+
+		message += std::to_string(ship->get_right_module()->get_type()) + " ";
+		message += aux::float_to_string(ship->get_right_module()->get_recharge_counter()->get(), 3) + " ";
+		message += aux::float_to_string(ship->get_right_module()->get_recharge_time(), 3) + " ";
+
+
 		// Hp
 		message += std::to_string((int)ship->get_hp()->get()) + " ";
 		message += std::to_string((int)ship->get_hp()->get_max()) + " ";
@@ -1110,10 +1120,13 @@ std::string Game::encode() {
 	return message;
 }
 
-void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name) {
+void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
+	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
+	player->set_left_module_name(left_module);
+	player->set_right_module_name(right_module);
 	players[id] = player;
 	player->set_is_alive(0);
 	player->get_time_to_respawn()->set(0);

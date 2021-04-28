@@ -80,7 +80,7 @@ void Shotgun_Module::activate() {
 		projectile_def.player = player;
 		projectile_def.damage = strength;
 		projectile_def.radius = 0.25;
-		projectile_def.mass = 0.02;
+		projectile_def.mass = 0.03;
 		projectile_def.hp = 20;
 		projectile_def.effects_prototype = nullptr;
 		// Recoil

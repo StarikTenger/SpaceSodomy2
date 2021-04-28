@@ -50,7 +50,7 @@ void Control::receive() {
 	message << network.get_last_message();
 	//std::cout << network.get_last_message() << "\n";
 	network.del_last_message();
-	std::string IP_address_, name_, time, gun_name, hull_name;
+	std::string IP_address_, name_, time, gun_name, hull_name, left_module, right_module;
 	message >> IP_address_;
 	int id_, token;
 	message >> id_;
@@ -59,6 +59,7 @@ void Control::receive() {
 	message >> token;
 	message >> gun_name;
 	message >> hull_name;
+	message >> left_module >> right_module;
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
@@ -68,7 +69,7 @@ void Control::receive() {
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_player(id_, new_color, name_, gun_name, hull_name);
+		game.new_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
 	}
 	// Applying commands
 	if (token_by_id[id_] == token) {
@@ -81,6 +82,8 @@ void Control::receive() {
 		if (!game.player_by_id(id_)->get_is_alive()) {
 			game.player_by_id(id_)->set_gun_name(gun_name);
 			game.player_by_id(id_)->set_hull_name(hull_name);
+			game.player_by_id(id_)->set_left_module_name(left_module);
+			game.player_by_id(id_)->set_right_module_name(right_module);
 		}
 		for (int i = 1; i < command_string.size(); i++) {
 			game.apply_command(id_, i - 1, command_string[i] == '1');

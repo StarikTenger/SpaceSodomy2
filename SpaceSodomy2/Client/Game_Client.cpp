@@ -25,6 +25,13 @@ int Game_Client::get_aim_opacity() {
 	return aim_opacity;
 }
 
+std::string Game_Client::get_left_module_name() {
+	return left_module_name;
+}
+std::string Game_Client::get_right_module_name() {
+	return right_module_name;
+}
+
 void Game_Client::set_network_information_active(bool _active) {
 	network_information_active = _active;
 }
@@ -422,6 +429,13 @@ void Game_Client::decode(std::string source) {
 			// Bonus slot
 			int bonus;
 			stream >> bonus;
+			// Modules
+			int left_module, right_module;
+			float left_module_time, left_module_max_time;
+			float right_module_time, right_module_max_time;
+
+			stream >> left_module >> left_module_time >> left_module_max_time;
+			stream >> right_module >> right_module_time >> right_module_max_time;
 			// Hp
 			float hp;
 			stream >> hp;
@@ -441,6 +455,12 @@ void Game_Client::decode(std::string source) {
 			ship->get_hp()->set_max(max_hp);
 			ship->get_stamina()->set_max(max_stamina);
 			ship->get_bonus_slot()->set_current_bonus(bonus);
+			ship->get_left_module()->set_type(static_cast<Module::Type>(left_module));
+			ship->get_left_module()->get_recharge_counter()->set(left_module_time);
+			ship->get_left_module()->get_recharge_counter()->set_max(left_module_max_time);
+			ship->get_right_module()->set_type(static_cast<Module::Type>(right_module));
+			ship->get_right_module()->get_recharge_counter()->set(right_module_time);
+			ship->get_right_module()->get_recharge_counter()->set_max(right_module_max_time);
 
 			// Decoding commands
 			std::vector<int> commands = aux::string_to_mask(commands_stringed);
