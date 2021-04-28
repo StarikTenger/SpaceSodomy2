@@ -131,6 +131,10 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	}
 }
 
+void init_modules_menu(std::string pose, std::string name, Menu* modules) {
+
+}
+
 void Menu_Processing::close_settings_menus() {
 	config_menu.set_active(0);
 	keys_menu.set_active(0);
@@ -637,6 +641,14 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	replay_setup_menu.set_active(0);
 	replay_setup_menu.set_events(&events);
 	init_menu("menu_configs/replay_setup.conf", &replay_setup_menu);
+	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
+	text_fields[name_to_id["ReplayPath"]]->set_text("example.ex");
+	menus.push_back(&replay_setup_menu);
+	// set modules menu
+	modules_menu.set_draw(draw);
+	modules_menu.set_active(0);
+	modules_menu.set_events(&events);
+	init_menu("menu_configs/modules.conf", &modules_menu);
 	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
 	text_fields[name_to_id["ReplayPath"]]->set_text("example.ex");
 	menus.push_back(&replay_setup_menu);
