@@ -49,7 +49,7 @@ private:
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
-	void init_gun(std::string, int damage, float recharge, int stamina_consumption, float projectile_mass,
+	void init_gun(std::string, int damage, float recharge, int stamina_cost, float projectile_mass,
 		float projectile_radius, int projectile_vel, Menu* gun);
 	void init_gun_menu(b2Vec2 pos, std::string path_to_guns_description);
 	void close_settings_menus();

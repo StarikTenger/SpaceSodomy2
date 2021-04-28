@@ -18,6 +18,7 @@
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
+#include "Module_Manager.h"
 
 class Game {
 protected:
@@ -56,6 +57,7 @@ protected:
 	Event_Manager event_manager;
 	Id_Manager id_manager;
 	Bonus_Manager bonus_manager;
+	Module_Manager module_manager;
 	
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -85,6 +87,7 @@ protected:
 	Effects*         create_effects(Effects_Prototype*);
 	Bonus*           create_bonus(Bonus_Def);
 	Bonus_Slot*      create_bonus_slot();
+	Module*          create_module(Module_Prototype*);
 
 	// Delete functions
 	void delete_body(b2Body*);

@@ -9,7 +9,7 @@ void Gun::set_projectile_manager(Projectile_Manager* _projectile_manager) {
 void Gun::import_Gun_Prototype(Gun_Prototype def) {
 	damage = def.damage;
 	recharge_time = def.recharge_time;
-	stamina_consumption = def.stamina_consumption;
+	stamina_cost = def.stamina_cost;
 	projectile_mass = def.projectile_mass;
 	projectile_vel = def.projectile_vel;
 	projectile_radius = def.projectile_radius;
@@ -48,7 +48,7 @@ void Gun::activate_side_effects() {
 	event_manager->create_event(event_def);
 	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
 		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_strength());
-		stamina->modify(-stamina_consumption / effects->get_effect(Effects::BERSERK)->get_strength());
+		stamina->modify(-stamina_cost / effects->get_effect(Effects::BERSERK)->get_strength());
 	}
 	else {
 		activate_default_side_effects();

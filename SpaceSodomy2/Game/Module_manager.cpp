@@ -15,6 +15,8 @@ Module_Prototype* Module_Manager::get_prototype(Module::Type type) {
 
 Module* Module_Manager::new_module(Module::Type type) {
     switch (type) {
+    case (Module::HP_UP):
+        return new HpUp_Module;
     case (Module::SHOTGUN):
         return new Shotgun_Module;
     case (Module::IMMORTALITY):
@@ -24,4 +26,6 @@ Module* Module_Manager::new_module(Module::Type type) {
     case (Module::DASH):
         return new Dash_Module;
     }
+    std::cout << "new_module: unknown module type\n";
+    return new Shotgun_Module;
 }

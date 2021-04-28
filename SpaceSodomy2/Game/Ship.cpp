@@ -34,6 +34,13 @@ Damage_Receiver* Ship::get_damage_receiver() {
 	return damage_receiver;
 }
 
+Module* Ship::get_left_module() {
+	return left_module;
+}
+Module* Ship::get_right_module() {
+	return right_module;
+}
+
 Effects* Ship::get_effects() {
 	return effects;
 }
@@ -77,4 +84,12 @@ void Ship::set_effects(Effects* val) {
 
 void Ship::set_bonus_slot(Bonus_Slot* val) {
 	bonus_slot = val;
+}
+
+
+void Ship::set_left_module(Module* val) {
+	left_module = val;
+}
+void Ship::set_right_module(Module* val) {
+	right_module = val;
 }

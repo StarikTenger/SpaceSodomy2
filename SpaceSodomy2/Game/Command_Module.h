@@ -20,6 +20,8 @@ public:
 		BOOST,
 		BONUS_ACTIVATION,
 		RESPAWN,
+		LEFT_MODULE,
+		RIGHT_MODULE,
 		COMMAND_COUNT
 	};
 	// Constructor

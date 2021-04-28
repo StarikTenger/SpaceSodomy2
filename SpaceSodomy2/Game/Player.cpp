@@ -28,6 +28,13 @@ std::string Player::get_hull_name() {
 	return hull_name;
 }
 
+std::string Player::get_left_module_name() {
+	return left_module_name;
+}
+std::string Player::get_right_module_name() {
+	return right_module_name;
+}
+
 Command_Module* Player::get_command_module() {
 	return command_module;
 }
@@ -71,6 +78,13 @@ void Player::set_gun_name(std::string val) {
 
 void Player::set_hull_name(std::string val) {
 	hull_name = val;
+}
+
+void Player::set_left_module_name(std::string val) {
+	left_module_name = val;
+}
+void Player::set_right_module_name(std::string val) {
+	left_module_name = val;
 }
 
 void Player::set_command_module(Command_Module* val) {

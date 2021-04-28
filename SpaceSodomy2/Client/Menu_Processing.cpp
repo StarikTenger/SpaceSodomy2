@@ -63,7 +63,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	}
 }
 
-void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
+void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_cost, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
 	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
@@ -72,7 +72,7 @@ void Menu_Processing::init_gun(std::string name, int damage, float recharge, int
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Recharge: " + aux::float_to_string(recharge, 2), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
+	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_cost), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Bullet mass: " + aux::float_to_string(projectile_mass, 2), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
@@ -88,7 +88,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	std::ifstream file_to_comment(path_to_guns_description);
 	std::stringstream config = aux::comment(file_to_comment);
 	while (!config.eof()) {
-		int damage, stamina_consumption, projectile_vel;
+		int damage, stamina_cost, projectile_vel;
 		float recharge, projectile_mass, projectile_radius;
 		std::string name, next;
 		config >> next;
@@ -108,7 +108,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 					config >> recharge;
 				}
 				if (next == "STAMINA_CONSUMPTION") {
-					config >> stamina_consumption;
+					config >> stamina_cost;
 				}
 				if (next == "PROJECTILE_MASS") {
 					config >> projectile_mass;
@@ -124,7 +124,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 			guns[name].set_draw(draw);
 			guns[name].set_active(0);
 			guns[name].set_events(&events);
-			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
+			init_gun(name, damage, recharge, stamina_cost, projectile_mass,
 				projectile_radius, projectile_vel, &guns[name]);
 			config >> next;
 		}

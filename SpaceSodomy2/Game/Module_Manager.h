@@ -9,5 +9,6 @@ public:
     Module_Manager();
     void add_prototype(Module_Prototype);
     Module_Prototype* get_prototype(Module::Type);
+    // Effective new operator overload to avoid switch later
     Module* new_module(Module::Type);
 };

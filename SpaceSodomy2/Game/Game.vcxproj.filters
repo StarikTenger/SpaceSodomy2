@@ -201,10 +201,10 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Modules.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Active Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Module_manager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Module_Manager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

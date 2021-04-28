@@ -7,6 +7,7 @@
 #include "Damage_Receiver.h"
 #include "Bonus_Slot.h"
 #include "iId.h"
+#include "Modules.h"
 
 class Ship : public iId{
 private:
@@ -15,6 +16,8 @@ private:
 	Engine* engine = nullptr;
 	b2Body* body = nullptr;
 	Gun* gun = nullptr;
+	Module* left_module = nullptr;
+	Module* right_module = nullptr;
 	Counter* hp = nullptr;
 	Counter* stamina = nullptr;
 	Damage_Receiver* damage_receiver = nullptr;
@@ -33,6 +36,8 @@ public:
 	Counter* get_hp();
 	Counter* get_stamina();
 	Damage_Receiver* get_damage_receiver();
+	Module* get_left_module();
+	Module* get_right_module();
 	Effects* get_effects();
 	Bonus_Slot* get_bonus_slot();
 
@@ -46,5 +51,7 @@ public:
 	void set_damage_receiver(Damage_Receiver*);
 	void set_effects(Effects*);
 	void set_bonus_slot(Bonus_Slot*);
+	void set_left_module(Module*);
+	void set_right_module(Module*);
 };
 

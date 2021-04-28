@@ -70,7 +70,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	gun->set_event_manager(&event_manager);
 	// Characteristics
 	gun->import_Gun_Prototype(def);
-	gun->set_effects_prototype(&def.effect_prototype);
+	gun->set_effects_prototype(&def.effect_prototype);   // TODO: can i has remove
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -202,6 +202,20 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	gun->set_stamina(stamina);
 	ship->set_gun(gun);
 
+	// Modules
+	auto left = create_module(module_manager.get_prototype(Module::get_named_type(player->get_left_module_name())));
+	auto right = create_module(module_manager.get_prototype(Module::get_named_type(player->get_right_module_name())));
+	left->set(body, player);
+	right->set(body, player);
+	left->set_effects(effs);
+	right->set_effects(effs);
+	left->set_stamina(stamina);
+	right->set_stamina(stamina);
+	left->set_bind(Command_Module::LEFT_MODULE);
+	right->set_bind(Command_Module::RIGHT_MODULE);
+	ship->set_left_module(left);
+	ship->set_right_module(right);
+
 	return ship;
 }
 
@@ -285,6 +299,20 @@ Bonus_Slot* Game::create_bonus_slot() {
 
 	return bonus_slot;
 }
+
+Module* Game::create_module(Module_Prototype* base) {
+	auto module = module_manager.new_module(base->type);
+	active_modules.insert(module);
+	auto counter = create_counter();
+	counter->set_change_vel(-1);
+	module->set_recharge_counter(counter);
+	module->set_projectile_manager(&projectile_manager);
+	module->set_event_manager(&event_manager);
+	module->import_module_prototype(base);
+	id_manager.set_id(module);
+	return module;
+}
+
 
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
@@ -900,6 +928,29 @@ bool Game::load_parameters(std::string path) {
 			bonus_manager.add_prototype(bonus_prototype);
 			continue;
 		}
+		// Modules
+		if (symbol == "MODULE") {
+			std::string name;
+			Module_Prototype prototype;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to read MODULE name\n";
+				return false;
+			}
+			prototype.type = Module::get_named_type(name);
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "EFFECTS") {
+					std::cout << "Module effect prototypes are unused for now";
+					prototype.effects_prototype = read_effect_prototype();
+				}
+				read_symbol("STRENGTH", prototype.strength);
+				read_symbol("RECHARGE_TIME", prototype.recharge_time);
+				read_symbol("STAMINA_COST", prototype.stamina_cost);
+			}
+			module_manager.add_prototype(prototype);
+			continue;
+		}
 		// Gun
 		if (symbol == "GUN") {
 			std::string name;
@@ -917,7 +968,7 @@ bool Game::load_parameters(std::string path) {
 				}
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
-				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);
+				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_cost);
 				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);

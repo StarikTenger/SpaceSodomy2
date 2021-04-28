@@ -74,11 +74,11 @@ void Active_Module::set_effects(Effects* val) {
 
 void Active_Module::activate_default_side_effects() {
 	recharge_counter->set(recharge_time);
-	stamina->modify(-stamina_consumption);
+	stamina->modify(-stamina_cost);
 }
 
 void Active_Module::step(float dt) {
-	if (player->get_command_module()->get_command(bind) && recharge_counter->get() < 0 && stamina->get() > stamina_consumption) { // TODO: Add here energy & stamina check
+	if (player->get_command_module()->get_command(bind) && recharge_counter->get() < 0 && stamina->get() > stamina_cost) { // TODO: Add here energy & stamina check
         std::cout << "AM activate\n";
 		activate();
 	}

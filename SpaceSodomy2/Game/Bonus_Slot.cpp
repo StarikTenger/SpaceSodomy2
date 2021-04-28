@@ -4,7 +4,7 @@
 Bonus_Slot::Bonus_Slot() {
     bind = Command_Module::BONUS_ACTIVATION;
     recharge_time = 0;
-    stamina_consumption = 0;
+    stamina_cost = 0;
 }
 void Bonus_Slot::add_bonus(Bonus::Types val) {
     if (val >= Bonus::COUNT) {

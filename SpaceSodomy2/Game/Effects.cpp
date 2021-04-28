@@ -147,7 +147,7 @@ Effects::Types Effects::get_effect_type(std::string effect_name) {
         return Effects::Types::INSTANT_STAMINA;
     if (effect_name == "LASER")
         return Effects::Types::LASER;
-    if (effect_name == "LASER_BURN")
+    if (effect_name == "WALL_BURN")
         return Effects::Types::WALL_BURN;
     if (effect_name == "CHARGE")
         return Effects::Types::CHARGE;
@@ -155,6 +155,8 @@ Effects::Types Effects::get_effect_type(std::string effect_name) {
         return Effects::Types::BERSERK;
     if (effect_name == "IMMORTALITY")
         return Effects::Types::IMMORTALITY;
+    if (effect_name == "INVISIBILITY")
+        return Effects::Types::INVISIBILITY;
     else {
         std::cerr << "incorrect effect type : " << effect_name << '\n';
         return Effects::Types::COUNT;
