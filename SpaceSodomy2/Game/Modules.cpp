@@ -31,12 +31,11 @@ Module::Type Module::get_type() {
 void Module::set_projectile_manager(Projectile_Manager* val) {
     projectile_manager = val;
 }
-
-float Module::get_strength() {
-    return strength;
+float Module::get_param(std::string val) {
+	return params[val];
 }
-void Module::set_strength(float val) {
-    strength = val;
+void Module::set_param(std::string val, float num) {
+	params[val] = num;
 }
 
 void Module::set_type(Type val) {
@@ -50,7 +49,7 @@ Projectile_Manager* Module::get_projectile_manager() {
 
 void Module::import_module_prototype(Module_Prototype* base) {
 	type = base->type;
-	strength = base->strength;
+	params = base->params;
 	stamina_cost = base->stamina_cost;
 	recharge_time = base->recharge_time;
 	effects_prototype = &base->effects_prototype;
@@ -58,7 +57,7 @@ void Module::import_module_prototype(Module_Prototype* base) {
 
 void HpUp_Module::activate() {
 	activate_side_effects();
-	effects->update(Effects::INSTANT_HP, strength);
+	effects->update(Effects::INSTANT_HP, params["heal"]);
 }
 void HpUp_Module::activate_side_effects() {
 	activate_default_side_effects();
@@ -67,51 +66,50 @@ void HpUp_Module::activate_side_effects() {
 
 void Shotgun_Module::activate() {
     activate_side_effects(); 
-	// TODO;
 	Projectile_Def projectile_def;
-	for (int i = -2; i < 3; i++) {
-		float vel_val = 4;
+	float num = params["bullet_num"];
+	//std::cout << num;
+	b2Vec2 impulse = {0,0};
+	for (float i =  -(num / 2) + 0.5; i <= num / 2 - b2_epsilon; i++) {		
+		float vel_val = params["velocity"];
 
 		projectile_def.pos = body->GetPosition();
 		projectile_def.vel = body->GetLinearVelocity();
-		projectile_def.angle = body->GetAngle() + b2_pi / 10 * i;
+		projectile_def.angle = body->GetAngle() + params["spread"] * (i);
 		b2Vec2 delta_vel = vel_val * aux::angle_to_vec(projectile_def.angle);
 		projectile_def.vel += delta_vel;
 		projectile_def.player = player;
-		projectile_def.damage = strength;
-		projectile_def.radius = 0.25;
-		projectile_def.mass = 0.03;
-		projectile_def.hp = 20;
+		projectile_def.damage = params["damage"];
+		projectile_def.radius = params["radius"];
+		projectile_def.mass = params["mass"];
+		projectile_def.hp = params["bullet_hp"];
 		projectile_def.effects_prototype = nullptr;
 		// Recoil
-		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
+		impulse += -projectile_def.mass * delta_vel;
 		get_projectile_manager()->create_projectile(projectile_def);
 	}
+	body->ApplyLinearImpulseToCenter(impulse, 1);
 }
 void Shotgun_Module::activate_side_effects() {
     activate_default_side_effects();
 }
 void Immortality_Module::activate() {
     activate_side_effects();
-	Effects_Prototype def;
-	def.effects[Effects::IMMORTALITY].get_counter()->modify(strength);
-	effects->update(&def);
+	effects->update(Effects::IMMORTALITY, params["duration"]);
 }
 void Immortality_Module::activate_side_effects() {
     activate_default_side_effects();
 }
 void Invisibility_Module::activate() {
     activate_side_effects();
-	Effects_Prototype def;
-	def.effects[Effects::INVISIBILITY].get_counter()->modify(strength);
-	effects->update(&def);
+	effects->update(Effects::INVISIBILITY, params["duration"]);
 }
 void Invisibility_Module::activate_side_effects() {
     activate_default_side_effects();
 }
 void Dash_Module::activate() {
     activate_side_effects();
-	body->ApplyLinearImpulseToCenter(strength * aux::angle_to_vec(body->GetAngle()), 1);
+	body->ApplyLinearImpulseToCenter(params["impulse"] * aux::angle_to_vec(body->GetAngle()), 1);
 }
 void Dash_Module::activate_side_effects() {
     activate_default_side_effects();

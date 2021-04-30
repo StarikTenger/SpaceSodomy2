@@ -900,7 +900,7 @@ bool Game::load_parameters(std::string path) {
 					else {
 						float temp;
 						input >> temp;
-						std::cout << "Parameter " << symbol << " set to " << temp << "\n";
+						std::cout << "Parameter " << symbol << " set to " << temp  << " in effect number " << type_ << "\n";
 						effect_params.effects[type_].set_param(symbol, temp);
 					}
 				}
@@ -943,12 +943,31 @@ bool Game::load_parameters(std::string path) {
 				if (symbol == "END")
 					break;
 				if (symbol == "EFFECTS") {
-					std::cout << "Module effect prototypes are unused for now";
+					std::cout << "Module effect prototypes are unused for now\n";
 					prototype.effects_prototype = read_effect_prototype();
 				}
-				read_symbol("STRENGTH", prototype.strength);
-				read_symbol("RECHARGE_TIME", prototype.recharge_time);
-				read_symbol("STAMINA_COST", prototype.stamina_cost);
+				else if (symbol == "RECHARGE_TIME") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read RECHARGE_TIME\n";
+						std::cout << "Game::load_parameters: failed to read RECHARGE_TIME\n";
+					}
+					prototype.recharge_time = val;
+				}
+				else if (symbol == "STAMINA_COST") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read STAMINA_COST\n";
+						std::cout << "Game::load_parameters: failed to read STAMINA_COST\n";
+					}
+					prototype.stamina_cost = val;
+				}
+				else {
+					float temp;
+					input >> temp;
+					std::cout << "Parameter " << symbol << " set to " << temp << " in module prototype " << name << "\n";
+					prototype.params[symbol] = temp;
+				}
 			}
 			module_manager.add_prototype(prototype);
 			continue;
