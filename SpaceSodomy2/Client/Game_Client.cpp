@@ -126,27 +126,29 @@ void Game_Client::display(int id) {
 			continue;
 
 		// HP_bar & name
-		if (ship->get_player()->get_id() != id) {// && !object.effects[Bonus::INVISIBILITY]) {
-			// hp
-			{
-				auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());
-				float l = ship->get_hp()->get() / ship->get_hp()->get_max();
-				draw->image("box", ship->get_body()->GetPosition() + shift,	b2Vec2(1, 0.1),
-					draw->get_camera()->get_angle() + b2_pi / 2, { 100, 20, 20, 255 });
-				shift = b2Vec2(0, 0) - aux::rotate({ (1 - l) / 2, -0.5 },
-					draw->get_camera()->get_angle() + b2_pi / 2);
-				draw->image("box", ship->get_body()->GetPosition() + shift, b2Vec2(1*l, 0.1),
-					draw->get_camera()->get_angle() + b2_pi / 2, { 255, 0, 0, 255 });
-			}
+		if (ship->get_player()->get_id() != id) {
+			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
+				// hp
+				{
+					auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());
+					float l = ship->get_hp()->get() / ship->get_hp()->get_max();
+					draw->image("box", ship->get_body()->GetPosition() + shift, b2Vec2(1, 0.1),
+						draw->get_camera()->get_angle() + b2_pi / 2, { 100, 20, 20, 255 });
+					shift = b2Vec2(0, 0) - aux::rotate({ (1 - l) / 2, -0.5 },
+						draw->get_camera()->get_angle() + b2_pi / 2);
+					draw->image("box", ship->get_body()->GetPosition() + shift, b2Vec2(1 * l, 0.1),
+						draw->get_camera()->get_angle() + b2_pi / 2, { 255, 0, 0, 255 });
+				}
 
-			// Name
-			{
-				auto shift = b2Vec2(0, 0) - 0.7 * aux::direction(draw->get_camera()->get_angle());
-				std::string str = ship->get_player()->get_name();
-				if (str.size() > 18)
-					str = str.substr(0, 18);
-				draw->text(str, "font", ship->get_body()->GetPosition() + shift, 0.03 / 5,
-					draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
+				// Name
+				{
+					auto shift = b2Vec2(0, 0) - 0.7 * aux::direction(draw->get_camera()->get_angle());
+					std::string str = ship->get_player()->get_name();
+					if (str.size() > 18)
+						str = str.substr(0, 18);
+					draw->text(str, "font", ship->get_body()->GetPosition() + shift, 0.03 / 5,
+						draw->get_camera()->get_angle() + b2_pi / 2, ship->get_player()->get_color());
+				}
 			}
 		}
 		// Trace
@@ -174,13 +176,14 @@ void Game_Client::display(int id) {
 				draw->thin_line(left_pos, intersection_left, color);
 			}
 		}
-
 		// Hull
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
-		draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius}, ship->get_body()->GetAngle());
-		draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), {radius, radius},
-			ship->get_body()->GetAngle(), color);
+		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
+			draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius }, ship->get_body()->GetAngle());
+			draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius },
+				ship->get_body()->GetAngle(), color);
+		}
 
 		// Engines
 		std::vector<std::string> textures = {
@@ -202,13 +205,14 @@ void Game_Client::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
-				draw->image(textures[i], ship->get_body()->GetPosition(),
-					{ radius, radius }, ship->get_body()->GetAngle(), color);
-				// Animation
-				float engine_len = 0.1;
-				if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST) 
-					&& ship->get_stamina()->get() > 0)
-					engine_len = 0.4;
+				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
+					draw->image(textures[i], ship->get_body()->GetPosition(),
+						{ radius, radius }, ship->get_body()->GetAngle(), color);
+					// Animation
+					float engine_len = 0.1;
+					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST)
+						&& ship->get_stamina()->get() > 0)
+						engine_len = 0.4;
 					Float_Animation::State state_a;
 					state_a.pos = ship->get_body()->GetPosition();
 					state_a.angle = ship->get_body()->GetAngle();
@@ -221,13 +225,14 @@ void Game_Client::display(int id) {
 					state_b.pos += engine_len * aux::rotate(directions[i], ship->get_body()->GetAngle());
 					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
 					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST))
-						state_b.color = { 255, 255, 255, 0};
-					
+						state_b.color = { 255, 255, 255, 0 };
+
 					Float_Animation animation(textures[i], state_a, state_b, animation_time, GAME);
 					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
 					Float_Animation animation_1(textures[i], state_a, state_b, animation_time, GAME);
 					draw->create_animation(animation);
 					draw->create_animation(animation_1);
+				}
 			}
 			
 		}
