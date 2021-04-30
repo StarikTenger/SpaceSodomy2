@@ -58,7 +58,7 @@ void Module::import_module_prototype(Module_Prototype* base) {
 
 void HpUp_Module::activate() {
 	activate_side_effects();
-	effects->get_effect(Effects::INSTANT_HP)->get_counter()->modify(strength);
+	effects->update(Effects::INSTANT_HP, strength);
 }
 void HpUp_Module::activate_side_effects() {
 	activate_default_side_effects();

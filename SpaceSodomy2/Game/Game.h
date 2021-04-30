@@ -19,6 +19,7 @@
 #include <AuxLib/AuxLib.h>
 #include <memory>
 #include "Module_Manager.h"
+#include "Game_Objects.h"
 
 class Game {
 protected:
@@ -33,6 +34,7 @@ protected:
 	float time = 0;
 
 	// Objects' systems
+	Game_Objects game_objects;
 	std::map<int, Player*> players;
 	std::map<int, int>* connection_time;
 	std::set<Ship*> ships;

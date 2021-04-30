@@ -171,6 +171,7 @@
     <ClInclude Include="entities.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game_Objects.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Hull_Prototype.h" />
     <ClInclude Include="Id_Manager.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_Objects.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Id_Manager.cpp" />
     <ClCompile Include="iId.cpp" />

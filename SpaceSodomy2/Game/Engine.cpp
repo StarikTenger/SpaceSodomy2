@@ -65,7 +65,7 @@ void Engine::step(float _dt) {
 		current_modifier *= boost_modifier;
 	}
 	if (effects->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {     // Apply CHARGE
-		current_modifier *= effects->get_effect(Effects::Types::CHARGE)->get_strength();
+		current_modifier *= effects->get_effect(Effects::Types::CHARGE)->get_param("boost");
 	}
 	is_linear_force_used = 0;
 	// Command processing

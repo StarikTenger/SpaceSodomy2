@@ -2,6 +2,7 @@
 #include <deque>
 #include <AuxLib/AuxLib.h>
 #include "Counter.h"
+#include <map>
 
 struct Effects_Prototype;
 
@@ -29,6 +30,7 @@ public:
     private:
         Counter duration;
         float strength;
+        std::map<std::string, float> params;
         Algebraic_Type type;
     public:
         Effect();
@@ -38,11 +40,11 @@ public:
 
         Algebraic_Type get_type();
         Counter* get_counter();
-        float get_strength();
+        float get_param(std::string);
 
         void set_type(Algebraic_Type);
         void set_counter(Counter);
-        void set_strength(float);
+        void set_param(std::string, float);
 
 
         void step(float dt);
@@ -68,6 +70,7 @@ public:
     void step(float dt);
 
     void update(Effects_Prototype* effects);
+    void update(Effects::Types, float val);
 
 };
 
