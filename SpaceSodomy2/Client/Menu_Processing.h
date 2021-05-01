@@ -17,8 +17,9 @@ private:
 	std::map <std::string, Menu> guns; // guns
 	Menu hull_menu; // hull menu objects
 	std::map <std::string, Menu> hulls; // hulls
-	Menu HUD_menu;
 	Menu modules_menu;
+	std::map <std::string, Menu> modules; // modules
+	Menu HUD_menu;
 	Menu replay_menu;
 	Menu replay_setup_menu;
 
@@ -57,6 +58,8 @@ private:
 	void init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description);
 	void init_hull(std::string name, int hp, float mass, float radius,
 		int stamina, int stamina_recovery, Menu* hull);
+	void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
+	void init_module(std::string name, Menu* module, b2Vec2 add_pos);
 	//void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
 	//voif init_module(std::string name);
 	Draw* draw;
@@ -65,6 +68,7 @@ private:
 	bool disactivated = 0;
 	bool shader_active = 1;
 	bool* reload;
+	int module_num = 1;
 public:
 	Menu_Processing();
 	bool active = 1;

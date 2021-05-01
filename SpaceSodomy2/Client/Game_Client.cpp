@@ -48,6 +48,14 @@ void Game_Client::set_hull_name(std::string val) {
 	hull_name = val;
 }
 
+void Game_Client::set_left_module_name(std::string val) {
+	left_module_name = val;
+}
+
+void Game_Client::set_right_module_name(std::string val) {
+	right_module_name = val;
+}
+
 void Game_Client::set_draw(Draw* _draw) {
 	draw = _draw;
 	draw->apply_camera({ 0, 0 }, 100, 0);
@@ -606,12 +614,19 @@ void Game_Client::load_setup(std::string path) {
 		if (command == "HULL") {
 			file >> hull_name;
 		}
+		if (command == "LEFT_MODULE") {
+			file >> left_module_name;
+		}
+		if (command == "RIGHT_MODULE") {
+			file >> right_module_name;
+		}
 	}
 }
 
 void Game_Client::save_setup(std::string path) {
 	std::ofstream file(path);
-	file << "GUN " << gun_name << "\n" << "HULL " << hull_name;
+	file << "GUN " << gun_name << "\n" << "HULL " << hull_name << "\n"
+		<< "LEFT_MODULE " << left_module_name << "\n" << "RIGHT_MODULE " << right_module_name;
 	file.close();
 }
 
