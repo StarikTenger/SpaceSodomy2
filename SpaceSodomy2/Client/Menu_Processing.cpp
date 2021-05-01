@@ -27,8 +27,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	int hp, stamina, stamina_recovery;
 	float mass, radius;
 	std::string name, next;
-	while (!config.eof()) {
-		config >> next;
+	config >> next;
 	while (next == "HULL") {
 		config >> name >> next;
 		name_to_id[name + "-hull"] = current_id;
