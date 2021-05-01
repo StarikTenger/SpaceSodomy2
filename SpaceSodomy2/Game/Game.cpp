@@ -310,6 +310,7 @@ Module* Game::create_module(Module_Prototype* base) {
 	module->set_projectile_manager(&projectile_manager);
 	module->set_event_manager(&event_manager);
 	module->import_module_prototype(base);
+	module->set_game_objects(game_objects);
 	id_manager.set_id(module);
 	return module;
 }
@@ -430,7 +431,9 @@ void Game::process_ships() {
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
 					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 
 					ship->get_effects()->get_effect(Effects::LASER)->get_param("width")) {
-					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					if (damage_receiver->get_effects()) {
+					    damage_receiver->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					}
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::LASER)->get_param("damage"), ship->get_player());
 				}
 			}
@@ -634,7 +637,6 @@ void Game::step(float _dt) {
 	process_ships();
 	process_engines();
 	process_projectiles();
-	process_active_modules();
 	process_projectlie_manager();
 	process_sound_manager();
 	process_counters();
@@ -642,6 +644,7 @@ void Game::step(float _dt) {
 	process_effects();
 	process_bonuses();
 	process_bonus_manager();
+	process_active_modules();
 }
 
 void Game::set_dt(float _dt) {

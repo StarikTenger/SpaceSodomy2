@@ -1,10 +1,12 @@
 #pragma once
 #include <box2d/box2d.h>
 #include <set>
-#include "Ship.h"
-#include "Projectile.h"
-#include "Wall.h";
-#include "Damage_Receiver.h"
+
+class Ship;
+class Projectile;
+class Bonus;
+class Wall;
+class Damage_Receiver;
 
 class Game_Objects {
 private:

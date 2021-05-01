@@ -21,6 +21,12 @@ Module::Type Module::get_named_type(std::string name) {
 	if (name == "DASH") {
 		return DASH;
 	}
+	if (name == "BLINK") {
+		return BLINK;
+	}
+	if (name == "FORCE") {
+		return FORCE;
+	}
 	std::cout << "unknown module name";
 	return SHOTGUN;
 }
@@ -44,6 +50,9 @@ void Module::set_type(Type val) {
 
 Projectile_Manager* Module::get_projectile_manager() {
 	return projectile_manager;
+}
+void Module::set_game_objects(Game_Objects val) {
+	environment = val;
 }
 
 
@@ -113,4 +122,39 @@ void Dash_Module::activate() {
 }
 void Dash_Module::activate_side_effects() {
     activate_default_side_effects();
+}
+
+void Force_Module::activate() {
+	activate_side_effects();
+	std::set<Damage_Receiver*>& receivers = *environment.get_damage_receivers();
+	for (auto receiver : receivers) {
+		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < params["radius"]) {
+			receiver->get_body()->ApplyLinearImpulseToCenter(
+				- params["vel"] * receiver->get_body()->GetMass() * (body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })), 1);
+			body->ApplyLinearImpulseToCenter(
+				params["vel"] * receiver->get_body()->GetMass() * (body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })), 1);
+		}
+	}
+}
+void Force_Module::activate_side_effects() {
+	activate_default_side_effects();
+}
+
+void Blink_Module::activate() {
+	std::set<Wall*>* walls = environment.get_walls();
+	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + params["distance"] * aux::angle_to_vec(body->GetAngle());
+	for (auto wall = walls->begin(); wall != walls->end(); wall++) {
+		Wall* wall_ = *wall;
+		if (wall_->get_type() == Wall::SPIKED || wall_->get_type() == Wall::STANDART) {
+			if (aux::is_in_polygon(newpos, wall_->get_vertices(), wall_->get_orientation())) {
+				return;
+			}
+		}
+	}
+	activate_side_effects();
+	body->SetTransform(newpos, body->GetAngle());
+}
+
+void Blink_Module::activate_side_effects() {
+	activate_default_side_effects();
 }

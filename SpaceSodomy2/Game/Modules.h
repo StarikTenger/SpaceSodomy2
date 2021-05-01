@@ -3,6 +3,9 @@
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
 #include <map>
+#include "Game_Objects.h"
+#include "Damage_Receiver.h"
+#include "Wall.h"
 
 struct Module_Prototype;
 
@@ -19,12 +22,15 @@ public:
         IMMORTALITY,
         INVISIBILITY,
         DASH,
+        FORCE,
+        BLINK,
         COUNT
     };
 protected:
     Type type = COUNT;
     Projectile_Manager* projectile_manager;
     std::map<std::string, float> params;
+    Game_Objects environment;
 public:
     static Type get_named_type(std::string name);
     Type get_type();
@@ -34,6 +40,7 @@ public:
     void set_projectile_manager(Projectile_Manager*);
     Projectile_Manager* get_projectile_manager();
     void import_module_prototype(Module_Prototype*);
+    void set_game_objects(Game_Objects);
 };
 
 struct Module_Prototype {
@@ -72,6 +79,18 @@ public:
 };
 
 class Dash_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Force_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Blink_Module : public Module {
 public:
     void activate() override;
     void activate_side_effects() override;

@@ -117,9 +117,13 @@ void Game_Client::display(int id) {
 			draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
 		}
 	}
-
+	
 	// Ships
 	for (auto ship : ships) {
+		float opacity = 1;
+		if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
+			opacity = 0.3;
+		}
 		if (!ship->get_body() ||
 			!ship->get_body()->GetFixtureList() ||
 			!ship->get_body()->GetFixtureList()->GetShape())
@@ -168,7 +172,7 @@ void Game_Client::display(int id) {
 				b2Distance(body_pos, intersection)) * dir;
 			intersection += body_pos;
 			auto color = ship->get_player()->get_color();
-			color.a = aim_opacity;
+			color.a = aim_opacity * opacity;
 			if (aim_conf % 2 == 1)
 				draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
 			if (aim_conf > 1) {
@@ -179,6 +183,7 @@ void Game_Client::display(int id) {
 		// Hull
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
+		color.a *= opacity;
 		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
 			draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius }, ship->get_body()->GetAngle());
 			draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius },
