@@ -349,6 +349,8 @@ void Game::delete_ship(Ship* ship) {
 	delete_counter(ship->get_stamina());
 	delete_effects(ship->get_effects());
 	delete_active_module(ship->get_bonus_slot());
+	delete_active_module(ship->get_left_module());
+	delete_active_module(ship->get_right_module());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
