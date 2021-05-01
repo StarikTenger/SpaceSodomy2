@@ -2,6 +2,10 @@
 #include "pch.h"
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
+#include <map>
+#include "Game_Objects.h"
+#include "Damage_Receiver.h"
+#include "Wall.h"
 
 struct Module_Prototype;
 
@@ -18,31 +22,35 @@ public:
         IMMORTALITY,
         INVISIBILITY,
         DASH,
+        FORCE,
+        BLINK,
         COUNT
     };
 protected:
     Type type = COUNT;
     Projectile_Manager* projectile_manager;
-    float strength = 0;
+    std::map<std::string, float> params;
+    Game_Objects environment;
 public:
     static Type get_named_type(std::string name);
     Type get_type();
-    float get_strength();
-    void set_strength(float);
+    float get_param(std::string);
+    void set_param(std::string, float);
     void set_type(Type);
     void set_projectile_manager(Projectile_Manager*);
     Projectile_Manager* get_projectile_manager();
     void import_module_prototype(Module_Prototype*);
+    void set_game_objects(Game_Objects);
 };
 
 struct Module_Prototype {
-    // Effects dindu nuffin as they are not needed for now: 
-    // bonus effects are hardcoded
+    // Effects dindu nuffin as they are not needed for now: supposed to be used for effect-applying shotguns 
+    // Bonus effects are hardcoded
     Effects_Prototype effects_prototype;       
-    float stamina_cost = 50;
+    float stamina_cost;
     //float energy_cost;
-    float recharge_time = 5;
-    float strength = 20;
+    float recharge_time;
+    std::map<std::string, float> params;
     Module::Type type = Module::SHOTGUN;
 };
 
@@ -71,6 +79,18 @@ public:
 };
 
 class Dash_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Force_Module : public Module {
+public:
+    void activate() override;
+    void activate_side_effects() override;
+};
+
+class Blink_Module : public Module {
 public:
     void activate() override;
     void activate_side_effects() override;

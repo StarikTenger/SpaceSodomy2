@@ -25,6 +25,10 @@ Module* Module_Manager::new_module(Module::Type type) {
         return new Invisibility_Module;
     case (Module::DASH):
         return new Dash_Module;
+    case (Module::FORCE):
+        return new Force_Module;
+    case (Module::BLINK):
+        return new Blink_Module;
     }
     std::cout << "new_module: unknown module type\n";
     return new Shotgun_Module;

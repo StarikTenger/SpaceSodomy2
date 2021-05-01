@@ -29,6 +29,11 @@ Game::Game() {
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
+	game_objects.set_physics(&physics);
+	game_objects.set_bonuses(&bonuses);
+	game_objects.set_damage_receivers(&damage_receivers);
+	game_objects.set_projectiles(&projectiles);
+	game_objects.set_walls(&walls);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -127,11 +132,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	Effects_Prototype effects_prototype;
-	for (int i = 0; i < Effects::Types::COUNT; i++) {
-		effects_prototype.effects[i].set_type(effect_params.effects[i].get_type());
-		effects_prototype.effects[i].set_strength(effect_params.effects[i].get_strength());
-	}
+	Effects_Prototype effects_prototype(effect_params);
 	auto effs = create_effects(&effects_prototype);
 	ship->set_effects(effs);
 	
@@ -309,6 +310,7 @@ Module* Game::create_module(Module_Prototype* base) {
 	module->set_projectile_manager(&projectile_manager);
 	module->set_event_manager(&event_manager);
 	module->import_module_prototype(base);
+	module->set_game_objects(game_objects);
 	id_manager.set_id(module);
 	return module;
 }
@@ -415,7 +417,6 @@ void Game::process_ships() {
 		if (st_eff->get() > 0) {
 			ship->get_stamina()->modify(st_eff->get());
 			st_eff->set(0);
-
 		}
 
 		// Apply laser
@@ -428,21 +429,24 @@ void Game::process_ships() {
 				b2Vec2 target_pos = damage_receiver->get_body()->GetPosition();
 				b2Vec2 intersection = get_beam_intersection(pos, angle);
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
-					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
-					damage_receiver->damage(1000, ship->get_player());  // +inf
+					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 
+					ship->get_effects()->get_effect(Effects::LASER)->get_param("width")) {
+					if (damage_receiver->get_effects()) {
+					    damage_receiver->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					}
+					damage_receiver->damage(ship->get_effects()->get_effect(Effects::LASER)->get_param("damage"), ship->get_player());
 				}
 			}
 		}
-
+		
+		// Spiked walls
 		for (auto wall : walls) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
-				auto effs = effect_params;
-				effs.effects[Effects::WALL_BURN].get_counter()->set(0.1);
 				if (wall->get_type() == Wall::SPIKED && 
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
 					ship->get_damage_receiver()->damage(40, ship->get_damage_receiver()->get_last_hit());
+					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 				}
-				ship->get_effects()->update(&effs);
 			}
 		}
 
@@ -456,14 +460,15 @@ void Game::process_ships() {
 		}
 		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
 			collision_filter.change_body(ship->get_body(), Collision_Filter::PROJECTILE);
-			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.1) {
+			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.05) { // TODO
 				collision_filter.change_body(ship->get_body(), Collision_Filter::STANDART);
 				ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->set(0);
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-					damage_receiver->damage(1000, ship->get_player());            // TODO
+					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
 			}
 		}
@@ -632,7 +637,6 @@ void Game::step(float _dt) {
 	process_ships();
 	process_engines();
 	process_projectiles();
-	process_active_modules();
 	process_projectlie_manager();
 	process_sound_manager();
 	process_counters();
@@ -640,6 +644,7 @@ void Game::step(float _dt) {
 	process_effects();
 	process_bonuses();
 	process_bonus_manager();
+	process_active_modules();
 }
 
 void Game::set_dt(float _dt) {
@@ -876,7 +881,6 @@ bool Game::load_parameters(std::string path) {
 					break;
 				int type_ = Effects::get_effect_type(symbol);
 				effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
-				effect_params.effects[type_].set_strength(0);
 				while (input >> symbol) {
 					if (symbol == "END")
 						break;
@@ -896,10 +900,11 @@ bool Game::load_parameters(std::string path) {
 							effect_params.effects[type_].set_type(Effects::Algebraic_Type::NO_OVERLAY);
 						}
 					}
-					if (symbol == "STRENGTH") {
+					else {
 						float temp;
 						input >> temp;
-						effect_params.effects[type_].set_strength(temp);
+						std::cout << "Parameter " << symbol << " set to " << temp  << " in effect number " << type_ << "\n";
+						effect_params.effects[type_].set_param(symbol, temp);
 					}
 				}
 			}
@@ -941,12 +946,31 @@ bool Game::load_parameters(std::string path) {
 				if (symbol == "END")
 					break;
 				if (symbol == "EFFECTS") {
-					std::cout << "Module effect prototypes are unused for now";
+					std::cout << "Module effect prototypes are unused for now\n";
 					prototype.effects_prototype = read_effect_prototype();
 				}
-				read_symbol("STRENGTH", prototype.strength);
-				read_symbol("RECHARGE_TIME", prototype.recharge_time);
-				read_symbol("STAMINA_COST", prototype.stamina_cost);
+				else if (symbol == "RECHARGE_TIME") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read RECHARGE_TIME\n";
+						std::cout << "Game::load_parameters: failed to read RECHARGE_TIME\n";
+					}
+					prototype.recharge_time = val;
+				}
+				else if (symbol == "STAMINA_COST") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read STAMINA_COST\n";
+						std::cout << "Game::load_parameters: failed to read STAMINA_COST\n";
+					}
+					prototype.stamina_cost = val;
+				}
+				else {
+					float temp;
+					input >> temp;
+					std::cout << "Parameter " << symbol << " set to " << temp << " in module prototype " << name << "\n";
+					prototype.params[symbol] = temp;
+				}
 			}
 			module_manager.add_prototype(prototype);
 			continue;

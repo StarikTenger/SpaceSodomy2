@@ -35,8 +35,9 @@ void Gun::activate() {
 	projectile_def.hp = projectile_hp;
 	projectile_def.effects_prototype = effects_prototype;
 	// Recoil
+	// Apply BERSERK
 	if (!(effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
-		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
+		body->ApplyLinearImpulseToCenter(-effects->get_effect(Effects::BERSERK)->get_param("recoil_modifier") * projectile_def.mass * delta_vel, 1);
 	}
 	projectile_manager->create_projectile(projectile_def);
 }
@@ -45,10 +46,11 @@ void Gun::activate_side_effects() {
 	Event_Def event_def;
 	event_def.name = "gn";
 	event_def.body = body;
-	event_manager->create_event(event_def);
+	event_manager->create_event(event_def); 
+	// Apply BERSERK
 	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
-		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_strength());
-		stamina->modify(-stamina_cost / effects->get_effect(Effects::BERSERK)->get_strength());
+		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_param("firing_rate_boost"));
+		stamina->modify(-stamina_cost * effects->get_effect(Effects::BERSERK)->get_param("stamina_multiplier"));
 	}
 	else {
 		activate_default_side_effects();

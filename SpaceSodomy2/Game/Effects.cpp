@@ -31,8 +31,8 @@ Effects::Algebraic_Type Effects::Effect::get_type() {
 Counter* Effects::Effect::get_counter() {
     return &duration;
 }
-float Effects::Effect::get_strength() {
-    return strength;
+float Effects::Effect::get_param(std::string val) {
+    return params[val];
 }
 
 
@@ -49,9 +49,10 @@ void Effects::Effect::step(float dt) {
     duration.step(dt);
 }
 
-void Effects::Effect::set_strength(float val) {
-    strength = val;
+void Effects::Effect::set_param(std::string val, float num) {
+    params[val] = num;
 }
+
 
 Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (type == Algebraic_Type::ANNULATOR) {
@@ -71,7 +72,7 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
         duration.modify(other.duration.get());
         break;
     case Algebraic_Type::NO_OVERLAY:
-        if (!(duration.get() > 0.01)) {
+        if (!(duration.get() > 0)) {
             duration.set(other.duration.get());
         }
         break;
@@ -125,6 +126,11 @@ void Effects::update(Effects_Prototype* _effects) {
     }
 }
 
+void Effects::update(Effects::Types type, float val) {
+    Effect eff;
+    eff.get_counter()->set(val);
+    effects[type] += eff;
+}
 
 Effects_Prototype::Effects_Prototype() {
     for (int i = 0; i < Effects::Types::COUNT; i++) {

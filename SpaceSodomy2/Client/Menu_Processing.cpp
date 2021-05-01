@@ -5,6 +5,7 @@ Menu_Processing::Menu_Processing() {}
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
 	hull->add_image(++current_id, name + "-hull", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
+	hull->add_image(++current_id, name + "-hull-colors", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 325), 7, 20,
@@ -28,39 +29,40 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	std::string name, next;
 	while (!config.eof()) {
 		config >> next;
-		while (next == "HULL") {
-			config >> name >> next;
-			name_to_id[name + "-hull"] = current_id;
-			hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
-			hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
-				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
-			cur_but_id++;
-			while (next != "END") {
-				if (next == "HP") {
-					config >> hp;
-				}
-				if (next == "MASS") {
-					config >> mass;
-				}
-				if (next == "RADIUS") {
-					config >> radius;
-				}
-				if (next == "STAMINA") {
-					config >> stamina;
-				}
-				if (next == "STAMINA_RECOVERY") {
-					config >> stamina_recovery;
-				}
-				config >> next;
+	while (next == "HULL") {
+		config >> name >> next;
+		name_to_id[name + "-hull"] = current_id;
+		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+			1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+		hull_menu.add_button(current_id++, name + "-hull-colors", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+			1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+		hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+			1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+		cur_but_id++;
+		while (next != "END") {
+			if (next == "HP") {
+				config >> hp;
 			}
-			hulls[name].set_draw(draw);
-			hulls[name].set_active(0);
-			hulls[name].set_events(&events);
-			init_hull(name, hp, mass, radius,
-				stamina, stamina_recovery, &hulls[name]);
+			if (next == "MASS") {
+				config >> mass;
+			}
+			if (next == "RADIUS") {
+				config >> radius;
+			}
+			if (next == "STAMINA") {
+				config >> stamina;
+			}
+			if (next == "STAMINA_RECOVERY") {
+				config >> stamina_recovery;
+			}
 			config >> next;
 		}
+		hulls[name].set_draw(draw);
+		hulls[name].set_active(0);
+		hulls[name].set_events(&events);
+		init_hull(name, hp, mass, radius,
+			stamina, stamina_recovery, &hulls[name]);
+		config >> next;
 	}
 }
 

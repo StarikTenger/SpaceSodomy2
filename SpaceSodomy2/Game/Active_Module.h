@@ -28,6 +28,7 @@ protected:
 	Effects_Prototype* effects_prototype = nullptr;
 	// Effects affecting this
 	Effects* effects = nullptr;
+	
 
 public:
 	Active_Module();

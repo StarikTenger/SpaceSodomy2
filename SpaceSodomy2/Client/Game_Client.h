@@ -21,8 +21,8 @@ private:
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
-	std::string left_module_name = "default";
-	std::string right_module_name = "default";
+	std::string left_module_name = "BLINK";
+	std::string right_module_name = "INVISIBILITY";
 	int my_id = 0;
 	int engine_active = 0;
 	int aim_conf = 1;
