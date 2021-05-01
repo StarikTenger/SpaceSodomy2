@@ -69,6 +69,8 @@ public:
 	// Set methods
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
+	void set_left_module_name(std::string val);
+	void set_right_module_name(std::string val);
 
 	void set_draw(Draw* _draw);
 	void set_audio(Audio* _audio);

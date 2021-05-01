@@ -27,8 +27,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	int hp, stamina, stamina_recovery;
 	float mass, radius;
 	std::string name, next;
-	while (next != "HULL")
-		config >> next;
+	config >> next;
 	while (next == "HULL") {
 		config >> name >> next;
 		name_to_id[name + "-hull"] = current_id;
@@ -134,8 +133,44 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	}
 }
 
-void init_modules_menu(std::string pose, std::string name, Menu* modules) {
+void Menu_Processing::init_module(std::string name, Menu* module, b2Vec2 add_pos) {
+	module->add_button(++current_id, name + "-module", b2Vec2(-150, 150) + add_pos, 7, b2Vec2(200, 200), sf::Color::White, mouse_pos, 0);
+	module->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300) + add_pos, 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	menus.push_back(module);
+}
 
+void Menu_Processing::init_modules_menu(b2Vec2 pos, std::string path_to_modules_description) {
+	int cur_but_id = 0;
+	std::ifstream file_to_comment(path_to_modules_description);
+	std::stringstream config = aux::comment(file_to_comment);
+	while (!config.eof()) {
+		std::string name, next;
+		config >> next;
+		while (next == "MODULE") {
+			config >> name >> next;
+			name_to_id[name + "-module"] = current_id;
+			modules_menu.add_button(current_id++, name + "-module", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+			modules_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			cur_but_id++;
+			while (next != "END") {
+				config >> next;
+			}
+			modules[name + "1"].set_draw(draw);
+			modules[name + "1"].set_active(0);
+			modules[name + "1"].set_events(&events);
+			name_to_id[name + "1"] = current_id + 1;
+			init_module(name, &modules[name + "1"], {-210, 0});
+			modules[name + "2"].set_draw(draw);
+			modules[name + "2"].set_active(0);
+			modules[name + "2"].set_events(&events);
+			name_to_id[name + "2"] = current_id + 1;
+			init_module(name, &modules[name + "2"], { 0, 0 });
+			config >> next;
+		}
+	}
 }
 
 void Menu_Processing::close_settings_menus() {
@@ -145,10 +180,14 @@ void Menu_Processing::close_settings_menus() {
 	gun_menu.set_active(0);
 	hull_menu.set_active(0);
 	HUD_menu.set_active(0);
+	modules_menu.set_active(0);
 	for (auto it = guns.begin(); it != guns.end(); it++)
 		guns[it->first].set_active(0);
 	for (auto it = hulls.begin(); it != hulls.end(); it++)
 		hulls[it->first].set_active(0);
+	for (auto it = modules.begin(); it != modules.end(); it++) {
+		modules[it->first].set_active(0);
+	}
 }
 
 void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
@@ -546,6 +585,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	network = network_;
 	replay = replay_;
 	reload = reload_;
+	*reload = 1;
 	load_sound("sound_settings.conf");
 	load_HUD_settings("HUD_settings.conf");
 	// set main menu fields
@@ -652,9 +692,8 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	modules_menu.set_active(0);
 	modules_menu.set_events(&events);
 	init_menu("menu_configs/modules.conf", &modules_menu);
-	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
-	text_fields[name_to_id["ReplayPath"]]->set_text("example.ex");
-	menus.push_back(&replay_setup_menu);
+	init_modules_menu(b2Vec2(300, 100), "parameters.conf");
+	menus.push_back(&modules_menu);
 }
 
 void Menu_Processing::step() {
@@ -792,6 +831,11 @@ void Menu_Processing::step() {
 			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
+		if (name_to_id["Modules"] == events.front()) {
+			events.push(name_to_id[game->get_left_module_name() + "-module"]);
+			events.push(name_to_id[game->get_right_module_name() + "-module"]);
+			events.push(name_to_id["Apply"]);
+		}
 		if (name_to_id["PlayReplay"] == events.front()) {
 			shader_active = 0;
 			replay_setup_menu.set_active(0);
@@ -816,6 +860,27 @@ void Menu_Processing::step() {
 				hulls[game->get_hull_name()].set_active(1);
 				events.push(name_to_id["Apply"]);
 			}
+		}
+		for (auto it = modules.begin(); it != modules.end(); it++) {
+			std::string cur_name = it->first.substr(0, it->first.size() - 1);
+			if (name_to_id[cur_name + "-module"] == events.front()) {
+				if (module_num == 1)
+					game->set_left_module_name(cur_name);
+				else
+					game->set_right_module_name(cur_name);
+				close_settings_menus();
+				modules_menu.set_active(1);
+				modules[game->get_left_module_name() + "1"].set_active(1);
+				modules[game->get_right_module_name() + "2"].set_active(1);
+				events.push(name_to_id["Apply"]);
+			}
+			if (name_to_id[cur_name + "1"] == events.front()) {
+				module_num = 1;
+			}
+			if (name_to_id[cur_name + "2"] == events.front()) {
+				module_num = 2;
+			}
+			it++;
 		}
 		if (name_to_id["ApplySetup"] == events.front()) {
 			//set_current_gun("setup.conf", cur_gun);
