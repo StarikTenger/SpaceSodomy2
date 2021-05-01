@@ -9,7 +9,7 @@ private:
 	Bar HP_bar, stamina_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn,
 		ping, ping_text, fps, fps_text;
-	Menu_Object bonus;
+	Menu_Object bonus, left_module, right_module;
 
 	int table_use_windows_cords;
 	b2Vec2 table_pos;
@@ -33,6 +33,8 @@ private:
 	float HP_bar_val;
 	float stamina_bar_val;
 	std::queue<int>* frame_marks;
+
+	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);
 public:
 	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
 		Client_Network* player_network_, std::queue<int>* frame_marks_);

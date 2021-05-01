@@ -1,6 +1,16 @@
 #include "pch.h"
 #include "Modules.h"
 
+std::map<int, std::string> Module::names = {
+				{Type::HP_UP, "HP_UP"},
+				{Type::SHOTGUN, "SHOTGUN"},
+				{Type::IMMORTALITY, "IMMORTALITY"},
+				{Type::INVISIBILITY, "INVISIBILITY"},
+				{Type::DASH, "DASH"},
+				{Type::FORCE, "FORCE"},
+				{Type::BLINK, "BLINK"},
+				{Type::COUNT, "COUNT"}
+};
 
 Module::Type Module::get_named_type(std::string name) {
 	if (name == "default") {

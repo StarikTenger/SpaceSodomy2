@@ -32,6 +32,7 @@ protected:
     std::map<std::string, float> params;
     Game_Objects environment;
 public:
+    static std::map<int, std::string> names;
     static Type get_named_type(std::string name);
     Type get_type();
     float get_param(std::string);

@@ -26,7 +26,6 @@ private:
 	int use_window_cords = 0;
 	bool cur_pos_activated = 0;
 
-	b2Vec2 window_cords_pos();
 	b2Vec2 mid;
 
 	double screen_mode = 1;
@@ -37,6 +36,7 @@ public:
 
 	// Get methods
 	int get_id();
+	b2Vec2 window_cords_pos();
 	std::string get_texture_name();
 	Draw* get_draw();
 	b2Vec2 get_pos();
