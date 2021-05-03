@@ -164,7 +164,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Stamina
 	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
 	stamina->set_max(hull_prototype.stamina);
-	stamina->set_delay(hull_prototype.stamina_pause); // TODO
+	stamina->set_delay(hull_prototype.stamina_pause); 
 	ship->set_stamina(stamina);
 
 	// Engine
@@ -446,7 +446,7 @@ void Game::process_ships() {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
 				if (wall->get_type() == Wall::SPIKED && 
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
-					ship->get_damage_receiver()->damage(40, ship->get_damage_receiver()->get_last_hit());
+					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 				}
 			}
@@ -718,7 +718,7 @@ bool Game::load_map(std::string path) {
 			std::vector<b2Vec2> points;
 			int orientation = Wall::OUTER;
 			int type = Wall::STANDART;
-			float restitution = 0.5;
+			float restitution = params[""];
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;
@@ -877,6 +877,17 @@ bool Game::load_parameters(std::string path) {
 			}
 			return _effects;
 		};
+		if (symbol == "PARAMETERS") {
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				float temp;
+				input >> temp;
+				std::cout << "Parameter " << symbol << " set to " << temp << " in PARAMETERS \n";
+				params[symbol] = temp;
+			}
+			continue;
+		}
 		if (symbol == "EFFECT_TYPES") {
 			while (input >> symbol) {
 				if (symbol == "END")

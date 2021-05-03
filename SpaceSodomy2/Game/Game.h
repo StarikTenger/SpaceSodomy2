@@ -48,7 +48,6 @@ protected:
 	std::set<Sound*> sounds;
 	std::set<Effects*> effects;
 	std::set<Bonus*> bonuses;
-	//std::set<Bonus_Slot*> bonus_slots
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -68,6 +67,8 @@ protected:
 	std::map<std::string, Hull_Prototype> hulls;
 	// Stores effect Algebraic types and strengths
 	Effects_Prototype effect_params;
+	// Misc
+	std::map<std::string, float> params;
 	// Contact table (stores pairs which are in contact)
 	Contact_Table contact_table;
 

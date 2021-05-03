@@ -139,6 +139,7 @@ void Force_Module::activate() {
 	std::set<Damage_Receiver*>& receivers = *environment.get_damage_receivers();
 	for (auto receiver : receivers) {
 		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < params["radius"]) {
+			receiver->damage(0, player);
 			receiver->get_body()->ApplyLinearImpulseToCenter(
 				- params["vel"] * receiver->get_body()->GetMass() * (body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })), 1);
 			body->ApplyLinearImpulseToCenter(
