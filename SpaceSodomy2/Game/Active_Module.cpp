@@ -9,9 +9,8 @@ void Active_Module::set(b2Body* _body, Player* _player) {
 	player = _player;
 }
 
-float Active_Module::get_recharge_time()
-{
-	return 0.0f;
+float Active_Module::get_recharge_time() {
+	return recharge_time;
 }
 
 b2Body* Active_Module::get_body()

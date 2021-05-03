@@ -137,6 +137,19 @@ void Draw::clear() {
 	window->clear();
 }
 
+void Draw::fill_polygon(std::vector<b2Vec2> vertices, sf::Color color) {
+	sf::ConvexShape convex;
+
+	convex.setPointCount(vertices.size());
+	convex.setFillColor(color);
+
+	for (int i = 0; i < vertices.size(); i++) {
+		convex.setPoint(i, aux::to_Vector2f(vertices[i]));
+	}
+
+	window->draw(convex);
+}
+
 void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle) {
 	sf::RectangleShape rectangle;
 	rectangle.setOrigin(box.x / 2, box.y / 2);

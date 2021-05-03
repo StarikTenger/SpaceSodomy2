@@ -20,6 +20,58 @@ std::string HUD_Processing::get_respawn_button_name(std::string path) {
 	}
 }
 
+std::vector<b2Vec2> HUD_Processing::get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale) {
+	std::vector<b2Vec2> ans;
+	if (cur_pos < b2_epsilon)
+		return ans;
+	ans.push_back(center);
+	center -= b2Vec2(0, scale.y / 2.0);
+	ans.push_back(center);
+	if (cur_pos < 0.125) {
+		center += b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
+		ans.push_back(center);
+		return ans;
+	}
+	else {
+		center += b2Vec2(scale.x / 2.0, 0);
+		cur_pos -= 0.125;
+		ans.push_back(center);
+	}
+	if (cur_pos < 0.25) {
+		center += b2Vec2(0, scale.y * (cur_pos / 0.25));
+		ans.push_back(center);
+		return ans;
+	}
+	else {
+		center += b2Vec2(0, scale.y);
+		cur_pos -= 0.25;
+		ans.push_back(center);
+	}
+	if (cur_pos < 0.25) {
+		center -= b2Vec2(scale.x * (cur_pos / 0.25), 0);
+		ans.push_back(center);
+		return ans;
+	}
+	else {
+		center -= b2Vec2(scale.x, 0);
+		cur_pos -= 0.25;
+		ans.push_back(center);
+	}
+	if (cur_pos < 0.25) {
+		center -= b2Vec2(0, scale.y * (cur_pos / 0.25));
+		ans.push_back(center);
+		return ans;
+	}
+	else {
+		center -= b2Vec2(0, scale.y);
+		cur_pos -= 0.25;
+		ans.push_back(center);
+	}
+	center += b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
+	ans.push_back(center);
+	return ans;
+}
+
 void HUD_Processing::table_step() {
 	std::vector<Player> rating_table;
 	std::map <int, sf::Color> colors;
@@ -173,6 +225,27 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	else
 		bonus.set_texture_name("bonusEmpty");
 
+	left_module.set_draw(draw);
+	left_module.set_use_window_cords(5);
+	left_module.set_use_picture_scale(0);
+	left_module.set_scale({ 150, 150 });
+	left_module.set_color(sf::Color::White);
+	left_module.set_pos({-310, -310});
+	if (game->get_ship(player_network->get_id()) != nullptr)
+		left_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_left_module()->get_type()] + "-module");
+	else
+		left_module.set_texture_name("HP_UP-module");
+
+	right_module.set_draw(draw);
+	right_module.set_use_window_cords(5);
+	right_module.set_use_picture_scale(0);
+	right_module.set_scale({ 150, 150 });
+	right_module.set_color(sf::Color::White);
+	right_module.set_pos({ -100, -310 });
+	if (game->get_ship(player_network->get_id()) != nullptr)
+		right_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_right_module()->get_type()] + "-module");
+	else
+		right_module.set_texture_name("HP_UP-module");
 
 	HP_bar.set_value(HP_bar_val);
 	HP_bar.set_max_value(HP_bar_max_val);
@@ -187,6 +260,8 @@ void HUD_Processing::step() {
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
 		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
+		left_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_left_module()->get_type()] + "-module");
+		right_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_right_module()->get_type()] + "-module");
 	}
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {
@@ -217,6 +292,18 @@ void HUD_Processing::step() {
 		HP_bar.step();
 		stamina_bar.step();
 		bonus.primitive_step();
+		left_module.primitive_step();
+		right_module.primitive_step();
+		if (game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() > b2_epsilon) {
+			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /
+				game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get_max(),
+				left_module.window_cords_pos(), left_module.get_screen_mode() * left_module.get_scale()), sf::Color(0, 0, 0, 150));
+		}
+		if (game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() > b2_epsilon) {
+			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() /
+				game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get_max(),
+				right_module.window_cords_pos(), right_module.get_screen_mode() * right_module.get_scale()), sf::Color(0, 0, 0, 150));
+		}
 	}
 	table_step();
 	draw->draw_animations(Game_Client::HUD);
