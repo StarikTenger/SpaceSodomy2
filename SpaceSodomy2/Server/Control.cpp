@@ -61,14 +61,16 @@ void Control::receive() {
 	message >> hull_name;
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
-	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
+	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]) || id_by_token[token_by_id[id_]] != id_)) {
 		addresses.insert(IP_address_);
 		IP_by_id[id_] = IP_address_;
 		id_by_IP[IP_address_] = id_;
+		id_by_token[token] = id_;
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_player(id_, new_color, name_, gun_name, hull_name);
+		if (game.player_by_id(id_) == nullptr)
+			game.new_player(id_, new_color, name_, gun_name, hull_name);
 	}
 	// Applying commands
 	if (token_by_id[id_] == token) {
