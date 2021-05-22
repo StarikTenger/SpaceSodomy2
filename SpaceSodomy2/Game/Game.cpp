@@ -718,7 +718,7 @@ bool Game::load_map(std::string path) {
 			std::vector<b2Vec2> points;
 			int orientation = Wall::OUTER;
 			int type = Wall::STANDART;
-			float restitution = params[""];
+			float restitution = params["wall_restitution"];
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;

@@ -19,12 +19,15 @@ void Control::load_config(std::string path) {
 			std::string name;
 			file >> name;
 			game.load_map(name);	
+			std::cout << "MAP loaded\n";
+
 		}
 
 		if (command == "PARAMETERS") {
 			std::string name;
 			file >> name;
 			game.load_parameters(name);
+			std::cout << "PARAMETERS loaded\n";
 		}
 	}
 }
