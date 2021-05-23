@@ -10,12 +10,12 @@ class Damage_Receiver;
 
 class Game_Objects {
 private:
-    b2World* physics;
-    std::set<Ship*>* ships;
-    std::set<Projectile*>* projectiles;
-    std::set<Bonus*>* bonuses;
-    std::set<Wall*>* walls;
-    std::set<Damage_Receiver*>* damage_receivers;
+    b2World* physics = nullptr;
+    std::set<Ship*>* ships = nullptr;
+    std::set<Projectile*>* projectiles = nullptr;
+    std::set<Bonus*>* bonuses = nullptr;
+    std::set<Wall*>* walls = nullptr;
+    std::set<Damage_Receiver*>* damage_receivers = nullptr;
 
 public:
     void set_physics(b2World*);

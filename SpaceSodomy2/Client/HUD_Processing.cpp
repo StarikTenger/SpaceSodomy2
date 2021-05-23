@@ -232,9 +232,9 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	left_module.set_color(sf::Color::White);
 	left_module.set_pos({-310, -310});
 	if (game->get_ship(player_network->get_id()) != nullptr)
-		left_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_left_module()->get_type()] + "-module");
+		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
 	else
-		left_module.set_texture_name("HP_UP-module");
+		left_module.set_texture_name("NONE-module");
 
 	right_module.set_draw(draw);
 	right_module.set_use_window_cords(5);
@@ -243,9 +243,9 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	right_module.set_color(sf::Color::White);
 	right_module.set_pos({ -100, -310 });
 	if (game->get_ship(player_network->get_id()) != nullptr)
-		right_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_right_module()->get_type()] + "-module");
+		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
 	else
-		right_module.set_texture_name("HP_UP-module");
+		right_module.set_texture_name("NONE-module");
 
 	HP_bar.set_value(HP_bar_val);
 	HP_bar.set_max_value(HP_bar_max_val);
@@ -260,8 +260,8 @@ void HUD_Processing::step() {
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
 		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
-		left_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_left_module()->get_type()] + "-module");
-		right_module.set_texture_name(Module::names[game->get_ship(player_network->get_id())->get_right_module()->get_type()] + "-module");
+		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
+		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
 	}
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {

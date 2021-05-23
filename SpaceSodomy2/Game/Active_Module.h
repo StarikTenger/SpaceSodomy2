@@ -9,8 +9,8 @@
 
 class Active_Module : public iId {
 protected:
-	float recharge_time = 0.5;
-	float stamina_cost = 10;
+	float recharge_time = 10;
+	float stamina_cost = 20;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player
@@ -32,6 +32,7 @@ protected:
 
 public:
 	Active_Module();
+	virtual ~Active_Module() = default;
 	void set(b2Body*, Player*);
 
 	// Get methods

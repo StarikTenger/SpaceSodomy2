@@ -13,23 +13,25 @@ Module_Prototype* Module_Manager::get_prototype(Module::Type type) {
     return &module_prototypes[type];
 }
 
-Module* Module_Manager::new_module(Module::Type type) {
-    switch (type) {
+Module* Module_Manager::new_module(Module_Prototype* base) {
+    switch (base->type) {
     case (Module::HP_UP):
-        return new HpUp_Module;
+        return new HpUp_Module(base);
     case (Module::SHOTGUN):
-        return new Shotgun_Module;
+        return new Shotgun_Module(base);
     case (Module::IMMORTALITY):
-        return new Immortality_Module;
+        return new Immortality_Module(base);
     case (Module::INVISIBILITY):
-        return new Invisibility_Module;
+        return new Invisibility_Module(base);
     case (Module::DASH):
-        return new Dash_Module;
+        return new Dash_Module(base);
     case (Module::FORCE):
-        return new Force_Module;
+        return new Force_Module(base);
     case (Module::BLINK):
-        return new Blink_Module;
+        return new Blink_Module(base);
+    case(Module::NONE):
+        return new None_Module(base);
     }
     std::cout << "new_module: unknown module type\n";
-    return new Shotgun_Module;
+    return new None_Module((base));
 }

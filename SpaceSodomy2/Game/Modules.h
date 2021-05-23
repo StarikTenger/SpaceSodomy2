@@ -3,6 +3,7 @@
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
 #include <map>
+#include <unordered_map>
 #include "Game_Objects.h"
 #include "Damage_Receiver.h"
 #include "Wall.h"
@@ -24,23 +25,28 @@ public:
         DASH,
         FORCE,
         BLINK,
+        NONE,
         COUNT
     };
 protected:
-    Type type = COUNT;
-    Projectile_Manager* projectile_manager;
+    Type type = NONE;
+    Projectile_Manager* projectile_manager = nullptr;
     std::map<std::string, float> params;
     Game_Objects environment;
-public:
     static std::map<int, std::string> names;
-    static Type get_named_type(std::string name);
+    static std::map<std::string, Module::Type> named_types;
+public:
+    Module() = default;
+    Module(Module_Prototype* base);
+    virtual ~Module() = default;
+    static std::string get_name_by_type(int);
+    static Type get_type_by_name(std::string name);
     Type get_type();
     float get_param(std::string);
     void set_param(std::string, float);
     void set_type(Type);
     void set_projectile_manager(Projectile_Manager*);
     Projectile_Manager* get_projectile_manager();
-    void import_module_prototype(Module_Prototype*);
     void set_game_objects(Game_Objects);
 };
 
@@ -52,40 +58,67 @@ struct Module_Prototype {
     //float energy_cost;
     float recharge_time;
     std::map<std::string, float> params;
-    Module::Type type = Module::SHOTGUN;
+    Module::Type type = Module::NONE;
+};
+
+class None_Module : public Module {
+public:
+    None_Module(Module_Prototype*);
+    void activate() override;
 };
 
 class HpUp_Module : public Module {
 public:
+    HpUp_Module(Module_Prototype*);
+    float heal;
     void activate() override;
 };
 
 class Shotgun_Module : public Module {
 public:
+    Shotgun_Module(Module_Prototype*);
+    int bullet_num;
+    float velocity;
+    float spread;
+    float damage;
+    float radius;
+    float mass;
+    float bullet_hp;
     void activate() override;
 };
 
 class Immortality_Module : public Module {
 public:
+    Immortality_Module(Module_Prototype*);
+    float duration;
     void activate() override;
 };
 
 class Invisibility_Module : public Module {
 public:
+    Invisibility_Module(Module_Prototype*);
+    float duration;
     void activate() override;
 };
 
 class Dash_Module : public Module {
 public:
+    Dash_Module(Module_Prototype*);
+    float vel;
     void activate() override;
 };
 
 class Force_Module : public Module {
 public:
+    Force_Module(Module_Prototype*);
+    float radius;
+    float vel;
     void activate() override;
 };
 
 class Blink_Module : public Module {
 public:
+    Blink_Module(Module_Prototype*);
+    float distance;
     void activate() override;
 };

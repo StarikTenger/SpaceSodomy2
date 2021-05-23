@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "Modules.h"
 
+Module::Module(Module_Prototype* base) {
+	type = base->type;
+	stamina_cost = base->stamina_cost;
+	recharge_time = base->recharge_time;
+	effects_prototype = &base->effects_prototype;
+}
 std::map<int, std::string> Module::names = {
 				{Type::HP_UP, "HP_UP"},
 				{Type::SHOTGUN, "SHOTGUN"},
@@ -9,36 +15,35 @@ std::map<int, std::string> Module::names = {
 				{Type::DASH, "DASH"},
 				{Type::FORCE, "FORCE"},
 				{Type::BLINK, "BLINK"},
-				{Type::COUNT, "COUNT"}
+				{Type::NONE, "NONE"}
 };
 
-Module::Type Module::get_named_type(std::string name) {
-	if (name == "default") {
-		return SHOTGUN;
+std::map<std::string, Module::Type> Module::named_types = {
+				{"HP_UP", Type::HP_UP},
+				{"SHOTGUN", Type::SHOTGUN},
+				{"IMMORTALITY", Type::IMMORTALITY},
+				{"INVISIBILITY", Type::INVISIBILITY},
+				{"DASH", Type::DASH},
+				{"FORCE", Type::FORCE},
+				{"BLINK", Type::BLINK},
+				{"NONE", Type::NONE}
+};
+
+std::string Module::get_name_by_type(int val) {
+	if (val >= COUNT) {
+		std::cout << "Module::get_name_by_type() error: module #" << val << " not found";
+		return "NONE";
 	}
-	if (name == "HP_UP") {
-		return HP_UP;
+	return names[val];
+}
+
+
+Module::Type Module::get_type_by_name(std::string name) {
+	if (!named_types.count(name)) {
+		std::cout << "Module::get_type_by_name() error: module named " << name << " not found";
+		return Module::NONE;
 	}
-	if (name == "SHOTGUN") {
-		return SHOTGUN;
-	}
-	if (name == "IMMORTALITY") {
-		return IMMORTALITY;
-	}
-	if (name == "INVISIBILITY") {
-		return INVISIBILITY;
-	}
-	if (name == "DASH") {
-		return DASH;
-	}
-	if (name == "BLINK") {
-		return BLINK;
-	}
-	if (name == "FORCE") {
-		return FORCE;
-	}
-	std::cout << "unknown module name";
-	return SHOTGUN;
+	return named_types[name];
 }
 Module::Type Module::get_type() {
     return type;
@@ -66,12 +71,14 @@ void Module::set_game_objects(Game_Objects val) {
 }
 
 
-void Module::import_module_prototype(Module_Prototype* base) {
-	type = base->type;
-	params = base->params;
-	stamina_cost = base->stamina_cost;
-	recharge_time = base->recharge_time;
-	effects_prototype = &base->effects_prototype;
+None_Module::None_Module(Module_Prototype* base) : Module(base)  {
+}
+
+void None_Module::activate() {
+}
+
+HpUp_Module::HpUp_Module(Module_Prototype* base) : Module(base) {
+	heal = base->params["heal"];
 }
 
 void HpUp_Module::activate() {
@@ -79,27 +86,35 @@ void HpUp_Module::activate() {
 	effects->update(Effects::INSTANT_HP, params["heal"]);
 }
 
-
+Shotgun_Module::Shotgun_Module(Module_Prototype* base) : Module(base) {
+	bullet_num = base->params["bullet_num"];
+	velocity = base->params["velocity"];
+	spread = base->params["spread"];
+	damage = base->params["damage"];
+	radius = base->params["radius"];
+	mass = base->params["mass"];
+	bullet_hp = base->params["bullet_hp"];
+}
 
 void Shotgun_Module::activate() {
 	activate_default_side_effects();
 	Projectile_Def projectile_def;
-	float num = params["bullet_num"];
+	float num = bullet_num;
 	//std::cout << num;
 	b2Vec2 impulse = {0,0};
 	for (float i =  -(num / 2) + 0.5; i <= num / 2 - b2_epsilon; i++) {		
-		float vel_val = params["velocity"];
+		float vel_val = velocity;
 
 		projectile_def.pos = body->GetPosition();
 		projectile_def.vel = body->GetLinearVelocity();
-		projectile_def.angle = body->GetAngle() + params["spread"] * (i);
+		projectile_def.angle = body->GetAngle() + spread * (i);
 		b2Vec2 delta_vel = vel_val * aux::angle_to_vec(projectile_def.angle);
 		projectile_def.vel += delta_vel;
 		projectile_def.player = player;
-		projectile_def.damage = params["damage"];
-		projectile_def.radius = params["radius"];
-		projectile_def.mass = params["mass"];
-		projectile_def.hp = params["bullet_hp"];
+		projectile_def.damage = damage;
+		projectile_def.radius = radius;
+		projectile_def.mass = mass;
+		projectile_def.hp = bullet_hp;
 		projectile_def.effects_prototype = nullptr;
 		// Recoil
 		impulse += -projectile_def.mass * delta_vel;
@@ -108,36 +123,56 @@ void Shotgun_Module::activate() {
 	body->ApplyLinearImpulseToCenter(impulse, 1);
 }
 
+Immortality_Module::Immortality_Module(Module_Prototype* base) : Module(base) {
+	duration = base->params["duration"];
+}
+
 void Immortality_Module::activate() {
 	activate_default_side_effects();
-	effects->update(Effects::IMMORTALITY, params["duration"]);
+	effects->update(Effects::IMMORTALITY, duration);
 }
+
+Invisibility_Module::Invisibility_Module(Module_Prototype* base) : Module(base) {
+	duration = base->params["duration"];
+}
+
 void Invisibility_Module::activate() {
 	activate_default_side_effects();
-	effects->update(Effects::INVISIBILITY, params["duration"]);
+	effects->update(Effects::INVISIBILITY, duration);
+}
+
+Dash_Module::Dash_Module(Module_Prototype* base) : Module(base) {
+	vel = base->params["vel"];
 }
 
 void Dash_Module::activate() {
 	activate_default_side_effects();
-	body->ApplyLinearImpulseToCenter(params["impulse"] * aux::angle_to_vec(body->GetAngle()), 1);
+	body->ApplyLinearImpulseToCenter(vel * body->GetMass() * aux::angle_to_vec(body->GetAngle()), 1);
+}
+
+Force_Module::Force_Module(Module_Prototype* base) : Module(base) {
+	radius = base->params["radius"];
+	vel = base->params["vel"];
 }
 
 void Force_Module::activate() {
 	activate_default_side_effects();
 	std::set<Damage_Receiver*>& receivers = *environment.get_damage_receivers();
 	for (auto receiver : receivers) {
-		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < params["radius"]) {
+		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < radius) {
 			receiver->damage(0, player);
-			receiver->get_body()->ApplyLinearImpulseToCenter(
-				- params["vel"] * receiver->get_body()->GetMass() * (body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })), 1);
-			body->ApplyLinearImpulseToCenter(
-				params["vel"] * receiver->get_body()->GetMass() * (body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })), 1);
+			b2Vec2 impulse = vel * std::min(receiver->get_body()->GetMass(), body->GetMass()) * (receiver->get_body()->GetWorldPoint({ 0,0 }) - body->GetWorldPoint({ 0,0 }));
+			receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
+			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}
 	}
 }
+Blink_Module::Blink_Module(Module_Prototype* base) : Module(base) {
+	distance = base->params["distance"];
+}
 void Blink_Module::activate() {
 	std::set<Wall*>* walls = environment.get_walls();
-	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + params["distance"] * aux::angle_to_vec(body->GetAngle());
+	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + distance * aux::angle_to_vec(body->GetAngle());
 	for (auto wall = walls->begin(); wall != walls->end(); wall++) {
 		Wall* wall_ = *wall;
 		if (wall_->get_type() == Wall::SPIKED || wall_->get_type() == Wall::STANDART) {

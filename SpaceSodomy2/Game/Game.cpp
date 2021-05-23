@@ -204,8 +204,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_gun(gun);
 
 	// Modules
-	auto left = create_module(module_manager.get_prototype(Module::get_named_type(player->get_left_module_name())));
-	auto right = create_module(module_manager.get_prototype(Module::get_named_type(player->get_right_module_name())));
+	auto left = create_module(module_manager.get_prototype(Module::get_type_by_name(player->get_left_module_name())));
+	auto right = create_module(module_manager.get_prototype(Module::get_type_by_name(player->get_right_module_name())));
 	left->set(body, player);
 	right->set(body, player);
 	left->set_effects(effs);
@@ -302,14 +302,13 @@ Bonus_Slot* Game::create_bonus_slot() {
 }
 
 Module* Game::create_module(Module_Prototype* base) {
-	auto module = module_manager.new_module(base->type);
+	auto module = module_manager.new_module(base);
 	active_modules.insert(module);
 	auto counter = create_counter();
 	counter->set_change_vel(-1);
 	module->set_recharge_counter(counter);
 	module->set_projectile_manager(&projectile_manager);
 	module->set_event_manager(&event_manager);
-	module->import_module_prototype(base);
 	module->set_game_objects(game_objects);
 	id_manager.set_id(module);
 	return module;
@@ -954,7 +953,7 @@ bool Game::load_parameters(std::string path) {
 				std::cerr << "Game::load_parameters: failed to read MODULE name\n";
 				return false;
 			}
-			prototype.type = Module::get_named_type(name);
+			prototype.type = Module::get_type_by_name(name);
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
