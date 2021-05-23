@@ -12,7 +12,6 @@ public:
     Bonus_Slot();
     Bonus::Types get_current_bonus();
     void activate() override;
-    void activate_side_effects() override;
     void set_bonus_manager(Bonus_Manager*);
     void set_current_bonus(int val);
     void add_bonus(Bonus::Types type);

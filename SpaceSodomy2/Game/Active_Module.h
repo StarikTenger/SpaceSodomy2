@@ -57,7 +57,6 @@ public:
 	// Activates module
 	virtual void activate() = 0;
 	// Side effects of activation
-	virtual void activate_side_effects() = 0;
 	void activate_default_side_effects();
 	// Func to call regularly
 	void step(float dt);

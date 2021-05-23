@@ -18,7 +18,6 @@ public:
 	void set_projectile_manager(Projectile_Manager*);
 	void import_Gun_Prototype(Gun_Prototype);
 	void activate() override;
-	void activate_side_effects() override;
 };
 
 struct Gun_Prototype {

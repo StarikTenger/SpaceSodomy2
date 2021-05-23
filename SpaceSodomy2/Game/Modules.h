@@ -58,41 +58,34 @@ struct Module_Prototype {
 class HpUp_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Shotgun_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Immortality_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Invisibility_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Dash_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Force_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };
 
 class Blink_Module : public Module {
 public:
     void activate() override;
-    void activate_side_effects() override;
 };

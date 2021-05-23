@@ -22,19 +22,18 @@ Bonus::Types Bonus_Slot::get_current_bonus() {
     return current_bonus;
 }
 void Bonus_Slot::activate() {
-    activate_side_effects();
+    if (current_bonus == Bonus::LASER) {
+        event_manager->create_event(Event_Def("laser", get_body()));
+    }
+    activate_default_side_effects();
+
     if (current_bonus >= Bonus::COUNT) {
         return;
     }
     effects->update(&(bonus_manager->get_prototype(current_bonus)->effects_prototype));
     current_bonus = Bonus::COUNT;
 }
-void Bonus_Slot::activate_side_effects() {
-    if (current_bonus == Bonus::LASER) {
-        event_manager->create_event(Event_Def("laser", get_body()));
-    }
-    activate_default_side_effects();
-}
+
 void Bonus_Slot::set_bonus_manager(Bonus_Manager* val) {
     bonus_manager = val;
 }

@@ -75,16 +75,14 @@ void Module::import_module_prototype(Module_Prototype* base) {
 }
 
 void HpUp_Module::activate() {
-	activate_side_effects();
+	activate_default_side_effects();
 	effects->update(Effects::INSTANT_HP, params["heal"]);
 }
-void HpUp_Module::activate_side_effects() {
-	activate_default_side_effects();
-}
+
 
 
 void Shotgun_Module::activate() {
-    activate_side_effects(); 
+	activate_default_side_effects();
 	Projectile_Def projectile_def;
 	float num = params["bullet_num"];
 	//std::cout << num;
@@ -109,33 +107,23 @@ void Shotgun_Module::activate() {
 	}
 	body->ApplyLinearImpulseToCenter(impulse, 1);
 }
-void Shotgun_Module::activate_side_effects() {
-    activate_default_side_effects();
-}
+
 void Immortality_Module::activate() {
-    activate_side_effects();
+	activate_default_side_effects();
 	effects->update(Effects::IMMORTALITY, params["duration"]);
 }
-void Immortality_Module::activate_side_effects() {
-    activate_default_side_effects();
-}
 void Invisibility_Module::activate() {
-    activate_side_effects();
+	activate_default_side_effects();
 	effects->update(Effects::INVISIBILITY, params["duration"]);
 }
-void Invisibility_Module::activate_side_effects() {
-    activate_default_side_effects();
-}
+
 void Dash_Module::activate() {
-    activate_side_effects();
+	activate_default_side_effects();
 	body->ApplyLinearImpulseToCenter(params["impulse"] * aux::angle_to_vec(body->GetAngle()), 1);
-}
-void Dash_Module::activate_side_effects() {
-    activate_default_side_effects();
 }
 
 void Force_Module::activate() {
-	activate_side_effects();
+	activate_default_side_effects();
 	std::set<Damage_Receiver*>& receivers = *environment.get_damage_receivers();
 	for (auto receiver : receivers) {
 		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < params["radius"]) {
@@ -147,10 +135,6 @@ void Force_Module::activate() {
 		}
 	}
 }
-void Force_Module::activate_side_effects() {
-	activate_default_side_effects();
-}
-
 void Blink_Module::activate() {
 	std::set<Wall*>* walls = environment.get_walls();
 	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + params["distance"] * aux::angle_to_vec(body->GetAngle());
@@ -162,10 +146,6 @@ void Blink_Module::activate() {
 			}
 		}
 	}
-	activate_side_effects();
-	body->SetTransform(newpos, body->GetAngle());
-}
-
-void Blink_Module::activate_side_effects() {
 	activate_default_side_effects();
+	body->SetTransform(newpos, body->GetAngle());
 }
