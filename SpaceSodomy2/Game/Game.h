@@ -21,6 +21,7 @@
 #include "Module_Manager.h"
 #include "Game_Objects.h"
 
+
 class Game {
 protected:
 	bool auto_damage = 0;
@@ -48,6 +49,8 @@ protected:
 	std::set<Sound*> sounds;
 	std::set<Effects*> effects;
 	std::set<Bonus*> bonuses;
+	std::set<Rocket*> rockets;
+	std::set<Rocket_Brain*> rocket_brains;
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -59,6 +62,7 @@ protected:
 	Id_Manager id_manager;
 	Bonus_Manager bonus_manager;
 	Module_Manager module_manager;
+	Rocket_Manager rocket_manager;
 	
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -91,6 +95,8 @@ protected:
 	Bonus*           create_bonus(Bonus_Def);
 	Bonus_Slot*      create_bonus_slot();
 	Module*          create_module(Module_Prototype*);
+	Rocket*          create_rocket(Rocket_Def);
+	Rocket_Brain*    create_rocket_brain(Rocket_Prototype*);
 
 	// Delete functions
 	void delete_body(b2Body*);
@@ -103,6 +109,8 @@ protected:
 	void delete_sound(Sound*);
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
+	void delete_rocket(Rocket*);
+	void delete_rocket_brain(Rocket_Brain*);
 
 	 // Processing functions
 	void process_players();
@@ -118,6 +126,9 @@ protected:
 	void process_effects();
 	void process_bonuses();
 	void process_bonus_manager();
+	void process_rockets();
+	void process_rocket_brains();
+	void process_rocket_manager();
 	//void process_bonus_slot      //nothing to process for now
 
 	// Misc

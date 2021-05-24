@@ -34,6 +34,7 @@ Game::Game() {
 	game_objects.set_damage_receivers(&damage_receivers);
 	game_objects.set_projectiles(&projectiles);
 	game_objects.set_walls(&walls);
+	game_objects.set_ships(&ships);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -308,12 +309,60 @@ Module* Game::create_module(Module_Prototype* base) {
 	counter->set_change_vel(-1);
 	module->set_recharge_counter(counter);
 	module->set_projectile_manager(&projectile_manager);
+	module->set_rocket_manager(&rocket_manager);
 	module->set_event_manager(&event_manager);
 	module->set_game_objects(game_objects);
 	id_manager.set_id(module);
 	return module;
 }
 
+Rocket* Game::create_rocket(Rocket_Def def) {
+	auto rocket = new Rocket;
+	id_manager.set_id(rocket);
+	rockets.insert(rocket);
+	// Body
+	rocket->set_player(def.player);
+	auto body = create_round_body(def.pos, def.angle, def.base.radius, def.base.mass);
+	body->SetLinearVelocity(def.vel);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE, def.player->get_id());
+	rocket->set_body(body);
+
+	// Hp
+	auto hp = create_counter(def.base.hp);
+	hp->set_max(def.base.hp);
+	rocket->set_hp(hp);
+
+	// Stamina
+	auto stamina = create_counter(def.base.stamina, def.base.stamina_recovery);
+	stamina->set_max(def.base.stamina);
+	stamina->set_delay(0);
+	rocket->set_stamina(stamina);
+
+	auto brain = create_rocket_brain(&def.base);
+	brain->set_game_objects(game_objects);
+	brain->set_rocket(rocket);
+
+	// Command module
+	auto command_module = new Command_Module;
+
+	// Engine
+	auto engine = create_engine(body, command_module, stamina);
+	engine->set_force_angular(0);
+	engine->set_force_linear(def.base.force_linear);
+	rocket->set_engine(engine);
+	brain->set_command_module(command_module);
+
+	// Damage receiver
+	auto damage_receiver = create_damage_receiver(body, hp, def.player);
+	rocket->set_damage_receiver(damage_receiver);
+
+	return rocket;
+}
+Rocket_Brain* Game::create_rocket_brain(Rocket_Prototype* base) {
+	auto brain = new Rocket_Brain(base->range, base->bin_search_accuracy);
+	rocket_brains.insert(brain);
+	return brain;
+}
 
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
@@ -383,6 +432,22 @@ void Game::delete_bonus(Bonus* bonus) {
 	bonus_manager.free_bonus_spawn(bonus->get_type(), bonus->get_id());
 	delete bonus;
 }
+
+void Game::delete_rocket(Rocket* rocket) {
+	rockets.erase(rocket);
+	delete_rocket_brain(rocket->get_rocket_brain());
+	delete_body(rocket->get_body());
+	delete_engine(rocket->get_engine());
+	delete_damage_receiver(rocket->get_damage_receiver());
+	delete_counter(rocket->get_hp());
+	delete_counter(rocket->get_stamina());
+	delete rocket;
+}
+void Game::delete_rocket_brain(Rocket_Brain* brain) {
+	rocket_brains.erase(brain);
+	delete brain;
+}
+
 
 void Game::process_players() {
 	// Creating ships
@@ -584,6 +649,60 @@ void Game::process_effects() {
 	}
 }
 
+void Game::process_rockets() {
+	std::vector<Rocket*> rockets_to_delete;
+	for (auto rocket : rockets) {
+		for (auto wall : walls) {
+			if (contact_table.check(rocket->get_body(), wall->get_body()))
+				rockets_to_delete.push_back(rocket);
+		}
+		// Checking for ship collision
+		for (auto ship : ships) {
+			if (rocket->get_player()->get_id() != ship->get_player()->get_id() &&
+				contact_table.check(rocket->get_body(), ship->get_body()))
+				rockets_to_delete.push_back(rocket);
+		}
+		// Checking hp
+		if (rocket->get_hp()->get() <= 0) {
+			rockets_to_delete.push_back(rocket);
+		}
+	}
+	for (auto rocket : rockets_to_delete) {
+		for (auto receiver : damage_receivers) {
+			if ((rocket->get_body()->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < rocket->get_blast_radius()) {
+				if (rocket->get_player() != receiver->get_player()) {
+					receiver->damage(rocket->get_damage(), rocket->get_player());
+				} else {
+					receiver->damage(rocket->get_damage(), receiver->get_player());
+				}
+				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
+				unit.Normalize();
+				b2Vec2 impulse = rocket->get_blast_force() * unit;
+				receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
+				rocket->get_body()->ApplyLinearImpulseToCenter(-impulse, 1);
+			}
+		}
+	}
+	for (auto rocket : rockets_to_delete) {
+		delete_rocket(rocket);
+	}
+}
+
+void Game::process_rocket_brains() {
+	for (auto brain : rocket_brains) {
+		brain->step(dt);
+	}
+}
+
+void Game::process_rocket_manager() {
+	Rocket_Def* def;
+	while (rocket_manager.get_next(def)) {
+		create_rocket(*def);
+		delete def;
+	}
+}
+
+
 b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 	b2Vec2 closest_intersection;
 	float closest_distance = 1e9;
@@ -646,6 +765,9 @@ void Game::step(float _dt) {
 	process_bonuses();
 	process_bonus_manager();
 	process_active_modules();
+	process_rocket_brains();
+	process_rockets();
+	process_rocket_manager();
 }
 
 void Game::set_dt(float _dt) {
@@ -693,6 +815,14 @@ void Game::clear() {
 		delete effect;
 	}
 	effects = {};
+	for (auto rocket : rockets) {
+		delete rocket;
+	}
+	rockets = {};
+	for (auto rocket_brain : rocket_brains) {
+		delete rocket_brain;
+	}
+	rocket_brains = {};
 
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
@@ -1090,7 +1220,7 @@ std::string Game::encode() {
 		// Radius
 		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
-		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
+		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active_for_ship()) + " ";
 		// Effects
 		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
 		// Bonus slot

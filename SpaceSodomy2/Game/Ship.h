@@ -9,6 +9,8 @@
 #include "iId.h"
 #include "Modules.h"
 
+class Module;
+
 class Ship : public iId{
 private:
 	// Entities

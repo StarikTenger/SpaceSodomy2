@@ -183,6 +183,9 @@
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
+    <ClInclude Include="Rocket.h" />
+    <ClInclude Include="Rocket_Brain.h" />
+    <ClInclude Include="Rocket_Manager.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Event_Manager.h" />
@@ -217,6 +220,9 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Projectile_Def.cpp" />
     <ClCompile Include="Projectile_Manager.cpp" />
+    <ClCompile Include="Rocket.cpp" />
+    <ClCompile Include="Rocket_Brain.cpp" />
+    <ClCompile Include="Rocket_Manager.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Event_Manager.cpp" />

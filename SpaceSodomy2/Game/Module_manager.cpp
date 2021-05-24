@@ -31,6 +31,8 @@ Module* Module_Manager::new_module(Module_Prototype* base) {
         return new Blink_Module(base);
     case(Module::NONE):
         return new None_Module(base);
+    case (Module::ROCKET):
+        return new Rocket_Module(base);
     }
     std::cout << "new_module: unknown module type\n";
     return new None_Module((base));

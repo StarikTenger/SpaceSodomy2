@@ -7,13 +7,10 @@
 #include "Game_Objects.h"
 #include "Damage_Receiver.h"
 #include "Wall.h"
+#include "Rocket_Manager.h"
+#include "Rocket_Brain.h"
 
 struct Module_Prototype;
-
-class Shotgun_Module;
-class Immortality_Module;
-class Invisibility_Module;
-class Dash_Module;
 
 class Module : public Active_Module {
 public:
@@ -26,11 +23,13 @@ public:
         FORCE,
         BLINK,
         NONE,
+        ROCKET,
         COUNT
     };
 protected:
     Type type = NONE;
     Projectile_Manager* projectile_manager = nullptr;
+    Rocket_Manager* rocket_manager = nullptr;
     std::map<std::string, float> params;
     Game_Objects environment;
     static std::map<int, std::string> names;
@@ -48,6 +47,8 @@ public:
     void set_projectile_manager(Projectile_Manager*);
     Projectile_Manager* get_projectile_manager();
     void set_game_objects(Game_Objects);
+    Rocket_Manager* get_rocket_manager();
+    void set_rocket_manager(Rocket_Manager*);
 };
 
 struct Module_Prototype {
@@ -120,5 +121,22 @@ class Blink_Module : public Module {
 public:
     Blink_Module(Module_Prototype*);
     float distance;
+    void activate() override;
+};
+
+class Rocket_Module : public Module {
+public:
+    Rocket_Module(Module_Prototype*);
+    float force_linear;
+    float hp;
+    float stamina;
+    float stamina_recovery;
+    float range;
+    float bin_search_accuracy;
+    float radius;
+    float mass;
+    float blast_radius;
+    float damage;
+    float blast_force;
     void activate() override;
 };

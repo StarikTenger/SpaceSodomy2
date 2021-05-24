@@ -15,7 +15,8 @@ std::map<int, std::string> Module::names = {
 				{Type::DASH, "DASH"},
 				{Type::FORCE, "FORCE"},
 				{Type::BLINK, "BLINK"},
-				{Type::NONE, "NONE"}
+				{Type::NONE, "NONE"},
+	            {Type::ROCKET, "ROCKET"}
 };
 
 std::map<std::string, Module::Type> Module::named_types = {
@@ -26,7 +27,9 @@ std::map<std::string, Module::Type> Module::named_types = {
 				{"DASH", Type::DASH},
 				{"FORCE", Type::FORCE},
 				{"BLINK", Type::BLINK},
-				{"NONE", Type::NONE}
+				{"NONE", Type::NONE},
+				{"ROCKET", Type::ROCKET},
+				{"default", Type::NONE}
 };
 
 std::string Module::get_name_by_type(int val) {
@@ -70,6 +73,13 @@ void Module::set_game_objects(Game_Objects val) {
 	environment = val;
 }
 
+Rocket_Manager* Module::get_rocket_manager() {
+	return rocket_manager;
+}
+void Module::set_rocket_manager(Rocket_Manager* val) {
+	rocket_manager = val;
+	std::cout << "set\n";
+}
 
 None_Module::None_Module(Module_Prototype* base) : Module(base)  {
 }
@@ -161,7 +171,9 @@ void Force_Module::activate() {
 	for (auto receiver : receivers) {
 		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < radius) {
 			receiver->damage(0, player);
-			b2Vec2 impulse = vel * std::min(receiver->get_body()->GetMass(), body->GetMass()) * (receiver->get_body()->GetWorldPoint({ 0,0 }) - body->GetWorldPoint({ 0,0 }));
+			b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - body->GetWorldPoint({ 0,0 }));
+			unit.Normalize();
+			b2Vec2 impulse = vel * std::min(receiver->get_body()->GetMass(), body->GetMass()) * unit;
 			receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
 			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}
@@ -183,4 +195,40 @@ void Blink_Module::activate() {
 	}
 	activate_default_side_effects();
 	body->SetTransform(newpos, body->GetAngle());
+}
+
+Rocket_Module::Rocket_Module(Module_Prototype* base) : Module(base) {
+	force_linear = base->params["force_linear"];
+	hp = base->params["hp"];
+	stamina = base->params["stamina"];
+	stamina_recovery = base->params["stamina_recovery"];
+	range = base->params["range"];
+	bin_search_accuracy = base->params["bin_search_accuracy"];
+	radius = base->params["radius"];
+	mass = base->params["mass"];
+	blast_radius = base->params["blast_radius"];
+	damage = base->params["damage"];
+	blast_force = base->params["blast_force"];
+}
+void Rocket_Module::activate() {
+	std::cout << rocket_manager << '\n';
+	activate_default_side_effects();
+	Rocket_Def* def_ = new Rocket_Def;
+	Rocket_Def& def = *def_;
+	def.base.force_linear = force_linear;
+	def.base.hp = hp;
+	def.base.stamina = stamina;
+	def.base.stamina_recovery = stamina_recovery;
+	def.base.range = range;
+	def.base.bin_search_accuracy = bin_search_accuracy;
+	def.base.radius = radius;
+	def.base.mass = mass;
+	def.base.blast_radius = blast_radius;
+	def.base.damage = damage;
+	def.base.blast_force = blast_force;
+	def.player = player;
+	def.angle = body->GetAngle();
+	def.pos = body->GetWorldPoint({ 0,0 });
+	def.vel = body->GetLinearVelocity();
+	rocket_manager->create_rocket(def_);
 }

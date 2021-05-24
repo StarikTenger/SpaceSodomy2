@@ -37,6 +37,12 @@
     <Filter Include="Source Files\interfaces">
       <UniqueIdentifier>{d7ee7678-f84b-40bc-b541-acceaae0c676}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Brains">
+      <UniqueIdentifier>{fc4d0eb9-883c-47b7-9ce4-6084758d24b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Brains">
+      <UniqueIdentifier>{71f89775-b076-4d1f-a197-419e867e061f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -129,6 +135,15 @@
     <ClInclude Include="Game_Objects.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Rocket.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Rocket_Brain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="Rocket_Manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -210,6 +225,15 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Game_Objects.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Rocket.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Rocket_Brain.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="Rocket_Manager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
