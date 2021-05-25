@@ -10,8 +10,8 @@ float Rocket_Brain::homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel)
 }
 
 float Rocket_Brain::calculate_dir(b2Body* body) {
-    auto target_pos = body->GetWorldPoint({ 0,0 });
-    auto target_vel = body->GetLinearVelocity();
+    auto target_pos = body->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 });
+    auto target_vel = body->GetLinearVelocity() - rocket->get_body()->GetLinearVelocity();
     float accel = rocket->get_engine()->get_force_linear() / rocket->get_body()->GetMass();
 
     float timeLow = 0.f;
@@ -31,7 +31,7 @@ float Rocket_Brain::calculate_dir(b2Body* body) {
 }
 
 bool Rocket_Brain::is_in_range(b2Vec2 target) {
-    return (target - rocket->get_body()->GetWorldPoint({ 0,0 })).LengthSquared() > range * range;
+    return (target - rocket->get_body()->GetWorldPoint({ 0,0 })).LengthSquared() < range * range;
 }
 
 void Rocket_Brain::set_rocket(Rocket* val) {
@@ -43,9 +43,11 @@ void Rocket_Brain::set_game_objects(Game_Objects val) {
 void Rocket_Brain::step(float dt) {
     std::set<Ship*>& ships = *environment.get_ships();
     command_module->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+
     for (auto ship : ships) {
         if (ship->get_player()->get_id() == rocket->get_player()->get_id() && is_in_range(ship->get_body()->GetWorldPoint({0,0}))) {
-            command_module->set_command(Command_Module::ROCKET_ANGLE, calculate_dir(ship->get_body()));
+            command_module->set_command(Command_Module::ROCKET_ANGLE, 1);
+            command_module->set_rocket_angle(calculate_dir(ship->get_body()));
             break;
         }
     }

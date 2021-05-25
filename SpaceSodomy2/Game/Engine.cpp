@@ -71,8 +71,8 @@ void Engine::step(float _dt) {
 	}
 	is_linear_force_used = 0;
 	// Command processing
-	if (command_module->get_command(Command_Module::ROCKET_ANGLE)) {
-		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_command(Command_Module::ROCKET_ANGLE));
+	if ((command_module->get_command(Command_Module::ROCKET_ANGLE)) ) {
+		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
 	}
 	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
 		stabilize_rotation();

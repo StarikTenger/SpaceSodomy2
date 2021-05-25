@@ -325,7 +325,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	rocket->set_damage(def.base.damage);
 	// Body
 	rocket->set_player(def.player);
-	auto body = create_round_body(def.pos, def.angle, def.base.radius, def.base.mass);
+	auto body = create_round_body(def.pos + b2Vec2{0,0}, def.angle, def.base.radius, def.base.mass);
 	body->SetLinearVelocity(def.vel);
 	collision_filter.add_body(body, Collision_Filter::PROJECTILE, def.player->get_id());
 	rocket->set_body(body);
@@ -1225,7 +1225,7 @@ std::string Game::encode() {
 		// Radius
 		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 		// Commands
-		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active_for_ship()) + " ";
+		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Effects
 		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
 		// Bonus slot

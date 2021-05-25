@@ -1,13 +1,12 @@
 #pragma once
 #include <vector>
-#include <map>
 #include "iId.h"
 
 class Command_Module : public iId {
 private:
-	std::map<int, float> commands;
-	static std::vector<int> ship_commands;
-	static std::vector<int> rocket_commands;
+	std::vector<int> active = std::vector<int>(COMMAND_COUNT, 0); // Shows which commands are active
+	float rocket_angle = 0;
+
 public:
 	enum Command_Names {
 		// Engines
@@ -31,13 +30,14 @@ public:
 	Command_Module();
 
 	// Get methods
-	std::vector<int> get_active_for_ship();
-	float get_command(int id);
+	std::vector<int> get_active();
+	int get_command(int id);
 
 	// Set methods
 	void set_command(int id, int value);
 
 	// Resets all commands to 0
 	void reset();
+	void set_rocket_angle(float);
+	float get_rocket_angle();
 };
-
