@@ -14,8 +14,8 @@ private:
 	std::string name = "_";
 	std::string gun_name = "default";
 	std::string hull_name = "default";
-	std::string left_module_name = "default";
-	std::string right_module_name = "default";
+	std::string left_module_name = "NONE";
+	std::string right_module_name = "NONE";
 	Command_Module* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
 	int ping = 0;

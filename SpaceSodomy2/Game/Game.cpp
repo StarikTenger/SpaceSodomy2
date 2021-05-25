@@ -566,6 +566,7 @@ void Game::process_projectiles() {
 	// Dealing damage
 	for (auto projectile : projectiles) {
 		// Dealing damage & applying effects
+		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
@@ -575,14 +576,28 @@ void Game::process_projectiles() {
 		}
 		// Checking for wall collision
 		for (auto wall : walls) {
-			if (contact_table.check(projectile->get_body(), wall->get_body()))
+			if (contact_table.check(projectile->get_body(), wall->get_body())) {
 				projectiles_to_delete.insert(projectile);
+				do_break = true;
+				break;
+			}
+
+		}
+		if (do_break) {
+			continue;
 		}
 		// Checking for ship collision
 		for (auto ship : ships) {
 			if (projectile->get_player()->get_id() != ship->get_player()->get_id() &&
-				contact_table.check(projectile->get_body(), ship->get_body()))
+				contact_table.check(projectile->get_body(), ship->get_body())) {
 				projectiles_to_delete.insert(projectile);
+				do_break = true;
+				break;
+			}
+
+		}
+		if (do_break) {
+			continue;
 		}
 		// Checking hp
 		if (projectile->get_hp()->get() <= 0) {
@@ -657,15 +672,27 @@ void Game::process_effects() {
 void Game::process_rockets() {
 	std::vector<Rocket*> rockets_to_delete;
 	for (auto rocket : rockets) {
+		bool do_break = false;
 		for (auto wall : walls) {
-			if (contact_table.check(rocket->get_body(), wall->get_body()))
+			if (contact_table.check(rocket->get_body(), wall->get_body())) {
 				rockets_to_delete.push_back(rocket);
+				do_break = true;
+				break;
+			}
+		} 
+		if (do_break) {
+			continue;
 		}
 		// Checking for ship collision
 		for (auto ship : ships) {
 			if (rocket->get_player()->get_id() != ship->get_player()->get_id() &&
-				contact_table.check(rocket->get_body(), ship->get_body()))
+				contact_table.check(rocket->get_body(), ship->get_body())) {
 				rockets_to_delete.push_back(rocket);
+				do_break = true;
+			}
+		}
+		if (do_break) {
+			continue;
 		}
 		// Checking hp
 		if (rocket->get_hp()->get() <= 0) {

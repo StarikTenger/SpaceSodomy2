@@ -139,7 +139,7 @@ void Game_Client::display(int id) {
 
 		// HP_bar & name
 		if (ship->get_player()->get_id() != id) {
-			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
+			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
 				// hp
 				{
 					auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());

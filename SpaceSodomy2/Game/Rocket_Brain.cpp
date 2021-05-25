@@ -45,7 +45,7 @@ void Rocket_Brain::step(float dt) {
     command_module->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
-        if (ship->get_player()->get_id() == rocket->get_player()->get_id() && is_in_range(ship->get_body()->GetWorldPoint({0,0}))) {
+        if (ship->get_player()->get_id() != rocket->get_player()->get_id() && is_in_range(ship->get_body()->GetWorldPoint({0,0}))) {
             command_module->set_command(Command_Module::ROCKET_ANGLE, 1);
             command_module->set_rocket_angle(calculate_dir(ship->get_body()));
             break;
