@@ -42,6 +42,7 @@ void Rocket_Brain::set_game_objects(Game_Objects val) {
 }
 void Rocket_Brain::step(float dt) {
     std::set<Ship*>& ships = *environment.get_ships();
+    command_module->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
     for (auto ship : ships) {
         if (ship->get_player()->get_id() == rocket->get_player()->get_id() && is_in_range(ship->get_body()->GetWorldPoint({0,0}))) {
             command_module->set_command(Command_Module::ROCKET_ANGLE, calculate_dir(ship->get_body()));
@@ -55,4 +56,8 @@ void Rocket_Brain::set_command_module(Command_Module* val) {
 Rocket_Brain::Rocket_Brain(float range_, int bin_search_accuracy_) {
     range = range_;
     bin_search_accuracy = bin_search_accuracy_;
+}
+
+Command_Module* Rocket_Brain::get_command_module() {
+    return command_module;
 }

@@ -152,8 +152,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_body(body);
 
 	// Command module
-	auto command_module = new Command_Module();
-	player->set_command_module(command_module);
+	auto command_module = player->get_command_module();
 
 	
 
@@ -320,6 +319,10 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	auto rocket = new Rocket;
 	id_manager.set_id(rocket);
 	rockets.insert(rocket);
+	// Params
+	rocket->set_blast_force(def.base.blast_force);
+	rocket->set_blast_radius(def.base.blast_radius);
+	rocket->set_damage(def.base.damage);
 	// Body
 	rocket->set_player(def.player);
 	auto body = create_round_body(def.pos, def.angle, def.base.radius, def.base.mass);
@@ -341,6 +344,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	auto brain = create_rocket_brain(&def.base);
 	brain->set_game_objects(game_objects);
 	brain->set_rocket(rocket);
+	rocket->set_rocket_brain(brain);
 
 	// Command module
 	auto command_module = new Command_Module;
@@ -445,6 +449,7 @@ void Game::delete_rocket(Rocket* rocket) {
 }
 void Game::delete_rocket_brain(Rocket_Brain* brain) {
 	rocket_brains.erase(brain);
+	delete brain->get_command_module();
 	delete brain;
 }
 
@@ -677,7 +682,7 @@ void Game::process_rockets() {
 				}
 				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
 				unit.Normalize();
-				b2Vec2 impulse = rocket->get_blast_force() * unit;
+				b2Vec2 impulse = rocket->get_blast_force() * receiver->get_body()->GetMass() * unit;
 				receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
 				rocket->get_body()->ApplyLinearImpulseToCenter(-impulse, 1);
 			}
@@ -1245,6 +1250,20 @@ std::string Game::encode() {
 
 	// Projectiles (p)
 	for (auto projectile : projectiles) {
+		message += "p ";
+		// Id
+		message += std::to_string(projectile->get_id()) + " ";
+		// Player id
+		message += std::to_string(projectile->get_player()->get_id()) + " ";
+		// Pos
+		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
+		// Angle
+		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
+		// Radius
+		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+	}
+	for (auto projectile : rockets) {
 		message += "p ";
 		// Id
 		message += std::to_string(projectile->get_id()) + " ";
