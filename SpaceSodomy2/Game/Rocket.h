@@ -58,17 +58,17 @@ public:
 };
 
 struct Rocket_Prototype {
-	float force_linear;
-	float hp;
-	float stamina;
-	float stamina_recovery;
-	float range;
-	float bin_search_accuracy;
-	float radius;
-	float mass;
-	float blast_radius;
-	float damage;
-	float blast_force;
+	float force_linear = 1;
+	float hp = 20;
+	float stamina = 1000;
+	float stamina_recovery = 0;
+	float range = 5;
+	float bin_search_accuracy = 10;
+	float radius = 0.2;
+	float mass = 1;
+	float blast_radius = 2;
+	float damage = 20;
+	float blast_force = 20;
 };
 
 struct Rocket_Def {
