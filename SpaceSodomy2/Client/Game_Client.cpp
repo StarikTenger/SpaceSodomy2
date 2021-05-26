@@ -265,7 +265,8 @@ void Game_Client::display(int id) {
 				);
 		}
 		// Immortality
-		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0) {
+		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0 && 
+			ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
 			draw->fadeout_animation("ship_aura_" + ship->get_player()->get_hull_name(),
 				ship->get_body()->GetPosition(), // Position
 				{ 0, radius / 16 }, // Shift

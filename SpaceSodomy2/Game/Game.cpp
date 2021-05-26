@@ -709,9 +709,8 @@ void Game::process_rockets() {
 				}
 				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
 				unit.Normalize();
-				b2Vec2 impulse = rocket->get_blast_force() * receiver->get_body()->GetMass() * unit;
+				b2Vec2 impulse = rocket->get_blast_force() * (std::min(receiver->get_body()->GetMass(), 1.f)) * unit;
 				receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
-				rocket->get_body()->ApplyLinearImpulseToCenter(-impulse, 1);
 			}
 		}
 	}

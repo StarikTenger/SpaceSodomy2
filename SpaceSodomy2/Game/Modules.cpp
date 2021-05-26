@@ -173,7 +173,7 @@ void Force_Module::activate() {
 			receiver->damage(0, player);
 			b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - body->GetWorldPoint({ 0,0 }));
 			unit.Normalize();
-			b2Vec2 impulse = vel * std::min(receiver->get_body()->GetMass(), body->GetMass()) * unit;
+			b2Vec2 impulse = vel * (std::min( std::min(receiver->get_body()->GetMass(), body->GetMass()), 1.f)) * unit;
 			receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
 			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}
