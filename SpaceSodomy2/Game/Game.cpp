@@ -167,6 +167,11 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	stamina->set_delay(hull_prototype.stamina_pause); 
 	ship->set_stamina(stamina);
 
+	// Energy
+	auto energy = create_counter(hull_prototype.start_energy, hull_prototype.energy_regen);
+	energy->set_max(hull_prototype.energy);
+	ship->set_energy(energy);
+
 	// Engine
 	auto engine = create_engine(body, command_module, stamina, effs);
 	engine->set_force_angular(hull_prototype.force_angular);
@@ -184,8 +189,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	bonus_slot->set_effects(effs);
 	bonus_slot->set(body, player);
 	bonus_slot->set_stamina(stamina);
-
-
+	bonus_slot->set_energy(energy);
 
 	// Gun
 	Gun_Prototype gun_prototype;
@@ -201,6 +205,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	}
 	gun->set_effects(effs);
 	gun->set_stamina(stamina);
+	gun->set_energy(energy);
 	ship->set_gun(gun);
 
 	// Modules
@@ -211,7 +216,9 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	left->set_effects(effs);
 	right->set_effects(effs);
 	left->set_stamina(stamina);
+	left->set_energy(energy);
 	right->set_stamina(stamina);
+	right->set_energy(energy);
 	left->set_bind(Command_Module::LEFT_MODULE);
 	right->set_bind(Command_Module::RIGHT_MODULE);
 	ship->set_left_module(left);
@@ -399,6 +406,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_damage_receiver(ship->get_damage_receiver());
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
+	delete_counter(ship->get_energy());
 	delete_effects(ship->get_effects());
 	delete_active_module(ship->get_bonus_slot());
 	delete_active_module(ship->get_left_module());
@@ -483,10 +491,10 @@ void Game::process_ships() {
 			hp_eff->set(0);
 
 		}
-		// Apply INSTANT_STAMINA
-		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter();
+		// Apply INSTANT_ENERGY
+		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_ENERGY)->get_counter();
 		if (st_eff->get() > 0) {
-			ship->get_stamina()->modify(st_eff->get());
+			ship->get_energy()->modify(st_eff->get());
 			st_eff->set(0);
 		}
 
@@ -1126,7 +1134,6 @@ bool Game::load_parameters(std::string path) {
 					float val;
 					if (!(input >> val)) {
 						std::cerr << "Game::load_parameters: failed to read RECHARGE_TIME\n";
-						std::cout << "Game::load_parameters: failed to read RECHARGE_TIME\n";
 					}
 					prototype.recharge_time = val;
 				}
@@ -1134,9 +1141,15 @@ bool Game::load_parameters(std::string path) {
 					float val;
 					if (!(input >> val)) {
 						std::cerr << "Game::load_parameters: failed to read STAMINA_COST\n";
-						std::cout << "Game::load_parameters: failed to read STAMINA_COST\n";
 					}
 					prototype.stamina_cost = val;
+				}
+				else if (symbol == "ENERGY_COST") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read ENERGY_COST\n";
+					}
+					prototype.energy_cost = val;
 				}
 				else {
 					float temp;
@@ -1170,6 +1183,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
 				read_symbol("PROJECTILE_HP", guns[name].projectile_hp);
+				read_symbol("ENERGY_COST", guns[name].energy_cost);
 			}
 			continue;
 		}
@@ -1185,7 +1199,6 @@ bool Game::load_parameters(std::string path) {
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				
 				read_symbol("HP", hulls[name].hp);
 				read_symbol("MASS", hulls[name].mass);
 				read_symbol("RADIUS", hulls[name].radius);
@@ -1194,6 +1207,9 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
 				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
 				read_symbol("STAMINA_PAUSE", hulls[name].stamina_pause);
+				read_symbol("ENERGY", hulls[name].energy);
+				read_symbol("START_ENERGY", hulls[name].start_energy);
+				read_symbol("ENERGY_REGEN", hulls[name].energy_regen);
 			}
 			continue;
 		}
@@ -1272,6 +1288,9 @@ std::string Game::encode() {
 		// Stamina
 		message += std::to_string((int)ship->get_stamina()->get()) + " ";
 		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
+		// Energy
+		message += std::to_string((int)ship->get_energy()->get()) + " ";
+		message += std::to_string((int)ship->get_energy()->get_max()) + " ";
 	}
 
 	// Projectiles (p)
@@ -1289,19 +1308,19 @@ std::string Game::encode() {
 		// Radius
 		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
-	for (auto projectile : rockets) {
-		message += "p ";
+	for (auto rocket : rockets) {
+		message += "r ";
 		// Id
-		message += std::to_string(projectile->get_id()) + " ";
+		message += std::to_string(rocket->get_id()) + " ";
 		// Player id
-		message += std::to_string(projectile->get_player()->get_id()) + " ";
+		message += std::to_string(rocket->get_player()->get_id()) + " ";
 		// Pos
-		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
+		message += aux::float_to_string(rocket->get_body()->GetPosition().x, 2) + " ";
+		message += aux::float_to_string(rocket->get_body()->GetPosition().y, 2) + " ";
 		// Angle
-		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
+		message += aux::float_to_string(rocket->get_body()->GetAngle(), 3) + " ";
 		// Radius
-		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		message += aux::float_to_string(rocket->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 
 	// Bonuses (b)

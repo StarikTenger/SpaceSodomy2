@@ -4,6 +4,7 @@
 Module::Module(Module_Prototype* base) {
 	type = base->type;
 	stamina_cost = base->stamina_cost;
+	energy_cost = base->energy_cost;
 	recharge_time = base->recharge_time;
 	effects_prototype = &base->effects_prototype;
 }
@@ -34,7 +35,7 @@ std::map<std::string, Module::Type> Module::named_types = {
 
 std::string Module::get_name_by_type(int val) {
 	if (val >= COUNT) {
-		std::cout << "Module::get_name_by_type() error: module #" << val << " not found";
+		std::cout << "Module::get_name_by_type() error: module #" << val << " not found\n";
 		return "NONE";
 	}
 	return names[val];
@@ -43,7 +44,7 @@ std::string Module::get_name_by_type(int val) {
 
 Module::Type Module::get_type_by_name(std::string name) {
 	if (!named_types.count(name)) {
-		std::cout << "Module::get_type_by_name() error: module named " << name << " not found";
+		std::cout << "Module::get_type_by_name() error: module named " << name << " not found\n";
 		return Module::NONE;
 	}
 	return named_types[name];

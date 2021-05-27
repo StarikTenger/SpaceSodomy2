@@ -10,7 +10,7 @@ class Effects {
 public:
     enum Types {
         INSTANT_HP,
-        INSTANT_STAMINA,
+        INSTANT_ENERGY,
         LASER,
         WALL_BURN,
         CHARGE,

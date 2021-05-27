@@ -29,7 +29,9 @@ Counter* Ship::get_hp() {
 Counter* Ship::get_stamina() {
 	return stamina;
 }
-
+Counter* Ship::get_energy() {
+	return energy;
+}
 Damage_Receiver* Ship::get_damage_receiver() {
 	return damage_receiver;
 }
@@ -73,7 +75,9 @@ void Ship::set_hp(Counter* val) {
 void Ship::set_stamina(Counter* val) {
 	stamina = val;
 }
-
+void Ship::set_energy(Counter* val) {
+	energy = val;
+}
 void Ship::set_damage_receiver(Damage_Receiver* val) {
 	damage_receiver = val;
 }

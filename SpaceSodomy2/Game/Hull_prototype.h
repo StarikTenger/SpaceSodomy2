@@ -8,4 +8,7 @@ struct Hull_Prototype {
 	float force_linear = 1.5;
 	float force_angular = 2;
 	float stamina_pause = 0.7;
+	float energy = 100;
+	float energy_regen = 0;
+	float start_energy = 50;
 };

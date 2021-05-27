@@ -11,7 +11,7 @@ private:
 	std::map<int, std::string> bonus_textures = {
 		{Bonus::COUNT, "bonusEmpty"},
 		{Bonus::INSTANT_HP, "bonusHp"},
-		{Bonus::INSTANT_STAMINA, "bonusEnergy"},
+		{Bonus::INSTANT_ENERGY, "bonusEnergy"},
 		{Bonus::BERSERK, "bonusBerserk"},
 		{Bonus::IMMORTALITY, "bonusImmortal"},
 		{Bonus::CHARGE, "bonusCharge"},

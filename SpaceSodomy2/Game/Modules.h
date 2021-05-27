@@ -55,9 +55,9 @@ struct Module_Prototype {
     // Effects dindu nuffin as they are not needed for now: supposed to be used for effect-applying shotguns 
     // Bonus effects are hardcoded
     Effects_Prototype effects_prototype;       
-    float stamina_cost;
-    //float energy_cost;
-    float recharge_time;
+    float stamina_cost = 1000;
+    float energy_cost = 1000;
+    float recharge_time = 1000;
     std::map<std::string, float> params;
     Module::Type type = Module::NONE;
 };

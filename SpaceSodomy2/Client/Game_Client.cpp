@@ -130,7 +130,7 @@ void Game_Client::display(int id) {
 	for (auto ship : ships) {
 		float opacity = 1;
 		if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
-			opacity = 0.3;
+			opacity = 0.3;  // TODO: configs
 		}
 		if (!ship->get_body() ||
 			!ship->get_body()->GetFixtureList() ||
@@ -163,7 +163,7 @@ void Game_Client::display(int id) {
 				}
 			}
 		}
-		// Trace
+		// Show aim lines
 		else {
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
@@ -180,6 +180,7 @@ void Game_Client::display(int id) {
 				b2Distance(body_pos, intersection)) * dir;
 			intersection += body_pos;
 			auto color = ship->get_player()->get_color();
+			auto base_color = ship->get_player()->get_color();
 			color.a = aim_opacity * opacity;
 			if (aim_conf % 2 == 1)
 				draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
@@ -192,6 +193,7 @@ void Game_Client::display(int id) {
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
 		color.a *= opacity;
+		auto base_color = ship->get_player()->get_color();
 		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
 			draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius }, ship->get_body()->GetAngle());
 			draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius },
@@ -218,7 +220,7 @@ void Game_Client::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
-				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
+				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() == my_id)) {
 					draw->image(textures[i], ship->get_body()->GetPosition(),
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
 					// Animation
@@ -260,13 +262,13 @@ void Game_Client::display(int id) {
 				{0, radius / 4 }, // Shift
 				{radius * 2, 0}, // Size
 				{0, 0}, // Angle
-				{color, aux::make_transparent(color)}, // Color
+				{base_color, aux::make_transparent(base_color)}, // Color
 				0.4, GAME // Duration, layer
 				);
 		}
 		// Immortality
-		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0 && 
-			ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
+		if (ship->get_effects()->get_effect(Effects::IMMORTALITY)->get_counter()->get() > 0 && (
+			ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01 || ship->get_player()->get_id() == my_id)) {
 			draw->fadeout_animation("ship_aura_" + ship->get_player()->get_hull_name(),
 				ship->get_body()->GetPosition(), // Position
 				{ 0, radius / 16 }, // Shift
@@ -294,6 +296,18 @@ void Game_Client::display(int id) {
 				{ sf::Color::White, color }, // Color
 				0.15, GAME // Duration, layer
 			);
+		}
+		if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER) {
+			b2Vec2 dir = aux::direction(ship->get_body()->GetAngle());
+			b2Vec2 body_pos = ship->get_body()->GetPosition();
+			b2Vec2 intersection = get_beam_intersection(body_pos, aux::vec_to_angle(dir));
+			intersection = (b2Distance(body_pos, intersection)) * dir;
+			intersection += body_pos;
+			auto color = ship->get_player()->get_color();
+			auto base_color = ship->get_player()->get_color();
+			color.a = aim_opacity * opacity;
+			draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
+
 		}
 	}
 
@@ -464,6 +478,10 @@ void Game_Client::decode(std::string source) {
 			stream >> stamina;
 			float max_stamina;
 			stream >> max_stamina;
+			float energy;
+			stream >> energy;
+			float max_energy;
+			stream >> max_energy;
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->set_id(id);
@@ -471,8 +489,10 @@ void Game_Client::decode(std::string source) {
 			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;
 			ship->get_hp()->set(hp);
 			ship->get_stamina()->set(stamina);
+			ship->get_energy()->set(energy);
 			ship->get_hp()->set_max(max_hp);
 			ship->get_stamina()->set_max(max_stamina);
+			ship->get_energy()->set_max(max_energy);
 			ship->get_bonus_slot()->set_current_bonus(bonus);
 			ship->get_left_module()->set_type(static_cast<Module::Type>(left_module));
 			ship->get_left_module()->get_recharge_counter()->set(left_module_time);
@@ -495,6 +515,31 @@ void Game_Client::decode(std::string source) {
 		}
 		// Projectile
 		if (symbol == "p") {
+			// Ids
+			int id, player_id;
+			stream >> id >> player_id;
+			// Pos
+			b2Vec2 pos;
+			stream >> pos.x >> pos.y;
+			// Angle
+			float angle;
+			stream >> angle;
+			// Radius
+			float radius;
+			stream >> radius;
+			// Creating projectile_def
+			Projectile_Def projectile_def;
+			projectile_def.pos = pos;
+			projectile_def.radius = radius;
+			projectile_def.player = players[player_id];
+			// Createing projectile
+			auto projectile = create_projectile(projectile_def);
+			projectile->set_id(id);
+			if (destroyed_projectiles.count(id))
+				destroyed_projectiles.erase(destroyed_projectiles.find(id));
+		}
+		// Rockets
+		if (symbol == "r") {
 			// Ids
 			int id, player_id;
 			stream >> id >> player_id;

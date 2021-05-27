@@ -11,6 +11,7 @@ class Active_Module : public iId {
 protected:
 	float recharge_time = 10;
 	float stamina_cost = 20;
+	float energy_cost = 0;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player
@@ -24,6 +25,7 @@ protected:
 	Event_Manager* event_manager = nullptr;
 	// Stamina
 	Counter* stamina;
+	Counter* energy;
 	// Dispensable effects
 	Effects_Prototype* effects_prototype = nullptr;
 	// Effects affecting this
@@ -42,6 +44,7 @@ public:
 	Counter* get_stamina_cooldown_delay_counter();
 	Event_Manager* get_event_manager();
 	Counter* get_stamina();
+	Counter* get_energy();
 	Effects_Prototype* get_effects();
 
 	// Set methods
@@ -51,6 +54,7 @@ public:
 	void set_bind(int);
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);
+	void set_energy(Counter*);
 	void set_effects_prototype(Effects_Prototype*);
 	void set_effects(Effects*);
 

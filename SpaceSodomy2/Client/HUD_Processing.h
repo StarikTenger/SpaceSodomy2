@@ -6,7 +6,7 @@
 
 class HUD_Processing {
 private:
-	Bar HP_bar, stamina_bar;
+	Bar HP_bar, stamina_bar, energy_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn,
 		ping, ping_text, fps, fps_text;
 	Menu_Object bonus, left_module, right_module;
@@ -32,6 +32,8 @@ private:
 	int stamina_bar_max_val;
 	float HP_bar_val;
 	float stamina_bar_val;
+	int energy_bar_max_val;
+	float energy_bar_val;
 	std::queue<int>* frame_marks;
 
 	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);

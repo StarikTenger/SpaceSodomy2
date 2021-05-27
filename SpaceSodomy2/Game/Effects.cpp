@@ -149,8 +149,8 @@ Effects_Prototype::Effects_Prototype(Effects::Algebraic_Type type) {
 Effects::Types Effects::get_effect_type(std::string effect_name) {
     if (effect_name == "INSTANT_HP")
         return Effects::Types::INSTANT_HP;
-    if (effect_name == "INSTANT_STAMINA")
-        return Effects::Types::INSTANT_STAMINA;
+    if (effect_name == "INSTANT_ENERGY")
+        return Effects::Types::INSTANT_ENERGY;
     if (effect_name == "LASER")
         return Effects::Types::LASER;
     if (effect_name == "WALL_BURN")

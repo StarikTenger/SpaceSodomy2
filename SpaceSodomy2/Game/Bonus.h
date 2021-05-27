@@ -9,7 +9,7 @@ class Bonus : public iId {
 public:
     enum Types {
         INSTANT_HP,
-        INSTANT_STAMINA,
+        INSTANT_ENERGY,
         LASER,
         CHARGE,
         BERSERK,

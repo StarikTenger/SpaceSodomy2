@@ -156,11 +156,13 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	std::ifstream file_to_comment("HUD.conf");
 	std::stringstream config = aux::comment(file_to_comment);
 	stamina_bar.set_front_color(sf::Color::Yellow);
+	energy_bar.set_front_color(sf::Color::Cyan);
 	draw = draw_;
 	mouse_pos = mouse_pos_;
 	keyboard = keyboard_;
 	apply_bar(&HP_bar, &config);
 	apply_bar(&stamina_bar, &config);
+	apply_bar(&energy_bar, &config);
 	config >> table_use_windows_cords >> table_pos.x >> table_pos.y >> table_character_size >>
 		table_name_indent >> table_indent.x >> table_indent.y;
 
@@ -251,6 +253,8 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	HP_bar.set_max_value(HP_bar_max_val);
 	stamina_bar.set_value(stamina_bar_val);
 	stamina_bar.set_max_value(stamina_bar_max_val);
+	energy_bar.set_value(energy_bar_val);
+	energy_bar.set_max_value(energy_bar_max_val);
 }
 
 void HUD_Processing::step() {
@@ -259,6 +263,9 @@ void HUD_Processing::step() {
 		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());
 		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
 		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
+		energy_bar.set_value(game->get_ship(player_network->get_id())->get_energy()->get());
+		energy_bar.set_max_value(game->get_ship(player_network->get_id())->get_energy()->get_max());
+
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
 		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
 		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
@@ -291,6 +298,7 @@ void HUD_Processing::step() {
 		}
 		HP_bar.step();
 		stamina_bar.step();
+		energy_bar.step();
 		bonus.primitive_step();
 		left_module.primitive_step();
 		right_module.primitive_step();
