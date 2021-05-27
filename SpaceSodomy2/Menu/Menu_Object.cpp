@@ -142,7 +142,7 @@ void Menu_Object::primitive_step() {
 	if (!cur_pos_activated) {
 		cur_pos = window_cords_pos();
 	}
-	//std::cout << cur_pos.x << " " << cur_pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
+	std::cout << texture_name << " " << scale.x << " " << scale.y << "\n";
 	if (aux::rect_contains(cur_pos + mid, scale, *mouse_pos))
 		active = 1;
 	else

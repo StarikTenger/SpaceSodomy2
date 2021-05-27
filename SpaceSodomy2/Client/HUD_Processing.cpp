@@ -255,6 +255,14 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	stamina_bar.set_max_value(stamina_bar_max_val);
 	energy_bar.set_value(energy_bar_val);
 	energy_bar.set_max_value(energy_bar_max_val);
+
+	interface_image.set_texture_name("interface");
+	interface_image.set_color(sf::Color::White);
+	interface_image.set_draw(draw);
+	interface_image.set_use_window_cords(4);
+	interface_image.set_pos({ -10, -90 });
+	interface_image.set_use_picture_scale(0);
+	interface_image.set_scale({1200, 180});
 }
 
 void HUD_Processing::step() {
@@ -299,6 +307,7 @@ void HUD_Processing::step() {
 		HP_bar.step();
 		stamina_bar.step();
 		energy_bar.step();
+		interface_image.primitive_step();
 		bonus.primitive_step();
 		left_module.primitive_step();
 		right_module.primitive_step();
