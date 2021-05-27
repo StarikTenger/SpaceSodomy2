@@ -834,8 +834,12 @@ void Menu_Processing::step() {
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["Modules"] == events.front()) {
-			events.push(name_to_id[game->get_left_module_name() + "-module"]);
-			events.push(name_to_id[game->get_right_module_name() + "-module"]);
+			if (module_num == 1) {
+				events.push(name_to_id[game->get_left_module_name() + "-module"]);
+			}
+			else {
+				events.push(name_to_id[game->get_right_module_name() + "-module"]);
+			}
 			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["PlayReplay"] == events.front()) {
