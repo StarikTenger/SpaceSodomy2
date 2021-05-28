@@ -734,10 +734,9 @@ void Game::process_rocket_brains() {
 }
 
 void Game::process_rocket_manager() {
-	Rocket_Def* def;
+	Rocket_Def def;
 	while (rocket_manager.get_next(def)) {
-		create_rocket(*def);
-		delete def;
+		create_rocket(def);
 	}
 }
 

@@ -214,8 +214,7 @@ Rocket_Module::Rocket_Module(Module_Prototype* base) : Module(base) {
 void Rocket_Module::activate() {
 	std::cout << rocket_manager << '\n';
 	activate_default_side_effects();
-	Rocket_Def* def_ = new Rocket_Def;
-	Rocket_Def& def = *def_;
+	Rocket_Def def;
 	def.base.force_linear = force_linear;
 	def.base.hp = hp;
 	def.base.stamina = stamina;
@@ -231,5 +230,5 @@ void Rocket_Module::activate() {
 	def.angle = body->GetAngle();
 	def.pos = body->GetWorldPoint({ 0,0 });
 	def.vel = body->GetLinearVelocity();
-	rocket_manager->create_rocket(def_);
+	rocket_manager->create_rocket(def);
 }

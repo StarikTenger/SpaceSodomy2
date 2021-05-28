@@ -11,7 +11,6 @@
 #include "Id_Manager.h"
 #include "Collision_Filter.h"
 #include "Contact_Table.h"
-#include "Gun.h"
 #include "Hull_Prototype.h"
 #include "Bonus_Slot.h"
 #include "Bonus_Manager.h"
@@ -20,6 +19,7 @@
 #include <memory>
 #include "Module_Manager.h"
 #include "Game_Objects.h"
+#include "Rocket_Brain.h"
 
 
 class Game {

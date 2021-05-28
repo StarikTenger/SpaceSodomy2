@@ -1,13 +1,10 @@
 #pragma once
 #include "iId.h"
 #include <box2d/box2d.h>
-#include "Ship.h"
 #include "Engine.h"
 #include "Player.h"
-#include "Gun.h"
 #include "Counter.h"
 #include "Damage_Receiver.h"
-#include "Bonus_Slot.h"
 #include "iId.h"
 #include "Game_Objects.h"
 

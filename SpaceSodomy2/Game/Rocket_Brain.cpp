@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Rocket_Brain.h"
-
+#include "Ship.h"
 
 float Rocket_Brain::homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel) {
     return (b2Dot(pos, pos)) + 

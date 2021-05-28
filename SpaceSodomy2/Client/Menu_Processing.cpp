@@ -99,10 +99,10 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 		while (next == "GUN") {
 			config >> name >> next;
 			name_to_id[name + "-gun"] = current_id;
-			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
-			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
-				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(300 * (cur_but_id % 3), 300 * (cur_but_id / 3)),
+				1, { 200, 200 }, sf::Color::White, mouse_pos, 0);
+			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(300 * (cur_but_id % 3), 300 * (cur_but_id / 3) + 65),
+				1, 40, sf::Color::White, 0, mouse_pos, keyboard);
 			cur_but_id++;
 			while (next != "END") {
 				if (next == "DAMAGE") {
