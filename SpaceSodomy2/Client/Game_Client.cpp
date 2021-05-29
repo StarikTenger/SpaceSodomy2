@@ -192,7 +192,7 @@ void Game_Client::display(int id) {
 		// Hull
 		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
 		auto color = ship->get_player()->get_color();
-		color.a *= opacity;
+		color.a *= opacity;	
 		auto base_color = ship->get_player()->get_color();
 		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
 			draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius }, ship->get_body()->GetAngle());
@@ -220,7 +220,7 @@ void Game_Client::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
-				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() == my_id)) {
+				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)) {
 					draw->image(textures[i], ship->get_body()->GetPosition(),
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
 					// Animation
