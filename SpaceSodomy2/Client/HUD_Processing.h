@@ -9,7 +9,7 @@ private:
 	Bar HP_bar, stamina_bar, energy_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn,
 		ping, ping_text, fps, fps_text;
-	Menu_Object bonus, left_module, right_module, interface_image;
+	Menu_Object bonus, left_module, right_module, interface_image, gun_image;
 
 	int table_use_windows_cords;
 	b2Vec2 table_pos;

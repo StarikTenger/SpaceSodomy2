@@ -79,7 +79,7 @@ Rocket_Manager* Module::get_rocket_manager() {
 }
 void Module::set_rocket_manager(Rocket_Manager* val) {
 	rocket_manager = val;
-	std::cout << "set\n";
+	//std::cout << "set\n";
 }
 
 None_Module::None_Module(Module_Prototype* base) : Module(base)  {

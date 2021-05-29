@@ -217,33 +217,44 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	press_r_to_respawn.set_text_scale(0.5);
 
 	bonus.set_draw(draw);
-	bonus.set_use_window_cords(5);
+	bonus.set_use_window_cords(4);
 	bonus.set_use_picture_scale(0);
-	bonus.set_scale({ 150, 150 });
+	bonus.set_scale({ 100, 100 });
 	bonus.set_color(sf::Color::White);
-	bonus.set_pos({ -100, -100 });
+	bonus.set_pos({ -480, -105 });
 	if (game->get_ship(player_network->get_id()) != nullptr)
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
 	else
 		bonus.set_texture_name("bonusEmpty");
 
+	gun_image.set_draw(draw);
+	gun_image.set_use_window_cords(4);
+	gun_image.set_use_picture_scale(0);
+	gun_image.set_scale({ 100, 100 });
+	gun_image.set_color(sf::Color::White);
+	gun_image.set_pos({ -380, -105 });
+	if (game->get_ship(player_network->get_id()) != nullptr)
+		gun_image.set_texture_name(game->get_gun_name());
+	else
+		gun_image.set_texture_name("bonusEmpty");
+
 	left_module.set_draw(draw);
-	left_module.set_use_window_cords(5);
+	left_module.set_use_window_cords(4);
 	left_module.set_use_picture_scale(0);
-	left_module.set_scale({ 150, 150 });
+	left_module.set_scale({ 100, 100 });
 	left_module.set_color(sf::Color::White);
-	left_module.set_pos({-310, -310});
+	left_module.set_pos({ 380, -105});
 	if (game->get_ship(player_network->get_id()) != nullptr)
 		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
 	else
 		left_module.set_texture_name("NONE-module");
 
 	right_module.set_draw(draw);
-	right_module.set_use_window_cords(5);
+	right_module.set_use_window_cords(4);
 	right_module.set_use_picture_scale(0);
-	right_module.set_scale({ 150, 150 });
+	right_module.set_scale({ 100, 100 });
 	right_module.set_color(sf::Color::White);
-	right_module.set_pos({ -100, -310 });
+	right_module.set_pos({ 480, -105 });
 	if (game->get_ship(player_network->get_id()) != nullptr)
 		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
 	else
@@ -260,9 +271,9 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	interface_image.set_color(sf::Color::White);
 	interface_image.set_draw(draw);
 	interface_image.set_use_window_cords(4);
-	interface_image.set_pos({ -10, -90 });
+	interface_image.set_pos({ 0, -130 });
 	interface_image.set_use_picture_scale(0);
-	interface_image.set_scale({1200, 180});
+	interface_image.set_scale({1220, 305});
 }
 
 void HUD_Processing::step() {
@@ -277,6 +288,7 @@ void HUD_Processing::step() {
 		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
 		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
 		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
+		//gun_image.set_texture_name(game->get_ship(player_network->get_id())->get_gun()->get_id());
 	}
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {
@@ -311,6 +323,7 @@ void HUD_Processing::step() {
 		bonus.primitive_step();
 		left_module.primitive_step();
 		right_module.primitive_step();
+		gun_image.primitive_step();
 		if (game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() > b2_epsilon) {
 			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /
 				game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get_max(),
