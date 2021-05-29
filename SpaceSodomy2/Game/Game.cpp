@@ -1237,6 +1237,8 @@ std::string Game::encode() {
 		message += player.second->get_name() + " ";
 		// Hull
 		message += player.second->get_hull_name() + " ";
+		// Gun
+		message += player.second->get_gun_name() + " ";
 		// Deaths & kills
 		message += std::to_string(player.second->get_deaths()) + " ";
 		message += std::to_string(player.second->get_kills()) + " ";

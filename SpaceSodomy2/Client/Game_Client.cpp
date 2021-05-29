@@ -420,6 +420,9 @@ void Game_Client::decode(std::string source) {
 			// Hull
 			std::string hull;
 			stream >> hull;
+			// Gun
+			std::string gun;
+			stream >> gun;
 			// Deaths, kills & etc
 			int deaths, kills, time_to_respawn, is_alive, connection_time;
 			stream >> deaths >> kills >> time_to_respawn >> is_alive >> connection_time;
@@ -429,6 +432,8 @@ void Game_Client::decode(std::string source) {
 			player->set_color(color);
 			player->set_name(name);
 			player->set_hull_name(hull);
+			player->set_gun_name(gun);
+			//std::cout << gun << "\n";
 			player->set_deaths(deaths);
 			player->set_kills(kills);
 			player->set_is_alive(is_alive);
