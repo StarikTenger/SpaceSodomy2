@@ -230,11 +230,11 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	gun_image.set_draw(draw);
 	gun_image.set_use_window_cords(4);
 	gun_image.set_use_picture_scale(0);
-	gun_image.set_scale({ 100, 100 });
+	gun_image.set_scale({ 78, 78 });
 	gun_image.set_color(sf::Color::White);
 	gun_image.set_pos({ -380, -105 });
-	if (game->get_ship(player_network->get_id()) != nullptr)
-		gun_image.set_texture_name(game->get_gun_name());
+	if (game->player_by_id(player_network->get_id()) != nullptr)
+		gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
 	else
 		gun_image.set_texture_name("bonusEmpty");
 
@@ -304,6 +304,7 @@ void HUD_Processing::step() {
 	}
 	else {
 		if (game->player_by_id(player_network->get_id()) != nullptr) {
+			gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
 			ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
 			//std::cout << ping.get_text() << "\n";
 		}
