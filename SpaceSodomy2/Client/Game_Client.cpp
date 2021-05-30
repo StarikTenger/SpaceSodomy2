@@ -379,16 +379,32 @@ void Game_Client::decode(std::string source) {
 		hp_prev = get_ship(my_id)->get_hp()->get();
 	}
 	// Projectiles that are not destroyed will be erased
-	struct Projectile_Animation {
+	struct Disappear_Animation {
+		enum Type {
+			PROJECTILE,
+			ROCKET
+		};
+		int type;
 		b2Vec2 pos;
 		sf::Color color;
 		float radius;
 	};
-	std::map<int, Projectile_Animation> destroyed_projectiles;
+	std::map<int, Disappear_Animation> destroyed_objects;
+	auto manage_destroyed_object = [&] (int id){
+		if (destroyed_objects.count(id))
+			destroyed_objects.erase(destroyed_objects.find(id));
+	};
 	for (auto projectile : projectiles) {
-		destroyed_projectiles[projectile->get_id()].pos = projectile->get_body()->GetPosition();
-		destroyed_projectiles[projectile->get_id()].color = projectile->get_player()->get_color();
-		destroyed_projectiles[projectile->get_id()].radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius;
+		destroyed_objects[projectile->get_id()].type = Disappear_Animation::PROJECTILE;
+		destroyed_objects[projectile->get_id()].pos = projectile->get_body()->GetPosition();
+		destroyed_objects[projectile->get_id()].color = projectile->get_player()->get_color();
+		destroyed_objects[projectile->get_id()].radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius;
+	}
+	for (auto rocket : rockets) {
+		destroyed_objects[rocket->get_id()].type = Disappear_Animation::ROCKET;
+		destroyed_objects[rocket->get_id()].pos = rocket->get_body()->GetPosition();
+		destroyed_objects[rocket->get_id()].color = rocket->get_player()->get_color();
+		destroyed_objects[rocket->get_id()].radius = rocket->get_body()->GetFixtureList()->GetShape()->m_radius;
 	}
 
 	// First clear
@@ -556,8 +572,7 @@ void Game_Client::decode(std::string source) {
 			// Createing projectile
 			auto projectile = create_projectile(projectile_def);
 			projectile->set_id(id);
-			if (destroyed_projectiles.count(id))
-				destroyed_projectiles.erase(destroyed_projectiles.find(id));
+			manage_destroyed_object(id);
 		}
 		// Rocket
 		if (symbol == "r") {
@@ -582,6 +597,7 @@ void Game_Client::decode(std::string source) {
 			// Createing rocket
 			auto rocket = create_rocket(rocket_def);
 			rocket->set_id(id);
+			manage_destroyed_object(id);
 		}
 		// Bonus
 		if (symbol == "b") {
@@ -629,27 +645,54 @@ void Game_Client::decode(std::string source) {
 		// TODO: add sound here
 	}
 
-	// Projectile hit sounds
-	for (auto projectile : destroyed_projectiles) {
-		audio->update_sound(aux::random_int(0, 1000), "projectile_hit", projectile.second.pos, 1, 0);
+	// Managing disappeared objects
+	for (auto object : destroyed_objects) {
+		std::string sound_name = "";
+		switch (object.second.type) {
+		case Disappear_Animation::PROJECTILE:
+			sound_name = "projectile_hit";
+			break;
+		case Disappear_Animation::ROCKET:
+			sound_name = "explosion";
+			break;
+		}
+		audio->update_sound(aux::random_int(0, 1000), sound_name, object.second.pos, 1, 0);
+		
 		// Animation
-		for (int i = 0; i < 10; i++) {
-			Float_Animation::State state_begin;
-			state_begin.pos = projectile.second.pos;
-			state_begin.scale = projectile.second.radius * b2Vec2(4, 4);
-			state_begin.angle = 0;
-			state_begin.color = projectile.second.color;
-			Float_Animation::State state_end = state_begin;
-			if (i != 0) {
-				state_end.scale = b2Vec2_zero;
-				state_end.pos += aux::rotate({ 0, 0.4 }, aux::random_float(0, 2, 2) * b2_pi);
+		switch (object.second.type) {
+		case Disappear_Animation::PROJECTILE:
+			for (int i = 0; i < 10; i++) {
+				Float_Animation::State state_begin;
+				state_begin.pos = object.second.pos;
+				state_begin.scale = object.second.radius * b2Vec2(4, 4);
+				state_begin.angle = 0;
+				state_begin.color = object.second.color;
+				Float_Animation::State state_end = state_begin;
+				if (i != 0) {
+					state_end.scale = b2Vec2_zero;
+					state_end.pos += aux::rotate({ 0, 0.4 }, aux::random_float(0, 2, 2) * b2_pi);
+				}
+				else {
+					state_begin.color = state_end.color = { 255, 255, 255 };
+				}
+				state_end.color.a = 0;
+				Float_Animation animation("bullet", state_begin, state_end, 0.1, GAME);
+				draw->create_animation(animation);
 			}
-			else {
-				state_begin.color = state_end.color = { 255, 255, 255 };
+			break;
+		case Disappear_Animation::ROCKET:
+			for (int i = 0; i < 10; i++) {
+				auto blast_radius = module_manager.get_prototype(Module::ROCKET)->params["blast_radius"];
+				draw->fadeout_animation("explosion",
+					object.second.pos, // Position
+					{ 0.1, blast_radius / 4 }, // Shift
+					{ 0.1, blast_radius / 2}, // Size
+					{ aux::random_float(0, 2*b2_pi, 2), aux::random_float(0, 2 * b2_pi, 2) }, // Angle
+					{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+					0.1, GAME // Duration, layer
+				);
 			}
-			state_end.color.a = 0;
-			Float_Animation animation("bullet", state_begin, state_end, 0.1, GAME);
-			draw->create_animation(animation);
+			break;
 		}
 	}
 }
