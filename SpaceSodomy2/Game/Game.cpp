@@ -264,15 +264,15 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-Sound* Game::create_event(Event_Def event_def, float playing_offset) {
-	auto sound = new Sound();
-	sound->set_body(event_def.body);
-	sound->set_name(event_def.name);
-	sound->set_pos(event_def.pos);
-	sound->set_playing_offset(create_counter(playing_offset, 1));
-	id_manager.set_id(sound);
-	sounds.insert(sound);
-	return sound;
+Event* Game::create_event(Event_Def event_def, float playing_offset) {
+	auto event = new Event();
+	event->set_body(event_def.body);
+	event->set_type(event_def.type);
+	event->set_pos(event_def.pos);
+	event->set_playing_offset(create_counter(playing_offset, 1));
+	id_manager.set_id(event);
+	events.insert(event);
+	return event;
 }
 
 Effects* Game::create_effects(Effects_Prototype* val) {
@@ -428,10 +428,10 @@ void Game::delete_counter(Counter* counter) {
 	delete counter;
 }
 
-void Game::delete_sound(Sound* sound) {
-	delete_counter(sound->get_playing_offset());
-	sounds.erase(sound);
-	delete sound;
+void Game::delete_event(Event* event) {
+	delete_counter(event->get_playing_offset());
+	events.erase(event);
+	delete event;
 }
 
 void Game::delete_effects(Effects* _effects) {
@@ -534,7 +534,7 @@ void Game::process_ships() {
 		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
 			if (ship->get_bonus_slot()) {
 				if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER)
-					event_manager.create_event(Event_Def("laser", ship->get_body()));
+					event_manager.create_event(Event_Def(Event::LASER, ship->get_body()));
 				ship->get_bonus_slot()->activate();				
 			}
 		}
@@ -631,7 +631,7 @@ void Game::process_projectlie_manager() {
 	}
 }
 
-void Game::process_sound_manager() {
+void Game::process_event_manager() {
 	Event_Def event_def;
 	while (event_manager.get_next(event_def)) {
 		create_event(event_def);
@@ -647,12 +647,11 @@ void Game::process_physics() {
 	}
 	physics.Step(dt, 10, 10);
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
-		// Hit sound
+		// Hit event
 		if (contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())) {
-			event_manager.create_event(Event_Def("hit", nullptr, contact->GetManifold()->localPoint));
-			std::cout << "hit\n";
+			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, contact->GetManifold()->localPoint));
 		}
 	}
 }
@@ -662,14 +661,14 @@ void Game::process_counters() {
 		counter->step(dt);
 }
 
-void Game::process_sounds() {
-	std::set<Sound*> sounds_to_delete;
-	for (auto sound : sounds) {
-		if (!sound->is_alive())
-			sounds_to_delete.insert(sound);
+void Game::process_events() {
+	std::set<Event*> events_to_delete;
+	for (auto event : events) {
+		if (!event->is_alive())
+			events_to_delete.insert(event);
 	}
-	for (auto sound : sounds_to_delete)
-		delete_sound(sound);
+	for (auto event : events_to_delete)
+		delete_event(event);
 }
 
 void Game::process_effects() {
@@ -797,9 +796,9 @@ void Game::step(float _dt) {
 	process_engines();
 	process_projectiles();
 	process_projectlie_manager();
-	process_sound_manager();
+	process_event_manager();
 	process_counters();
-	process_sounds();
+	process_events();
 	process_effects();
 	process_bonuses();
 	process_bonus_manager();
@@ -842,10 +841,10 @@ void Game::clear() {
 	for (auto counter : counters)
 		delete counter;
 	counters = {};
-	// Clear sounds
-	for (auto sound : sounds)
-		delete sound;
-	sounds = {};
+	// Clear events
+	for (auto event : events)
+		delete event;
+	events = {};
 	// Clear bonuses
 	for (auto bonus : bonuses)
 		delete bonus;
@@ -1339,15 +1338,15 @@ std::string Game::encode() {
 	}
 
 	// Events (e)
-	for (auto sound : sounds) {
+	for (auto event : events) {
 		message += "e ";
 		// Id
-		message += std::to_string(sound->get_id()) + " ";
+		message += std::to_string(event->get_id()) + " ";
 		// Name
-		message += sound->get_name() + " ";
+		message += event->get_type() + " ";
 		// Pos
-		message += aux::float_to_string(sound->get_pos().x, 2) + " ";
-		message += aux::float_to_string(sound->get_pos().y, 2) + " ";
+		message += aux::float_to_string(event->get_pos().x, 2) + " ";
+		message += aux::float_to_string(event->get_pos().y, 2) + " ";
 	}
 
 	return message;

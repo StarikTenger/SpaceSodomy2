@@ -187,7 +187,7 @@
     <ClInclude Include="Rocket_Brain.h" />
     <ClInclude Include="Rocket_Manager.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Event_Manager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
@@ -224,7 +224,7 @@
     <ClCompile Include="Rocket_Brain.cpp" />
     <ClCompile Include="Rocket_Manager.cpp" />
     <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="Event_Manager.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "Bonus.h"
+#include "Event.h"
 #include "Bonus_Manager.h"
 #include "Active_Module.h"
 

@@ -46,7 +46,7 @@ protected:
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
-	std::set<Sound*> sounds;
+	std::set<Event*> events;
 	std::set<Effects*> effects;
 	std::set<Bonus*> bonuses;
 	std::set<Rocket*> rockets;
@@ -90,7 +90,7 @@ protected:
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5, int type = Wall::STANDART);
 	Projectile*      create_projectile(Projectile_Def);
-	Sound*           create_event(Event_Def, float playing_offset = 0);
+	Event*           create_event(Event_Def, float playing_offset = 0);
 	Effects*         create_effects(Effects_Prototype*);
 	Bonus*           create_bonus(Bonus_Def);
 	Bonus_Slot*      create_bonus_slot();
@@ -106,7 +106,7 @@ protected:
 	void delete_ship(Ship*);
 	void delete_damage_receiver(Damage_Receiver*);
 	void delete_counter(Counter*);
-	void delete_sound(Sound*);
+	void delete_event(Event*);
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
@@ -119,10 +119,10 @@ protected:
 	void process_projectiles();
 	void process_active_modules();
 	void process_projectlie_manager();
-	void process_sound_manager();
+	void process_event_manager();
 	void process_physics();
 	void process_counters();
-	void process_sounds();
+	void process_events();
 	void process_effects();
 	void process_bonuses();
 	void process_bonus_manager();

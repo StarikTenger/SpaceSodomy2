@@ -3,6 +3,7 @@
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
 #include "Effects.h"
+#include "Event.h"
 
 struct Gun_Prototype;
 

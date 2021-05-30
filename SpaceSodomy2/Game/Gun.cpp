@@ -21,7 +21,7 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 void Gun::activate() {
 
 	Event_Def event_def;
-	event_def.name = "gn";
+	event_def.type = Event::SHOT;
 	event_def.body = body;
 	event_manager->create_event(event_def);
 	// Apply BERSERK

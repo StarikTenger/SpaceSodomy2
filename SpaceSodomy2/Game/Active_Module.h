@@ -21,7 +21,7 @@ protected:
 	// Time left
 	Counter* recharge_counter = nullptr;
 	Counter* stamina_cooldown_delay_counter = nullptr;
-	// Sound manager
+	// Event manager
 	Event_Manager* event_manager = nullptr;
 	// Stamina
 	Counter* stamina;

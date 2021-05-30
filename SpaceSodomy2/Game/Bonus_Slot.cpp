@@ -23,7 +23,7 @@ Bonus::Types Bonus_Slot::get_current_bonus() {
 }
 void Bonus_Slot::activate() {
     if (current_bonus == Bonus::LASER) {
-        event_manager->create_event(Event_Def("laser", get_body()));
+        event_manager->create_event(Event_Def(Event::LASER, get_body()));
     }
     activate_default_side_effects();
 
