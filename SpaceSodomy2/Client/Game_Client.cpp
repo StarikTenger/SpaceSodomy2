@@ -339,6 +339,22 @@ void Game_Client::display(int id) {
 		draw->create_animation(animation);
 	}
 
+	// Rockets
+	for (auto rocket : rockets) {
+		float radius = rocket->get_body()->GetFixtureList()->GetShape()->m_radius * 8;
+		auto color = rocket->get_player()->get_color();
+		draw->image("rocket", rocket->get_body()->GetPosition(), { radius, radius },
+			rocket->get_body()->GetAngle(), color);
+		draw->fadeout_animation("bullet",
+			rocket->get_body()->GetPosition(), // Position
+			{ 0, 0.1 }, // Shift
+			{ 0.3, 0.3 }, // Size
+			{ 0, 0 }, // Angle
+			{ color, aux::make_transparent(color) }, // Color
+			0.15, GAME // Duration, layer
+		);
+	}
+
 	// Bonuses
 	for (auto bonus : bonuses) {	
 		float angle = draw->get_camera()->get_angle() + b2_pi / 2;
@@ -543,7 +559,7 @@ void Game_Client::decode(std::string source) {
 			if (destroyed_projectiles.count(id))
 				destroyed_projectiles.erase(destroyed_projectiles.find(id));
 		}
-		// Rockets
+		// Rocket
 		if (symbol == "r") {
 			// Ids
 			int id, player_id;
@@ -557,16 +573,15 @@ void Game_Client::decode(std::string source) {
 			// Radius
 			float radius;
 			stream >> radius;
-			// Creating projectile_def
-			Projectile_Def projectile_def;
-			projectile_def.pos = pos;
-			projectile_def.radius = radius;
-			projectile_def.player = players[player_id];
-			// Createing projectile
-			auto projectile = create_projectile(projectile_def);
-			projectile->set_id(id);
-			if (destroyed_projectiles.count(id))
-				destroyed_projectiles.erase(destroyed_projectiles.find(id));
+			// Creating rocket_def
+			Rocket_Def rocket_def;
+			rocket_def.pos = pos;
+			rocket_def.base.radius = radius;
+			rocket_def.angle = angle;
+			rocket_def.player = players[player_id];
+			// Createing rocket
+			auto rocket = create_rocket(rocket_def);
+			rocket->set_id(id);
 		}
 		// Bonus
 		if (symbol == "b") {

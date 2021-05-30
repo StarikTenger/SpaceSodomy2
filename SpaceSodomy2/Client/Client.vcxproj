@@ -166,9 +166,6 @@
     <ClInclude Include="Loading_Screen.h" />
     <ClInclude Include="Menu_Processing.h" />
     <ClInclude Include="Replay.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
-    <ClInclude Include="resource2.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />

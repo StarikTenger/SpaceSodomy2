@@ -369,6 +369,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 
 	return rocket;
 }
+
 Rocket_Brain* Game::create_rocket_brain(Rocket_Prototype* base) {
 	auto brain = new Rocket_Brain(base->range, base->bin_search_accuracy);
 	rocket_brains.insert(brain);
@@ -1309,6 +1310,7 @@ std::string Game::encode() {
 		// Radius
 		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
+	// Rpckets (r)
 	for (auto rocket : rockets) {
 		message += "r ";
 		// Id
