@@ -5,14 +5,27 @@ bool operator<(Player& a, Player& b) {
 		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
 }
 
-std::string HUD_Processing::get_respawn_button_name(std::string path) {
+void HUD_Processing::get_buttons_names(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
 		std::string cur, cur_name;
 		config >> cur_name >> cur;
 		if (cur_name == "RESPAWN") {
-			return cur;
+			respawn_button_name = cur;
+			press_r_to_respawn.set_text("Press " + cur + " to respawn");
+		}
+		if (cur_name == "BONUS_ACTIVATION") {
+			bonus_button_name = cur;
+			bonus_tip.set_text(cur);
+		}
+		if (cur_name == "LEFT_MODULE") {
+			left_module_button_name = cur;
+			left_module_tip.set_text(cur);
+		}
+		if (cur_name == "RIGHT_MODULE") {
+			right_module_button_name = cur;
+			right_module_tip.set_text(cur);
 		}
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			config >> cur;
@@ -227,6 +240,12 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	else
 		bonus.set_texture_name("bonusEmpty");
 
+	bonus_tip.set_draw(draw);
+	bonus_tip.set_use_window_cords(4);
+	bonus_tip.set_text_character_pixel_size(40);
+	bonus_tip.set_text_color(sf::Color(240, 240, 240, 255));
+	bonus_tip.set_pos({ -480, -40 });
+
 	gun_image.set_draw(draw);
 	gun_image.set_use_window_cords(4);
 	gun_image.set_use_picture_scale(0);
@@ -249,6 +268,12 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	else
 		left_module.set_texture_name("NONE-module");
 
+	left_module_tip.set_draw(draw);
+	left_module_tip.set_use_window_cords(4);
+	left_module_tip.set_text_character_pixel_size(40);
+	left_module_tip.set_text_color(sf::Color(240, 240, 240, 255));
+	left_module_tip.set_pos({ 380, -40 });
+
 	right_module.set_draw(draw);
 	right_module.set_use_window_cords(4);
 	right_module.set_use_picture_scale(0);
@@ -259,6 +284,12 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
 	else
 		right_module.set_texture_name("NONE-module");
+
+	right_module_tip.set_draw(draw);
+	right_module_tip.set_use_window_cords(4);
+	right_module_tip.set_text_character_pixel_size(40);
+	right_module_tip.set_text_color(sf::Color(240, 240, 240, 255));
+	right_module_tip.set_pos({ 480, -40 });
 
 	HP_bar.set_value(HP_bar_val);
 	HP_bar.set_max_value(HP_bar_max_val);
@@ -277,6 +308,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 }
 
 void HUD_Processing::step() {
+	get_buttons_names("keys.conf");
 	if (game->get_ship(player_network->get_id()) != nullptr) {
 		HP_bar.set_value(game->get_ship(player_network->get_id())->get_hp()->get());
 		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());
@@ -296,7 +328,6 @@ void HUD_Processing::step() {
 			std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
 		float mod = abs(sin(float(aux::get_milli_count()) / 500));
 		press_r_to_respawn.set_text_color(sf::Color(255, 255, 255, 255 - 254 * mod));
-		press_r_to_respawn.set_text("Press " + get_respawn_button_name("keys.conf") + " to respawn");
 		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0)
 			time_to_respawn.step();
 		else
@@ -322,8 +353,11 @@ void HUD_Processing::step() {
 		energy_bar.step();
 		interface_image.primitive_step();
 		bonus.primitive_step();
+		bonus_tip.step();
 		left_module.primitive_step();
+		left_module_tip.step();
 		right_module.primitive_step();
+		right_module_tip.step();
 		gun_image.primitive_step();
 		if (game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() > b2_epsilon) {
 			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /

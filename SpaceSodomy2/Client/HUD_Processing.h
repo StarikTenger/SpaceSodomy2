@@ -10,6 +10,7 @@ private:
 	Constant_Text time_to_respawn, press_r_to_respawn,
 		ping, ping_text, fps, fps_text;
 	Menu_Object bonus, left_module, right_module, interface_image, gun_image;
+	Text_Field bonus_tip, left_module_tip, right_module_tip;
 
 	int table_use_windows_cords;
 	b2Vec2 table_pos;
@@ -24,7 +25,9 @@ private:
 	b2Vec2* mouse_pos;
 	aux::Keyboard* keyboard;
 
-	std::string get_respawn_button_name(std::string path);
+	std::string bonus_button_name, left_module_button_name, right_module_button_name, respawn_button_name;
+
+	void get_buttons_names(std::string path);
 	void apply_bar(Bar* bar, std::stringstream* config);
 	void table_step();
 

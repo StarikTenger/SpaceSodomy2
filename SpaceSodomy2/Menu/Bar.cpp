@@ -60,7 +60,7 @@ bool Bar::is_critical() {
 
 void Bar::step() {
 	if (draw_text) {
-		text.set_pos(1.0 / get_screen_mode() *get_pos());
+		text.set_pos(1.0 / get_screen_mode() * get_pos() - b2Vec2(0, 2));
 		text.set_text(std::to_string(int(value)));
 		text.set_color(text_color);
 		text.set_text_character_pixel_size(character_size);
@@ -84,6 +84,23 @@ void Bar::step() {
 	get_draw()->fill_rect(get_pos(), get_screen_mode() * get_scale(), current_back_color, angle);
 	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - value) / max_value / 2, 0),
 		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0)), front_color, angle);
-	if (draw_text) 
+	if (draw_text) {
+		sf::Color color_backup = text.get_text_color();
+		b2Vec2 text_pos_backup = text.get_cur_pos();
+		for (int i = 0; i < 3; i++) {
+			if (i == 1)
+				text.set_text_color(sf::Color::Black);
+			text.set_cur_pos(text_pos_backup + b2Vec2(-i, 0));
+			text.step();
+			text.set_cur_pos(text_pos_backup + b2Vec2(i, 0));
+			text.step();
+			text.set_cur_pos(text_pos_backup + b2Vec2(0, -i));
+			text.step();
+			text.set_cur_pos(text_pos_backup + b2Vec2(0, i));
+			text.step();
+		}
+		text.set_cur_pos(text.get_cur_pos());
+		text.set_text_color(color_backup);
 		text.step();
+	}
 }
