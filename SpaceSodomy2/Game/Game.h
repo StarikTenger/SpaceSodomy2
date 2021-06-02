@@ -27,8 +27,6 @@ protected:
 	bool auto_damage = 0;
 	b2Vec2 get_rand_respawn_pos();
 
-	// Collision control
-	Collision_Filter collision_filter;
 
 	// Time step
 	float dt = 0;
@@ -66,6 +64,11 @@ protected:
 	
 	b2World physics = b2World(b2Vec2_zero);
 
+	// Collision control
+	Collision_Filter collision_filter;
+	// Contact table (stores pairs which are in contact)
+	Contact_Table contact_table;
+
 	// Ship components
 	std::map<std::string, Gun_Prototype> guns;
 	std::map<std::string, Hull_Prototype> hulls;
@@ -73,8 +76,6 @@ protected:
 	Effects_Prototype effect_params;
 	// Misc
 	std::map<std::string, float> params;
-	// Contact table (stores pairs which are in contact)
-	Contact_Table contact_table;
 
 	// Path to the map
 	std::string map_path = "";

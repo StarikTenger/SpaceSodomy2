@@ -15,7 +15,8 @@ public:
 		NONE,
 		SHOT,
 		LASER,
-		WALL_HIT
+		WALL_HIT,
+		FORCE_ACTIVATION
 	};
 
 	Event();

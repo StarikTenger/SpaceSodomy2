@@ -407,6 +407,11 @@ void Game_Client::decode(std::string source) {
 		destroyed_objects[rocket->get_id()].radius = rocket->get_body()->GetFixtureList()->GetShape()->m_radius;
 	}
 
+	// Actual events for new event managing
+	std::set<int> active_events;
+	for (auto e : events)
+		active_events.insert(e->get_id());
+
 	// First clear
 	clear();
 
@@ -620,12 +625,20 @@ void Game_Client::decode(std::string source) {
 		// Event
 		if (symbol == "e") {
 			int id;
-			std::string name;
+			int type;
 			b2Vec2 pos;
-			
-			stream >> id >> name >> pos.x >> pos.y;
-			
-			audio->update_sound(id, name, pos, 1, 0);
+			// TODO: name from Event::Type
+			stream >> id >> type >> pos.x >> pos.y;
+			std::string sound_name = "";
+
+			audio->update_sound(id, sound_name, pos, 1, 0);
+			std::cout << type << " type\n";
+			// Animations
+			//if (active_events.count(id))
+				//continue;
+			if (type == Event::FORCE_ACTIVATION) {
+				std::cout << "FORCE!!!\n";
+			}
 		}
 	}
 

@@ -646,11 +646,21 @@ void Game::process_physics() {
 			contact->GetFixtureB()->GetRestitution());
 	}
 	physics.Step(dt, 10, 10);
+	std::set<b2Body*> hit_objects; // To avoid repetitions
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
 		// Hit event
-		if (contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
+		if ( // Check for repetitions
+			!hit_objects.count(contact->GetFixtureA()->GetBody()) &&
+			!hit_objects.count(contact->GetFixtureB()->GetBody()) &&
+			contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
+			// Check for contact
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
-			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())) {
+			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
+			) {
+			// Adding used objects
+			hit_objects.insert(contact->GetFixtureA()->GetBody());
+			hit_objects.insert(contact->GetFixtureB()->GetBody());
+			// Creating event
 			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, contact->GetManifold()->localPoint));
 		}
 	}
@@ -1342,8 +1352,8 @@ std::string Game::encode() {
 		message += "e ";
 		// Id
 		message += std::to_string(event->get_id()) + " ";
-		// Name
-		message += event->get_type() + " ";
+		// Type
+		message += std::to_string(event->get_type()) + " ";
 		// Pos
 		message += aux::float_to_string(event->get_pos().x, 2) + " ";
 		message += aux::float_to_string(event->get_pos().y, 2) + " ";

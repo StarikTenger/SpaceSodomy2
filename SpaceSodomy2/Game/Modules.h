@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
+#include "Event_Manager.h"
+#include "Event.h"
 #include <map>
 #include <unordered_map>
 #include "Game_Objects.h"

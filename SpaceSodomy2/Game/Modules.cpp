@@ -179,6 +179,10 @@ void Force_Module::activate() {
 			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}
 	}
+	Event_Def event_def;
+	event_def.pos = body->GetPosition();
+	event_def.type = Event::FORCE_ACTIVATION;
+	event_manager->create_event(event_def);
 }
 Blink_Module::Blink_Module(Module_Prototype* base) : Module(base) {
 	distance = base->params["distance"];

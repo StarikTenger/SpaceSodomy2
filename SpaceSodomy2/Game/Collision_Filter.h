@@ -11,7 +11,6 @@ private:
 	};
 
 	std::map<b2Body*, Collision_Info> collision_table;
-	int get_type(b2Fixture*);
 	int get_id(b2Fixture*);
 
 	// IDs: 1 equal, -1 not equal
@@ -31,6 +30,7 @@ public:
 	Collision_Filter();
 	void add_body(b2Body*, int type = STANDART, int id = 0);
 	void delete_body(b2Body*);
+	int get_type(b2Fixture*);
 	bool ShouldCollide(b2Fixture*, b2Fixture*);
 	void change_body(b2Body*, Collision_Type);
 };
