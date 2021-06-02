@@ -420,6 +420,7 @@ void Game_Client::decode(std::string source) {
 	std::stringstream stream;
 	stream << source;
 
+	// Pasrsing source
 	std::string symbol;
 	while (stream >> symbol) {
 		// Map
@@ -627,15 +628,15 @@ void Game_Client::decode(std::string source) {
 			int id;
 			int type;
 			b2Vec2 pos;
-			// TODO: name from Event::Type
 			stream >> id >> type >> pos.x >> pos.y;
-			std::string sound_name = "";
-
+			// TODO: make function for getting sound name
+			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force" };
+			std::string sound_name = sound_names[type];
+			std::cout << sound_names[type] << " " << pos.x << " " << pos.y << "\n";
 			audio->update_sound(id, sound_name, pos, 1, 0);
-			std::cout << type << " type\n";
 			// Animations
-			//if (active_events.count(id))
-				//continue;
+			if (active_events.count(id))
+				continue;
 			if (type == Event::FORCE_ACTIVATION) {
 				std::cout << "FORCE!!!\n";
 			}

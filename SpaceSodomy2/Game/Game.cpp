@@ -652,16 +652,20 @@ void Game::process_physics() {
 		if ( // Check for repetitions
 			!hit_objects.count(contact->GetFixtureA()->GetBody()) &&
 			!hit_objects.count(contact->GetFixtureB()->GetBody()) &&
-			contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			// Check for contact
+			contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
 			) {
+			// Sometimes contact point is a bullshit, i have no idea why (TODO)
+			if (b2Distance(b2Vec2_zero, contact->GetManifold()->localPoint) > 1e5)
+				continue;
 			// Adding used objects
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
 			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, contact->GetManifold()->localPoint));
+			std::cout << "hit\n";
 		}
 	}
 }
