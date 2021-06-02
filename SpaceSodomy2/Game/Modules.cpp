@@ -180,7 +180,7 @@ void Force_Module::activate() {
 		}
 	}
 	Event_Def event_def;
-	event_def.pos = body->GetPosition();
+	event_def.body = body;
 	event_def.type = Event::FORCE_ACTIVATION;
 	event_manager->create_event(event_def);
 }

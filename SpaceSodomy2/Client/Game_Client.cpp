@@ -632,13 +632,21 @@ void Game_Client::decode(std::string source) {
 			// TODO: make function for getting sound name
 			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force" };
 			std::string sound_name = sound_names[type];
-			std::cout << sound_names[type] << " " << pos.x << " " << pos.y << "\n";
 			audio->update_sound(id, sound_name, pos, 1, 0);
+			// Creating event
+			create_event({type, nullptr, pos})->set_id(id);
 			// Animations
 			if (active_events.count(id))
 				continue;
 			if (type == Event::FORCE_ACTIVATION) {
-				std::cout << "FORCE!!!\n";
+				draw->fadeout_animation("force",
+					pos, // Position
+					{ 0, 0.0 }, // Shift
+					{ 0.3, module_manager.get_prototype(Module::FORCE)->params["radius"]}, // Size
+					{ 0, 0 }, // Angle
+					{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+					0.15, GAME // Duration, layer
+				);
 			}
 		}
 	}
