@@ -137,7 +137,11 @@ void Game_Client::display(int id) {
 			!ship->get_body()->GetFixtureList()->GetShape())
 			continue;
 
-		// HP_bar & name
+		// Some ship params
+		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
+		auto color = ship->get_player()->get_color();
+
+		// HP_bar & name (others)
 		if (ship->get_player()->get_id() != id) {
 			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
 				// hp
@@ -163,35 +167,41 @@ void Game_Client::display(int id) {
 				}
 			}
 		}
-		// Show aim lines
+		// Show aim lines (current player)
 		else {
+			// Direction
 			b2Vec2 dir = ship->get_body()->GetLinearVelocity() +
 				guns[gun_name].projectile_vel * aux::direction(ship->get_body()->GetAngle());
 			dir.Normalize();
+			// Calculating 3 initial positions
 			b2Vec2 body_pos = ship->get_body()->GetPosition();
 			b2Vec2 right_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
 			right_pos = body_pos + aux::rotate(right_pos, b2_pi / 2);
 			b2Vec2 left_pos = (guns[ship->get_player()->get_gun_name()].projectile_radius + 0.09) * dir;
 			left_pos = body_pos + aux::rotate(left_pos, -b2_pi / 2);
+			// 3 intersections
 			b2Vec2 intersection_right = get_beam_intersection(right_pos, aux::vec_to_angle(dir));
 			b2Vec2 intersection_left = get_beam_intersection(left_pos, aux::vec_to_angle(dir));
 			b2Vec2 intersection = get_beam_intersection(body_pos, aux::vec_to_angle(dir));
 			intersection = std::min(std::min(b2Distance(body_pos, intersection_right), b2Distance(body_pos, intersection_left)),
 				b2Distance(body_pos, intersection)) * dir;
 			intersection += body_pos;
-			auto color = ship->get_player()->get_color();
-			auto base_color = ship->get_player()->get_color();
 			color.a = aim_opacity * opacity;
+			// Drawing lines in respond to aim config
 			if (aim_conf % 2 == 1)
 				draw->thin_line(ship->get_body()->GetPosition(), intersection, color);
 			if (aim_conf > 1) {
 				draw->thin_line(right_pos, intersection_right, color);
 				draw->thin_line(left_pos, intersection_left, color);
 			}
+
+			// Blink target
+			draw->image("ship_aura_" + ship->get_player()->get_hull_name(), 
+				body_pos + module_manager.get_prototype(Module::BLINK)->params["distance"] * aux::direction(ship->get_body()->GetAngle()),
+				{radius, radius}, ship->get_body()->GetAngle(), aux::set_opacity(color, 70));
 		}
+
 		// Hull
-		float radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius * 2;
-		auto color = ship->get_player()->get_color();
 		color.a *= opacity;	
 		auto base_color = ship->get_player()->get_color();
 		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
@@ -630,7 +640,7 @@ void Game_Client::decode(std::string source) {
 			b2Vec2 pos;
 			stream >> id >> type >> pos.x >> pos.y;
 			// TODO: make function for getting sound name
-			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force" };
+			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force", "blink"};
 			std::string sound_name = sound_names[type];
 			audio->update_sound(id, sound_name, pos, 1, 0);
 			// Creating event
@@ -647,6 +657,17 @@ void Game_Client::decode(std::string source) {
 					{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
 					0.15, GAME // Duration, layer
 				);
+			}
+			if (type == Event::BLINK) {
+				for (int i = 0; i < 10; i++)
+					draw->fadeout_animation("bullet",
+						pos, // Position
+						{ 0.0, 0.3 }, // Shift
+						{ 0.3, 0.}, // Size
+						{ 0, 0 }, // Angle
+						{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+						0.15, GAME // Duration, layer
+					);
 			}
 		}
 	}

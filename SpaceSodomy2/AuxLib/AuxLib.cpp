@@ -58,6 +58,11 @@ sf::Color aux::make_transparent(sf::Color color) {
 	return color;
 }
 
+sf::Color aux::set_opacity(sf::Color color, int value) {
+	color.a = value;
+	return color;
+}
+
 // Absolute time in ms
 int aux::get_milli_count() {
 	timeb tb;

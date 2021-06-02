@@ -18,6 +18,8 @@ public:
 	static sf::Color from_hsv(float H, float S, float V);
 	// Sets alpha chanel of color to 0
 	static sf::Color make_transparent(sf::Color color);
+	// Sets the opacity of given color
+	static sf::Color set_opacity(sf::Color color, int value);
 	// Absolute time in ms
 	static int get_milli_count();
 	// Converts ms time to string format

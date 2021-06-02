@@ -16,7 +16,8 @@ public:
 		SHOT,
 		LASER,
 		WALL_HIT,
-		FORCE_ACTIVATION
+		FORCE_ACTIVATION,
+		BLINK
 	};
 
 	Event();
