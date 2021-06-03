@@ -56,6 +56,9 @@ Draw* Menu_Object::get_draw() {
 b2Vec2 Menu_Object::get_pos() {
 	return window_cords_pos();
 }
+b2Vec2 Menu_Object::get_unmodded_pos() {
+	return pos;
+}
 bool Menu_Object::get_use_picture_scale() {
 	return use_picture_scale;
 }

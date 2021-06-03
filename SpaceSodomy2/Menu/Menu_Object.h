@@ -40,6 +40,7 @@ public:
 	std::string get_texture_name();
 	Draw* get_draw();
 	b2Vec2 get_pos();
+	b2Vec2 get_unmodded_pos();
 	bool get_use_picture_scale();
 	bool get_image_active();
 	b2Vec2 get_scale();
