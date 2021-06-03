@@ -49,7 +49,9 @@ void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
         return;
     }
     hp->modify(-value);
-    last_hit = hit_by;
+    if (hit_by != player) {
+        last_hit = hit_by;
+    }
 }
 
 bool Damage_Receiver::apply_effects(Effects_Prototype* val) {
