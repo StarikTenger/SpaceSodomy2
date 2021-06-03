@@ -242,7 +242,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 
 	bonus_tip.set_draw(draw);
 	bonus_tip.set_use_window_cords(4);
-	bonus_tip.set_text_character_pixel_size(40);
+	bonus_tip.set_text_character_pixel_size(100);
 	bonus_tip.set_text_color(sf::Color(240, 240, 240, 255));
 	bonus_tip.set_pos({ -480, -40 });
 
@@ -270,7 +270,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 
 	left_module_tip.set_draw(draw);
 	left_module_tip.set_use_window_cords(4);
-	left_module_tip.set_text_character_pixel_size(40);
+	left_module_tip.set_text_character_pixel_size(100);
 	left_module_tip.set_text_color(sf::Color(240, 240, 240, 255));
 	left_module_tip.set_pos({ 380, -40 });
 
@@ -287,7 +287,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 
 	right_module_tip.set_draw(draw);
 	right_module_tip.set_use_window_cords(4);
-	right_module_tip.set_text_character_pixel_size(40);
+	right_module_tip.set_text_character_pixel_size(100);
 	right_module_tip.set_text_color(sf::Color(240, 240, 240, 255));
 	right_module_tip.set_pos({ 480, -40 });
 
@@ -302,13 +302,38 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	interface_image.set_color(sf::Color::White);
 	interface_image.set_draw(draw);
 	interface_image.set_use_window_cords(4);
-	interface_image.set_pos({ 0, -130 });
+	interface_image.set_pos({ 0, -20 });
 	interface_image.set_use_picture_scale(0);
-	interface_image.set_scale({1220, 305});
+	interface_image.set_scale({ 330, 40 });
+	//interface_image.set_scale({1220, 305});
 }
 
 void HUD_Processing::step() {
 	get_buttons_names("keys.conf");
+	interface_image.set_scale({ 330 * interface_scale, 40 * interface_scale });
+	interface_image.set_pos(b2Vec2(0, 0) - b2Vec2(0, interface_image.get_scale().y / 2));
+	b2Vec2 cur_icon_scale = interface_scale * b2Vec2(30, 30);
+	bonus.set_scale(cur_icon_scale);
+	bonus.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-130, 0));
+	gun_image.set_scale(cur_icon_scale);
+	gun_image.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-100, 0));
+	right_module.set_scale(cur_icon_scale);
+	right_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(130, 0));
+	left_module.set_scale(cur_icon_scale);
+	left_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(100, 0));
+	HP_bar.set_scale(interface_scale * b2Vec2(130, 10));
+	stamina_bar.set_scale(interface_scale * b2Vec2(130, 10));
+	energy_bar.set_scale(interface_scale * b2Vec2(130, 10));
+	HP_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, -10));
+	stamina_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2));
+	energy_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, 10));
+	bonus_tip.set_text_scale(0.1 * interface_scale / text_mod);
+	left_module_tip.set_text_scale(0.1 * interface_scale / text_mod);
+	right_module_tip.set_text_scale(0.1 * interface_scale / text_mod);
+	text_mod = 0.1 * interface_scale;
+	bonus_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-130, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
+	left_module_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(100, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
+	right_module_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(130, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
 	if (game->get_ship(player_network->get_id()) != nullptr) {
 		HP_bar.set_value(game->get_ship(player_network->get_id())->get_hp()->get());
 		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());

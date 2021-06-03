@@ -102,6 +102,7 @@ void Menu_Object::set_draw(Draw* draw_) {
 }
 void Menu_Object::set_pos(b2Vec2 pos_) {
 	pos = pos_;
+	cur_pos_activated = false;
 }
 void Menu_Object::set_use_picture_scale(bool use_picture_scale_) {
 	use_picture_scale = use_picture_scale_;

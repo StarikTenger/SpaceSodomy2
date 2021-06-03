@@ -37,10 +37,13 @@ private:
 	float stamina_bar_val;
 	int energy_bar_max_val;
 	float energy_bar_val;
+	float text_mod = 1;
 	std::queue<int>* frame_marks;
 
 	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);
 public:
+	float interface_scale = 3;
+
 	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
 		Client_Network* player_network_, std::queue<int>* frame_marks_);
 
