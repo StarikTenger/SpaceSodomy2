@@ -143,7 +143,8 @@ void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config) {
 	int use_window_cords, use_custom_color, character_size;
 	b2Vec2 pos, scale;
 	sf::Color back, front, text;
-	*config >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y >> character_size >> use_custom_color;
+	std::string font_name;
+	*config >> use_window_cords >> pos.x >> pos.y >> scale.x >> scale.y >> character_size >> use_custom_color >> font_name;
 	bar->set_use_window_cords(use_window_cords);
 	bar->set_pos(pos);
 	bar->set_scale(scale);
@@ -159,6 +160,11 @@ void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config) {
 	bar->set_draw(draw);
 	bar->set_mouse_pos(mouse_pos);
 	bar->set_keyboard(keyboard);
+	bar->set_font(font_name);
+}
+
+HUD_Processing::HUD_Processing()
+{
 }
 
 HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
