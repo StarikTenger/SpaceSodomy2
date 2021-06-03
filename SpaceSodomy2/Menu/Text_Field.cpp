@@ -35,7 +35,11 @@ void Text_Field::set_text(std::string text_) {
 void Text_Field::set_font(sf::Font font_) {
 	font_setted = 1;
 	text.setFont(font_);
-	height = aux::get_text_max_height(text);
+	//height = aux::get_text_max_height(text);
+}
+void Text_Field::set_font_name(std::string font_name_) {
+	font_name = font_name_;
+	font_setted = false;
 }
 void Text_Field::set_text_color(sf::Color color_) {
 	text.setFillColor(color_);
@@ -63,8 +67,8 @@ void Text_Field::step() {
 	primitive_step();
 	if (!font_setted) { // if font isn't setted -> set standart font
 		font_setted = 1;
-		text.setFont(*(get_draw()->get_font("font")));
-		height = aux::get_text_max_height(text);
+		text.setFont(*(get_draw()->get_font(font_name)));
+		//height = aux::get_text_max_height(text);
 	}
 	// Text entering
 	if (keyboard_active && active_field) {

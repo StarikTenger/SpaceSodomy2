@@ -556,8 +556,9 @@ void Game::process_ships() {
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+			}
 		}
 		
 	}
@@ -724,11 +725,12 @@ void Game::process_rockets() {
 	for (auto rocket : rockets_to_delete) {
 		for (auto receiver : damage_receivers) {
 			if ((rocket->get_body()->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < rocket->get_blast_radius()) {
-				if (rocket->get_player() != receiver->get_player()) {
+				receiver->damage(rocket->get_damage(), rocket->get_player());
+				/*if (rocket->get_player() != receiver->get_player()) {
 					receiver->damage(rocket->get_damage(), rocket->get_player());
 				} else {
-					receiver->damage(rocket->get_damage(), receiver->get_player());
-				}
+					receiver->damage(rocket->get_damage(), receiver->get_last_hit());
+				}*/
 				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
 				unit.Normalize();
 				b2Vec2 impulse = rocket->get_blast_force() * (std::min(receiver->get_body()->GetMass(), 1.f)) * unit;

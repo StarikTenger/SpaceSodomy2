@@ -33,6 +33,9 @@ void Bar::set_angle(float angle_) {
 void Bar::set_critical_value(float critical_value_) {
 	critical_value = critical_value_;
 }
+void Bar::set_font(std::string font_name) {
+	text.set_font_name(font_name);
+}
 
 // Get methods
 int Bar::get_max_value() {

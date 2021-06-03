@@ -8,6 +8,7 @@ private:
 	bool keyboard_active = 0;
 	bool keyboard_activated = 1;
 	std::string new_text = "";
+	std::string font_name = "font";
 	bool font_setted = 0;
 	float height;
 	int align = 0;
@@ -26,6 +27,7 @@ public:
 	// Set methods
 	void set_text(std::string text_);
 	void set_font(sf::Font font_);
+	void set_font_name(std::string font_name_);
 	void set_text_color(sf::Color);
 	void set_text_character_pixel_size(unsigned int size_);
 	void set_indent(b2Vec2 indent_);
