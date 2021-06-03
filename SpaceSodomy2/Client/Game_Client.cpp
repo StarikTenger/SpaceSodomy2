@@ -196,9 +196,11 @@ void Game_Client::display(int id) {
 			}
 
 			// Blink target
-			draw->image("ship_aura_" + ship->get_player()->get_hull_name(), 
-				body_pos + module_manager.get_prototype(Module::BLINK)->params["distance"] * aux::direction(ship->get_body()->GetAngle()),
-				{radius, radius}, ship->get_body()->GetAngle(), aux::set_opacity(color, 70));
+			if (ship->get_left_module()->get_type() == Module::BLINK || 
+				ship->get_right_module()->get_type() == Module::BLINK)
+				draw->image("ship_aura_" + ship->get_player()->get_hull_name(), 
+					body_pos + module_manager.get_prototype(Module::BLINK)->params["distance"] * aux::direction(ship->get_body()->GetAngle()),
+					{radius, radius}, ship->get_body()->GetAngle(), aux::set_opacity(color, 70));
 		}
 
 		// Hull
