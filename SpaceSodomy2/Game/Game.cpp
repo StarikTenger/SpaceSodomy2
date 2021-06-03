@@ -556,8 +556,9 @@ void Game::process_ships() {
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+			}
 		}
 		
 	}
@@ -727,7 +728,7 @@ void Game::process_rockets() {
 				if (rocket->get_player() != receiver->get_player()) {
 					receiver->damage(rocket->get_damage(), rocket->get_player());
 				} else {
-					receiver->damage(rocket->get_damage(), receiver->get_player());
+					receiver->damage(rocket->get_damage(), receiver->get_last_hit());
 				}
 				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
 				unit.Normalize();
