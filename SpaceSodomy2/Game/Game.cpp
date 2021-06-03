@@ -625,7 +625,7 @@ void Game::process_active_modules() {
 		active_module->step(dt);
 }
 
-void Game::process_projectlie_manager() {
+void Game::process_projectile_manager() {
 	Projectile_Def projectile_def;
 	while (projectile_manager.get_next(projectile_def)) {
 		create_projectile(projectile_def);
@@ -811,7 +811,7 @@ void Game::step(float _dt) {
 	process_ships();
 	process_engines();
 	process_projectiles();
-	process_projectlie_manager();
+	process_projectile_manager();
 	process_event_manager();
 	process_counters();
 	process_events();
@@ -1325,7 +1325,7 @@ std::string Game::encode() {
 		// Radius
 		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
-	// Rpckets (r)
+	// Rockets (r)
 	for (auto rocket : rockets) {
 		message += "r ";
 		// Id
