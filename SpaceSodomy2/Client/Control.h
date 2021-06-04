@@ -61,7 +61,7 @@ private:
 	// Converts commands into single string
 	std::string commands_to_string();
 	// HUD
-	HUD_Processing hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
+	HUD_Processing hud;
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;

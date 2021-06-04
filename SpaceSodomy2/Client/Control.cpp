@@ -144,6 +144,8 @@ Control::Control() {
 	}
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
+	// Init hud
+	hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();

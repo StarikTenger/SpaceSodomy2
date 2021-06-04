@@ -33,6 +33,9 @@ void Bar::set_angle(float angle_) {
 void Bar::set_critical_value(float critical_value_) {
 	critical_value = critical_value_;
 }
+void Bar::set_font(std::string font_name) {
+	text.set_font_name(font_name);
+}
 
 // Get methods
 int Bar::get_max_value() {
@@ -86,21 +89,27 @@ void Bar::step() {
 		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0)), front_color, angle);
 	if (draw_text) {
 		sf::Color color_backup = text.get_text_color();
-		b2Vec2 text_pos_backup = text.get_cur_pos();
-		for (int i = 0; i < 3; i++) {
-			if (i == 1)
-				text.set_text_color(sf::Color::Black);
-			text.set_cur_pos(text_pos_backup + b2Vec2(-i, 0));
+		b2Vec2 text_pos_backup = text.get_unmodded_pos();
+		text.set_text_color(sf::Color::Black);
+		for (int i = 1; i >= 0; i--) {
+			if (i == 0)
+				text.set_text_color(color_backup);
+			text.set_pos(text_pos_backup + b2Vec2(-i, 0));
 			text.step();
-			text.set_cur_pos(text_pos_backup + b2Vec2(i, 0));
+			text.set_pos(text_pos_backup + b2Vec2(i, 0));
 			text.step();
-			text.set_cur_pos(text_pos_backup + b2Vec2(0, -i));
+			text.set_pos(text_pos_backup + b2Vec2(0, -i));
 			text.step();
-			text.set_cur_pos(text_pos_backup + b2Vec2(0, i));
+			text.set_pos(text_pos_backup + b2Vec2(0, i));
 			text.step();
 		}
-		text.set_cur_pos(text.get_cur_pos());
-		text.set_text_color(color_backup);
+		//text.set_cur_pos(text_pos_backup + b2Vec2(10, 10));
+		text.set_pos(text_pos_backup);
+		//text.set_text_color(sf::Color::Black);
+		//text.set_text_scale(1.2);
+		//text.step();
+		//text.set_text_scale(1 / 1.2);
+		//text.set_text_color(color_backup);
 		text.step();
 	}
 }
