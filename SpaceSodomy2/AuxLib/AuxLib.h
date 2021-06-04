@@ -119,4 +119,16 @@ public:
 
 	// Checks whether word fits the style of commands, COMMANDS must be caps
 	static bool is_command(std::string word);
+
+	// Caution: shorts larger than 127 * 255 wont work
+	static std::string write_short(short val);
+	static short read_short(std::istream& in);
+
+	// Caution: ints larger than 127 * pow(255, 3) wont work
+	static std::string write_int(int val);
+	static int read_int(std::istream& in);
+
+	// Caution: total val must fit approx 15000 / pow(10, precision)
+	static std::string write_float(float val, unsigned precision);
+	static float read_float(std::istream& in, unsigned precision);
 };

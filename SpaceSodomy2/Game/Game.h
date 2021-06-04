@@ -119,7 +119,7 @@ protected:
 	void process_engines();
 	void process_projectiles();
 	void process_active_modules();
-	void process_projectlie_manager();
+	void process_projectile_manager();
 	void process_event_manager();
 	void process_physics();
 	void process_counters();

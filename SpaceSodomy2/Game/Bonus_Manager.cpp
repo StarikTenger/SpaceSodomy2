@@ -26,7 +26,7 @@ void Bonus_Manager::step(float dt) {
         if (spawnpoints[bonus_type].size() == 0) {
             continue;
         }
-        if (spawnable[bonus_type].count < spawnable[bonus_type].count_max) {
+        if (spawnable[bonus_type].count < std::min(spawnable[bonus_type].count_max, (int)spawnpoints[bonus_type].size())) {
             spawnable[bonus_type].cooldown.step(dt);
         }
 
