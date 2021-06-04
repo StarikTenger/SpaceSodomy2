@@ -63,7 +63,8 @@ bool Bar::is_critical() {
 
 void Bar::step() {
 	if (draw_text) {
-		text.set_pos(1.0 / get_screen_mode() * get_pos() - b2Vec2(0, 2));
+		text.set_pos(get_unmodded_pos() - b2Vec2(0, get_screen_mode() * get_scale().y / 2.0));
+		text.set_use_window_cords(get_use_window_cords());
 		text.set_text(std::to_string(int(value)));
 		text.set_color(text_color);
 		text.set_text_character_pixel_size(character_size);

@@ -226,6 +226,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	time_to_respawn.set_keyboard(keyboard);
 	time_to_respawn.set_use_window_cords(0);
 	time_to_respawn.set_text_character_pixel_size(60);
+	time_to_respawn.set_pos(b2Vec2(0, 0));
 	time_to_respawn.set_text_scale(0.5);
 
 	press_r_to_respawn.set_draw(draw);
@@ -233,6 +234,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	press_r_to_respawn.set_keyboard(keyboard);
 	press_r_to_respawn.set_use_window_cords(0);
 	press_r_to_respawn.set_text_character_pixel_size(60);
+	press_r_to_respawn.set_pos(b2Vec2(0, 0));
 	press_r_to_respawn.set_text_scale(0.5);
 
 	bonus.set_draw(draw);
@@ -327,12 +329,12 @@ void HUD_Processing::step() {
 	right_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(130, 0));
 	left_module.set_scale(cur_icon_scale);
 	left_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(100, 0));
-	HP_bar.set_scale(interface_scale * b2Vec2(130, 10));
-	stamina_bar.set_scale(interface_scale * b2Vec2(130, 10));
-	energy_bar.set_scale(interface_scale * b2Vec2(130, 10));
-	HP_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, -10));
+	HP_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
+	stamina_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
+	energy_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
+	HP_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, -8.666666));
 	stamina_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2));
-	energy_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, 10));
+	energy_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, 8.666666));
 	bonus_tip.set_text_scale(0.1 * interface_scale / text_mod);
 	left_module_tip.set_text_scale(0.1 * interface_scale / text_mod);
 	right_module_tip.set_text_scale(0.1 * interface_scale / text_mod);

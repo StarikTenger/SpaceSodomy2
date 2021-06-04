@@ -571,23 +571,26 @@ void Game_Client::decode(std::string source) {
 		// Projectile
 		if (symbol == "p") {
 			// Ids
+			stream.get();
 			int id, player_id;
-			stream >> id >> player_id;
+			id = aux::read_short(stream);
+			player_id = aux::read_int(stream);
 			// Pos
 			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
+			pos.x = aux::read_float(stream, 2);
+			pos.y = aux::read_float(stream, 2);
 			// Angle
 			float angle;
-			stream >> angle;
+			angle = aux::read_float(stream, 3);
 			// Radius
 			float radius;
-			stream >> radius;
+			radius = aux::read_float(stream, 2);
 			// Creating projectile_def
 			Projectile_Def projectile_def;
 			projectile_def.pos = pos;
 			projectile_def.radius = radius;
 			projectile_def.player = players[player_id];
-			// Createing projectile
+			// Creating projectile
 			auto projectile = create_projectile(projectile_def);
 			projectile->set_id(id);
 			manage_destroyed_object(id);
