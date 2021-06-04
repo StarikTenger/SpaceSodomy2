@@ -450,3 +450,47 @@ bool aux::is_command(std::string word) {
 	}
 	return true;
 }
+
+std::string aux::write_short(short val) {
+	std::string out;
+	out += (unsigned char)(abs(val) / 255) + 1 + 128 * (val < 0);
+	out += (unsigned char)(abs(val) % 255) + 1;
+	return out;
+}
+short aux::read_short(std::istream& in) {
+	unsigned char first = in.get();
+	unsigned char second = in.get();
+	int16_t sign = -2 * (first > 128) + 1;
+	int16_t f = (first % 128 - 1);
+	int16_t s = second - 1;
+	return sign * (f * 255 + s);
+}
+
+std::string aux::write_int(int val) {
+	std::string out;
+	out += (unsigned char)(abs(val) / (255*255*255)) + 1 + 128 * (val < 0);
+	out += (unsigned char)((abs(val) / (255*255) ) % 255) + 1;
+	out += (unsigned char)((abs(val) / 255) % 255) + 1;
+	out += (unsigned char)(abs(val) % 255) + 1;
+	return out;
+}
+int aux::read_int(std::istream& in) {
+	unsigned char a, b, c, d;
+	a = in.get();
+	b = in.get();
+	c = in.get();
+	d = in.get();
+	int sign = -2 * (a > 128) + 1;
+	int a_ = (a % 128 - 1);
+	int b_ = b - 1;
+	int c_ = c - 1;
+	int d_ = d - 1;
+	return sign * (a_ * 255 * 255 * 255 + b_ * 255 * 255 + c_ * 255 + d_);
+}
+
+std::string aux::write_float(float val_, unsigned precision) {
+	return write_short(std::trunc(val_ * pow(10, precision)));
+}
+float aux::read_float(std::istream& in, unsigned precision) {
+	return (float)read_short(in) / pow(10, precision);
+}

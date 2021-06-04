@@ -658,7 +658,7 @@ void Game::process_physics() {
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
 			) {
-			// Sometimes contact point is a bullshit, i have no idea why (TODO)
+			// TODO: Sometimes contact point is a bullshit, i have no idea why 
 			if (b2Distance(b2Vec2_zero, contact->GetManifold()->localPoint) > 1e5)
 				continue;
 			// Adding used objects
@@ -666,7 +666,7 @@ void Game::process_physics() {
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
 			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, contact->GetManifold()->localPoint));
-			std::cout << "hit\n";
+			//std::cout << "hit\n";
 		}
 	}
 }
@@ -804,6 +804,7 @@ void Game::apply_command(int id, int command, int val) {
 }
 
 void Game::step(float _dt) {
+	//std::cout << projectiles.size() << "\n";
 	dt = _dt;
 	time += dt;
 	process_physics();
@@ -1311,19 +1312,20 @@ std::string Game::encode() {
 	}
 
 	// Projectiles (p)
-	for (auto projectile : projectiles) {
+	for (auto projectile : projectiles) { 
 		message += "p ";
 		// Id
-		message += std::to_string(projectile->get_id()) + " ";
+		// TODO: danger of integer ids
+		message += aux::write_short(projectile->get_id());
 		// Player id
-		message += std::to_string(projectile->get_player()->get_id()) + " ";
+		message += aux::write_int(projectile->get_player()->get_id());
 		// Pos
-		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(projectile->get_body()->GetPosition().x, 2);
+		message += aux::write_float(projectile->get_body()->GetPosition().y, 2);
 		// Angle
-		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
+		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(projectile->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		message += aux::write_float(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
 	}
 	// Rockets (r)
 	for (auto rocket : rockets) {

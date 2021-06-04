@@ -283,7 +283,7 @@ void Control::load_token(std::string path) {
 	int token;
 	config >> token;
 	if (token == 0) {
-		token = aux::random_int(0, 100000000);
+		token = aux::random_int(0, 10000000);
 		std::ofstream fout;
 		fout.open(path);
 		fout << token;
