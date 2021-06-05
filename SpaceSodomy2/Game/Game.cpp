@@ -1012,6 +1012,7 @@ bool Game::load_parameters(std::string path) {
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
 
+	unsigned char gun_alias = 1, hull_alias = 1;
 	// Parsing
 	std::string symbol;
 	while (input >> symbol) {
@@ -1177,6 +1178,7 @@ bool Game::load_parameters(std::string path) {
 			module_manager.add_prototype(prototype);
 			continue;
 		}
+
 		// Gun
 		if (symbol == "GUN") {
 			std::string name;
@@ -1186,6 +1188,9 @@ bool Game::load_parameters(std::string path) {
 			}
 			guns[name] = {};
 			guns[name].effect_prototype = effect_params;
+			guns[name].alias = gun_alias;
+			gun_by_alias[gun_alias] = name;
+			gun_alias++;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
@@ -1212,6 +1217,9 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			hulls[name] = {};
+			hulls[name].alias = hull_alias;
+			hull_by_alias[hull_alias] = name;
+			hull_alias++;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
@@ -1245,128 +1253,136 @@ std::string Game::encode() {
 	for (auto player : players) {
 		message += "P ";
 		// Id
-		message += std::to_string(player.first) + " ";
+		message += aux::write_int(player.first);
 		// Color
-		message += std::to_string(player.second->get_color().r) + " ";
-		message += std::to_string(player.second->get_color().g) + " ";
-		message += std::to_string(player.second->get_color().b) + " ";
+		sf::Color color = player.second->get_color();
+		color.r = std::max(0, color.r - 1);
+		color.g = std::max(0, color.g - 1);
+		color.b = std::max(0, color.b - 1);
+		message += aux::write_int8(color.r);
+		message += aux::write_int8(color.g);
+		message += aux::write_int8(color.b);
 		// Name
 		message += player.second->get_name() + " ";
 		// Hull
-		message += player.second->get_hull_name() + " ";
+		message += hulls[player.second->get_hull_name()].alias;
 		// Gun
-		message += player.second->get_gun_name() + " ";
+		message += guns[player.second->get_gun_name()].alias;
 		// Deaths & kills
-		message += std::to_string(player.second->get_deaths()) + " ";
-		message += std::to_string(player.second->get_kills()) + " ";
+		message += aux::write_short(player.second->get_deaths());
+		message += aux::write_short(player.second->get_kills());
 		// Time to respawn
-		message += std::to_string(int(player.second->get_time_to_respawn()->get() + 0.99)) + " ";
+		message += aux::write_int8(int(player.second->get_time_to_respawn()->get() + 0.99));
 		// Is alive
-		message += std::to_string(int(player.second->get_is_alive())) + " ";
+		message += aux::write_int8(int(player.second->get_is_alive()));
 		// Last connection time
-		message += std::to_string(connection_time->operator[](player.first));
+		message += aux::write_int(connection_time->operator[](player.first));
 	}
 
 	// Ships (S)
 	for (auto ship : ships) {
 		message += "S ";
 		// Id
-		message += std::to_string(ship->get_id()) + " ";
+		message += aux::write_int(ship->get_id());
 		// Player id
-		message += std::to_string(ship->get_player()->get_id()) + " ";
+		message += aux::write_int(ship->get_player()->get_id());
 		// Pos
-		message += aux::float_to_string(ship->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(ship->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(ship->get_body()->GetPosition().x, 2);
+		message += aux::write_float(ship->get_body()->GetPosition().y, 2);
 		// Linear velocity
-		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().x, 3) + " ";
-		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().y, 3) + " ";
+		message += aux::write_float(ship->get_body()->GetLinearVelocity().x, 2);
+		message += aux::write_float(ship->get_body()->GetLinearVelocity().y, 2);
 		// Angle
-		message += aux::float_to_string(ship->get_body()->GetAngle(), 3) + " ";
+		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(ship->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		message += aux::write_float(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Effects
 		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
 		// Bonus slot
-		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
+		message += aux::write_int8(ship->get_bonus_slot()->get_current_bonus());
 		// Modules
-		message += std::to_string(ship->get_left_module()->get_type()) + " ";
-		message += aux::float_to_string(ship->get_left_module()->get_recharge_counter()->get(), 3) + " ";
-		message += aux::float_to_string(ship->get_left_module()->get_recharge_time(), 3) + " ";
+		message += aux::write_int8(ship->get_left_module()->get_type());
+		message += aux::write_float(ship->get_left_module()->get_recharge_counter()->get(), 2);
+		message += aux::write_float(ship->get_left_module()->get_recharge_time(), 2);
 
-		message += std::to_string(ship->get_right_module()->get_type()) + " ";
-		message += aux::float_to_string(ship->get_right_module()->get_recharge_counter()->get(), 3) + " ";
-		message += aux::float_to_string(ship->get_right_module()->get_recharge_time(), 3) + " ";
+		message += aux::write_int8(ship->get_right_module()->get_type());
+		message += aux::write_float(ship->get_right_module()->get_recharge_counter()->get(), 2);
+		message += aux::write_float(ship->get_right_module()->get_recharge_time(), 2);
 
 
 		// Hp
-		message += std::to_string((int)ship->get_hp()->get()) + " ";
-		message += std::to_string((int)ship->get_hp()->get_max()) + " ";
+		message += aux::write_short((int)ship->get_hp()->get());
+		message += aux::write_short((int)ship->get_hp()->get_max());
 		// Stamina
-		message += std::to_string((int)ship->get_stamina()->get()) + " ";
-		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
+		message += aux::write_short((int)ship->get_stamina()->get());
+		message += aux::write_short((int)ship->get_stamina()->get_max());
 		// Energy
-		message += std::to_string((int)ship->get_energy()->get()) + " ";
-		message += std::to_string((int)ship->get_energy()->get_max()) + " ";
+		message += aux::write_short((int)ship->get_energy()->get());
+		message += aux::write_short((int)ship->get_energy()->get_max());
 	}
 
-	// Projectiles (p)
-	for (auto projectile : projectiles) { 
-		message += "p ";
+	// Efficient projectiles
+	std::map<int, std::string> player_packs;
+	for (auto projectile : projectiles) {
+		int player_id = projectile->get_player()->get_id();
 		// Id
-		// TODO: danger of integer ids
-		message += aux::write_short(projectile->get_id());
-		// Player id
-		message += aux::write_int(projectile->get_player()->get_id());
+		player_packs[player_id] += aux::write_short(projectile->get_id() % 5000);
 		// Pos
-		message += aux::write_float(projectile->get_body()->GetPosition().x, 2);
-		message += aux::write_float(projectile->get_body()->GetPosition().y, 2);
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetPosition().x, 2);
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetPosition().y, 2);
 		// Angle
-		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(projectile->get_body()->GetAngle())), 3);
+		player_packs[player_id] += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(projectile->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::write_float(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
+	}
+	for (auto pack : player_packs) {
+		message += "p ";
+		message += aux::write_int(pack.first);
+		message += aux::write_int8(pack.second.size() / 10);
+		message += pack.second;	
 	}
 	// Rockets (r)
 	for (auto rocket : rockets) {
 		message += "r ";
 		// Id
-		message += std::to_string(rocket->get_id()) + " ";
+		message += aux::write_short(rocket->get_id() % 15000);
 		// Player id
-		message += std::to_string(rocket->get_player()->get_id()) + " ";
+		message += aux::write_int(rocket->get_player()->get_id());
 		// Pos
-		message += aux::float_to_string(rocket->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(rocket->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(rocket->get_body()->GetPosition().x, 2);
+		message += aux::write_float(rocket->get_body()->GetPosition().y, 2);
 		// Angle
-		message += aux::float_to_string(rocket->get_body()->GetAngle(), 3) + " ";
+		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(rocket->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::float_to_string(rocket->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		message += aux::write_float(rocket->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
 	}
 
 	// Bonuses (b)
 	for (auto bonus : bonuses) {
 		message += "b ";
 		// Id
-		message += std::to_string(bonus->get_id()) + " ";
+		message += aux::write_int8(bonus->get_id());
 		// Position
-		message += aux::float_to_string(bonus->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(bonus->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(bonus->get_body()->GetPosition().x, 2);
+		message += aux::write_float(bonus->get_body()->GetPosition().y, 2);
 		// Type
-		message += std::to_string(bonus->get_type()) + " ";
+		message += aux::write_int8(bonus->get_type());
 	}
 
 	// Events (e)
 	for (auto event : events) {
 		message += "e ";
 		// Id
-		message += std::to_string(event->get_id()) + " ";
+		message += aux::write_short(event->get_id());
 		// Type
-		message += std::to_string(event->get_type()) + " ";
+		message += aux::write_int8(event->get_type());
 		// Pos
-		message += aux::float_to_string(event->get_pos().x, 2) + " ";
-		message += aux::float_to_string(event->get_pos().y, 2) + " ";
+		message += aux::write_float(event->get_pos().x, 2);
+		message += aux::write_float(event->get_pos().y, 2);
 	}
-
+	std::cout << "message size is " << message.size() << "\n";
 	return message;
 }
 

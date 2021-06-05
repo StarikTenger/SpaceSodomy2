@@ -120,6 +120,10 @@ public:
 	// Checks whether word fits the style of commands, COMMANDS must be caps
 	static bool is_command(std::string word);
 
+	// Accepts numbers < 255;
+	static std::string write_int8(int val);
+	static int read_int8(std::istream& in);
+
 	// Caution: shorts larger than 127 * 255 wont work
 	static std::string write_short(short val);
 	static short read_short(std::istream& in);

@@ -23,6 +23,7 @@ public:
 
 struct Gun_Prototype {
 	float damage = 20;
+	unsigned char alias = 1;
 	float recharge_time = 0.5;
 	float stamina_cost = 10;
 	float energy_cost = 0;

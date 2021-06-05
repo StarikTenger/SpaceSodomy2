@@ -71,7 +71,10 @@ protected:
 
 	// Ship components
 	std::map<std::string, Gun_Prototype> guns;
+	std::map<unsigned char, std::string> gun_by_alias;
 	std::map<std::string, Hull_Prototype> hulls;
+	std::map<unsigned char, std::string> hull_by_alias;
+
 	// Stores effect Algebraic types and strengths
 	Effects_Prototype effect_params;
 	// Misc

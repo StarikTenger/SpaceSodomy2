@@ -494,3 +494,13 @@ std::string aux::write_float(float val_, unsigned precision) {
 float aux::read_float(std::istream& in, unsigned precision) {
 	return (float)read_short(in) / pow(10, precision);
 }
+
+std::string aux::write_int8(int val) {
+	std::string out;
+	out += (unsigned char)(val + 1);
+	return out;
+}
+int aux::read_int8(std::istream& in) {
+	unsigned char val = in.get();
+	return (int)val - 1;
+}

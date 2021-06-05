@@ -457,25 +457,29 @@ void Game_Client::decode(std::string source) {
 		// Player
 		if (symbol == "P") {
 			// Id
+			stream.get();
 			int id;
-			stream >> id;
+			id = aux::read_int(stream);
 			// Color
 			sf::Color color;
-			int r, g, b;
-			stream >> r >> g >> b;
+			int r = aux::read_int8(stream), g = aux::read_int8(stream), b = aux::read_int8(stream);
 			color = sf::Color(r, g, b);
 			// Name
 			std::string name;
 			stream >> name;
+			stream.get();
 			// Hull
-			std::string hull;
-			stream >> hull;
+			std::string hull = hull_by_alias[stream.get()];
 			// Gun
-			std::string gun;
-			stream >> gun;
+			std::string gun = gun_by_alias[stream.get()];
 			// Deaths, kills & etc
 			int deaths, kills, time_to_respawn, is_alive, connection_time;
-			stream >> deaths >> kills >> time_to_respawn >> is_alive >> connection_time;
+			deaths = aux::read_short(stream);
+			kills = aux::read_short(stream);
+			time_to_respawn = aux::read_int8(stream);
+			is_alive = aux::read_int8(stream);
+			connection_time = aux::read_int(stream);
+
 			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
 			Player* player = create_player(id);
@@ -494,49 +498,58 @@ void Game_Client::decode(std::string source) {
 		// Ship
 		if (symbol == "S") {
 			// Ids
+			stream.get();
 			int id, player_id;
-			stream >> id >> player_id;
+			id = aux::read_int(stream);
+			player_id = aux::read_int(stream);
 			// Pos
 			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
+			pos.x = aux::read_float(stream, 2);
+			pos.y = aux::read_float(stream, 2);
 			// Linear velocity
 			b2Vec2 linvel;
-			stream >> linvel.x >> linvel.y;
+			linvel.x = aux::read_float(stream, 2);
+			linvel.y = aux::read_float(stream, 2);
 			// Angle
 			float angle;
-			stream >> angle;
+			angle = aux::read_float(stream, 3);
 			// Radius
 			float radius;
-			stream >> radius;
+			radius = aux::read_float(stream, 2);
 			// Commands
 			std::string commands_stringed;
 			stream >> commands_stringed;
 			// Effects
 			std::string effects_stringed;
 			stream >> effects_stringed;
+			stream.get();
 			// Bonus slot
 			int bonus;
-			stream >> bonus;
+			bonus = aux::read_int8(stream);
 			// Modules
 			int left_module, right_module;
 			float left_module_time, left_module_max_time;
 			float right_module_time, right_module_max_time;
 
-			stream >> left_module >> left_module_time >> left_module_max_time;
-			stream >> right_module >> right_module_time >> right_module_max_time;
+			left_module = aux::read_int8(stream);
+			left_module_time = aux::read_float(stream, 2);
+			left_module_max_time = aux::read_float(stream, 2);
+			right_module = aux::read_int8(stream);
+			right_module_time = aux::read_float(stream, 2);
+			right_module_max_time = aux::read_float(stream, 2);
 			// Hp
 			float hp;
-			stream >> hp;
+			hp = aux::read_short(stream);
 			float max_hp;
-			stream >> max_hp;
+			max_hp = aux::read_short(stream);
 			float stamina;
-			stream >> stamina;
+			stamina = aux::read_short(stream);
 			float max_stamina;
-			stream >> max_stamina;
+			max_stamina = aux::read_short(stream);
 			float energy;
-			stream >> energy;
+			energy = aux::read_short(stream);
 			float max_energy;
-			stream >> max_energy;
+			max_energy = aux::read_short(stream);
 
 			auto ship = create_ship(players[player_id], pos, angle);
 			ship->set_id(id);
@@ -570,45 +583,68 @@ void Game_Client::decode(std::string source) {
 		}
 		// Projectile
 		if (symbol == "p") {
-			// Ids
 			stream.get();
-			int id, player_id;
-			id = aux::read_short(stream);
-			player_id = aux::read_int(stream);
-			// Pos
-			b2Vec2 pos;
-			pos.x = aux::read_float(stream, 2);
-			pos.y = aux::read_float(stream, 2);
-			// Angle
-			float angle;
-			angle = aux::read_float(stream, 3);
-			// Radius
-			float radius;
-			radius = aux::read_float(stream, 2);
-			// Creating projectile_def
-			Projectile_Def projectile_def;
-			projectile_def.pos = pos;
-			projectile_def.radius = radius;
-			projectile_def.player = players[player_id];
-			// Creating projectile
-			auto projectile = create_projectile(projectile_def);
-			projectile->set_id(id);
-			manage_destroyed_object(id);
+			int player_id = aux::read_int(stream);
+			int number = aux::read_int8(stream);
+			for (int i = 0; i < number; i++) {
+				int id = aux::read_short(stream);
+				b2Vec2 pos;
+			    pos.x = aux::read_float(stream, 2);
+				pos.y = aux::read_float(stream, 2);
+				float angle = aux::read_float(stream, 3);
+				float radius = aux::read_float(stream, 2);
+				// Creating projectile_def
+				Projectile_Def projectile_def;
+				projectile_def.pos = pos;
+				projectile_def.radius = radius;
+				projectile_def.player = players[player_id];
+				// Creating projectile
+				auto projectile = create_projectile(projectile_def);
+				projectile->set_id(id);
+				manage_destroyed_object(id);
+			}
+			//// Ids
+			//stream.get();
+			//int id, player_id;
+			//id = aux::read_short(stream);
+			//player_id = aux::read_int(stream);
+			//// Pos
+			//b2Vec2 pos;
+			//pos.x = aux::read_float(stream, 2);
+			//pos.y = aux::read_float(stream, 2);
+			//// Angle
+			//float angle;
+			//angle = aux::read_float(stream, 3);
+			//// Radius
+			//float radius;
+			//radius = aux::read_float(stream, 2);
+			//// Creating projectile_def
+			//Projectile_Def projectile_def;
+			//projectile_def.pos = pos;
+			//projectile_def.radius = radius;
+			//projectile_def.player = players[player_id];
+			//// Creating projectile
+			//auto projectile = create_projectile(projectile_def);
+			//projectile->set_id(id);
+			//manage_destroyed_object(id);
 		}
 		// Rocket
 		if (symbol == "r") {
 			// Ids
 			int id, player_id;
-			stream >> id >> player_id;
 			// Pos
 			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
 			// Angle
 			float angle;
-			stream >> angle;
 			// Radius
 			float radius;
-			stream >> radius;
+			stream.get();
+			id = aux::read_short(stream);
+			player_id = aux::read_int(stream);
+			pos.x = aux::read_float(stream, 2);
+			pos.y = aux::read_float(stream, 2);
+			angle = aux::read_float(stream, 3);
+			radius = aux::read_float(stream, 2);
 			// Creating rocket_def
 			Rocket_Def rocket_def;
 			rocket_def.pos = pos;
@@ -622,15 +658,15 @@ void Game_Client::decode(std::string source) {
 		}
 		// Bonus
 		if (symbol == "b") {
+			stream.get();
 			// Id
-			int id;
-			stream >> id;
+			int id = aux::read_int8(stream);
 			// Pos
 			b2Vec2 pos;
-			stream >> pos.x >> pos.y;
+			pos.x = (aux::read_float(stream, 2));
+			pos.y = aux::read_float(stream, 2);
 			// Type
-			int type;
-			stream >> type;
+			int type = aux::read_int8(stream);
 			// Bonus def
 			Bonus_Def bonus_def;
 			bonus_def.pos = pos;
@@ -643,7 +679,11 @@ void Game_Client::decode(std::string source) {
 			int id;
 			int type;
 			b2Vec2 pos;
-			stream >> id >> type >> pos.x >> pos.y;
+			stream.get();
+			id = aux::read_short(stream);
+			type = aux::read_int8(stream);
+			pos.x = aux::read_float(stream, 2);
+			pos.y = aux::read_float(stream, 2);
 			// TODO: make function for getting sound name
 			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force", "blink"};
 			std::string sound_name = sound_names[type];
