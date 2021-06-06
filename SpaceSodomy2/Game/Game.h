@@ -20,6 +20,7 @@
 #include "Module_Manager.h"
 #include "Game_Objects.h"
 #include "Rocket_Brain.h"
+#include "Forcefield.h"
 
 
 class Game {
@@ -49,6 +50,7 @@ protected:
 	std::set<Bonus*> bonuses;
 	std::set<Rocket*> rockets;
 	std::set<Rocket_Brain*> rocket_brains;
+	std::set<Forcefield*> forcefields;
 	
 	// Walls
 	std::set<Wall*> walls;
@@ -101,9 +103,11 @@ protected:
 	Module*          create_module(Module_Prototype*);
 	Rocket*          create_rocket(Rocket_Def);
 	Rocket_Brain*    create_rocket_brain(Rocket_Prototype*);
+	Forcefield*      create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force);
 
 	// Delete functions
 	void delete_body(b2Body*);
+	void delete_wall(Wall*);
 	void delete_projectile(Projectile*);
 	void delete_engine(Engine*);
 	void delete_active_module(Active_Module*);
@@ -115,6 +119,7 @@ protected:
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
 	void delete_rocket_brain(Rocket_Brain*);
+	void delete_forcefield(Forcefield*);
 
 	 // Processing functions
 	void process_players();
@@ -133,7 +138,7 @@ protected:
 	void process_rockets();
 	void process_rocket_brains();
 	void process_rocket_manager();
-	//void process_bonus_slot      //nothing to process for now
+	void process_forcefields();
 
 	// Misc
 	// Calculates where beam intersects walls
@@ -150,8 +155,10 @@ public:
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
-	// Clears everything
+	// Clears every temporary body
 	void clear();
+	// Clean all
+	void wipe_map();
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
@@ -161,5 +168,6 @@ public:
 	Player* player_by_id(int id);
 	// Deletes player
 	void delete_player(int id);
+	~Game();
 };
 

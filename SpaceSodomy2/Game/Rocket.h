@@ -73,5 +73,6 @@ struct Rocket_Def {
 	Rocket_Prototype base;
 	b2Vec2 pos;
 	b2Vec2 vel;
+	float angle_vel;
 	float angle;
 };

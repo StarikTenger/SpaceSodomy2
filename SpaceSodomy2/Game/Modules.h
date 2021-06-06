@@ -140,5 +140,6 @@ public:
     float blast_radius;
     float damage;
     float blast_force;
+    float rotation_factor;
     void activate() override;
 };

@@ -335,6 +335,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	rocket->set_player(def.player);
 	auto body = create_round_body(def.pos + b2Vec2{0,0}, def.angle, def.base.radius, def.base.mass);
 	body->SetLinearVelocity(def.vel);
+	body->SetAngularVelocity(def.angle_vel);
 	collision_filter.add_body(body, Collision_Filter::PROJECTILE, def.player->get_id());
 	rocket->set_body(body);
 
@@ -375,6 +376,16 @@ Rocket_Brain* Game::create_rocket_brain(Rocket_Prototype* base) {
 	auto brain = new Rocket_Brain(base->range, base->bin_search_accuracy);
 	rocket_brains.insert(brain);
 	return brain;
+}
+
+Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) {
+	auto forcefield = new Forcefield();
+	forcefield->set(&physics, vertices, force);
+	forcefield->get_body()->GetFixtureList()->SetRestitution(1);
+	collision_filter.add_body(forcefield->get_body(), Collision_Filter::GHOST);
+	forcefields.insert(forcefield);
+	id_manager.set_id(forcefield);
+	return forcefield;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -461,6 +472,17 @@ void Game::delete_rocket_brain(Rocket_Brain* brain) {
 	rocket_brains.erase(brain);
 	delete brain->get_command_module();
 	delete brain;
+}
+
+void Game::delete_wall(Wall* wall) {
+	delete_body(wall->get_body());
+	walls.erase(wall);
+	delete wall;
+}
+void Game::delete_forcefield(Forcefield* field) {
+	delete_body(field->get_body());
+	forcefields.erase(field);
+	delete field;
 }
 
 
@@ -757,6 +779,14 @@ void Game::process_rocket_manager() {
 	}
 }
 
+void Game::process_forcefields() {
+	// TODO: make efficient
+	for (auto field : forcefields) {
+		for (auto body = physics.GetBodyList(); body; body->GetNext()) {
+			field->apply(body, dt);
+		}
+	}
+}
 
 b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 	b2Vec2 closest_intersection;
@@ -824,6 +854,7 @@ void Game::step(float _dt) {
 	process_rocket_brains();
 	process_rockets();
 	process_rocket_manager();
+	process_forcefields();
 }
 
 void Game::set_dt(float _dt) {
@@ -855,6 +886,10 @@ void Game::clear() {
 	for (auto projectile : projectiles)
 		delete projectile;
 	projectiles = {};
+	for (auto module : active_modules) {
+		delete module;
+	}
+	active_modules = {};
 	// Clear counters
 	for (auto counter : counters)
 		delete counter;
@@ -884,12 +919,26 @@ void Game::clear() {
 	b2World physics = b2World(b2Vec2_zero);
 }
 
+void Game::wipe_map() {
+	clear();
+	for (auto wall : walls) {
+		delete wall;
+	}
+	walls = {};
+	for (auto field : forcefields) {
+		delete field;
+	}
+	forcefields = {};
+
+}
+
 bool Game::load_map(std::string path) {
 	walls.clear();
 	map_path = path;
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
 	int wall_id = 0;
+	int forcefield_id = 0;
 	bool corner_init = 0;
 
 	// Parsing
@@ -898,6 +947,34 @@ bool Game::load_map(std::string path) {
 		if (symbol == "END")
 			break;
 		// Wall
+		if (symbol == "FORCEFIELD") {
+			std::string symbol_1;
+			std::vector<b2Vec2> points;
+			b2Vec2 force;
+			while (input >> symbol_1) {
+				if (symbol_1 == "END") {
+					break;
+				}
+				if (symbol == "FORCE") {
+					input >> force.x >> force.y;
+					continue;
+				}
+				if (symbol == "POINT") {
+					b2Vec2 point;
+					if (!(input >> point.x >> point.y)) { // Error
+						std::cerr << "Game::load_map: failed to read point";
+						return false;
+					}
+					// Point loaded successfully
+					points.push_back(point);
+					continue;
+				}
+				std::cerr << "Game::load_map: unknown symbol " << symbol_1 << "\n";
+				return false;
+			}
+			create_forcefield(points, force)->set_id(forcefield_id++);
+			continue;
+		}
 		if (symbol == "WALL") {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
@@ -1383,7 +1460,7 @@ std::string Game::encode() {
 		message += aux::write_float(event->get_pos().x, 2);
 		message += aux::write_float(event->get_pos().y, 2);
 	}
-	std::cout << "message size is " << message.size() << "\n";
+	//std::cout << "message size is " << message.size() << "\n";
 	return message;
 }
 
@@ -1418,4 +1495,8 @@ void Game::delete_player(int id) {
 
 	// Deleting player
 	players.erase(players.find(id));
+}
+
+Game::~Game() {
+	wipe_map();
 }

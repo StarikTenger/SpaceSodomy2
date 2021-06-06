@@ -169,6 +169,7 @@
     <ClInclude Include="Effects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="entities.h" />
+    <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game_Objects.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Damage_Receiver.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Forcefield.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_Objects.cpp" />
     <ClCompile Include="Gun.cpp" />

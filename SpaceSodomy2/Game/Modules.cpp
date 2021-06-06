@@ -217,9 +217,9 @@ Rocket_Module::Rocket_Module(Module_Prototype* base) : Module(base) {
 	blast_radius = base->params["blast_radius"];
 	damage = base->params["damage"];
 	blast_force = base->params["blast_force"];
+	rotation_factor = base->params["rotation_factor"];
 }
 void Rocket_Module::activate() {
-	std::cout << rocket_manager << '\n';
 	activate_default_side_effects();
 	Rocket_Def def;
 	def.base.force_linear = force_linear;
@@ -235,6 +235,7 @@ void Rocket_Module::activate() {
 	def.base.blast_force = blast_force;
 	def.player = player;
 	def.angle = body->GetAngle();
+	def.angle_vel = body->GetAngularVelocity() * rotation_factor;
 	def.pos = body->GetWorldPoint({ 0,0 });
 	def.vel = body->GetLinearVelocity();
 	rocket_manager->create_rocket(def);
