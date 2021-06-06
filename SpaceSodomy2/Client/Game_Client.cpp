@@ -434,7 +434,7 @@ void Game_Client::decode(std::string source) {
 
 	// Pasrsing source
 	std::string symbol;
-	while (stream >> symbol) {
+	while (symbol = stream.get(), !stream.eof()) {
 		// Map
 		if (symbol == "M") {
 			std::string path;
@@ -457,7 +457,7 @@ void Game_Client::decode(std::string source) {
 		// Player
 		if (symbol == "P") {
 			// Id
-			stream.get();
+			//stream.get();
 			int id;
 			id = aux::read_int(stream);
 			// Color
@@ -498,7 +498,7 @@ void Game_Client::decode(std::string source) {
 		// Ship
 		if (symbol == "S") {
 			// Ids
-			stream.get();
+			//stream.get();
 			int id, player_id;
 			id = aux::read_int(stream);
 			player_id = aux::read_int(stream);
@@ -583,7 +583,7 @@ void Game_Client::decode(std::string source) {
 		}
 		// Projectile
 		if (symbol == "p") {
-			stream.get();
+			//stream.get();
 			int player_id = aux::read_int(stream);
 			int number = aux::read_int8(stream);
 			for (int i = 0; i < number; i++) {
@@ -638,7 +638,7 @@ void Game_Client::decode(std::string source) {
 			float angle;
 			// Radius
 			float radius;
-			stream.get();
+			//stream.get();
 			id = aux::read_short(stream);
 			player_id = aux::read_int(stream);
 			pos.x = aux::read_float(stream, 2);
@@ -658,7 +658,7 @@ void Game_Client::decode(std::string source) {
 		}
 		// Bonus
 		if (symbol == "b") {
-			stream.get();
+			//stream.get();
 			// Id
 			int id = aux::read_int8(stream);
 			// Pos
@@ -679,7 +679,7 @@ void Game_Client::decode(std::string source) {
 			int id;
 			int type;
 			b2Vec2 pos;
-			stream.get();
+			//stream.get();
 			id = aux::read_short(stream);
 			type = aux::read_int8(stream);
 			pos.x = aux::read_float(stream, 2);

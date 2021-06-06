@@ -119,6 +119,7 @@ Counter* Game::create_counter(float val, float change_vel) {
 
 Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
+	damage_receiver->set_imm_frames(params["imm_frames"]);
 	damage_receiver->set_player(player);
 	damage_receiver->set_effects(effs);
 	damage_receivers.insert(damage_receiver);
@@ -1247,11 +1248,11 @@ std::string Game::encode() {
 	std::string message = "";
 
 	// Map path
-	message += "M " + map_path + " ";
+	message += "M" + map_path + " ";
 
 	// Players (P)
 	for (auto player : players) {
-		message += "P ";
+		message += "P";
 		// Id
 		message += aux::write_int(player.first);
 		// Color
@@ -1281,7 +1282,7 @@ std::string Game::encode() {
 
 	// Ships (S)
 	for (auto ship : ships) {
-		message += "S ";
+		message += "S";
 		// Id
 		message += aux::write_int(ship->get_id());
 		// Player id
@@ -1338,14 +1339,14 @@ std::string Game::encode() {
 		player_packs[player_id] += aux::write_float(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
 	}
 	for (auto pack : player_packs) {
-		message += "p ";
+		message += "p";
 		message += aux::write_int(pack.first);
 		message += aux::write_int8(pack.second.size() / 10);
 		message += pack.second;	
 	}
 	// Rockets (r)
 	for (auto rocket : rockets) {
-		message += "r ";
+		message += "r";
 		// Id
 		message += aux::write_short(rocket->get_id() % 15000);
 		// Player id
@@ -1361,7 +1362,7 @@ std::string Game::encode() {
 
 	// Bonuses (b)
 	for (auto bonus : bonuses) {
-		message += "b ";
+		message += "b";
 		// Id
 		message += aux::write_int8(bonus->get_id());
 		// Position
@@ -1373,7 +1374,7 @@ std::string Game::encode() {
 
 	// Events (e)
 	for (auto event : events) {
-		message += "e ";
+		message += "e";
 		// Id
 		message += aux::write_short(event->get_id());
 		// Type

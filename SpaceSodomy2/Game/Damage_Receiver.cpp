@@ -26,6 +26,9 @@ Effects* Damage_Receiver::get_effects() {
     return effects;
 }
 
+float Damage_Receiver::get_imm_frames() {
+    return imm_frames;
+}
 
 void Damage_Receiver::set_body(b2Body* val) {
     body = val;
@@ -43,10 +46,17 @@ void Damage_Receiver::set_effects(Effects* val) {
     effects = val;
 }
 
+void Damage_Receiver::set_imm_frames(float val) {
+    imm_frames = val;
+}
+
 
 void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
     if (effects && effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {
         return;
+    }
+    if (effects) {
+        effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->set(imm_frames);
     }
     hp->modify(-value);
     if (hit_by != player) {

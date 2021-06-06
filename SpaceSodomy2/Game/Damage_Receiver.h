@@ -12,6 +12,7 @@ private:
 	Player* last_hit = nullptr;
 	Player* player = nullptr;
 	Effects* effects = nullptr;
+	float imm_frames = 0.f;
 public:
 
 	// Constructor
@@ -23,12 +24,14 @@ public:
 	Player* get_last_hit();
 	Player* get_player();
 	Effects* get_effects();
+	float get_imm_frames();
 
 	// Set methods
 	void set_body(b2Body*);
 	void set_hp(Counter*);
 	void set_player(Player*);
 	void set_effects(Effects*);
+	void set_imm_frames(float);
 
 
 	// Deals damage
