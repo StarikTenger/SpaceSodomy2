@@ -782,7 +782,7 @@ void Game::process_rocket_manager() {
 void Game::process_forcefields() {
 	// TODO: make efficient
 	for (auto field : forcefields) {
-		for (auto body = physics.GetBodyList(); body; body->GetNext()) {
+		for (auto body = physics.GetBodyList(); body; body = body->GetNext()) {
 			field->apply(body, dt);
 		}
 	}
@@ -955,11 +955,11 @@ bool Game::load_map(std::string path) {
 				if (symbol_1 == "END") {
 					break;
 				}
-				if (symbol == "FORCE") {
+				if (symbol_1 == "FORCE") {
 					input >> force.x >> force.y;
 					continue;
 				}
-				if (symbol == "POINT") {
+				if (symbol_1 == "POINT") {
 					b2Vec2 point;
 					if (!(input >> point.x >> point.y)) { // Error
 						std::cerr << "Game::load_map: failed to read point";
@@ -972,7 +972,8 @@ bool Game::load_map(std::string path) {
 				std::cerr << "Game::load_map: unknown symbol " << symbol_1 << "\n";
 				return false;
 			}
-			create_forcefield(points, force)->set_id(forcefield_id++);
+			create_forcefield(points, force)->set_id(forcefield_id);
+			forcefield_id++;
 			continue;
 		}
 		if (symbol == "WALL") {
