@@ -27,7 +27,7 @@ Module* Module_Manager::new_module(Module_Prototype* base) {
         return new Dash_Module(base);
     case (Module::FORCE):
         return new Force_Module(base);
-    case (Module::BLINK):
+    case (Module::MODULE_BLINK):
         return new Blink_Module(base);
     case(Module::NONE):
         return new None_Module(base);

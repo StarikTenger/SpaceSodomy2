@@ -196,10 +196,10 @@ void Game_Client::display(int id) {
 			}
 
 			// Blink target
-			if (ship->get_left_module()->get_type() == Module::BLINK || 
-				ship->get_right_module()->get_type() == Module::BLINK)
+			if (ship->get_left_module()->get_type() == Module::MODULE_BLINK || 
+				ship->get_right_module()->get_type() == Module::MODULE_BLINK)
 				draw->image("ship_aura_" + ship->get_player()->get_hull_name(), 
-					body_pos + module_manager.get_prototype(Module::BLINK)->params["distance"] * aux::direction(ship->get_body()->GetAngle()),
+					body_pos + module_manager.get_prototype(Module::MODULE_BLINK)->params["distance"] * aux::direction(ship->get_body()->GetAngle()),
 					{radius, radius}, ship->get_body()->GetAngle(), aux::set_opacity(color, 70));
 		}
 
@@ -685,7 +685,15 @@ void Game_Client::decode(std::string source) {
 			pos.x = aux::read_float(stream, 2);
 			pos.y = aux::read_float(stream, 2);
 			// TODO: make function for getting sound name
-			std::vector<std::string> sound_names = { "", "shot", "laser", "hit", "force", "blink"};
+			std::map<int, std::string> sound_names;// = { "", "shot", "laser", "hit", "force", "blink" };
+			sound_names[Event::SHOT] = "shot";
+			sound_names[Event::LASER] = "laser";
+			sound_names[Event::WALL_HIT] = "hit";
+			sound_names[Event::MODULE_SHOTGUN] = "shotgun";
+			sound_names[Event::MODULE_FORCE] = "force";
+			sound_names[Event::MODULE_BLINK] = "blink";
+			sound_names[Event::MODULE_ROCKET] = "rocket";
+			sound_names[Event::MODULE_DASH] = "dash";
 			std::string sound_name = sound_names[type];
 			audio->update_sound(id, sound_name, pos, 1, 0);
 			// Creating event
@@ -693,7 +701,7 @@ void Game_Client::decode(std::string source) {
 			// Animations
 			if (active_events.count(id))
 				continue;
-			if (type == Event::FORCE_ACTIVATION) {
+			if (type == Event::MODULE_FORCE) {
 				draw->fadeout_animation("force",
 					pos, // Position
 					{ 0, 0.0 }, // Shift
@@ -703,12 +711,23 @@ void Game_Client::decode(std::string source) {
 					0.15, GAME // Duration, layer
 				);
 			}
-			if (type == Event::BLINK) {
+			if (type == Event::MODULE_BLINK) {
 				for (int i = 0; i < 10; i++)
 					draw->fadeout_animation("bullet",
 						pos, // Position
 						{ 0.0, 0.3 }, // Shift
 						{ 0.3, 0.}, // Size
+						{ 0, 0 }, // Angle
+						{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+						0.15, GAME // Duration, layer
+					);
+			}
+			if (type == Event::MODULE_DASH) {
+				for (int i = 0; i < 10; i++)
+					draw->fadeout_animation("bullet",
+						pos, // Position
+						{ 0.0, 0.3 }, // Shift
+						{ 0.3, 0. }, // Size
 						{ 0, 0 }, // Angle
 						{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
 						0.15, GAME // Duration, layer

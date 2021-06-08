@@ -23,7 +23,7 @@ public:
         INVISIBILITY,
         DASH,
         FORCE,
-        BLINK,
+        MODULE_BLINK,
         NONE,
         ROCKET,
         COUNT

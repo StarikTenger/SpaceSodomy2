@@ -15,7 +15,7 @@ std::map<int, std::string> Module::names = {
 				{Type::INVISIBILITY, "INVISIBILITY"},
 				{Type::DASH, "DASH"},
 				{Type::FORCE, "FORCE"},
-				{Type::BLINK, "BLINK"},
+				{Type::MODULE_BLINK, "BLINK"},
 				{Type::NONE, "NONE"},
 	            {Type::ROCKET, "ROCKET"}
 };
@@ -27,7 +27,7 @@ std::map<std::string, Module::Type> Module::named_types = {
 				{"INVISIBILITY", Type::INVISIBILITY},
 				{"DASH", Type::DASH},
 				{"FORCE", Type::FORCE},
-				{"BLINK", Type::BLINK},
+				{"BLINK", Type::MODULE_BLINK},
 				{"NONE", Type::NONE},
 				{"ROCKET", Type::ROCKET},
 				{"default", Type::NONE}
@@ -109,6 +109,11 @@ Shotgun_Module::Shotgun_Module(Module_Prototype* base) : Module(base) {
 
 void Shotgun_Module::activate() {
 	activate_default_side_effects();
+
+	// Event
+	event_manager->create_event(Event_Def(Event::MODULE_SHOTGUN, body));
+
+	// Projectiles
 	Projectile_Def projectile_def;
 	float num = bullet_num;
 	//std::cout << num;
@@ -157,6 +162,9 @@ Dash_Module::Dash_Module(Module_Prototype* base) : Module(base) {
 }
 
 void Dash_Module::activate() {
+	// Event
+	event_manager->create_event(Event_Def(Event::MODULE_DASH, body));
+
 	activate_default_side_effects();
 	body->ApplyLinearImpulseToCenter(vel * body->GetMass() * aux::angle_to_vec(body->GetAngle()), 1);
 }
@@ -181,7 +189,7 @@ void Force_Module::activate() {
 	}
 	Event_Def event_def;
 	event_def.pos = body->GetPosition();
-	event_def.type = Event::FORCE_ACTIVATION;
+	event_def.type = Event::MODULE_FORCE;
 	event_manager->create_event(event_def);
 }
 Blink_Module::Blink_Module(Module_Prototype* base) : Module(base) {
@@ -199,7 +207,7 @@ void Blink_Module::activate() {
 		}
 	}
 	// Event
-	event_manager->create_event(Event_Def(Event::BLINK, nullptr, body->GetPosition()));
+	event_manager->create_event(Event_Def(Event::MODULE_BLINK, nullptr, body->GetPosition()));
 
 	activate_default_side_effects();
 	body->SetTransform(newpos, body->GetAngle());
@@ -220,6 +228,9 @@ Rocket_Module::Rocket_Module(Module_Prototype* base) : Module(base) {
 	rotation_factor = base->params["rotation_factor"];
 }
 void Rocket_Module::activate() {
+	// Event
+	event_manager->create_event(Event_Def(Event::MODULE_ROCKET, body));
+
 	activate_default_side_effects();
 	Rocket_Def def;
 	def.base.force_linear = force_linear;

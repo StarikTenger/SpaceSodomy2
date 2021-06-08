@@ -19,11 +19,9 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 }
 
 void Gun::activate() {
+	// Event
+	event_manager->create_event(Event_Def(Event::SHOT, body));
 
-	Event_Def event_def;
-	event_def.type = Event::SHOT;
-	event_def.body = body;
-	event_manager->create_event(event_def);
 	// Apply BERSERK
 	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
 		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_param("firing_rate_boost"));
