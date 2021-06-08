@@ -35,6 +35,6 @@ void Event::set_pos(b2Vec2 val) {
 }
 
 bool Event::is_alive() {
-	// Events lasts for one second (temporary solution)
+	// TODO: Events lasts for one second (temporary solution)
 	return playing_offset->get() < 1;
 }

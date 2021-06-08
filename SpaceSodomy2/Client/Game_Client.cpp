@@ -684,17 +684,20 @@ void Game_Client::decode(std::string source) {
 			type = aux::read_int8(stream);
 			pos.x = aux::read_float(stream, 2);
 			pos.y = aux::read_float(stream, 2);
-			// TODO: make function for getting sound name
-			std::map<int, std::string> sound_names;// = { "", "shot", "laser", "hit", "force", "blink" };
+			// TODO: find more elegant way of getting sound name
+			std::map<int, std::string> sound_names;
 			sound_names[Event::SHOT] = "shot";
 			sound_names[Event::LASER] = "laser";
 			sound_names[Event::WALL_HIT] = "hit";
+			sound_names[Event::DEATH] = "death";
+			sound_names[Event::BONUS_PICKUP] = "bonus_pickup";
 			sound_names[Event::MODULE_SHOTGUN] = "shotgun";
 			sound_names[Event::MODULE_FORCE] = "force";
 			sound_names[Event::MODULE_BLINK] = "blink";
 			sound_names[Event::MODULE_ROCKET] = "rocket";
 			sound_names[Event::MODULE_DASH] = "dash";
 			std::string sound_name = sound_names[type];
+
 			audio->update_sound(id, sound_name, pos, 1, 0);
 			// Creating event
 			create_event({type, nullptr, pos})->set_id(id);
@@ -733,6 +736,17 @@ void Game_Client::decode(std::string source) {
 						0.15, GAME // Duration, layer
 					);
 			}
+			if (type == Event::DEATH) {
+				for (int i = 0; i < 10; i++)
+					draw->fadeout_animation("explosion",
+						pos, // Position
+						{ 0.0, 0.3 }, // Shift
+						{ 0.3, 0.3 }, // Size
+						{ 0, 0 }, // Angle
+						{ sf::Color::White, aux::make_transparent(sf::Color::White) }, // Color
+						0.15, GAME // Duration, layer
+					);
+			}
 		}
 	}
 
@@ -744,12 +758,12 @@ void Game_Client::decode(std::string source) {
 		state_a.pos = { 0, 0 };
 		state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
 		auto state_b = state_a;
-		float min_alpha = 0.2;
+		float min_alpha = 0.5;
 		state_a.color.a = (min_alpha + ((hp_prev - get_ship(my_id)->get_hp()->get()) / get_ship(my_id)->get_hp()->get_max()) * (1 - min_alpha)) * 255;
 		state_b.color.a = 0;
 		draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
 		// Sound
-		// TODO: add sound here
+		audio->update_sound(aux::random_int(0, 1000), "damage", get_ship(my_id)->get_body()->GetPosition(), 1, 0);
 	}
 
 	// Managing disappeared objects

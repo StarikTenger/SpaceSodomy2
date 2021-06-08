@@ -522,7 +522,7 @@ void Game::process_ships() {
 			st_eff->set(0);
 		}
 
-		// Apply laser
+		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
 				if (ship->get_player()->get_id() == damage_receiver->get_player()->get_id())
@@ -561,6 +561,8 @@ void Game::process_ships() {
 				ship->get_bonus_slot()->activate();				
 			}
 		}
+
+		// Apply CHARGE
 		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
 			collision_filter.change_body(ship->get_body(), Collision_Filter::PROJECTILE);
 			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.05) { // TODO
@@ -575,13 +577,14 @@ void Game::process_ships() {
 				}
 			}
 		}
-		// Checking for < zero hp
+		// Death, Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
+			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
 	}
@@ -811,17 +814,20 @@ b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 
 void Game::process_bonuses() {
 	std::deque<Bonus*> bonuses_to_delete;
+	// Pick up
 	for (auto bonus : bonuses) {
 		for (auto ship : ships) {
 			if (contact_table.check(bonus->get_body(), ship->get_body())) {
 				ship->get_bonus_slot()->add_bonus(bonus->get_type());
 				bonuses_to_delete.push_back(bonus);
+				event_manager.create_event(Event_Def(Event::BONUS_PICKUP, nullptr, bonus->get_body()->GetPosition()));
 			}
 		}
 	}
 	for (auto bonus : bonuses_to_delete)
 		delete_bonus(bonus);
 }
+
 void Game::process_bonus_manager() {
 	bonus_manager.step(dt);
 	Bonus_Def def;
