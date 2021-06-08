@@ -725,7 +725,7 @@ void Game_Client::decode(std::string source) {
 						0.15, GAME // Duration, layer
 					);
 			}
-			if (type == Event::MODULE_DASH) {
+			if (type == Event::MODULE_DASH || type == Event::WALL_HIT) {
 				for (int i = 0; i < 10; i++)
 					draw->fadeout_animation("bullet",
 						pos, // Position

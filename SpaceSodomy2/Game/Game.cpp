@@ -685,13 +685,17 @@ void Game::process_physics() {
 			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
 			) {
 			// TODO: Sometimes contact point is a bullshit, i have no idea why 
-			if (b2Distance(b2Vec2_zero, contact->GetManifold()->localPoint) > 1e5)
+			int numPoints = contact->GetManifold()->pointCount;
+			b2WorldManifold worldManifold;
+			contact->GetWorldManifold(&worldManifold);
+			b2Vec2 pos = worldManifold.points[0];
+			if (b2Distance(b2Vec2_zero, pos) > 1e5)
 				continue;
 			// Adding used objects
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
-			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, contact->GetManifold()->localPoint));
+			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, pos));
 			//std::cout << "hit\n";
 		}
 	}
