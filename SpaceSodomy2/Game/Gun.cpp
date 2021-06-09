@@ -48,8 +48,11 @@ void Gun::activate() {
 	projectile_def.effects_prototype = effects_prototype;
 	// Recoil
 	// Apply BERSERK
-	if (!(effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
+	if ((effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
 		body->ApplyLinearImpulseToCenter(-effects->get_effect(Effects::BERSERK)->get_param("recoil_modifier") * projectile_def.mass * delta_vel, 1);
+	}
+	else {
+		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
 	}
 	projectile_manager->create_projectile(projectile_def);
 }

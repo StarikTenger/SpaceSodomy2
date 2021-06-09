@@ -686,7 +686,7 @@ void Game::process_physics() {
 			b2WorldManifold worldManifold;
 			contact->GetWorldManifold(&worldManifold);
 			b2Vec2 pos = worldManifold.points[0];
-			if (b2Distance(b2Vec2_zero, pos) > 1e5)
+			if (b2Distance(b2Vec2_zero, pos) > 1e5 || b2Distance(b2Vec2_zero, pos) < b2_epsilon)
 				continue;
 			// Adding used objects
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
