@@ -676,15 +676,12 @@ void Game::process_physics() {
 	std::set<b2Body*> hit_objects; // To avoid repetitions
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
 		// Hit event
-		if ( // Check for repetitions
-			!hit_objects.count(contact->GetFixtureA()->GetBody()) &&
-			!hit_objects.count(contact->GetFixtureB()->GetBody()) &&
+		if (
 			// Check for contact
 			contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
 			) {
-			// TODO: Sometimes contact point is a bullshit, i have no idea why 
 			int numPoints = contact->GetManifold()->pointCount;
 			b2WorldManifold worldManifold;
 			contact->GetWorldManifold(&worldManifold);
