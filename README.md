@@ -25,7 +25,7 @@ Space Sodomy — это, как кажется, довольно простой 
 
 ## <a id="client" />Как запустить клиент
 
-Скачайте клиент игры по [ссылке](https://github.com/StarikTenger/SpaceSodomy2/raw/main/SpaceSodomy.zip)
+Скачайте клиент игры по [ссылке](https://github.com/StarikTenger/SpaceSodomy2/raw/main/SpaceSodomy2.zip)
  
 Перед началом игры необходимо установить в **Settings**->**Main**: 
 1. Адрес сервера
