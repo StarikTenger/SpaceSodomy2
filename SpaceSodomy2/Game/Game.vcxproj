@@ -169,19 +169,26 @@
     <ClInclude Include="Effects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="entities.h" />
+    <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game_Objects.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Hull_Prototype.h" />
     <ClInclude Include="Id_Manager.h" />
     <ClInclude Include="iId.h" />
+    <ClInclude Include="Modules.h" />
+    <ClInclude Include="Module_Manager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
+    <ClInclude Include="Rocket.h" />
+    <ClInclude Include="Rocket_Brain.h" />
+    <ClInclude Include="Rocket_Manager.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Event_Manager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
@@ -197,10 +204,14 @@
     <ClCompile Include="Damage_Receiver.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Forcefield.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_Objects.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Id_Manager.cpp" />
     <ClCompile Include="iId.cpp" />
+    <ClCompile Include="Modules.cpp" />
+    <ClCompile Include="Module_Manager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -211,8 +222,11 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Projectile_Def.cpp" />
     <ClCompile Include="Projectile_Manager.cpp" />
+    <ClCompile Include="Rocket.cpp" />
+    <ClCompile Include="Rocket_Brain.cpp" />
+    <ClCompile Include="Rocket_Manager.cpp" />
     <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="Event_Manager.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>

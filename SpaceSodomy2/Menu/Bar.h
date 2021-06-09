@@ -29,6 +29,7 @@ public:
 	void set_text_color(sf::Color text_color_);
 	void set_angle(float angle_);
 	void set_critical_value(float critical_value_);
+	void set_font(std::string font_name);
 
 	// Get methods
 	int get_max_value();

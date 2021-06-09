@@ -64,11 +64,17 @@ void Engine::step(float _dt) {
 	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
 		current_modifier *= boost_modifier;
 	}
-	if (effects->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {     // Apply CHARGE
-		current_modifier *= effects->get_effect(Effects::Types::CHARGE)->get_strength();
+	if (effects) {
+		if (effects->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) {     // Apply CHARGE
+			current_modifier *= effects->get_effect(Effects::Types::CHARGE)->get_param("boost");
+		}
 	}
 	is_linear_force_used = 0;
 	// Command processing
+	if ((command_module->get_command(Command_Module::ROCKET_ANGLE)) ) {
+		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
+		std::cout << "tell\n";
+	}
 	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
 		stabilize_rotation();
 	if (command_module->get_command(Command_Module::ENGINE_LIN_FORWARD))

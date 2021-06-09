@@ -29,6 +29,12 @@ Game::Game() {
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
+	game_objects.set_physics(&physics);
+	game_objects.set_bonuses(&bonuses);
+	game_objects.set_damage_receivers(&damage_receivers);
+	game_objects.set_projectiles(&projectiles);
+	game_objects.set_walls(&walls);
+	game_objects.set_ships(&ships);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -70,7 +76,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	gun->set_event_manager(&event_manager);
 	// Characteristics
 	gun->import_Gun_Prototype(def);
-	gun->set_effects_prototype(&def.effect_prototype);
+	gun->set_effects_prototype(&def.effect_prototype);   // TODO: can i has remove
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -113,6 +119,7 @@ Counter* Game::create_counter(float val, float change_vel) {
 
 Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
+	damage_receiver->set_imm_frames(params["imm_frames"]);
 	damage_receiver->set_player(player);
 	damage_receiver->set_effects(effs);
 	damage_receivers.insert(damage_receiver);
@@ -127,17 +134,10 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	id_manager.set_id(ship);
 
 	// Create effects
-	Effects_Prototype effects_prototype;
-	for (int i = 0; i < Effects::Types::COUNT; i++) {
-		effects_prototype.effects[i].set_type(effect_params.effects[i].get_type());
-		effects_prototype.effects[i].set_strength(effect_params.effects[i].get_strength());
-	}
+	Effects_Prototype effects_prototype(effect_params);
 	auto effs = create_effects(&effects_prototype);
 	ship->set_effects(effs);
-
-	// Bonus slot
-	ship->set_bonus_slot(create_bonus_slot());
-	ship->get_bonus_slot()->set_effects(effs);
+	
 
 	// Player
 	ship->set_player(player);
@@ -153,8 +153,44 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_body(body);
 
 	// Command module
-	auto command_module = new Command_Module();
-	player->set_command_module(command_module);
+	auto command_module = player->get_command_module();
+
+	
+
+	// Hp
+	auto hp = create_counter(hull_prototype.hp);
+	hp->set_max(hull_prototype.hp);
+	ship->set_hp(hp);
+
+	// Stamina
+	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
+	stamina->set_max(hull_prototype.stamina);
+	stamina->set_delay(hull_prototype.stamina_pause); 
+	ship->set_stamina(stamina);
+
+	// Energy
+	auto energy = create_counter(hull_prototype.start_energy, hull_prototype.energy_regen);
+	energy->set_max(hull_prototype.energy);
+	ship->set_energy(energy);
+
+	// Engine
+	auto engine = create_engine(body, command_module, stamina, effs);
+	engine->set_force_angular(hull_prototype.force_angular);
+	engine->set_force_linear(hull_prototype.force_linear);
+	ship->set_engine(engine);
+
+	// Damage receiver
+	auto damage_receiver = create_damage_receiver(body, hp, player, effs);
+	ship->set_damage_receiver(damage_receiver);
+
+
+	// Bonus slot
+	auto bonus_slot = create_bonus_slot();
+	ship->set_bonus_slot(bonus_slot);
+	bonus_slot->set_effects(effs);
+	bonus_slot->set(body, player);
+	bonus_slot->set_stamina(stamina);
+	bonus_slot->set_energy(energy);
 
 	// Gun
 	Gun_Prototype gun_prototype;
@@ -168,31 +204,26 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	if (guns.count(player->get_gun_name())) {
 		gun->set_effects_prototype(&guns[player->get_gun_name()].effect_prototype);
 	}
-	gun->set_ship_effects(effs);
+	gun->set_effects(effs);
+	gun->set_stamina(stamina);
+	gun->set_energy(energy);
 	ship->set_gun(gun);
 
-	// Hp
-	auto hp = create_counter(hull_prototype.hp);
-	hp->set_max(hull_prototype.hp);
-	ship->set_hp(hp);
-
-	// Stamina
-	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
-	stamina->set_max(hull_prototype.stamina);
-	stamina->set_delay(0.7);
-	gun->set_stamina(stamina);
-	ship->set_stamina(stamina);
-
-	// Engine
-	auto engine = create_engine(body, command_module, stamina, effs);
-	engine->set_force_angular(hull_prototype.force_angular);
-	engine->set_force_linear(hull_prototype.force_linear);
-	ship->set_engine(engine);
-
-	// Damage receiver
-	auto damage_receiver = create_damage_receiver(body, hp, player, effs);
-	ship->set_damage_receiver(damage_receiver);
-
+	// Modules
+	auto left = create_module(module_manager.get_prototype(Module::get_type_by_name(player->get_left_module_name())));
+	auto right = create_module(module_manager.get_prototype(Module::get_type_by_name(player->get_right_module_name())));
+	left->set(body, player);
+	right->set(body, player);
+	left->set_effects(effs);
+	right->set_effects(effs);
+	left->set_stamina(stamina);
+	left->set_energy(energy);
+	right->set_stamina(stamina);
+	right->set_energy(energy);
+	left->set_bind(Command_Module::LEFT_MODULE);
+	right->set_bind(Command_Module::RIGHT_MODULE);
+	ship->set_left_module(left);
+	ship->set_right_module(right);
 
 	return ship;
 }
@@ -234,15 +265,15 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-Sound* Game::create_event(Event_Def event_def, float playing_offset) {
-	auto sound = new Sound();
-	sound->set_body(event_def.body);
-	sound->set_name(event_def.name);
-	sound->set_pos(event_def.pos);
-	sound->set_playing_offset(create_counter(playing_offset, 1));
-	id_manager.set_id(sound);
-	sounds.insert(sound);
-	return sound;
+Event* Game::create_event(Event_Def event_def, float playing_offset) {
+	auto event = new Event();
+	event->set_body(event_def.body);
+	event->set_type(event_def.type);
+	event->set_pos(event_def.pos);
+	event->set_playing_offset(create_counter(playing_offset, 1));
+	id_manager.set_id(event);
+	events.insert(event);
+	return event;
 }
 
 Effects* Game::create_effects(Effects_Prototype* val) {
@@ -263,9 +294,98 @@ Bonus* Game::create_bonus(Bonus_Def val) {
 }
 
 Bonus_Slot* Game::create_bonus_slot() {
-	auto ans = new Bonus_Slot;
-	ans->set_bonus_manager(&bonus_manager);
-	return ans;
+	auto bonus_slot = new Bonus_Slot;
+	active_modules.insert(bonus_slot);
+
+	auto counter = create_counter();
+	counter->set_change_vel(-1);
+	bonus_slot->set_recharge_counter(counter);
+
+	bonus_slot->set_bonus_manager(&bonus_manager);
+	bonus_slot->set_event_manager(&event_manager);
+
+	id_manager.set_id(bonus_slot);
+
+	return bonus_slot;
+}
+
+Module* Game::create_module(Module_Prototype* base) {
+	auto module = module_manager.new_module(base);
+	active_modules.insert(module);
+	auto counter = create_counter();
+	counter->set_change_vel(-1);
+	module->set_recharge_counter(counter);
+	module->set_projectile_manager(&projectile_manager);
+	module->set_rocket_manager(&rocket_manager);
+	module->set_event_manager(&event_manager);
+	module->set_game_objects(game_objects);
+	id_manager.set_id(module);
+	return module;
+}
+
+Rocket* Game::create_rocket(Rocket_Def def) {
+	auto rocket = new Rocket;
+	id_manager.set_id(rocket);
+	rockets.insert(rocket);
+	// Params
+	rocket->set_blast_force(def.base.blast_force);
+	rocket->set_blast_radius(def.base.blast_radius);
+	rocket->set_damage(def.base.damage);
+	// Body
+	rocket->set_player(def.player);
+	auto body = create_round_body(def.pos + b2Vec2{0,0}, def.angle, def.base.radius, def.base.mass);
+	body->SetLinearVelocity(def.vel);
+	body->SetAngularVelocity(def.angle_vel);
+	collision_filter.add_body(body, Collision_Filter::PROJECTILE, def.player->get_id());
+	rocket->set_body(body);
+
+	// Hp
+	auto hp = create_counter(def.base.hp);
+	hp->set_max(def.base.hp);
+	rocket->set_hp(hp);
+
+	// Stamina
+	auto stamina = create_counter(def.base.stamina, def.base.stamina_recovery);
+	stamina->set_max(def.base.stamina);
+	stamina->set_delay(0);
+	rocket->set_stamina(stamina);
+
+	auto brain = create_rocket_brain(&def.base);
+	brain->set_game_objects(game_objects);
+	brain->set_rocket(rocket);
+	rocket->set_rocket_brain(brain);
+
+	// Command module
+	auto command_module = new Command_Module;
+
+	// Engine
+	auto engine = create_engine(body, command_module, stamina);
+	engine->set_force_angular(0);
+	engine->set_force_linear(def.base.force_linear);
+	rocket->set_engine(engine);
+	brain->set_command_module(command_module);
+
+	// Damage receiver
+	auto damage_receiver = create_damage_receiver(body, hp, def.player);
+	rocket->set_damage_receiver(damage_receiver);
+
+	return rocket;
+}
+
+Rocket_Brain* Game::create_rocket_brain(Rocket_Prototype* base) {
+	auto brain = new Rocket_Brain(base->range, base->bin_search_accuracy);
+	rocket_brains.insert(brain);
+	return brain;
+}
+
+Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) {
+	auto forcefield = new Forcefield();
+	forcefield->set(&physics, vertices, force);
+	forcefield->get_body()->GetFixtureList()->SetRestitution(1);
+	collision_filter.add_body(forcefield->get_body(), Collision_Filter::GHOST);
+	forcefields.insert(forcefield);
+	id_manager.set_id(forcefield);
+	return forcefield;
 }
 
 void Game::delete_body(b2Body* body) {
@@ -299,8 +419,11 @@ void Game::delete_ship(Ship* ship) {
 	delete_damage_receiver(ship->get_damage_receiver());
 	delete_counter(ship->get_hp());
 	delete_counter(ship->get_stamina());
+	delete_counter(ship->get_energy());
 	delete_effects(ship->get_effects());
-	delete_bonus_slot(ship->get_bonus_slot());
+	delete_active_module(ship->get_bonus_slot());
+	delete_active_module(ship->get_left_module());
+	delete_active_module(ship->get_right_module());
 	// Player management
 	ship->get_player()->set_is_alive(0);
 	ships.erase(ship);
@@ -317,10 +440,10 @@ void Game::delete_counter(Counter* counter) {
 	delete counter;
 }
 
-void Game::delete_sound(Sound* sound) {
-	delete_counter(sound->get_playing_offset());
-	sounds.erase(sound);
-	delete sound;
+void Game::delete_event(Event* event) {
+	delete_counter(event->get_playing_offset());
+	events.erase(event);
+	delete event;
 }
 
 void Game::delete_effects(Effects* _effects) {
@@ -335,9 +458,33 @@ void Game::delete_bonus(Bonus* bonus) {
 	delete bonus;
 }
 
-void Game::delete_bonus_slot(Bonus_Slot* bonus_slot) {
-	delete bonus_slot;
+void Game::delete_rocket(Rocket* rocket) {
+	rockets.erase(rocket);
+	delete_rocket_brain(rocket->get_rocket_brain());
+	delete_body(rocket->get_body());
+	delete_engine(rocket->get_engine());
+	delete_damage_receiver(rocket->get_damage_receiver());
+	delete_counter(rocket->get_hp());
+	delete_counter(rocket->get_stamina());
+	delete rocket;
 }
+void Game::delete_rocket_brain(Rocket_Brain* brain) {
+	rocket_brains.erase(brain);
+	delete brain->get_command_module();
+	delete brain;
+}
+
+void Game::delete_wall(Wall* wall) {
+	delete_body(wall->get_body());
+	walls.erase(wall);
+	delete wall;
+}
+void Game::delete_forcefield(Forcefield* field) {
+	delete_body(field->get_body());
+	forcefields.erase(field);
+	delete field;
+}
+
 
 void Game::process_players() {
 	// Creating ships
@@ -368,15 +515,14 @@ void Game::process_ships() {
 			hp_eff->set(0);
 
 		}
-		// Apply INSTANT_STAMINA
-		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_STAMINA)->get_counter();
+		// Apply INSTANT_ENERGY
+		auto st_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_ENERGY)->get_counter();
 		if (st_eff->get() > 0) {
-			ship->get_stamina()->modify(st_eff->get());
+			ship->get_energy()->modify(st_eff->get());
 			st_eff->set(0);
-
 		}
 
-		// Apply laser
+		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
 				if (ship->get_player()->get_id() == damage_receiver->get_player()->get_id())
@@ -386,21 +532,24 @@ void Game::process_ships() {
 				b2Vec2 target_pos = damage_receiver->get_body()->GetPosition();
 				b2Vec2 intersection = get_beam_intersection(pos, angle);
 				if (aux::dist_from_segment(target_pos, pos, intersection) < 
-					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 0.1) {
-					damage_receiver->damage(1000, ship->get_player());  // +inf
+					ship->get_body()->GetFixtureList()->GetShape()->m_radius + 
+					ship->get_effects()->get_effect(Effects::LASER)->get_param("width")) {
+					if (damage_receiver->get_effects()) {
+					    damage_receiver->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					}
+					damage_receiver->damage(ship->get_effects()->get_effect(Effects::LASER)->get_param("damage"), ship->get_player());
 				}
 			}
 		}
-
+		
+		// Spiked walls
 		for (auto wall : walls) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
-				auto effs = effect_params;
-				effs.effects[Effects::WALL_BURN].get_counter()->set(0.1);
 				if (wall->get_type() == Wall::SPIKED && 
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
-					ship->get_damage_receiver()->damage(40, ship->get_damage_receiver()->get_last_hit());
+					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
+					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 				}
-				ship->get_effects()->update(&effs);
 			}
 		}
 
@@ -408,29 +557,34 @@ void Game::process_ships() {
 		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
 			if (ship->get_bonus_slot()) {
 				if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER)
-					event_manager.create_event(Event_Def("laser", ship->get_body()));
+					event_manager.create_event(Event_Def(Event::LASER, ship->get_body()));
 				ship->get_bonus_slot()->activate();				
 			}
 		}
+
+		// Apply CHARGE
 		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
 			collision_filter.change_body(ship->get_body(), Collision_Filter::PROJECTILE);
-			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.1) {
+			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.05) { // TODO
 				collision_filter.change_body(ship->get_body(), Collision_Filter::STANDART);
 				ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->set(0);
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
-					damage_receiver->damage(1000, ship->get_player());            // TODO
+					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
 			}
 		}
-		// Checking for < zero hp
+		// Death, Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr)
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+			}
+			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
 	}
@@ -448,6 +602,7 @@ void Game::process_projectiles() {
 	// Dealing damage
 	for (auto projectile : projectiles) {
 		// Dealing damage & applying effects
+		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
 				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
@@ -457,14 +612,28 @@ void Game::process_projectiles() {
 		}
 		// Checking for wall collision
 		for (auto wall : walls) {
-			if (contact_table.check(projectile->get_body(), wall->get_body()))
+			if (contact_table.check(projectile->get_body(), wall->get_body())) {
 				projectiles_to_delete.insert(projectile);
+				do_break = true;
+				break;
+			}
+
+		}
+		if (do_break) {
+			continue;
 		}
 		// Checking for ship collision
 		for (auto ship : ships) {
 			if (projectile->get_player()->get_id() != ship->get_player()->get_id() &&
-				contact_table.check(projectile->get_body(), ship->get_body()))
+				contact_table.check(projectile->get_body(), ship->get_body())) {
 				projectiles_to_delete.insert(projectile);
+				do_break = true;
+				break;
+			}
+
+		}
+		if (do_break) {
+			continue;
 		}
 		// Checking hp
 		if (projectile->get_hp()->get() <= 0) {
@@ -482,14 +651,14 @@ void Game::process_active_modules() {
 		active_module->step(dt);
 }
 
-void Game::process_projectlie_manager() {
+void Game::process_projectile_manager() {
 	Projectile_Def projectile_def;
 	while (projectile_manager.get_next(projectile_def)) {
 		create_projectile(projectile_def);
 	}
 }
 
-void Game::process_sound_manager() {
+void Game::process_event_manager() {
 	Event_Def event_def;
 	while (event_manager.get_next(event_def)) {
 		create_event(event_def);
@@ -504,13 +673,27 @@ void Game::process_physics() {
 			contact->GetFixtureB()->GetRestitution());
 	}
 	physics.Step(dt, 10, 10);
+	std::set<b2Body*> hit_objects; // To avoid repetitions
 	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
-		// Hit sound
-		if (contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
+		// Hit event
+		if (
+			// Check for contact
+			contact_table.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
 			!contact_table_prev.check(contact->GetFixtureA()->GetBody(), contact->GetFixtureB()->GetBody()) &&
-			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())) {
-			event_manager.create_event(Event_Def("hit", nullptr, contact->GetManifold()->localPoint));
-			std::cout << "hit\n";
+			collision_filter.ShouldCollide(contact->GetFixtureA(), contact->GetFixtureB())
+			) {
+			int numPoints = contact->GetManifold()->pointCount;
+			b2WorldManifold worldManifold;
+			contact->GetWorldManifold(&worldManifold);
+			b2Vec2 pos = worldManifold.points[0];
+			if (b2Distance(b2Vec2_zero, pos) > 1e5 || b2Distance(b2Vec2_zero, pos) < b2_epsilon)
+				continue;
+			// Adding used objects
+			hit_objects.insert(contact->GetFixtureA()->GetBody());
+			hit_objects.insert(contact->GetFixtureB()->GetBody());
+			// Creating event
+			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, pos));
+			//std::cout << "hit\n";
 		}
 	}
 }
@@ -520,19 +703,92 @@ void Game::process_counters() {
 		counter->step(dt);
 }
 
-void Game::process_sounds() {
-	std::set<Sound*> sounds_to_delete;
-	for (auto sound : sounds) {
-		if (!sound->is_alive())
-			sounds_to_delete.insert(sound);
+void Game::process_events() {
+	std::set<Event*> events_to_delete;
+	for (auto event : events) {
+		if (!event->is_alive())
+			events_to_delete.insert(event);
 	}
-	for (auto sound : sounds_to_delete)
-		delete_sound(sound);
+	for (auto event : events_to_delete)
+		delete_event(event);
 }
 
 void Game::process_effects() {
 	for (auto eff : effects) {
 		eff->step(dt);
+	}
+}
+
+void Game::process_rockets() {
+	std::vector<Rocket*> rockets_to_delete;
+	for (auto rocket : rockets) {
+		bool do_break = false;
+		for (auto wall : walls) {
+			if (contact_table.check(rocket->get_body(), wall->get_body())) {
+				rockets_to_delete.push_back(rocket);
+				do_break = true;
+				break;
+			}
+		} 
+		if (do_break) {
+			continue;
+		}
+		// Checking for ship collision
+		for (auto ship : ships) {
+			if (rocket->get_player()->get_id() != ship->get_player()->get_id() &&
+				contact_table.check(rocket->get_body(), ship->get_body())) {
+				rockets_to_delete.push_back(rocket);
+				do_break = true;
+			}
+		}
+		if (do_break) {
+			continue;
+		}
+		// Checking hp
+		if (rocket->get_hp()->get() <= 0) {
+			rockets_to_delete.push_back(rocket);
+		}
+	}
+	for (auto rocket : rockets_to_delete) {
+		for (auto receiver : damage_receivers) {
+			if ((rocket->get_body()->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < rocket->get_blast_radius()) {
+				receiver->damage(rocket->get_damage(), rocket->get_player());
+				/*if (rocket->get_player() != receiver->get_player()) {
+					receiver->damage(rocket->get_damage(), rocket->get_player());
+				} else {
+					receiver->damage(rocket->get_damage(), receiver->get_last_hit());
+				}*/
+				b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 }));
+				unit.Normalize();
+				b2Vec2 impulse = rocket->get_blast_force() * (std::min(receiver->get_body()->GetMass(), 1.f)) * unit;
+				receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
+			}
+		}
+	}
+	for (auto rocket : rockets_to_delete) {
+		delete_rocket(rocket);
+	}
+}
+
+void Game::process_rocket_brains() {
+	for (auto brain : rocket_brains) {
+		brain->step(dt);
+	}
+}
+
+void Game::process_rocket_manager() {
+	Rocket_Def def;
+	while (rocket_manager.get_next(def)) {
+		create_rocket(def);
+	}
+}
+
+void Game::process_forcefields() {
+	// TODO: make efficient
+	for (auto field : forcefields) {
+		for (auto body = physics.GetBodyList(); body; body = body->GetNext()) {
+			field->apply(body, dt);
+		}
 	}
 }
 
@@ -559,17 +815,20 @@ b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 
 void Game::process_bonuses() {
 	std::deque<Bonus*> bonuses_to_delete;
+	// Pick up
 	for (auto bonus : bonuses) {
 		for (auto ship : ships) {
 			if (contact_table.check(bonus->get_body(), ship->get_body())) {
 				ship->get_bonus_slot()->add_bonus(bonus->get_type());
 				bonuses_to_delete.push_back(bonus);
+				event_manager.create_event(Event_Def(Event::BONUS_PICKUP, nullptr, bonus->get_body()->GetPosition()));
 			}
 		}
 	}
 	for (auto bonus : bonuses_to_delete)
 		delete_bonus(bonus);
 }
+
 void Game::process_bonus_manager() {
 	bonus_manager.step(dt);
 	Bonus_Def def;
@@ -583,6 +842,7 @@ void Game::apply_command(int id, int command, int val) {
 }
 
 void Game::step(float _dt) {
+	//std::cout << projectiles.size() << "\n";
 	dt = _dt;
 	time += dt;
 	process_physics();
@@ -590,14 +850,18 @@ void Game::step(float _dt) {
 	process_ships();
 	process_engines();
 	process_projectiles();
-	process_active_modules();
-	process_projectlie_manager();
-	process_sound_manager();
+	process_projectile_manager();
+	process_event_manager();
 	process_counters();
-	process_sounds();
+	process_events();
 	process_effects();
 	process_bonuses();
 	process_bonus_manager();
+	process_active_modules();
+	process_rocket_brains();
+	process_rockets();
+	process_rocket_manager();
+	process_forcefields();
 }
 
 void Game::set_dt(float _dt) {
@@ -629,14 +893,18 @@ void Game::clear() {
 	for (auto projectile : projectiles)
 		delete projectile;
 	projectiles = {};
+	for (auto module : active_modules) {
+		delete module;
+	}
+	active_modules = {};
 	// Clear counters
 	for (auto counter : counters)
 		delete counter;
 	counters = {};
-	// Clear sounds
-	for (auto sound : sounds)
-		delete sound;
-	sounds = {};
+	// Clear events
+	for (auto event : events)
+		delete event;
+	events = {};
 	// Clear bonuses
 	for (auto bonus : bonuses)
 		delete bonus;
@@ -645,9 +913,30 @@ void Game::clear() {
 		delete effect;
 	}
 	effects = {};
+	for (auto rocket : rockets) {
+		delete rocket;
+	}
+	rockets = {};
+	for (auto rocket_brain : rocket_brains) {
+		delete rocket_brain;
+	}
+	rocket_brains = {};
 
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
+}
+
+void Game::wipe_map() {
+	clear();
+	for (auto wall : walls) {
+		delete wall;
+	}
+	walls = {};
+	for (auto field : forcefields) {
+		delete field;
+	}
+	forcefields = {};
+
 }
 
 bool Game::load_map(std::string path) {
@@ -656,6 +945,7 @@ bool Game::load_map(std::string path) {
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
 	int wall_id = 0;
+	int forcefield_id = 0;
 	bool corner_init = 0;
 
 	// Parsing
@@ -664,12 +954,41 @@ bool Game::load_map(std::string path) {
 		if (symbol == "END")
 			break;
 		// Wall
+		if (symbol == "FORCEFIELD") {
+			std::string symbol_1;
+			std::vector<b2Vec2> points;
+			b2Vec2 force;
+			while (input >> symbol_1) {
+				if (symbol_1 == "END") {
+					break;
+				}
+				if (symbol_1 == "FORCE") {
+					input >> force.x >> force.y;
+					continue;
+				}
+				if (symbol_1 == "POINT") {
+					b2Vec2 point;
+					if (!(input >> point.x >> point.y)) { // Error
+						std::cerr << "Game::load_map: failed to read point";
+						return false;
+					}
+					// Point loaded successfully
+					points.push_back(point);
+					continue;
+				}
+				std::cerr << "Game::load_map: unknown symbol " << symbol_1 << "\n";
+				return false;
+			}
+			create_forcefield(points, force)->set_id(forcefield_id);
+			forcefield_id++;
+			continue;
+		}
 		if (symbol == "WALL") {
 			std::string symbol_1;
 			std::vector<b2Vec2> points;
 			int orientation = Wall::OUTER;
 			int type = Wall::STANDART;
-			float restitution = 0.5;
+			float restitution = params["wall_restitution"];
 ;			while (input >> symbol_1) {
 				if (symbol_1 == "END")
 					break;
@@ -779,6 +1098,7 @@ bool Game::load_parameters(std::string path) {
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
 
+	unsigned char gun_alias = 1, hull_alias = 1;
 	// Parsing
 	std::string symbol;
 	while (input >> symbol) {
@@ -828,13 +1148,23 @@ bool Game::load_parameters(std::string path) {
 			}
 			return _effects;
 		};
+		if (symbol == "PARAMETERS") {
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				float temp;
+				input >> temp;
+				std::cout << "Parameter " << symbol << " set to " << temp << " in PARAMETERS \n";
+				params[symbol] = temp;
+			}
+			continue;
+		}
 		if (symbol == "EFFECT_TYPES") {
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
 				int type_ = Effects::get_effect_type(symbol);
 				effect_params.effects[type_].set_type(Effects::Algebraic_Type::ADDITIVE);
-				effect_params.effects[type_].set_strength(0);
 				while (input >> symbol) {
 					if (symbol == "END")
 						break;
@@ -854,10 +1184,11 @@ bool Game::load_parameters(std::string path) {
 							effect_params.effects[type_].set_type(Effects::Algebraic_Type::NO_OVERLAY);
 						}
 					}
-					if (symbol == "STRENGTH") {
+					else {
 						float temp;
 						input >> temp;
-						effect_params.effects[type_].set_strength(temp);
+						std::cout << "Parameter " << symbol << " set to " << temp  << " in effect number " << type_ << "\n";
+						effect_params.effects[type_].set_param(symbol, temp);
 					}
 				}
 			}
@@ -886,6 +1217,54 @@ bool Game::load_parameters(std::string path) {
 			bonus_manager.add_prototype(bonus_prototype);
 			continue;
 		}
+		// Modules
+		if (symbol == "MODULE") {
+			std::string name;
+			Module_Prototype prototype;
+			if (!(input >> name)) {
+				std::cerr << "Game::load_parameters: failed to read MODULE name\n";
+				return false;
+			}
+			prototype.type = Module::get_type_by_name(name);
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "EFFECTS") {
+					std::cout << "Module effect prototypes are unused for now\n";
+					prototype.effects_prototype = read_effect_prototype();
+				}
+				else if (symbol == "RECHARGE_TIME") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read RECHARGE_TIME\n";
+					}
+					prototype.recharge_time = val;
+				}
+				else if (symbol == "STAMINA_COST") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read STAMINA_COST\n";
+					}
+					prototype.stamina_cost = val;
+				}
+				else if (symbol == "ENERGY_COST") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read ENERGY_COST\n";
+					}
+					prototype.energy_cost = val;
+				}
+				else {
+					float temp;
+					input >> temp;
+					std::cout << "Parameter " << symbol << " set to " << temp << " in module prototype " << name << "\n";
+					prototype.params[symbol] = temp;
+				}
+			}
+			module_manager.add_prototype(prototype);
+			continue;
+		}
+
 		// Gun
 		if (symbol == "GUN") {
 			std::string name;
@@ -895,6 +1274,9 @@ bool Game::load_parameters(std::string path) {
 			}
 			guns[name] = {};
 			guns[name].effect_prototype = effect_params;
+			guns[name].alias = gun_alias;
+			gun_by_alias[gun_alias] = name;
+			gun_alias++;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
@@ -903,11 +1285,12 @@ bool Game::load_parameters(std::string path) {
 				}
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
-				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_consumption);
+				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_cost);
 				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
 				read_symbol("PROJECTILE_HP", guns[name].projectile_hp);
+				read_symbol("ENERGY_COST", guns[name].energy_cost);
 			}
 			continue;
 		}
@@ -920,10 +1303,12 @@ bool Game::load_parameters(std::string path) {
 				return false;
 			}
 			hulls[name] = {};
+			hulls[name].alias = hull_alias;
+			hull_by_alias[hull_alias] = name;
+			hull_alias++;
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
-				
 				read_symbol("HP", hulls[name].hp);
 				read_symbol("MASS", hulls[name].mass);
 				read_symbol("RADIUS", hulls[name].radius);
@@ -931,6 +1316,10 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
 				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
 				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
+				read_symbol("STAMINA_PAUSE", hulls[name].stamina_pause);
+				read_symbol("ENERGY", hulls[name].energy);
+				read_symbol("START_ENERGY", hulls[name].start_energy);
+				read_symbol("ENERGY_REGEN", hulls[name].energy_regen);
 			}
 			continue;
 		}
@@ -944,110 +1333,152 @@ std::string Game::encode() {
 	std::string message = "";
 
 	// Map path
-	message += "M " + map_path + " ";
+	message += "M" + map_path + " ";
 
 	// Players (P)
 	for (auto player : players) {
-		message += "P ";
+		message += "P";
 		// Id
-		message += std::to_string(player.first) + " ";
+		message += aux::write_int(player.first);
 		// Color
-		message += std::to_string(player.second->get_color().r) + " ";
-		message += std::to_string(player.second->get_color().g) + " ";
-		message += std::to_string(player.second->get_color().b) + " ";
+		sf::Color color = player.second->get_color();
+		color.r = std::max(0, color.r - 1);
+		color.g = std::max(0, color.g - 1);
+		color.b = std::max(0, color.b - 1);
+		message += aux::write_int8(color.r);
+		message += aux::write_int8(color.g);
+		message += aux::write_int8(color.b);
 		// Name
 		message += player.second->get_name() + " ";
 		// Hull
-		message += player.second->get_hull_name() + " ";
+		message += hulls[player.second->get_hull_name()].alias;
+		// Gun
+		message += guns[player.second->get_gun_name()].alias;
 		// Deaths & kills
-		message += std::to_string(player.second->get_deaths()) + " ";
-		message += std::to_string(player.second->get_kills()) + " ";
+		message += aux::write_short(player.second->get_deaths());
+		message += aux::write_short(player.second->get_kills());
 		// Time to respawn
-		message += std::to_string(int(player.second->get_time_to_respawn()->get() + 0.99)) + " ";
+		message += aux::write_int8(int(player.second->get_time_to_respawn()->get() + 0.99));
 		// Is alive
-		message += std::to_string(int(player.second->get_is_alive())) + " ";
+		message += aux::write_int8(int(player.second->get_is_alive()));
 		// Last connection time
-		message += std::to_string(connection_time->operator[](player.first));
+		message += aux::write_int(connection_time->operator[](player.first));
 	}
 
 	// Ships (S)
 	for (auto ship : ships) {
-		message += "S ";
+		message += "S";
 		// Id
-		message += std::to_string(ship->get_id()) + " ";
+		message += aux::write_int(ship->get_id());
 		// Player id
-		message += std::to_string(ship->get_player()->get_id()) + " ";
+		message += aux::write_int(ship->get_player()->get_id());
 		// Pos
-		message += aux::float_to_string(ship->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(ship->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(ship->get_body()->GetPosition().x, 2);
+		message += aux::write_float(ship->get_body()->GetPosition().y, 2);
 		// Linear velocity
-		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().x, 3) + " ";
-		message += aux::float_to_string(ship->get_body()->GetLinearVelocity().y, 3) + " ";
+		message += aux::write_float(ship->get_body()->GetLinearVelocity().x, 2);
+		message += aux::write_float(ship->get_body()->GetLinearVelocity().y, 2);
 		// Angle
-		message += aux::float_to_string(ship->get_body()->GetAngle(), 3) + " ";
+		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(ship->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::float_to_string(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		message += aux::write_float(ship->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
 		// Commands
 		message += aux::mask_to_string(ship->get_player()->get_command_module()->get_active()) + " ";
 		// Effects
 		message += aux::mask_to_string(ship->get_effects()->get_mask()) + " ";
 		// Bonus slot
-		message += std::to_string(ship->get_bonus_slot()->get_current_bonus()) + " ";
+		message += aux::write_int8(ship->get_bonus_slot()->get_current_bonus());
+		// Modules
+		message += aux::write_int8(ship->get_left_module()->get_type());
+		message += aux::write_float(ship->get_left_module()->get_recharge_counter()->get(), 2);
+		message += aux::write_float(ship->get_left_module()->get_recharge_time(), 2);
+
+		message += aux::write_int8(ship->get_right_module()->get_type());
+		message += aux::write_float(ship->get_right_module()->get_recharge_counter()->get(), 2);
+		message += aux::write_float(ship->get_right_module()->get_recharge_time(), 2);
+
+
 		// Hp
-		message += std::to_string((int)ship->get_hp()->get()) + " ";
-		message += std::to_string((int)ship->get_hp()->get_max()) + " ";
+		message += aux::write_short((int)ship->get_hp()->get());
+		message += aux::write_short((int)ship->get_hp()->get_max());
 		// Stamina
-		message += std::to_string((int)ship->get_stamina()->get()) + " ";
-		message += std::to_string((int)ship->get_stamina()->get_max()) + " ";
+		message += aux::write_short((int)ship->get_stamina()->get());
+		message += aux::write_short((int)ship->get_stamina()->get_max());
+		// Energy
+		message += aux::write_short((int)ship->get_energy()->get());
+		message += aux::write_short((int)ship->get_energy()->get_max());
 	}
 
-	// Projectiles (p)
+	// Efficient projectiles
+	std::map<int, std::string> player_packs;
 	for (auto projectile : projectiles) {
-		message += "p ";
+		int player_id = projectile->get_player()->get_id();
 		// Id
-		message += std::to_string(projectile->get_id()) + " ";
-		// Player id
-		message += std::to_string(projectile->get_player()->get_id()) + " ";
+		player_packs[player_id] += aux::write_short(projectile->get_id() % 5000);
 		// Pos
-		message += aux::float_to_string(projectile->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(projectile->get_body()->GetPosition().y, 2) + " ";
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetPosition().x, 2);
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetPosition().y, 2);
 		// Angle
-		message += aux::float_to_string(projectile->get_body()->GetAngle(), 3) + " ";
+		player_packs[player_id] += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(projectile->get_body()->GetAngle())), 3);
 		// Radius
-		message += aux::float_to_string(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2) + " ";
+		player_packs[player_id] += aux::write_float(projectile->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
+	}
+	for (auto pack : player_packs) {
+		message += "p";
+		message += aux::write_int(pack.first);
+		message += aux::write_int8(pack.second.size() / 10);
+		message += pack.second;	
+	}
+	// Rockets (r)
+	for (auto rocket : rockets) {
+		message += "r";
+		// Id
+		message += aux::write_short(rocket->get_id() % 15000);
+		// Player id
+		message += aux::write_int(rocket->get_player()->get_id());
+		// Pos
+		message += aux::write_float(rocket->get_body()->GetPosition().x, 2);
+		message += aux::write_float(rocket->get_body()->GetPosition().y, 2);
+		// Angle
+		message += aux::write_float(aux::vec_to_angle(aux::angle_to_vec(rocket->get_body()->GetAngle())), 3);
+		// Radius
+		message += aux::write_float(rocket->get_body()->GetFixtureList()->GetShape()->m_radius, 2);
 	}
 
 	// Bonuses (b)
 	for (auto bonus : bonuses) {
-		message += "b ";
+		message += "b";
 		// Id
-		message += std::to_string(bonus->get_id()) + " ";
+		message += aux::write_int8(bonus->get_id());
 		// Position
-		message += aux::float_to_string(bonus->get_body()->GetPosition().x, 2) + " ";
-		message += aux::float_to_string(bonus->get_body()->GetPosition().y, 2) + " ";
+		message += aux::write_float(bonus->get_body()->GetPosition().x, 2);
+		message += aux::write_float(bonus->get_body()->GetPosition().y, 2);
 		// Type
-		message += std::to_string(bonus->get_type()) + " ";
+		message += aux::write_int8(bonus->get_type());
 	}
 
 	// Events (e)
-	for (auto sound : sounds) {
-		message += "e ";
+	for (auto event : events) {
+		message += "e";
 		// Id
-		message += std::to_string(sound->get_id()) + " ";
-		// Name
-		message += sound->get_name() + " ";
+		message += aux::write_short(event->get_id());
+		// Type
+		message += aux::write_int8(event->get_type());
 		// Pos
-		message += aux::float_to_string(sound->get_pos().x, 2) + " ";
-		message += aux::float_to_string(sound->get_pos().y, 2) + " ";
+		message += aux::write_float(event->get_pos().x, 2);
+		message += aux::write_float(event->get_pos().y, 2);
 	}
-
+	//std::cout << "message size is " << message.size() << "\n";
 	return message;
 }
 
-void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name) {
+void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
+	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
+	player->set_left_module_name(left_module);
+	player->set_right_module_name(right_module);
 	players[id] = player;
 	player->set_is_alive(0);
 	player->get_time_to_respawn()->set(0);
@@ -1072,4 +1503,8 @@ void Game::delete_player(int id) {
 
 	// Deleting player
 	players.erase(players.find(id));
+}
+
+Game::~Game() {
+	wipe_map();
 }

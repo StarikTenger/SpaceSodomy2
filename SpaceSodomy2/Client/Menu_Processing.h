@@ -17,6 +17,8 @@ private:
 	std::map <std::string, Menu> guns; // guns
 	Menu hull_menu; // hull menu objects
 	std::map <std::string, Menu> hulls; // hulls
+	Menu modules_menu;
+	std::map <std::string, Menu> modules; // modules
 	Menu HUD_menu;
 	Menu replay_menu;
 	Menu replay_setup_menu;
@@ -49,19 +51,24 @@ private:
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
-	void init_gun(std::string, int damage, float recharge, int stamina_consumption, float projectile_mass,
+	void init_gun(std::string, int damage, float recharge, int stamina_cost, float projectile_mass,
 		float projectile_radius, int projectile_vel, Menu* gun);
 	void init_gun_menu(b2Vec2 pos, std::string path_to_guns_description);
 	void close_settings_menus();
-	void init_hull_menu(b2Vec2 pos, std::string path_to_guns_description);
+	void init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description);
 	void init_hull(std::string name, int hp, float mass, float radius,
 		int stamina, int stamina_recovery, Menu* hull);
+	void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
+	void init_module(std::string name, Menu* module, b2Vec2 add_pos);
+	//void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
+	//voif init_module(std::string name);
 	Draw* draw;
 	Game_Client* game;
 	Replay* replay;
 	bool disactivated = 0;
 	bool shader_active = 1;
 	bool* reload;
+	int module_num = 1;
 public:
 	Menu_Processing();
 	bool active = 1;

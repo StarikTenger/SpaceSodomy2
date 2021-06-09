@@ -9,7 +9,8 @@ void Gun::set_projectile_manager(Projectile_Manager* _projectile_manager) {
 void Gun::import_Gun_Prototype(Gun_Prototype def) {
 	damage = def.damage;
 	recharge_time = def.recharge_time;
-	stamina_consumption = def.stamina_consumption;
+	stamina_cost = def.stamina_cost;
+	energy_cost = def.energy_cost;
 	projectile_mass = def.projectile_mass;
 	projectile_vel = def.projectile_vel;
 	projectile_radius = def.projectile_radius;
@@ -18,6 +19,18 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 }
 
 void Gun::activate() {
+	// Event
+	event_manager->create_event(Event_Def(Event::SHOT, body));
+
+	// Apply BERSERK
+	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
+		recharge_counter->set(recharge_time / effects->get_effect(Effects::BERSERK)->get_param("firing_rate_boost"));
+		stamina->modify(-stamina_cost * effects->get_effect(Effects::BERSERK)->get_param("stamina_multiplier"));
+	}
+	else {
+		activate_default_side_effects();
+	}
+
 	Projectile_Def projectile_def;
 
 	float vel_val = projectile_vel;
@@ -34,14 +47,12 @@ void Gun::activate() {
 	projectile_def.hp = projectile_hp;
 	projectile_def.effects_prototype = effects_prototype;
 	// Recoil
-	if (!(effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
+	// Apply BERSERK
+	if ((effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0)) {
+		body->ApplyLinearImpulseToCenter(-effects->get_effect(Effects::BERSERK)->get_param("recoil_modifier") * projectile_def.mass * delta_vel, 1);
+	}
+	else {
 		body->ApplyLinearImpulseToCenter(-projectile_def.mass * delta_vel, 1);
 	}
-
-	Event_Def event_def;
-	event_def.name = "gn";
-	event_def.body = body;
-	event_manager->create_event(event_def);
-
 	projectile_manager->create_projectile(projectile_def);
 }

@@ -4,12 +4,12 @@
 #include <box2d/box2d.h>
 
 struct Event_Def {
-	std::string name = "_";	
+	int type = 0;
 	b2Body* body = nullptr;
 	b2Vec2 pos;
 	Event_Def() {}
-	Event_Def(std::string _name, b2Body* _body, b2Vec2 _pos = {}) {
-		name = _name;
+	Event_Def(int _type, b2Body* _body, b2Vec2 _pos = {}) {
+		type = _type;
 		body = _body;
 		pos = _pos;
 		if (body)
@@ -20,7 +20,7 @@ struct Event_Def {
 /// <summary>
 /// Event is an sign of anything happened
 /// Events are passed to the client via encode
-/// Are usually used for sounds and animations on client
+/// Are usually used for events and animations on client
 /// </summary>
 class Event_Manager {
 private:

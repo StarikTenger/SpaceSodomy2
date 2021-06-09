@@ -26,3 +26,10 @@ void Command_Module::reset() {
 	for (auto& command : active)
 		command = 0;
 }
+
+void Command_Module::set_rocket_angle(float val) {
+	rocket_angle = val;
+}
+float Command_Module::get_rocket_angle() {
+	return rocket_angle;
+}

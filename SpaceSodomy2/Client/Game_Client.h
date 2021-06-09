@@ -11,7 +11,7 @@ private:
 	std::map<int, std::string> bonus_textures = {
 		{Bonus::COUNT, "bonusEmpty"},
 		{Bonus::INSTANT_HP, "bonusHp"},
-		{Bonus::INSTANT_STAMINA, "bonusEnergy"},
+		{Bonus::INSTANT_ENERGY, "bonusEnergy"},
 		{Bonus::BERSERK, "bonusBerserk"},
 		{Bonus::IMMORTALITY, "bonusImmortal"},
 		{Bonus::CHARGE, "bonusCharge"},
@@ -21,6 +21,8 @@ private:
 	Audio* audio = nullptr;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
+	std::string left_module_name = "IMMORTALITY";
+	std::string right_module_name = "DASH";
 	int my_id = 0;
 	int engine_active = 0;
 	int aim_conf = 1;
@@ -56,6 +58,9 @@ public:
 
 	std::string get_gun_name();
 	std::string get_hull_name();
+	std::string get_left_module_name();
+	std::string get_right_module_name();
+
 	std::string get_bonus_texture_name(int val);
 
 	int get_aim_conf();
@@ -64,6 +69,8 @@ public:
 	// Set methods
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
+	void set_left_module_name(std::string val);
+	void set_right_module_name(std::string val);
 
 	void set_draw(Draw* _draw);
 	void set_audio(Audio* _audio);

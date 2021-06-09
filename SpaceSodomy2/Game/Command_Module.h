@@ -5,6 +5,7 @@
 class Command_Module : public iId {
 private:
 	std::vector<int> active = std::vector<int>(COMMAND_COUNT, 0); // Shows which commands are active
+	float rocket_angle = 0;
 
 public:
 	enum Command_Names {
@@ -20,7 +21,9 @@ public:
 		BOOST,
 		BONUS_ACTIVATION,
 		RESPAWN,
-
+		LEFT_MODULE,
+		RIGHT_MODULE,
+		ROCKET_ANGLE,
 		COMMAND_COUNT
 	};
 	// Constructor
@@ -35,5 +38,6 @@ public:
 
 	// Resets all commands to 0
 	void reset();
+	void set_rocket_angle(float);
+	float get_rocket_angle();
 };
-

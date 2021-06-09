@@ -5,6 +5,7 @@ Menu_Processing::Menu_Processing() {}
 void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
 	hull->add_image(++current_id, name + "-hull", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
+	hull->add_image(++current_id, name + "-hull-colors", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	hull->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	hull->add_constant_text(++current_id, "Health: " + std::to_string(hp), b2Vec2(-300, 325), 7, 20,
@@ -26,44 +27,47 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	int hp, stamina, stamina_recovery;
 	float mass, radius;
 	std::string name, next;
-	while (next != "HULL")
+	while (!config.eof()) {
 		config >> next;
-	while (next == "HULL") {
-		config >> name >> next;
-		name_to_id[name + "-hull"] = current_id;
-		hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-			1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
-		hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
-			1, 20, sf::Color::White, 0, mouse_pos, keyboard);
-		cur_but_id++;
-		while (next != "END") {
-			if (next == "HP") {
-				config >> hp;
+		while (next == "HULL") {
+			config >> name >> next;
+			name_to_id[name + "-hull"] = current_id;
+			hull_menu.add_button(current_id++, name + "-hull", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+			hull_menu.add_button(current_id++, name + "-hull-colors", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+			hull_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			cur_but_id++;
+			while (next != "END") {
+				if (next == "HP") {
+					config >> hp;
+				}
+				if (next == "MASS") {
+					config >> mass;
+				}
+				if (next == "RADIUS") {
+					config >> radius;
+				}
+				if (next == "STAMINA") {
+					config >> stamina;
+				}
+				if (next == "STAMINA_RECOVERY") {
+					config >> stamina_recovery;
+				}
+				config >> next;
 			}
-			if (next == "MASS") {
-				config >> mass;
-			}
-			if (next == "RADIUS") {
-				config >> radius;
-			}
-			if (next == "STAMINA") {
-				config >> stamina;
-			}
-			if (next == "STAMINA_RECOVERY") {
-				config >> stamina_recovery;
-			}
+			hulls[name].set_draw(draw);
+			hulls[name].set_active(0);
+			hulls[name].set_events(&events);
+			init_hull(name, hp, mass, radius,
+				stamina, stamina_recovery, &hulls[name]);
 			config >> next;
 		}
-		hulls[name].set_draw(draw);
-		hulls[name].set_active(0);
-		hulls[name].set_events(&events);
-		init_hull(name, hp, mass, radius,
-			stamina, stamina_recovery, &hulls[name]);
-		config >> next;
 	}
 }
 
-void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_consumption, float projectile_mass,
+void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_cost, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
 	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
@@ -72,7 +76,7 @@ void Menu_Processing::init_gun(std::string name, int damage, float recharge, int
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Recharge: " + aux::float_to_string(recharge, 2), b2Vec2(-300, 350), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
-	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_consumption), b2Vec2(-300, 375), 7, 20,
+	gun->add_constant_text(++current_id, "Stamina consumption: " + std::to_string(stamina_cost), b2Vec2(-300, 375), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	gun->add_constant_text(++current_id, "Bullet mass: " + aux::float_to_string(projectile_mass, 2), b2Vec2(-300, 400), 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
@@ -88,17 +92,17 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	std::ifstream file_to_comment(path_to_guns_description);
 	std::stringstream config = aux::comment(file_to_comment);
 	while (!config.eof()) {
-		int damage, stamina_consumption, projectile_vel;
+		int damage, stamina_cost, projectile_vel;
 		float recharge, projectile_mass, projectile_radius;
 		std::string name, next;
 		config >> next;
 		while (next == "GUN") {
 			config >> name >> next;
 			name_to_id[name + "-gun"] = current_id;
-			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
-				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
-			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
-				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			gun_menu.add_button(current_id++, name + "-gun", pos + b2Vec2(300 * (cur_but_id % 3), 300 * (cur_but_id / 3)),
+				1, { 200, 200 }, sf::Color::White, mouse_pos, 0);
+			gun_menu.add_constant_text(current_id++, name, pos + b2Vec2(300 * (cur_but_id % 3), 300 * (cur_but_id / 3) + 65),
+				1, 40, sf::Color::White, 0, mouse_pos, keyboard);
 			cur_but_id++;
 			while (next != "END") {
 				if (next == "DAMAGE") {
@@ -108,7 +112,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 					config >> recharge;
 				}
 				if (next == "STAMINA_CONSUMPTION") {
-					config >> stamina_consumption;
+					config >> stamina_cost;
 				}
 				if (next == "PROJECTILE_MASS") {
 					config >> projectile_mass;
@@ -124,8 +128,48 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 			guns[name].set_draw(draw);
 			guns[name].set_active(0);
 			guns[name].set_events(&events);
-			init_gun(name, damage, recharge, stamina_consumption, projectile_mass,
+			init_gun(name, damage, recharge, stamina_cost, projectile_mass,
 				projectile_radius, projectile_vel, &guns[name]);
+			config >> next;
+		}
+	}
+}
+
+void Menu_Processing::init_module(std::string name, Menu* module, b2Vec2 add_pos) {
+	module->add_button(++current_id, name + "-module", b2Vec2(-150, 150) + add_pos, 7, b2Vec2(200, 200), sf::Color::White, mouse_pos, 0);
+	module->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300) + add_pos, 7, 20,
+		sf::Color::White, 1, mouse_pos, keyboard);
+	menus.push_back(module);
+}
+
+void Menu_Processing::init_modules_menu(b2Vec2 pos, std::string path_to_modules_description) {
+	int cur_but_id = 0;
+	std::ifstream file_to_comment(path_to_modules_description);
+	std::stringstream config = aux::comment(file_to_comment);
+	while (!config.eof()) {
+		std::string name, next;
+		config >> next;
+		while (next == "MODULE") {
+			config >> name >> next;
+			name_to_id[name + "-module"] = current_id;
+			modules_menu.add_button(current_id++, name + "-module", pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3)),
+				1, { 100, 100 }, sf::Color::White, mouse_pos, 0);
+			modules_menu.add_constant_text(current_id++, name, pos + b2Vec2(150 * (cur_but_id % 3), 150 * (cur_but_id / 3) + 65),
+				1, 20, sf::Color::White, 0, mouse_pos, keyboard);
+			cur_but_id++;
+			while (next != "END") {
+				config >> next;
+			}
+			modules[name + "1"].set_draw(draw);
+			modules[name + "1"].set_active(0);
+			modules[name + "1"].set_events(&events);
+			name_to_id[name + "1"] = current_id + 1;
+			init_module(name, &modules[name + "1"], {-210, 0});
+			modules[name + "2"].set_draw(draw);
+			modules[name + "2"].set_active(0);
+			modules[name + "2"].set_events(&events);
+			name_to_id[name + "2"] = current_id + 1;
+			init_module(name, &modules[name + "2"], { 0, 0 });
 			config >> next;
 		}
 	}
@@ -138,10 +182,14 @@ void Menu_Processing::close_settings_menus() {
 	gun_menu.set_active(0);
 	hull_menu.set_active(0);
 	HUD_menu.set_active(0);
+	modules_menu.set_active(0);
 	for (auto it = guns.begin(); it != guns.end(); it++)
 		guns[it->first].set_active(0);
 	for (auto it = hulls.begin(); it != hulls.end(); it++)
 		hulls[it->first].set_active(0);
+	for (auto it = modules.begin(); it != modules.end(); it++) {
+		modules[it->first].set_active(0);
+	}
 }
 
 void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
@@ -539,6 +587,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	network = network_;
 	replay = replay_;
 	reload = reload_;
+	*reload = 1;
 	load_sound("sound_settings.conf");
 	load_HUD_settings("HUD_settings.conf");
 	// set main menu fields
@@ -640,6 +689,13 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	constant_texts[name_to_id["ReplayPathText"]]->set_text("Replay path:");
 	text_fields[name_to_id["ReplayPath"]]->set_text("example.ex");
 	menus.push_back(&replay_setup_menu);
+	// set modules menu
+	modules_menu.set_draw(draw);
+	modules_menu.set_active(0);
+	modules_menu.set_events(&events);
+	init_menu("menu_configs/modules.conf", &modules_menu);
+	init_modules_menu(b2Vec2(300, 100), "parameters.conf");
+	menus.push_back(&modules_menu);
 }
 
 void Menu_Processing::step() {
@@ -777,6 +833,15 @@ void Menu_Processing::step() {
 			HUD_menu.set_active(1);
 			events.push(name_to_id["Apply"]);
 		}
+		if (name_to_id["Modules"] == events.front()) {
+			if (module_num == 1) {
+				events.push(name_to_id[game->get_left_module_name() + "-module"]);
+			}
+			else {
+				events.push(name_to_id[game->get_right_module_name() + "-module"]);
+			}
+			events.push(name_to_id["Apply"]);
+		}
 		if (name_to_id["PlayReplay"] == events.front()) {
 			shader_active = 0;
 			replay_setup_menu.set_active(0);
@@ -801,6 +866,27 @@ void Menu_Processing::step() {
 				hulls[game->get_hull_name()].set_active(1);
 				events.push(name_to_id["Apply"]);
 			}
+		}
+		for (auto it = modules.begin(); it != modules.end(); it++) {
+			std::string cur_name = it->first.substr(0, it->first.size() - 1);
+			if (name_to_id[cur_name + "-module"] == events.front()) {
+				if (module_num == 1)
+					game->set_left_module_name(cur_name);
+				else
+					game->set_right_module_name(cur_name);
+				close_settings_menus();
+				modules_menu.set_active(1);
+				modules[game->get_left_module_name() + "1"].set_active(1);
+				modules[game->get_right_module_name() + "2"].set_active(1);
+				events.push(name_to_id["Apply"]);
+			}
+			if (name_to_id[cur_name + "1"] == events.front()) {
+				module_num = 1;
+			}
+			if (name_to_id[cur_name + "2"] == events.front()) {
+				module_num = 2;
+			}
+			it++;
 		}
 		if (name_to_id["ApplySetup"] == events.front()) {
 			//set_current_gun("setup.conf", cur_gun);

@@ -9,8 +9,9 @@
 
 class Active_Module : public iId {
 protected:
-	float recharge_time = 0.5;
-	float stamina_consumption = 10;
+	float recharge_time = 10;
+	float stamina_cost = 20;
+	float energy_cost = 0;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player
@@ -20,17 +21,20 @@ protected:
 	// Time left
 	Counter* recharge_counter = nullptr;
 	Counter* stamina_cooldown_delay_counter = nullptr;
-	// Sound manager
+	// Event manager
 	Event_Manager* event_manager = nullptr;
 	// Stamina
 	Counter* stamina;
+	Counter* energy;
 	// Dispensable effects
-	Effects_Prototype* effects_prototype;
+	Effects_Prototype* effects_prototype = nullptr;
 	// Effects affecting this
-	Effects* effects;
+	Effects* effects = nullptr;
+	
 
 public:
 	Active_Module();
+	virtual ~Active_Module() = default;
 	void set(b2Body*, Player*);
 
 	// Get methods
@@ -40,6 +44,7 @@ public:
 	Counter* get_stamina_cooldown_delay_counter();
 	Event_Manager* get_event_manager();
 	Counter* get_stamina();
+	Counter* get_energy();
 	Effects_Prototype* get_effects();
 
 	// Set methods
@@ -49,12 +54,15 @@ public:
 	void set_bind(int);
 	void set_event_manager(Event_Manager*);
 	void set_stamina(Counter*);
+	void set_energy(Counter*);
 	void set_effects_prototype(Effects_Prototype*);
-	void set_ship_effects(Effects*);
+	void set_effects(Effects*);
 
 
 	// Activates module
 	virtual void activate() = 0;
+	// Side effects of activation
+	void activate_default_side_effects();
 	// Func to call regularly
 	void step(float dt);
 };

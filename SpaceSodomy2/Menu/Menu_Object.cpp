@@ -56,6 +56,9 @@ Draw* Menu_Object::get_draw() {
 b2Vec2 Menu_Object::get_pos() {
 	return window_cords_pos();
 }
+b2Vec2 Menu_Object::get_unmodded_pos() {
+	return pos;
+}
 bool Menu_Object::get_use_picture_scale() {
 	return use_picture_scale;
 }
@@ -102,6 +105,7 @@ void Menu_Object::set_draw(Draw* draw_) {
 }
 void Menu_Object::set_pos(b2Vec2 pos_) {
 	pos = pos_;
+	cur_pos_activated = false;
 }
 void Menu_Object::set_use_picture_scale(bool use_picture_scale_) {
 	use_picture_scale = use_picture_scale_;
@@ -142,7 +146,7 @@ void Menu_Object::primitive_step() {
 	if (!cur_pos_activated) {
 		cur_pos = window_cords_pos();
 	}
-	//std::cout << cur_pos.x << " " << cur_pos.y << " " << mouse_pos->x << "  " << mouse_pos->y << "\n";
+	//std::cout << texture_name << " " << scale.x << " " << scale.y << "\n";
 	if (aux::rect_contains(cur_pos + mid, scale, *mouse_pos))
 		active = 1;
 	else

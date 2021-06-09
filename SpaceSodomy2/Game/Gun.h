@@ -3,6 +3,7 @@
 #include "Active_Module.h"
 #include "Projectile_Manager.h"
 #include "Effects.h"
+#include "Event.h"
 
 struct Gun_Prototype;
 
@@ -22,8 +23,10 @@ public:
 
 struct Gun_Prototype {
 	float damage = 20;
+	unsigned char alias = 1;
 	float recharge_time = 0.5;
-	float stamina_consumption = 10;
+	float stamina_cost = 10;
+	float energy_cost = 0;
 	float projectile_mass = 0.05;
 	float projectile_vel = 10;
 	float projectile_radius = 0.2;

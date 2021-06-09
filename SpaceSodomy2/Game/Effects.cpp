@@ -31,8 +31,8 @@ Effects::Algebraic_Type Effects::Effect::get_type() {
 Counter* Effects::Effect::get_counter() {
     return &duration;
 }
-float Effects::Effect::get_strength() {
-    return strength;
+float Effects::Effect::get_param(std::string val) {
+    return params[val];
 }
 
 
@@ -49,9 +49,10 @@ void Effects::Effect::step(float dt) {
     duration.step(dt);
 }
 
-void Effects::Effect::set_strength(float val) {
-    strength = val;
+void Effects::Effect::set_param(std::string val, float num) {
+    params[val] = num;
 }
+
 
 Effects::Effect& Effects::Effect::operator+=(Effect other) {
     if (type == Algebraic_Type::ANNULATOR) {
@@ -71,7 +72,7 @@ Effects::Effect& Effects::Effect::operator+=(Effect other) {
         duration.modify(other.duration.get());
         break;
     case Algebraic_Type::NO_OVERLAY:
-        if (!(duration.get() > 0.01)) {
+        if (!(duration.get() > 0)) {
             duration.set(other.duration.get());
         }
         break;
@@ -125,6 +126,11 @@ void Effects::update(Effects_Prototype* _effects) {
     }
 }
 
+void Effects::update(Effects::Types type, float val) {
+    Effect eff;
+    eff.get_counter()->set(val);
+    effects[type] += eff;
+}
 
 Effects_Prototype::Effects_Prototype() {
     for (int i = 0; i < Effects::Types::COUNT; i++) {
@@ -143,11 +149,11 @@ Effects_Prototype::Effects_Prototype(Effects::Algebraic_Type type) {
 Effects::Types Effects::get_effect_type(std::string effect_name) {
     if (effect_name == "INSTANT_HP")
         return Effects::Types::INSTANT_HP;
-    if (effect_name == "INSTANT_STAMINA")
-        return Effects::Types::INSTANT_STAMINA;
+    if (effect_name == "INSTANT_ENERGY")
+        return Effects::Types::INSTANT_ENERGY;
     if (effect_name == "LASER")
         return Effects::Types::LASER;
-    if (effect_name == "LASER_BURN")
+    if (effect_name == "WALL_BURN")
         return Effects::Types::WALL_BURN;
     if (effect_name == "CHARGE")
         return Effects::Types::CHARGE;
@@ -155,6 +161,8 @@ Effects::Types Effects::get_effect_type(std::string effect_name) {
         return Effects::Types::BERSERK;
     if (effect_name == "IMMORTALITY")
         return Effects::Types::IMMORTALITY;
+    if (effect_name == "INVISIBILITY")
+        return Effects::Types::INVISIBILITY;
     else {
         std::cerr << "incorrect effect type : " << effect_name << '\n';
         return Effects::Types::COUNT;

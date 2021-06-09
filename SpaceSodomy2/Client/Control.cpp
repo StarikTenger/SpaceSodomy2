@@ -83,6 +83,10 @@ void Control::process_commands() {
 			replay.decrease_speed();
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
+		if (key_by_name("LEFT_MODULE"))
+			command_module.set_command(Command_Module::LEFT_MODULE, 1);
+		if (key_by_name("RIGHT_MODULE"))
+			command_module.set_command(Command_Module::RIGHT_MODULE, 1);
 	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();
@@ -104,6 +108,8 @@ std::string Control::commands_to_string() {
 	std::string message = "";
 	message += game.get_gun_name() + " ";
 	message += game.get_hull_name() + " ";
+	message += game.get_left_module_name() + " ";
+	message += game.get_right_module_name() + " ";
 	message += "#";
 	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
 		if (command_module.get_command(i))
@@ -138,6 +144,8 @@ Control::Control() {
 	}
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(&draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
+	// Init hud
+	hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -277,7 +285,7 @@ void Control::load_token(std::string path) {
 	int token;
 	config >> token;
 	if (token == 0) {
-		token = aux::random_int(0, 100000000);
+		token = aux::random_int(0, 10000000);
 		std::ofstream fout;
 		fout.open(path);
 		fout << token;

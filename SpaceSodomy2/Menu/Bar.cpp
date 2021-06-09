@@ -33,6 +33,9 @@ void Bar::set_angle(float angle_) {
 void Bar::set_critical_value(float critical_value_) {
 	critical_value = critical_value_;
 }
+void Bar::set_font(std::string font_name) {
+	text.set_font_name(font_name);
+}
 
 // Get methods
 int Bar::get_max_value() {
@@ -60,7 +63,8 @@ bool Bar::is_critical() {
 
 void Bar::step() {
 	if (draw_text) {
-		text.set_pos(1.0 / get_screen_mode() *get_pos());
+		text.set_pos(get_unmodded_pos() - b2Vec2(0, get_screen_mode() * get_scale().y / 2.0));
+		text.set_use_window_cords(get_use_window_cords());
 		text.set_text(std::to_string(int(value)));
 		text.set_color(text_color);
 		text.set_text_character_pixel_size(character_size);
@@ -84,6 +88,29 @@ void Bar::step() {
 	get_draw()->fill_rect(get_pos(), get_screen_mode() * get_scale(), current_back_color, angle);
 	get_draw()->fill_rect(get_pos() - get_screen_mode() * b2Vec2(get_scale().x * (max_value - value) / max_value / 2, 0),
 		get_screen_mode() * (get_scale() - b2Vec2(get_scale().x * (max_value - value) / max_value, 0)), front_color, angle);
-	if (draw_text) 
+	if (draw_text) {
+		sf::Color color_backup = text.get_text_color();
+		b2Vec2 text_pos_backup = text.get_unmodded_pos();
+		text.set_text_color(sf::Color::Black);
+		for (int i = 1; i >= 0; i--) {
+			if (i == 0)
+				text.set_text_color(color_backup);
+			text.set_pos(text_pos_backup + b2Vec2(-i, 0));
+			text.step();
+			text.set_pos(text_pos_backup + b2Vec2(i, 0));
+			text.step();
+			text.set_pos(text_pos_backup + b2Vec2(0, -i));
+			text.step();
+			text.set_pos(text_pos_backup + b2Vec2(0, i));
+			text.step();
+		}
+		//text.set_cur_pos(text_pos_backup + b2Vec2(10, 10));
+		text.set_pos(text_pos_backup);
+		//text.set_text_color(sf::Color::Black);
+		//text.set_text_scale(1.2);
+		//text.step();
+		//text.set_text_scale(1 / 1.2);
+		//text.set_text_color(color_backup);
 		text.step();
+	}
 }
