@@ -915,7 +915,9 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 					new_image.setPixel(i, j, new_color);
 				}
 				else {
-					auto base_color = sf::Color(255, 0, 0, std::max((1 - (aux::dist_from_polygon(point, polygon) / wall_width)) * 255, 0.f));
+					// TODO: laser width parameter
+					float laser_width = 0.4;
+					auto base_color = sf::Color(255, 0, 0, std::max((1 - (aux::dist_from_polygon(point, polygon) / laser_width)) * 255, 0.f));
 					new_image.setPixel(i, j, base_color);
 				}
 			}
