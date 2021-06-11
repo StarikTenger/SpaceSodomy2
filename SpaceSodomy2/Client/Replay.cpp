@@ -23,7 +23,6 @@ void Replay::set_replay_path(std::string path) {
 			msg.push_back(file.get());
 		}
 		frames.push_back(msg);
-		unsigned char temp = file.get();
 	}
 	replay_frame.set_max(frames.size() - 2);
 }
