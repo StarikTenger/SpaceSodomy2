@@ -178,9 +178,9 @@ void Control::step() {
 
 		// Pass message to game object
 		if (replay.get_replay_active())
-			game.decode(replay.get_cur_frame());
+			game.update_state(replay.get_cur_frame());
 		else
-			game.decode(network.get_message());
+			game.update_state(network.get_message());
 		// Draw		
 		game.display(network.get_id());
 		//FPS

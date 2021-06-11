@@ -8,10 +8,22 @@ Replay::Replay(std::string path) {
 
 void Replay::set_replay_path(std::string path) {
 	frames.clear();
-	std::ifstream file(path);
-	std::string k;
-	while (!getline(file, k).eof()) {
-		frames.push_back(k);
+	std::ofstream end(path, std::ios::app | std::ios::binary);
+	end << '\0';
+	end.close();
+	std::ifstream file(path, std::ios::binary);
+	while (file.peek() != '\0') {
+		std::string msg;
+		int msg_size = aux::read_short(file);
+		if (msg_size < 0) {
+			break;
+		}
+		msg += aux::write_short(msg_size);
+		for (int i = 0; i < msg_size; i++) {
+			msg.push_back(file.get());
+		}
+		frames.push_back(msg);
+		unsigned char temp = file.get();
 	}
 	replay_frame.set_max(frames.size() - 2);
 }

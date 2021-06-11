@@ -82,7 +82,7 @@ public:
 	void display(int id);
 
 	// Decodes class from string
-	void decode(std::string source);
+	void update_state(std::string source);
 
 	// Get ship
 	Ship* get_ship(int id);

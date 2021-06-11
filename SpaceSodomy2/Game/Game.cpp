@@ -1469,7 +1469,9 @@ std::string Game::encode() {
 		message += aux::write_float(event->get_pos().y, 2);
 	}
 	//std::cout << "message size is " << message.size() << "\n";
-	return message;
+	std::string ans = aux::write_short(message.size());
+	ans += (message);
+	return ans;
 }
 
 void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 

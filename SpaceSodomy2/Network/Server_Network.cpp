@@ -67,8 +67,8 @@ void Server_Network::receive() {
 void Server_Network::send(std::string message) {
 	if (replay_path != "") {
 		if (!fout.is_open())
-			fout.open(replay_path);
-		fout << message << "\n";
+			fout.open(replay_path, std::ios::binary);
+		fout << message << "\n"; // TODO: remove \n;
 	}
 	//send message for all users
 	for (auto addr : addresses) {

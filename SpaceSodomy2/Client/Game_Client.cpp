@@ -384,7 +384,7 @@ void Game_Client::display(int id) {
 	}
 }
 
-void Game_Client::decode(std::string source) {
+void Game_Client::update_state(std::string source) {
 	// Hp value to compare, is used to catch damage event
 	float hp_prev = 0;
 	if (get_ship(my_id)) {
@@ -434,6 +434,7 @@ void Game_Client::decode(std::string source) {
 
 	// Pasrsing source
 	std::string symbol;
+	int msg_size = aux::read_short(stream);
 	while (symbol = stream.get(), !stream.eof()) {
 		// Map
 		if (symbol == "M") {
