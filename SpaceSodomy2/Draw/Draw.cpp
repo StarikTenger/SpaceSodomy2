@@ -59,6 +59,14 @@ void Draw::set_camera(Camera _cam) {
 	cam = _cam;
 }
 
+void Draw::set_size(sf::Vector2i size) {
+	window->setSize(sf::Vector2u(size));
+}
+
+void Draw::move_camera(b2Vec2 v) {
+	cam.set_pos(cam.get_pos() + v);
+}
+
 // PUBLIC //
 
 sf::RenderWindow* Draw::create_window(int width, int height, std::string name) {

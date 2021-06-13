@@ -43,6 +43,8 @@ public:
 
 	// Set methods
 	void set_camera(Camera _cam);
+	void set_size(sf::Vector2i size);
+	void move_camera(b2Vec2 v);
 
 	// Creates window
 	sf::RenderWindow* create_window(int width = 600, int height = 420, std::string name = "window");
