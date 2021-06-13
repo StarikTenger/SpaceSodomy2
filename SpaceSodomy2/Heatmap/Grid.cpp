@@ -35,17 +35,27 @@ Grid::Grid(b2Vec2 size, const std::vector<b2Vec2>& points, b2Vec2 _offset, float
 }
 
 void Grid::display(Draw& draw, float scale) {
+	auto func = [](float a) {
+		return a;
+	};
+	scale *= cell_size;
 	float max_val = -1e9;
 	for (int x = 0; x < data.size(); x++)
-		for (int y = 0; y < data[x].size(); y++)
-			if (data[x][y] > max_val)
-				max_val = data[x][y];
+		for (int y = 0; y < data[x].size(); y++) {
+			auto val = func(data[x][y]);
+			if (val > max_val)
+				max_val = val;
+		}
 
 	for (int x = 0; x < data.size(); x++) {
 		for (int y = 0; y < data[x].size(); y++) {
+			auto val = func(data[x][y]) / max_val;
 			sf::Color col = {255, 255, 255};
-			col.a = 255 * data[x][y] / max_val;
-			draw.fill_rect(scale * (b2Vec2(x, y) + offset), scale * b2Vec2(1, 1), col);
+			//col.r = val * 255;
+			//col.g = (1 - val) * 255;
+			//col.b = 0;
+			col.a = 255 * val * 2;
+			draw.fill_rect(scale * (b2Vec2(x, y)) + offset, scale * b2Vec2(1, 1), col);
 		}
 	}
 	

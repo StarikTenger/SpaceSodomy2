@@ -1,6 +1,40 @@
 #include <Draw/Draw.h>
+#include <Game/Game.h>
 #include <iostream>
 #include "Grid.h"
+
+class Game_Drawable : public Game {
+public:
+	void draw_walls(Draw* draw) {
+		for (auto wall : walls) {
+			auto color = sf::Color(0, 151, 255);
+			if (wall->get_type() == Wall::SPIKED || wall->get_type() == Wall::GHOST) {
+				color = sf::Color(255, 255, 255);
+			}
+			auto vertices = wall->get_vertices();
+			for (int i = 0; i < vertices.size(); i++) {
+				int j = (i + 1) % vertices.size();
+				float thickness = 0.05;
+				draw->thick_line(vertices[i], vertices[j], color, thickness);
+
+				// Drawing wall connection
+				b2Vec2 vec_a = vertices[(i + 1) % vertices.size()] - vertices[i];
+				b2Vec2 vec_b = vertices[(vertices.size() + i - 1) % vertices.size()] - vertices[i];
+				vec_a.Normalize();
+				vec_b.Normalize();
+				b2Vec2 vec_dir = vec_a + vec_b;
+				vec_dir.Normalize();
+				float cos_val = b2Dot(vec_a, vec_b);
+				float sin_val = sqrt(abs(1 - cos_val) / 2);
+				cos_val = sqrt(abs(1 + cos_val) / 2);
+				float size_x = thickness * sin_val / 2;
+				float size_y = thickness * cos_val;
+				draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
+			}
+		}
+	}
+
+};
 
 int main() {
 	// From input
@@ -30,7 +64,9 @@ int main() {
 	cam.set_scale(10);
 	cam.set_pos({ 0, 0 });
 	draw.set_camera(cam);
-	
+	Game_Drawable game;
+	game.load_map("maps/rocks.lvl");
+
 	draw.create_window(600, 600, "Heatmap");
 	b2Vec2 mouse_prev = b2Vec2_zero;
 	while (draw.get_window()->isOpen()) {
@@ -62,6 +98,7 @@ int main() {
 		for (auto& grid : grids) {
 			grid.display(draw);
 		}
+		game.draw_walls(&draw);
 		draw.display();
 	}
 }
