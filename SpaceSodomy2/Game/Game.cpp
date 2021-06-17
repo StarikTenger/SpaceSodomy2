@@ -271,6 +271,7 @@ Event* Game::create_event(Event_Def event_def, float playing_offset) {
 	event->set_type(event_def.type);
 	event->set_pos(event_def.pos);
 	event->set_playing_offset(create_counter(playing_offset, 1));
+	event->set_parameters(event_def.parameters);
 	id_manager.set_id(event);
 	events.insert(event);
 	return event;
@@ -692,7 +693,19 @@ void Game::process_physics() {
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
-			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, pos));
+			auto body_a = contact->GetFixtureA()->GetBody();
+			auto body_b = contact->GetFixtureB()->GetBody();
+			auto dv = abs(b2Dot(body_a->GetLinearVelocity() - body_b->GetLinearVelocity(), worldManifold.normal));
+			dv *= 10;
+			if (dv < 0.5) {
+				continue;
+			}
+			
+			short force = std::min((int)(dv * 10), 100);
+			Event_Def event_def(Event::WALL_HIT, nullptr, pos);
+			
+			event_def.set_parameters({ force });
+			event_manager.create_event(event_def);
 			//std::cout << "hit\n";
 		}
 	}
@@ -1467,6 +1480,11 @@ std::string Game::encode() {
 		// Pos
 		message += aux::write_float(event->get_pos().x, 2);
 		message += aux::write_float(event->get_pos().y, 2);
+		// Parameters
+		auto params = event->get_parameters();
+		for (int i = 0; i < Event::get_parameters_number(event->get_type()); i++) {
+			message += aux::write_short(params[i]);
+		}
 	}
 	//std::cout << "message size is " << message.size() << "\n";
 	std::string ans = aux::write_short(message.size());
