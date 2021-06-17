@@ -4,12 +4,13 @@
 #include <vector>
 
 class Bonus_Manager {
-private:
+public:
     // First is Types, second is a set
     struct Spawnpoint {
         b2Vec2 pos;
         bool is_free = true;
     };
+private:    
     std::vector<std::vector<Spawnpoint>> spawnpoints;
 
     struct Global_Spawnability {
@@ -21,6 +22,7 @@ private:
     std::deque<Bonus_Def> bonuses_to_create;
     std::vector<Bonus_Prototype> bonus_prototypes;
 public:
+
     Bonus_Manager();
     void add_prototype(Bonus_Prototype);
     void set_cooldown(Bonus::Types, float);
@@ -30,4 +32,5 @@ public:
     bool get_next(Bonus_Def&);
     void free_bonus_spawn(Bonus::Types, int id);
     Bonus_Prototype* get_prototype(int type);
+    std::vector<std::vector<Spawnpoint>> get_spawnpoints();
 };

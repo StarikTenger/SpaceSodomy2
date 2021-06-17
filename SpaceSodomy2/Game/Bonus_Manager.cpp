@@ -74,3 +74,7 @@ Bonus_Prototype* Bonus_Manager::get_prototype(int type) {
 void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {
     bonus_prototypes[prototypes.type] = (prototypes);
 }
+
+std::vector<std::vector<Bonus_Manager::Spawnpoint>> Bonus_Manager::get_spawnpoints() {
+    return spawnpoints;
+}

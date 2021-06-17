@@ -54,7 +54,7 @@ void Grid::display(Draw& draw, float scale) {
 			//col.r = val * 255;
 			//col.g = (1 - val) * 255;
 			//col.b = 0;
-			col.a = 255 * val * 2;
+			col.a = 255 * val * 1.5;
 			draw.fill_rect(scale * (b2Vec2(x, y)) + offset, scale * b2Vec2(1, 1), col);
 		}
 	}

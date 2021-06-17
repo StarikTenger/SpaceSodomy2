@@ -39,3 +39,4 @@ struct Bonus_Def : public iId {
     Bonus::Types type;
     b2Vec2 pos;
 };
+

@@ -4,6 +4,16 @@
 #include "Grid.h"
 
 class Game_Drawable : public Game {
+	std::map<int, std::string> bonus_textures = {
+		{Bonus::COUNT, "bonusEmpty"},
+		{Bonus::INSTANT_HP, "bonusHp"},
+		{Bonus::INSTANT_ENERGY, "bonusEnergy"},
+		{Bonus::BERSERK, "bonusBerserk"},
+		{Bonus::IMMORTALITY, "bonusImmortal"},
+		{Bonus::CHARGE, "bonusCharge"},
+		{Bonus::LASER, "bonusLaser"}
+	};
+
 public:
 	void draw_walls(Draw* draw) {
 		for (auto wall : walls) {
@@ -31,6 +41,20 @@ public:
 				float size_y = thickness * cos_val;
 				draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
 			}
+		}
+
+		auto spawnpoints = bonus_manager.get_spawnpoints();
+
+		int i = 0;
+		for (auto points : spawnpoints) {
+			for (auto point : points) {
+				//std::cout << point.pos.x << " " << point.pos.y << "\n";
+				float angle = draw->get_camera()->get_angle() + b2_pi / 2;
+				draw->image(bonus_textures[i],
+					point.pos, 1. / draw->get_camera()->get_scale() * b2Vec2(15, 15),
+					angle, sf::Color::White);
+			}
+			i++;
 		}
 	}
 
@@ -66,6 +90,7 @@ int main() {
 	draw.set_camera(cam);
 	Game_Drawable game;
 	game.load_map("maps/rocks.lvl");
+	draw.load_textures("textures.conf");
 
 	draw.create_window(600, 600, "Heatmap");
 	b2Vec2 mouse_prev = b2Vec2_zero;
