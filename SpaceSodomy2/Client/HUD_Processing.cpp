@@ -387,8 +387,28 @@ void HUD_Processing::step() {
 		interface_image.primitive_step();
 		bonus.primitive_step();
 		bonus_tip.step();
+		auto mtype = game->get_ship(player_network->get_id())->get_left_module()->get_type();
+		auto stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
+		auto ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
+		if (stam_param >
+			game->get_ship(player_network->get_id())->get_stamina()->get() ||
+			ener_param >
+			game->get_ship(player_network->get_id())->get_energy()->get())
+			left_module.set_color(sf::Color(150, 150, 150, 255));
+		else
+			left_module.set_color(sf::Color::White);
 		left_module.primitive_step();
 		left_module_tip.step();
+		mtype = game->get_ship(player_network->get_id())->get_right_module()->get_type();
+		stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
+		ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
+		if (stam_param >
+			game->get_ship(player_network->get_id())->get_stamina()->get() ||
+			ener_param >
+			game->get_ship(player_network->get_id())->get_energy()->get())
+			right_module.set_color(sf::Color(150, 150, 150, 255));
+		else
+			right_module.set_color(sf::Color::White);
 		right_module.primitive_step();
 		right_module_tip.step();
 		gun_image.primitive_step();

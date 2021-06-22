@@ -1002,3 +1002,7 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 			"textures/walls/" + global_wall_name + ".png");
 	}
 }
+
+Module_Manager* Game_Client::get_module_manager() {
+	return &module_manager;
+}
