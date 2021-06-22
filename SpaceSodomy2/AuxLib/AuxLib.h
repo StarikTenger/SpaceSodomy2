@@ -135,4 +135,6 @@ public:
 	// Caution: total val must fit approx 15000 / pow(10, precision)
 	static std::string write_float(float val, unsigned precision);
 	static float read_float(std::istream& in, unsigned precision);
+
+	static std::string to_string(b2Vec2);
 };

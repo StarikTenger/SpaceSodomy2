@@ -27,6 +27,9 @@ private:
 	std::map <int, int> time_by_id; // getting last connection time by IP
 
 	void load_config(std::string path); // loading configurations from .conf file
+
+	std::string log_path;
+	std::ofstream fout;
 public:
 	Control();
 

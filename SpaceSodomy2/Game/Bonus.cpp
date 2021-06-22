@@ -33,3 +33,23 @@ Bonus::Types Bonus::get_bonus_type(std::string bonus_name) {
         return Bonus::Types::COUNT;
     }
 }
+
+std::string Bonus::get_bonus_name(Bonus::Types type) {
+    switch (type) {
+    case INSTANT_HP:
+        return "INSTANT_HP";
+    case INSTANT_ENERGY:
+        return "INSTANT_ENERGY";
+    case LASER:
+        return"LASER";
+    case CHARGE:
+        return "CHARGE";
+    case BERSERK:
+        return "BERSERK";
+    case IMMORTALITY:
+        return "IMMORTALITY";
+    case COUNT:
+        std::cerr << "incorrect bonus type\n";
+        return "ERROR_TYPE";
+    }
+}

@@ -504,3 +504,7 @@ int aux::read_int8(std::istream& in) {
 	unsigned char val = in.get();
 	return (int)val - 1;
 }
+
+std::string aux::to_string(b2Vec2 val) {
+	return std::to_string(val.x) + " " + std::to_string(val.y);
+}

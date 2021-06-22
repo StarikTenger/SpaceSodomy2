@@ -17,6 +17,7 @@ public:
         COUNT
     };
     static Bonus::Types get_bonus_type(std::string name);
+    static std::string get_bonus_name(Bonus::Types type);
 private:
     b2Body* body = nullptr;
     Bonus::Types type;

@@ -6,6 +6,16 @@
 #include "framework.h"
 #include "Game.h"
 
+void Game::do_keep_logs(bool val) {
+	is_keep_logs = val;
+}
+
+std::string Game::get_logs() {
+	std::string val = std::move(logs);
+	logs = "";
+	return val;
+}
+
 b2Vec2 Game::get_rand_respawn_pos() {
 	bool acceptable = 0;
 	b2Vec2 respawn_point;
@@ -495,8 +505,10 @@ void Game::process_players() {
 			player->set_is_alive(1);
 
 			// creating ship
-			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			auto pos = get_rand_respawn_pos();
+			auto ship = create_ship(player, pos, aux::random_float(0, 2 * b2_pi, 3));
 			//auto_damage = 0;
+			logs += "Player " + std::to_string(player->get_id()) +  " spawned at " + aux::to_string(pos) + " with  id " + std::to_string(ship->get_id()) + "\n";
 		}
 	}
 }
@@ -513,6 +525,7 @@ void Game::process_ships() {
 		if (hp_eff->get() > 0) {
 			ship->get_hp()->modify(hp_eff->get());
 			hp_eff->set(0);
+			logs += "Ship " + std::to_string(ship->get_id()) + " grabbed INSTANT_HP\n";
 
 		}
 		// Apply INSTANT_ENERGY
@@ -520,6 +533,8 @@ void Game::process_ships() {
 		if (st_eff->get() > 0) {
 			ship->get_energy()->modify(st_eff->get());
 			st_eff->set(0);
+			logs += "Ship " + std::to_string(ship->get_id()) + " grabbed INSTANT_ENERGY\n";
+
 		}
 
 		// Apply LASER
@@ -538,6 +553,9 @@ void Game::process_ships() {
 					    damage_receiver->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					}
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::LASER)->get_param("damage"), ship->get_player());
+					logs += "Ship " + std::to_string(ship->get_id()) + " hits with LASER " + 
+						(damage_receiver->get_effects()? "ship ":"damage_receiver ") + 
+						" belonging to player " + std::to_string(damage_receiver->get_player()->get_id()) + "\n";
 				}
 			}
 		}
@@ -549,6 +567,10 @@ void Game::process_ships() {
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
 					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					logs += "Ship " + std::to_string(ship->get_id()) + " was hit by WALL\n";
+					if (ship->get_hp()->get() <= 0) {
+						logs += "Ship " + std::to_string(ship->get_id()) + " was killed by WALL\n";
+					}
 				}
 			}
 		}
@@ -574,6 +596,9 @@ void Game::process_ships() {
 					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
+					if (damage_receiver->get_effects()) {
+						logs += "Ship " + std::to_string(ship->get_id()) + " killed ship of player " + std::to_string(damage_receiver->get_player()->get_id()) + " with CHARGE\n" ;
+					}
 				}
 			}
 		}
@@ -585,6 +610,7 @@ void Game::process_ships() {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
 			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
+			logs += "Ship " + std::to_string(ship->get_id()) + " died with killer " + (ship->get_damage_receiver()->get_last_hit() ? std::to_string(ship->get_damage_receiver()->get_last_hit()->get_id()) : "NONE") + "\n";
 		}
 		
 	}
@@ -822,6 +848,7 @@ void Game::process_bonuses() {
 				ship->get_bonus_slot()->add_bonus(bonus->get_type());
 				bonuses_to_delete.push_back(bonus);
 				event_manager.create_event(Event_Def(Event::BONUS_PICKUP, nullptr, bonus->get_body()->GetPosition()));
+				logs += "Ship " + std::to_string(ship->get_id()) + " grabbed bonus " + Bonus::get_bonus_name(bonus->get_type()) + "\n";
 			}
 		}
 	}
@@ -845,6 +872,12 @@ void Game::step(float _dt) {
 	//std::cout << projectiles.size() << "\n";
 	dt = _dt;
 	time += dt;
+
+	logs += "BEGIN LOG\n";
+	logs += "time " + std::to_string(time) + "\n";
+	logs += "dt " + std::to_string(dt) + "\n";
+
+
 	process_physics();
 	process_players();
 	process_ships();
@@ -862,6 +895,11 @@ void Game::step(float _dt) {
 	process_rockets();
 	process_rocket_manager();
 	process_forcefields();
+
+	logs += "END LOG\n";
+	if (!is_keep_logs) {
+		logs.clear();
+	}
 }
 
 void Game::set_dt(float _dt) {

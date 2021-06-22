@@ -25,9 +25,12 @@
 
 class Game {
 protected:
+	// TODO: remove this
 	bool auto_damage = 0;
 	b2Vec2 get_rand_respawn_pos();
 
+	std::string logs;
+	bool is_keep_logs = 0;
 
 	// Time step
 	float dt = 0;
@@ -159,6 +162,12 @@ public:
 	void clear();
 	// Clean all
 	void wipe_map();
+	// Turn logging on/off
+	void do_keep_logs(bool);
+
+	// Get current logs
+	// Clears logs
+	std::string get_logs();
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
