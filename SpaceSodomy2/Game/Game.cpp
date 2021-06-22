@@ -609,6 +609,12 @@ void Game::process_ships() {
 			ship->get_player()->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+				// TODO: an elegant solution
+				for (auto suspect : ships) {
+					if (suspect->get_player() == ship->get_damage_receiver()->get_last_hit()) {
+						suspect->get_energy()->modify(params["vampirism"]);
+					}
+				}
 			}
 			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 			logs += "Ship " + std::to_string(ship->get_id()) + " died with killer " + (ship->get_damage_receiver()->get_last_hit() ? std::to_string(ship->get_damage_receiver()->get_last_hit()->get_id()) : "NONE") + "\n";
