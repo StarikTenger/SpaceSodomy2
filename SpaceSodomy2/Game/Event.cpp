@@ -1,6 +1,15 @@
 #include "pch.h"
 #include "Event.h"
 
+int Event::get_parameters_number(int type) {
+	std::map<int, int> pnum = {
+		{WALL_HIT, 1}
+	};
+	if (pnum.count(type))
+		return pnum[type];
+	return 0;
+}
+
 Event::Event() {
 }
 
@@ -18,6 +27,10 @@ b2Vec2 Event::get_pos() {
 	return pos;
 }
 
+std::vector<short> Event::get_parameters() {
+	return parameters;
+}
+
 void Event::set_type(int val) {
 	type = val;
 }
@@ -32,6 +45,10 @@ void Event::set_body(b2Body* val) {
 
 void Event::set_pos(b2Vec2 val) {
 	pos = val;
+}
+
+void Event::set_parameters(std::vector<short> val) {
+	parameters = val;
 }
 
 bool Event::is_alive() {

@@ -685,6 +685,11 @@ void Game_Client::update_state(std::string source) {
 			type = aux::read_int8(stream);
 			pos.x = aux::read_float(stream, 2);
 			pos.y = aux::read_float(stream, 2);
+			std::vector<short> params;
+			for (int i = 0; i < Event::get_parameters_number(type); i++) {
+				params.push_back(aux::read_short(stream));
+			}
+
 			// TODO: find more elegant way of getting sound name
 			std::map<int, std::string> sound_names;
 			sound_names[Event::SHOT] = "shot";
@@ -705,6 +710,9 @@ void Game_Client::update_state(std::string source) {
 			// Animations
 			if (active_events.count(id))
 				continue;
+			if (type == Event::WALL_HIT) {
+				audio->update_sound(id, sound_name, pos, (float)params[0] / 20, 0);
+			}
 			if (type == Event::MODULE_FORCE) {
 				draw->fadeout_animation("force",
 					pos, // Position

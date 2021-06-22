@@ -1,12 +1,14 @@
 #pragma once
 #include <string>
 #include <deque>
+#include <vector>
 #include <box2d/box2d.h>
 
 struct Event_Def {
 	int type = 0;
 	b2Body* body = nullptr;
 	b2Vec2 pos;
+	std::vector<short> parameters;
 	Event_Def() {}
 	Event_Def(int _type, b2Body* _body, b2Vec2 _pos = {}) {
 		type = _type;
@@ -14,6 +16,9 @@ struct Event_Def {
 		pos = _pos;
 		if (body)
 			pos = body->GetPosition();
+	}
+	void set_parameters(std::vector<short> _parameters) {
+		parameters = _parameters;
 	}
 };
 
