@@ -6,6 +6,7 @@
 #include "AuxLib.h"
 #include <iomanip>
 #include <sstream>
+#include <unordered_set>
 
 // Converts color from hsv to rgb
 sf::Color aux::from_hsv(float H, float S, float V) {
@@ -507,4 +508,22 @@ int aux::read_int8(std::istream& in) {
 
 std::string aux::to_string(b2Vec2 val) {
 	return std::to_string(val.x) + " " + std::to_string(val.y);
+}
+
+bool aux::is_name_good(std::string val) {
+	std::unordered_set<char> set;
+	for (auto i : val) {
+		set.insert(i);
+	}
+	std::string good = "qwertyuiopsdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM@[]$#&|?!*()";
+	std::unordered_set<char> allowed;
+	for (auto i : good) {
+		allowed.insert(i);
+	}
+	for (auto i : set) {
+		if (!allowed.count(i)) {
+			return false;
+		}
+	}
+	return true;
 }

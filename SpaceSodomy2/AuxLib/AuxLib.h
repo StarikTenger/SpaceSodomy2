@@ -137,4 +137,5 @@ public:
 	static float read_float(std::istream& in, unsigned precision);
 
 	static std::string to_string(b2Vec2);
+	static bool is_name_good(std::string);
 };

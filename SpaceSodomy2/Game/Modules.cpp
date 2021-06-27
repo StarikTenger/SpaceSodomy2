@@ -172,6 +172,7 @@ void Dash_Module::activate() {
 Force_Module::Force_Module(Module_Prototype* base) : Module(base) {
 	radius = base->params["radius"];
 	vel = base->params["vel"];
+	crit_mass = base->params["crit_mass"];
 }
 
 void Force_Module::activate() {
@@ -182,7 +183,7 @@ void Force_Module::activate() {
 			receiver->damage(0, player);
 			b2Vec2 unit = (receiver->get_body()->GetWorldPoint({ 0,0 }) - body->GetWorldPoint({ 0,0 }));
 			unit.Normalize();
-			b2Vec2 impulse = vel * (std::min( std::min(receiver->get_body()->GetMass(), body->GetMass()), 1.f)) * unit;
+			b2Vec2 impulse = vel * (std::min( std::min(receiver->get_body()->GetMass(), body->GetMass()), crit_mass)) * unit;
 			receiver->get_body()->ApplyLinearImpulseToCenter(impulse, 1);
 			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}

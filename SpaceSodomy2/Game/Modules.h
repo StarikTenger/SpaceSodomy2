@@ -116,6 +116,7 @@ public:
     Force_Module(Module_Prototype*);
     float radius;
     float vel;
+    float crit_mass;
     void activate() override;
 };
 

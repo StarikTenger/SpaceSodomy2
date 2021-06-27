@@ -60,9 +60,16 @@ int Client_Network::get_token() {
 
 void Client_Network::send(std::string data) {
 	// Client message constructor
+	std::string effective_name = "";
+	if (!aux::is_name_good(name)) {
+		effective_name = "[REDACTED]";
+	}
+	else {
+		effective_name = name;
+	}
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
-		name + " " + std::to_string(token) + " " +
+		effective_name + " " + std::to_string(token) + " " +
 		data;
 	// Sending
 	auto func = [](sf::UdpSocket* socket, std::string data,
