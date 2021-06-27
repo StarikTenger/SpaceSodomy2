@@ -812,7 +812,7 @@ void Game_Client::update_state(std::string source) {
 			break;
 		case Disappear_Animation::ROCKET:
 			for (int i = 0; i < 10; i++) {
-				auto blast_radius = module_manager.get_prototype(Module::ROCKET)->params["blast_radius"];
+				auto blast_radius = module_manager.get_prototype(Module::ROCKET)->params["blast_radius"] * 2;
 				draw->fadeout_animation("explosion",
 					object.second.pos, // Position
 					{ 0.1, blast_radius / 4 }, // Shift
@@ -881,7 +881,7 @@ void Game_Client::save_setup(std::string path) {
 
 sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 	sf::Vector2f scale, std::string base_texture,
-	float wall_width, sf::Color overlay_color) {
+	float wall_width, sf::Color overlay_color, std::set<Wall*>& walls) {
 
 	auto polygon = wall->get_vertices();
 	bool is_outer = wall->get_orientation();
@@ -914,6 +914,20 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 				point.x = origin.x + i / scale.x;
 				point.y = origin.y + j / scale.y;
 
+				bool do_break = 0;
+				if (wall->get_type() == Wall::SPIKED) {
+					for (auto other : walls) {
+						if (other->get_type() == Wall::STANDART) {
+							if (aux::is_in_polygon(point, other->get_vertices(), other->get_orientation())) {
+								do_break = true;
+								break;
+							}
+						}
+					}
+				}
+				if (do_break) {
+					continue;
+				}
 				if (aux::is_in_polygon(point, polygon, is_outer)) {
 					auto base_color = base_image.getPixel(i % base_image.getSize().x,
 						j % base_image.getSize().y);
@@ -993,11 +1007,26 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
 		base.clear(sf::Color::Transparent);
 		for (auto wall : walls) {
+			if (wall->get_type() == Wall::SPIKED) {
+				continue;
+			}
 			std::cout << "making wall with id " << wall->get_id() << "\n";
-			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width, overlay_color);
+			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width, overlay_color, walls);
 			draw->overlay_texture(base, temp, sf::Color::White,
 				sf::Vector2i((wall->get_origin_pos().x - origin_pos.x) * scale.x, 
 				             (wall->get_origin_pos().y - origin_pos.y) * scale.y));
+			base.display();
+			delete temp;
+		}
+		for (auto wall : walls) {
+			if (wall->get_type() == Wall::STANDART) {
+				continue;
+			}
+			std::cout << "making wall with id " << wall->get_id() << "\n";
+			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width, overlay_color, walls);
+			draw->overlay_texture(base, temp, sf::Color::White,
+				sf::Vector2i((wall->get_origin_pos().x - origin_pos.x) * scale.x,
+					(wall->get_origin_pos().y - origin_pos.y) * scale.y));
 			base.display();
 			delete temp;
 		}
