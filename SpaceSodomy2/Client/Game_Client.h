@@ -107,4 +107,6 @@ public:
 		                    sf::Vector2f scale = {100, 100}, 
 		                    float wall_width = 1.0,
 		                    std::string wall_name = "wall");
+
+	Module_Manager* get_module_manager();
 };
