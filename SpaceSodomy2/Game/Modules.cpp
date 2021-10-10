@@ -94,7 +94,7 @@ HpUp_Module::HpUp_Module(Module_Prototype* base) : Module(base) {
 
 void HpUp_Module::activate() {
 	activate_default_side_effects();
-	effects->update(Effects::INSTANT_HP, params["heal"]);
+	effects->update(Effects::INSTANT_HP, heal);
 }
 
 Shotgun_Module::Shotgun_Module(Module_Prototype* base) : Module(base) {

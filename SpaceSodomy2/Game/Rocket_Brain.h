@@ -27,6 +27,7 @@ public:
     void set_game_objects(Game_Objects);
     void set_command_module(Command_Module*);
     void step(float dt);
+    bool is_targetable(Ship* ship);
     Command_Module* get_command_module();
 };
 

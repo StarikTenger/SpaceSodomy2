@@ -58,5 +58,8 @@ public:
 	void set_bonus_slot(Bonus_Slot*);
 	void set_left_module(Module*);
 	void set_right_module(Module*);
+
+	bool is_visible();
+	bool is_boost_active();
 };
 

@@ -1148,6 +1148,25 @@ bool Game::load_parameters(std::string path) {
 			}
 			return _effects;
 		};
+		if (symbol == "INVIS_FLAG") {
+			Effects::invis_flag = Effects::Invisibility_Flag::SHOW_NO;
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "SHOW_EFFECTS") {
+					Effects::invis_flag = Effects::invis_flag || Effects::Invisibility_Flag::SHOW_EFFECTS;
+					std::cout << "Invisibility flag SHOW_EFFECTS set\n";
+					continue;
+				}
+				if (symbol == "SHOW_BOOST") {
+					Effects::invis_flag = Effects::invis_flag || Effects::Invisibility_Flag::SHOW_BOOST;
+					std::cout << "Invisibility flag SHOW_BOOST set\n";
+					continue;
+				}
+				std::cerr << "Error: Unknown invisibility flag " << symbol << "\n";
+			}
+			continue;
+		}
 		if (symbol == "PARAMETERS") {
 			while (input >> symbol) {
 				if (symbol == "END")
