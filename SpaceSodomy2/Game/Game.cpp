@@ -35,6 +35,8 @@ Game::Game() {
 	game_objects.set_projectiles(&projectiles);
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
+
+	wall_player = create_player(-1, sf::Color::White, "WALL");
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -490,8 +492,9 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
-		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 &&
-			player->get_command_module()->get_command(Command_Module::RESPAWN)) {
+		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
+			&& player->get_command_module()->get_command(Command_Module::RESPAWN) 
+			&& player->get_id() >= 0) { // The player is human
 			player->set_is_alive(1);
 
 			// creating ship
@@ -549,6 +552,9 @@ void Game::process_ships() {
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
 					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					if (ship->get_hp()->get() < b2_epsilon) {
+						wall_player->add_kill();
+					}
 				}
 			}
 		}

@@ -31,7 +31,7 @@ void Client_Network::set_id(int id_) {
 }
 
 void Client_Network::set_name(std::string name_) {
-	name = name_;
+	name = aux::censor_name(name_);
 }
 
 void Client_Network::set_token(int token_) {
@@ -59,6 +59,7 @@ int Client_Network::get_token() {
 }
 
 void Client_Network::send(std::string data) {
+	//name = aux::censor_name(name);
 	// Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +

@@ -135,4 +135,7 @@ public:
 	// Caution: total val must fit approx 15000 / pow(10, precision)
 	static std::string write_float(float val, unsigned precision);
 	static float read_float(std::istream& in, unsigned precision);
+
+	// To ban bad names, for exapmle, |_\/|_  C|\|
+	static std::string censor_name(std::string);
 };
