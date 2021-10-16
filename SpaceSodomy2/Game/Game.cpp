@@ -1520,6 +1520,13 @@ Player* Game::player_by_id(int id) {
 		return nullptr;
 	return players[id];
 }
+int Game::count_players() {
+	int res = 0;
+	for (auto player : players) {
+		res += (player.second->get_id() > 0);
+	}
+	return res;
+}
 
 void Game::delete_player(int id) {
 	// Deleting ship

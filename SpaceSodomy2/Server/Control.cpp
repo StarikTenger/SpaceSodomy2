@@ -71,7 +71,7 @@ void Control::receive() {
 		id_by_IP[IP_address_] = id_;
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
-		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+		sf::Color new_color = aux::gen_new_player_color(game.count_players());
 		game.new_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
 	}
 	// Applying commands

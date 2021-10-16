@@ -530,3 +530,9 @@ std::string aux::censor_name(std::string str) {
 	}
 	return str;
 }
+
+sf::Color aux::gen_new_player_color(int cur_number_of_players) {
+	std::vector<int> v = {0, 120, 240, 60, 180, 300, 30, 90, 150, 210, 270, 330};
+	return aux::from_hsv((v[cur_number_of_players] + base_player_color) % 360, 1, 1);
+}
+const int aux::base_player_color = aux::random_int(0, 360);

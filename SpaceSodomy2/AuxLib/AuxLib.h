@@ -138,4 +138,9 @@ public:
 
 	// To ban bad names, for exapmle, |_\/|_  C|\|
 	static std::string censor_name(std::string);
+
+	// Good random hsv color
+	// WARNING : max 12 players
+	static sf::Color gen_new_player_color(int cur_number_of_players);
+	const static int base_player_color;
 };
