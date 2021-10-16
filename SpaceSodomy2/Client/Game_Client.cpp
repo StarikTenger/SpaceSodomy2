@@ -437,11 +437,11 @@ void Game_Client::update_state(std::string source) {
 	stream << source;
 
 	// Pasrsing source
-	std::string symbol;
+	char symbol;
 	int msg_size = aux::read_short(stream);
 	while (symbol = stream.get(), !stream.eof()) {
 		// Map
-		if (symbol == "M") {
+		if (symbol == 'M') {
 			std::string path;
 			stream >> path;
 			if (map_path != path) {
@@ -459,8 +459,13 @@ void Game_Client::update_state(std::string source) {
 				load_thread.detach();
 			}
 		}
+		if (symbol == 'W') {
+			int kills = aux::read_short(stream);
+			wall_player = create_player(-1, sf::Color::White, "WALL");
+			wall_player->set_kills(kills);
+		}
 		// Player
-		if (symbol == "P") {
+		if (symbol == 'P') {
 			// Id
 			//stream.get();
 			int id;
@@ -501,7 +506,7 @@ void Game_Client::update_state(std::string source) {
 			//std::cout << aux::get_milli_count() - connection_time << "\n";
 		}
 		// Ship
-		if (symbol == "S") {
+		if (symbol == 'S') {
 			// Ids
 			//stream.get();
 			int id, player_id;
@@ -587,7 +592,7 @@ void Game_Client::update_state(std::string source) {
 			}
 		}
 		// Projectile
-		if (symbol == "p") {
+		if (symbol == 'p') {
 			//stream.get();
 			int player_id = aux::read_int(stream);
 			int number = aux::read_int8(stream);
@@ -634,7 +639,7 @@ void Game_Client::update_state(std::string source) {
 			//manage_destroyed_object(id);
 		}
 		// Rocket
-		if (symbol == "r") {
+		if (symbol == 'r') {
 			// Ids
 			int id, player_id;
 			// Pos
@@ -662,7 +667,7 @@ void Game_Client::update_state(std::string source) {
 			manage_destroyed_object(id);
 		}
 		// Bonus
-		if (symbol == "b") {
+		if (symbol == 'b') {
 			//stream.get();
 			// Id
 			int id = aux::read_int8(stream);
@@ -680,7 +685,7 @@ void Game_Client::update_state(std::string source) {
 			auto bonus = create_bonus(bonus_def);
 		}
 		// Event
-		if (symbol == "e") {
+		if (symbol == 'e') {
 			int id;
 			int type;
 			b2Vec2 pos;

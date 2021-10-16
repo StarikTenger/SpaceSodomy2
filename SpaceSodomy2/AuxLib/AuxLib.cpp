@@ -510,7 +510,6 @@ std::string aux::censor_name(std::string str) {
 		"[REDACTED]",
 		"[EXPUNGED]",
 		"[BANNED]",
-		"[WINNIE_POOH]",
 		"[DEFESTRATED]",
 		"[FORBIDDEN]",
 		"[PORRIDGE]",
@@ -518,7 +517,6 @@ std::string aux::censor_name(std::string str) {
 		"[UNAUTHORIZED]",
 		"[PROHIBITED]",
 		"[ILLEGAL]",
-		"[HRIUKNY]",
 		"[OUTLAWED]",
 		"[HARAM]"
 	};

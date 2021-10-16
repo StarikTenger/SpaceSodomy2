@@ -1360,34 +1360,38 @@ std::string Game::encode() {
 	// Map path
 	message += "M" + map_path + " ";
 
+	message += "W" + aux::write_short(wall_player->get_kills());
+
 	// Players (P)
 	for (auto player : players) {
-		message += "P";
-		// Id
-		message += aux::write_int(player.first);
-		// Color
-		sf::Color color = player.second->get_color();
-		color.r = std::max(0, color.r - 1);
-		color.g = std::max(0, color.g - 1);
-		color.b = std::max(0, color.b - 1);
-		message += aux::write_int8(color.r);
-		message += aux::write_int8(color.g);
-		message += aux::write_int8(color.b);
-		// Name
-		message += player.second->get_name() + " ";
-		// Hull
-		message += hulls[player.second->get_hull_name()].alias;
-		// Gun
-		message += guns[player.second->get_gun_name()].alias;
-		// Deaths & kills
-		message += aux::write_short(player.second->get_deaths());
-		message += aux::write_short(player.second->get_kills());
-		// Time to respawn
-		message += aux::write_int8(int(player.second->get_time_to_respawn()->get() + 0.99));
-		// Is alive
-		message += aux::write_int8(int(player.second->get_is_alive()));
-		// Last connection time
-		message += aux::write_int(connection_time->operator[](player.first));
+		if (player.second->get_id() > 0) {
+			message += "P";
+			// Id
+			message += aux::write_int(player.first);
+			// Color
+			sf::Color color = player.second->get_color();
+			color.r = std::max(0, color.r - 1);
+			color.g = std::max(0, color.g - 1);
+			color.b = std::max(0, color.b - 1);
+			message += aux::write_int8(color.r);
+			message += aux::write_int8(color.g);
+			message += aux::write_int8(color.b);
+			// Name
+			message += player.second->get_name() + " ";
+			// Hull
+			message += hulls[player.second->get_hull_name()].alias;
+			// Gun
+			message += guns[player.second->get_gun_name()].alias;
+			// Deaths & kills
+			message += aux::write_short(player.second->get_deaths());
+			message += aux::write_short(player.second->get_kills());
+			// Time to respawn
+			message += aux::write_int8(int(player.second->get_time_to_respawn()->get() + 0.99));
+			// Is alive
+			message += aux::write_int8(int(player.second->get_is_alive()));
+			// Last connection time
+			message += aux::write_int(connection_time->operator[](player.first));
+		}
 	}
 
 	// Ships (S)
