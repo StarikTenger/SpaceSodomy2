@@ -577,7 +577,19 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	}
 }
 
-void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
+void Menu_Processing::init_tgui(tgui::Gui& gui) {
+	tgui::Button::Ptr play = gui.get<tgui::Button>("Play");
+	play->onClick([&gui] {
+		gui.removeAllWidgets();
+	});
+	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
+	settings->onClick([&gui] {
+		gui.removeAllWidgets();
+		gui.loadWidgetsFromFile("settings.txt");
+	});
+}
+
+void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, Client_Network* network_,
 	Game_Client* game_, Replay* replay_, bool* reload_) {
 	game = game_;
@@ -588,6 +600,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	replay = replay_;
 	reload = reload_;
 	*reload = 1;
+	init_tgui(gui);
 	load_sound("sound_settings.conf");
 	load_HUD_settings("HUD_settings.conf");
 	// set main menu fields

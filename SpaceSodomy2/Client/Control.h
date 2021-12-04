@@ -37,6 +37,8 @@ private:
 	Draw draw;
 	// Contains audio
 	Audio audio;
+	// TGUI object
+	tgui::Gui gui;
 	// Contains menu objects
 	Menu_Processing menu_processing;
 	// Contains mouse position
@@ -64,7 +66,6 @@ private:
 	std::string commands_to_string();
 	// HUD
 	HUD_Processing hud;
-	tgui::Gui gui;
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;

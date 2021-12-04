@@ -5,6 +5,8 @@
 #include<string>
 #include<Client/Replay.h>
 #include<Network/Client_Network.h>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 class Menu_Processing {
 private:
@@ -40,6 +42,7 @@ private:
 	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
+	void init_tgui(tgui::Gui& gui);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
 		std::string* id_, std::string* name_);
@@ -73,7 +76,7 @@ public:
 	Menu_Processing();
 	bool active = 1;
 	int text_field_active = 0;
-	void init(Draw* draw, b2Vec2* mouse_pos_,
+	void init(tgui::Gui& gui, Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, Client_Network* network_,
 		Game_Client* game_, Replay* replay_,
 		bool* reload_);

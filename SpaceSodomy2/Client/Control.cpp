@@ -20,6 +20,7 @@ void Control::process_events(sf::Window* window) {
 	sf::Event event;
 
 	while (window->pollEvent(event)) {
+		gui.handleEvent(event);
 		switch (event.type) {
 		case sf::Event::Closed:
 			is_running = 1;
@@ -127,7 +128,7 @@ Control::Control() {
 	// *****************
 	gui.setWindow(*draw.get_window());
 	tgui::setResourcePath("gui_resources");
-	gui.loadWidgetsFromFile("form.txt");
+	gui.loadWidgetsFromFile("main_menu.txt");
 	// *****************
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
@@ -149,7 +150,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	keyboard.text_entered = &text_entered;
-	menu_processing.init(&draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
+	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
 	hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name
