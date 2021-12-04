@@ -13,6 +13,8 @@
 #include <string>
 #include <fstream>
 #include <queue>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 class Control {
 private:
@@ -62,6 +64,7 @@ private:
 	std::string commands_to_string();
 	// HUD
 	HUD_Processing hud;
+	tgui::Gui gui;
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;

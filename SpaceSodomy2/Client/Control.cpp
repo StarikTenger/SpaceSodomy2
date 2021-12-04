@@ -123,6 +123,12 @@ std::string Control::commands_to_string() {
 Control::Control() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
+	// GUI implemetation
+	// *****************
+	gui.setWindow(*draw.get_window());
+	tgui::setResourcePath("gui_resources");
+	gui.loadWidgetsFromFile("form.txt");
+	// *****************
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 	Loading_Screen loading(&draw);
@@ -185,13 +191,15 @@ void Control::step() {
 		game.display(network.get_id());
 		//FPS
 		frame_marks.push(aux::get_milli_count());
-		// Camera backup
+		// HUD
 		Camera camera_backup = *game.get_draw()->get_camera();
 		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 		menu_processing.step();
 		if (!menu_processing.active) {
 			hud.step();
 		}
+		gui.draw();
+
 		// Restore camera
 		game.get_draw()->set_camera(camera_backup);
 		game.get_draw()->display();

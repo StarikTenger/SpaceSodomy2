@@ -1,12 +1,3 @@
-Picture.Picture1 {
-    Size = (800, 600);
-
-    Renderer {
-        Texture = "resources/DefaultPicture.png" Smooth;
-        TransparentTexture = false;
-    }
-}
-
 Button.Button1 {
     Position = (0, 2);
     Text = Button;
