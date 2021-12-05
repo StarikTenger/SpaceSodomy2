@@ -72,7 +72,21 @@ void Control::receive() {
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::gen_new_player_color(game.count_players());
-		game.new_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
+
+		// TODO: this team selection is terrible
+		auto team_id_ = id_;
+		if (name_[name_.size() - 2] == '#') {
+			std::cout << name_[name_.size() - 1];
+			if (name_[name_.size() - 1] == '1') {
+				team_id_ = 1;
+				new_color = sf::Color::Green;
+			} else {
+				team_id_ = 2;
+				new_color = sf::Color::Red;
+			}
+		}
+
+		game.new_player(id_, team_id_, new_color, name_, gun_name, hull_name, left_module, right_module); // TODO
 	}
 	// Applying commands
 	if (token_by_id[id_] == token) {

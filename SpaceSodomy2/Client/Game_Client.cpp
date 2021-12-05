@@ -461,7 +461,7 @@ void Game_Client::update_state(std::string source) {
 		}
 		if (symbol == 'W') {
 			int kills = aux::read_short(stream);
-			wall_combatant = create_player(-1, sf::Color::White, "WALL");
+			wall_combatant = create_player(-1, -1, sf::Color::White, "WALL");
 			wall_combatant->set_kills(kills);
 		}
 		// Player
@@ -492,7 +492,7 @@ void Game_Client::update_state(std::string source) {
 
 			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
-			Player* player = create_player(id);
+			Player* player = create_player(id, id);
 			player->set_color(color);
 			player->set_name(name);
 			player->set_hull_name(hull);

@@ -524,7 +524,7 @@ std::string aux::censor_name(std::string str) {
 		return euphemisms[std::abs(std::rand()) % euphemisms.size()];
 	}
 	for (auto ch : str) {
-		if (!(isdigit(ch) || isupper(ch) || islower(ch) || ch == '_')) {
+		if (!(isdigit(ch) || isupper(ch) || islower(ch) || ch == '_' || ch == '#')) {
 			return euphemisms[std::abs(std::rand()) % euphemisms.size()];
 		}
 	}

@@ -5,8 +5,9 @@ int Team_Id::get_team_id() { return id.get_id(); }
 void Team_Id::set_team_id(int _id) { id.set_id(_id); }
 
 
-Combatant::Combatant(int id_, sf::Color color_, std::string name_) {
+Combatant::Combatant(int id_, int team_id_, sf::Color color_, std::string name_) {
 	set_id(id_);
+	set_team_id(team_id_);
 	set_color(color_);
 	set_name(name_);
 }
@@ -37,16 +38,20 @@ void Combatant::set_color(sf::Color color_) { color = color_; }
 
 bool Combatant::is_hostile_to(Combatant* other) { return !other || get_team_id() != other->get_team_id(); }
 bool Combatant::is_deals_damage_to(Combatant* other) { 
-	return Combatant::is_friendly_fire || !other || get_team_id() != other->get_team_id(); }
-
-
-
-Player::Player(int id_, sf::Color color_, std::string name_) {
-	set_id(id_);
-	set_team_id(id_);
-	set_color(color_);
-	set_name(name_);
+	return Combatant::is_friendly_fire || !other || get_team_id() != other->get_team_id(); 
 }
+
+Agent::Agent(int id_, int team_id_, sf::Color color_, std::string name_) : Combatant(id_, team_id_, color_, name_) {}
+
+void Agent::set_command_module(Command_Module* val) {
+	command_module = val;
+}
+Command_Module* Agent::get_command_module() {
+	return command_module;
+}
+
+
+Player::Player(int id_, int team_id_, sf::Color color_, std::string name_) : Agent(id_, team_id_, color_, name_) {}
 
 // Get methods
 bool Player::get_is_alive() {
@@ -65,10 +70,6 @@ std::string Player::get_left_module_name() {
 }
 std::string Player::get_right_module_name() {
 	return right_module_name;
-}
-
-Command_Module* Player::get_command_module() {
-	return command_module;
 }
 
 Counter* Player::get_time_to_respawn() {
@@ -102,10 +103,6 @@ void Player::set_left_module_name(std::string val) {
 }
 void Player::set_right_module_name(std::string val) {
 	right_module_name = val;
-}
-
-void Player::set_command_module(Command_Module* val) {
-	command_module = val;
 }
 
 void Player::set_time_to_respawn(Counter* val) {

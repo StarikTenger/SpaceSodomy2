@@ -36,7 +36,7 @@ Game::Game() {
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
 
-	wall_combatant = create_combatant(-1, sf::Color::White, "_");
+	wall_combatant = create_combatant(-1, -1, sf::Color::White, "_");
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -84,7 +84,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	return gun;
 }
 
-Player* Game::create_player(int id, sf::Color color, std::string name) {
+Player* Game::create_player(int id, int team_id,  sf::Color color, std::string name) {
 	auto player = new Player();
 	player->set_color(color);
 	player->set_name(name);
@@ -92,18 +92,18 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_time_to_respawn(create_counter(0, -1));
 	// Id
 	player->set_id(id);
-	player->set_team_id(id);
+	player->set_team_id(team_id);
 
 	players[player->get_id()] = player;
 	combatants.insert(player);
 	return player;
 }
 
-Combatant* Game::create_combatant(int id, sf::Color color, std::string name) {
+Combatant* Game::create_combatant(int id, int team_id, sf::Color color, std::string name) {
 	auto combatant = new Combatant();
 	combatant->set_color(color);
 	combatant->set_id(id);
-	combatant->set_team_id(id);
+	combatant->set_team_id(team_id);
 	combatant->set_name(name);
 	combatants.insert(combatant);
 	return combatant;
@@ -1539,9 +1539,9 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
+void Game::new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
 	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, color, name);
+	Player* player = create_player(id, team_id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	player->set_left_module_name(left_module);

@@ -88,8 +88,8 @@ protected:
 	std::string map_path = "";
 
 	// Create functions
-	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
-	Combatant*       create_combatant(int id, sf::Color color = {}, std::string name = "_");
+	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_");
+	Combatant*       create_combatant(int id, int team_id,  sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	Command_Module*  create_command_module();
@@ -166,7 +166,7 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	void new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	void new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 	int count_players();
 	// Gets player by id

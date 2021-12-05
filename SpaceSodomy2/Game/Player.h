@@ -22,7 +22,7 @@ class Combatant : public Team_Id, public iId {
 public:
 	static void set_friendly_fire(bool val);
 	Combatant() = default;
-	Combatant(int id_, sf::Color color_, std::string name_);
+	Combatant(int id_, int team_id_, sf::Color color_, std::string name_);
 	int get_deaths();
 	int get_kills();
 	std::string get_name();
@@ -41,28 +41,33 @@ public:
 	bool is_hostile_to(Combatant* other);
 	bool is_deals_damage_to(Combatant* other);
 };
+class Agent : public Combatant {
+	Command_Module* command_module = nullptr;
+public:
+	Agent() = default;
+	Agent(int id_, int team_id_, sf::Color color_, std::string name_);
+	Command_Module* get_command_module();
+	void set_command_module(Command_Module*);
+};
 
-
-class Player : public Combatant {
+class Player : public Agent {
 private:
 	bool is_alive = 1;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
-	Command_Module* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
 	int ping = 0;
 public:
 	Player() = default;
-	Player(int id_, sf::Color color_, std::string name_);
+	Player(int id_, int team_id_, sf::Color color_, std::string name_);
 
 	bool get_is_alive();
 	std::string get_gun_name();
 	std::string get_hull_name();
 	std::string get_left_module_name();
 	std::string get_right_module_name();
-	Command_Module* get_command_module();
 	Counter* get_time_to_respawn();
 	int get_ping();
 	
@@ -71,7 +76,6 @@ public:
 	void set_hull_name(std::string val);
 	void set_left_module_name(std::string val);
 	void set_right_module_name(std::string val);
-	void set_command_module(Command_Module*);
 	void set_time_to_respawn(Counter*);
 	void set_ping(int ping_);
 };
