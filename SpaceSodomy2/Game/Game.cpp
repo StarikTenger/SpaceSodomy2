@@ -36,7 +36,7 @@ Game::Game() {
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
 
-	wall_player = create_player(-1, sf::Color::White, "WALL");
+	wall_combatant = create_combatant(-1, sf::Color::White, "_");
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -92,8 +92,21 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_time_to_respawn(create_counter(0, -1));
 	// Id
 	player->set_id(id);
+	player->set_team_id(id);
+
 	players[player->get_id()] = player;
+	combatants.insert(player);
 	return player;
+}
+
+Combatant* Game::create_combatant(int id, sf::Color color, std::string name) {
+	auto combatant = new Combatant();
+	combatant->set_color(color);
+	combatant->set_id(id);
+	combatant->set_team_id(id);
+	combatant->set_name(name);
+	combatants.insert(combatant);
+	return combatant;
 }
 
 Command_Module* Game::create_command_module() {
@@ -122,7 +135,7 @@ Counter* Game::create_counter(float val, float change_vel) {
 Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
 	damage_receiver->set_imm_frames(params["imm_frames"]);
-	damage_receiver->set_player(player);
+	damage_receiver->set_combatant(player);
 	damage_receiver->set_effects(effs);
 	damage_receivers.insert(damage_receiver);
 	id_manager.set_id(damage_receiver);
@@ -334,7 +347,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	rocket->set_blast_radius(def.base.blast_radius);
 	rocket->set_damage(def.base.damage);
 	// Body
-	rocket->set_player(def.player);
+	rocket->set_combatant(def.player);
 	auto body = create_round_body(def.pos + b2Vec2{0,0}, def.angle, def.base.radius, def.base.mass);
 	body->SetLinearVelocity(def.vel);
 	body->SetAngularVelocity(def.angle_vel);
@@ -487,6 +500,11 @@ void Game::delete_forcefield(Forcefield* field) {
 	delete field;
 }
 
+void Game::delete_combatant(Combatant* comb) {
+	combatants.erase(comb);
+	delete comb;
+}
+
 
 void Game::process_players() {
 	// Creating ships
@@ -528,7 +546,7 @@ void Game::process_ships() {
 		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
-				if (!ship->get_player()->is_deals_damage_to(damage_receiver->get_player())) {
+				if (!ship->get_player()->is_deals_damage_to(damage_receiver->get_combatant())) {
 					continue;
 				}
 				float angle = ship->get_body()->GetAngle();
@@ -554,7 +572,7 @@ void Game::process_ships() {
 					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					if (ship->get_hp()->get() < b2_epsilon) {
-						wall_player->add_kill();
+						wall_combatant->add_kill();
 					}
 				}
 			}
@@ -578,7 +596,7 @@ void Game::process_ships() {
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
-					ship->get_player()->is_deals_damage_to(damage_receiver->get_player())) {
+					ship->get_player()->is_deals_damage_to(damage_receiver->get_combatant())) {
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
@@ -746,7 +764,7 @@ void Game::process_rockets() {
 		}
 		// Checking for ship collision
 		for (auto ship : ships) {
-			if (rocket->get_player()->get_id() != ship->get_player()->get_id() &&
+			if (rocket->get_combatant()->get_id() != ship->get_player()->get_id() &&
 				contact_table.check(rocket->get_body(), ship->get_body())) {
 				rockets_to_delete.push_back(rocket);
 				do_break = true;
@@ -763,9 +781,9 @@ void Game::process_rockets() {
 	for (auto rocket : rockets_to_delete) {
 		for (auto receiver : damage_receivers) {
 			if ((rocket->get_body()->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < rocket->get_blast_radius()) {
-				receiver->damage(rocket->get_damage(), rocket->get_player());
-				/*if (rocket->get_player() != receiver->get_player()) {
-					receiver->damage(rocket->get_damage(), rocket->get_player());
+				receiver->damage(rocket->get_damage(), rocket->get_combatant());
+				/*if (rocket->get_combatant() != receiver->get_combatant()) {
+					receiver->damage(rocket->get_damage(), rocket->get_combatant());
 				} else {
 					receiver->damage(rocket->get_damage(), receiver->get_last_hit());
 				}*/
@@ -889,8 +907,10 @@ void Game::clear() {
 		delete ship;
 	ships = {};
 	// Clear players
-	for (auto player : players)
+	for (auto player : players) {
 		delete player.second;
+		combatants.erase(player.second);
+	}
 	players = {};
 	// Clear command_modules
 	for (auto command_module : command_modules)
@@ -932,6 +952,11 @@ void Game::clear() {
 		delete rocket_brain;
 	}
 	rocket_brains = {};
+	for (auto combatant : combatants) {
+		delete combatant;
+	}
+	combatants = {};
+
 
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
@@ -1371,7 +1396,7 @@ std::string Game::encode() {
 	// Map path
 	message += "M" + map_path + " ";
 
-	message += "W" + aux::write_short(wall_player->get_kills());
+	message += "W" + aux::write_short(wall_combatant->get_kills());
 
 	// Players (P)
 	for (auto player : players) {
@@ -1475,7 +1500,7 @@ std::string Game::encode() {
 		// Id
 		message += aux::write_short(rocket->get_id() % 15000);
 		// Player id
-		message += aux::write_int(rocket->get_player()->get_id());
+		message += aux::write_int(rocket->get_combatant()->get_id());
 		// Pos
 		message += aux::write_float(rocket->get_body()->GetPosition().x, 2);
 		message += aux::write_float(rocket->get_body()->GetPosition().y, 2);

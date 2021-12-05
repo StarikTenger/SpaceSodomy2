@@ -14,11 +14,11 @@ Counter* Damage_Receiver::get_hp() {
     return hp;
 }
 
-Player* Damage_Receiver::get_last_hit() {
+Combatant* Damage_Receiver::get_last_hit() {
     return last_hit;
 }
 
-Player* Damage_Receiver::get_player() {
+Combatant* Damage_Receiver::get_combatant() {
     return player;
 }
 
@@ -38,7 +38,7 @@ void Damage_Receiver::set_hp(Counter* val) {
     hp = val;
 }
 
-void Damage_Receiver::set_player(Player* val) {
+void Damage_Receiver::set_combatant(Combatant* val) {
     player = val;
 }
 
@@ -51,8 +51,8 @@ void Damage_Receiver::set_imm_frames(float val) {
 }
 
 
-void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
-    if (!get_player()->is_deals_damage_to(hit_by)) {
+void Damage_Receiver::damage(float value, Combatant* hit_by) { // Apply IMMORTALITY
+    if (!get_combatant()->is_deals_damage_to(hit_by)) {
         return;
     }
     if (effects && effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {

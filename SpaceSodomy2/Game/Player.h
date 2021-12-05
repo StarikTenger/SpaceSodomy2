@@ -16,19 +16,22 @@ public:
 class Combatant : public Team_Id, public iId {
 	int deaths = 0;
 	int kills = 0;
+	std::string name = "_";
 	sf::Color color = sf::Color::White;
 	static bool is_friendly_fire; // TODO : non-global storage
 public:
 	static void set_friendly_fire(bool val);
 	Combatant() = default;
-	Combatant(int id_, sf::Color color_);
+	Combatant(int id_, sf::Color color_, std::string name_);
 	int get_deaths();
 	int get_kills();
+	std::string get_name();
 	sf::Color get_color();
 
 	void set_deaths(int deaths_);
 	void set_kills(int kills_);
 	void set_color(sf::Color color_);
+	void set_name(std::string);
 
 	void add_death();
 	void add_kill();
@@ -36,14 +39,13 @@ public:
 
 
 	bool is_hostile_to(Combatant* other);
-	bool is_deals_damage_to(Combatant* other); // TODO: should it be used?
+	bool is_deals_damage_to(Combatant* other);
 };
 
 
 class Player : public Combatant {
 private:
 	bool is_alive = 1;
-	std::string name = "_";
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
@@ -56,7 +58,6 @@ public:
 	Player(int id_, sf::Color color_, std::string name_);
 
 	bool get_is_alive();
-	std::string get_name();
 	std::string get_gun_name();
 	std::string get_hull_name();
 	std::string get_left_module_name();
@@ -66,7 +67,6 @@ public:
 	int get_ping();
 	
 	void set_is_alive(bool);
-	void set_name(std::string name_);
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
 	void set_left_module_name(std::string val);

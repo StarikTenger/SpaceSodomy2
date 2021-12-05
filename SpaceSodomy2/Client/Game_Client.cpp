@@ -358,7 +358,7 @@ void Game_Client::display(int id) {
 	// Rockets
 	for (auto rocket : rockets) {
 		float radius = rocket->get_body()->GetFixtureList()->GetShape()->m_radius * 8;
-		auto color = rocket->get_player()->get_color();
+		auto color = rocket->get_combatant()->get_color();
 		draw->image("rocket", rocket->get_body()->GetPosition(), { radius, radius },
 			rocket->get_body()->GetAngle(), color);
 		draw->fadeout_animation("bullet",
@@ -419,7 +419,7 @@ void Game_Client::update_state(std::string source) {
 	for (auto rocket : rockets) {
 		destroyed_objects[rocket->get_id()].type = Disappear_Animation::ROCKET;
 		destroyed_objects[rocket->get_id()].pos = rocket->get_body()->GetPosition();
-		destroyed_objects[rocket->get_id()].color = rocket->get_player()->get_color();
+		destroyed_objects[rocket->get_id()].color = rocket->get_combatant()->get_color();
 		destroyed_objects[rocket->get_id()].radius = rocket->get_body()->GetFixtureList()->GetShape()->m_radius;
 	}
 
@@ -461,8 +461,8 @@ void Game_Client::update_state(std::string source) {
 		}
 		if (symbol == 'W') {
 			int kills = aux::read_short(stream);
-			wall_player = create_player(-1, sf::Color::White, "WALL");
-			wall_player->set_kills(kills);
+			wall_combatant = create_player(-1, sf::Color::White, "WALL");
+			wall_combatant->set_kills(kills);
 		}
 		// Player
 		if (symbol == 'P') {

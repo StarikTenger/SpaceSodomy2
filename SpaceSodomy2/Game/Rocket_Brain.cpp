@@ -53,8 +53,8 @@ void Rocket_Brain::step(float dt) {
     }
 }
 bool Rocket_Brain::is_targetable(Ship* ship) {
-    return 
-        ship->get_player()->get_id() != rocket->get_player()->get_id() 
+    return
+        ship->get_player()->is_hostile_to(rocket->get_combatant())
         && is_in_range(ship->get_body()->GetWorldPoint({ 0,0 }))
         && ship->is_visible();
 }

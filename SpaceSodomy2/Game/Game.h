@@ -42,6 +42,7 @@ protected:
 	std::set<Command_Module*> command_modules;
 	
 	std::set<Active_Module*> active_modules;
+	std::set<Combatant*> combatants;
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
@@ -55,7 +56,7 @@ protected:
 	// Walls
 	std::set<Wall*> walls;
 	b2Vec2 lower_left_corner, upper_right_corner;
-	Player* wall_player = nullptr; // id = -1;
+	Combatant* wall_combatant = nullptr;
 
 	// Managers
 	Projectile_Manager projectile_manager;
@@ -88,6 +89,7 @@ protected:
 
 	// Create functions
 	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
+	Combatant*       create_combatant(int id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	Command_Module*  create_command_module();
@@ -121,6 +123,7 @@ protected:
 	void delete_rocket(Rocket*);
 	void delete_rocket_brain(Rocket_Brain*);
 	void delete_forcefield(Forcefield*);
+	void delete_combatant(Combatant*);
 
 	 // Processing functions
 	void process_players();

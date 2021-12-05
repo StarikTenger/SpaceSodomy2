@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Rocket.h"
 // Get methods
-Player* Rocket::get_player() {
+Combatant* Rocket::get_combatant() {
 	return player;
 }
 
@@ -40,7 +40,7 @@ float Rocket::get_blast_force() {
 
 
 // Set methods
-void Rocket::set_player(Player* val) {
+void Rocket::set_combatant(Combatant* val) {
 	player = val;
 }
 

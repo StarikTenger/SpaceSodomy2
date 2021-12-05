@@ -13,7 +13,7 @@ class Rocket_Brain;
 class Rocket : public iId {
 private:
 	// Entities
-	Player* player = nullptr;
+	Combatant* player = nullptr;
 	Engine* engine = nullptr;
 	b2Body* body = nullptr;
 	Counter* hp = nullptr;
@@ -29,7 +29,7 @@ public:
 	~Rocket() = default;
 
 	// Get methods
-	Player* get_player();
+	Combatant* get_combatant();
 	Engine* get_engine();
 	b2Body* get_body();
 	Counter* get_hp();
@@ -42,7 +42,7 @@ public:
 	
 
 	// Set methods
-	void set_player(Player*);
+	void set_combatant(Combatant*);
 	void set_engine(Engine*);
 	void set_body(b2Body*);
 	void set_hp(Counter*);
