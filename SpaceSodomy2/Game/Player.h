@@ -32,6 +32,8 @@ public:
 
 	void add_death();
 	void add_kill();
+	void rm_kill();
+
 
 	bool is_hostile_to(Combatant* other);
 	bool is_deals_damage_to(Combatant* other); // TODO: should it be used?

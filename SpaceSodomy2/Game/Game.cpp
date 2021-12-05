@@ -528,7 +528,7 @@ void Game::process_ships() {
 		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
-				if (ship->get_player()->is_hostile_to(damage_receiver->get_player())) {
+				if (!ship->get_player()->is_deals_damage_to(damage_receiver->get_player())) {
 					continue;
 				}
 				float angle = ship->get_body()->GetAngle();
@@ -578,7 +578,7 @@ void Game::process_ships() {
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
-					ship->get_player()->is_hostile_to(damage_receiver->get_player())) {
+					ship->get_player()->is_deals_damage_to(damage_receiver->get_player())) {
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
@@ -588,9 +588,13 @@ void Game::process_ships() {
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr && 
-				ship->get_damage_receiver()->get_last_hit()->is_hostile_to(ship->get_player())) {
-				ship->get_damage_receiver()->get_last_hit()->add_kill();
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr)  {
+				if (ship->get_damage_receiver()->get_last_hit()->is_hostile_to(ship->get_player())) {
+					ship->get_damage_receiver()->get_last_hit()->add_kill();
+				}
+				else if (params["friendly_murder_decreases_kills"] > 0.01) {
+					ship->get_damage_receiver()->get_last_hit()->rm_kill();
+				}
 			}
 			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
@@ -612,8 +616,7 @@ void Game::process_projectiles() {
 		// Dealing damage & applying effects
 		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
-			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
-				projectile->get_player()->is_hostile_to(damage_receiver->get_player())) {
+			if (contact_table.check(projectile->get_body(), damage_receiver->get_body())) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				damage_receiver->apply_effects(projectile->get_effects_def());
 			}

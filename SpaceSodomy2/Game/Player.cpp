@@ -20,12 +20,14 @@ void Combatant::set_kills(int kills_) { kills = kills_; }
 
 void Combatant::add_death() { deaths++; }
 void Combatant::add_kill() { kills++; }
+void Combatant::rm_kill() { kills--; }
+
 
 sf::Color Combatant::get_color() { return color; }
 void Combatant::set_color(sf::Color color_) { color = color_; }
 
 bool Combatant::is_hostile_to(Combatant* other) { return get_team_id() != other->get_team_id(); }
-bool Combatant::is_deals_damage_to(Combatant* other) { return Combatant::is_friendly_fire || get_team_id() == other->get_team_id(); }
+bool Combatant::is_deals_damage_to(Combatant* other) { return Combatant::is_friendly_fire || get_team_id() != other->get_team_id(); }
 
 
 

@@ -52,6 +52,9 @@ void Damage_Receiver::set_imm_frames(float val) {
 
 
 void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
+    if (!get_player()->is_deals_damage_to(hit_by)) {
+        return;
+    }
     if (effects && effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {
         return;
     }
