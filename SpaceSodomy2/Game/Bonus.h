@@ -30,7 +30,7 @@ public:
 
 struct Bonus_Prototype {
     bool is_instant = 0;
-    float radius = 0.2;
+    float radius = 0.2f;
     Bonus::Types type = Bonus::Types::INSTANT_HP;
     Effects_Prototype effects_prototype;
 };

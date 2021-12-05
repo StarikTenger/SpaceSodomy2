@@ -5,12 +5,42 @@
 #include "Counter.h"
 #include "iId.h"
 
-class Player : public iId {
-private:
+class Team_Id {
+	iId id;
+public:
+	Team_Id() = default;
+	int get_team_id();
+	void set_team_id(int _id);
+};
+
+class Combatant : public Team_Id, public iId {
 	int deaths = 0;
 	int kills = 0;
+	sf::Color color = sf::Color::White;
+	static bool is_friendly_fire; // TODO : non-global storage
+public:
+	static void set_friendly_fire(bool val);
+	Combatant() = default;
+	Combatant(int id_, sf::Color color_);
+	int get_deaths();
+	int get_kills();
+	sf::Color get_color();
+
+	void set_deaths(int deaths_);
+	void set_kills(int kills_);
+	void set_color(sf::Color color_);
+
+	void add_death();
+	void add_kill();
+
+	bool is_hostile_to(Combatant* other);
+	bool is_deals_damage_to(Combatant* other); // TODO: should it be used?
+};
+
+
+class Player : public Combatant {
+private:
 	bool is_alive = 1;
-	sf::Color color;
 	std::string name = "_";
 	std::string gun_name = "default";
 	std::string hull_name = "default";
@@ -20,11 +50,10 @@ private:
 	Counter* time_to_respawn = nullptr;
 	int ping = 0;
 public:
-	Player();
+	Player() = default;
 	Player(int id_, sf::Color color_, std::string name_);
 
 	bool get_is_alive();
-	sf::Color get_color();
 	std::string get_name();
 	std::string get_gun_name();
 	std::string get_hull_name();
@@ -32,12 +61,9 @@ public:
 	std::string get_right_module_name();
 	Command_Module* get_command_module();
 	Counter* get_time_to_respawn();
-	int get_deaths();
-	int get_kills();
 	int get_ping();
 	
 	void set_is_alive(bool);
-	void set_color(sf::Color color_);
 	void set_name(std::string name_);
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
@@ -45,10 +71,5 @@ public:
 	void set_right_module_name(std::string val);
 	void set_command_module(Command_Module*);
 	void set_time_to_respawn(Counter*);
-	void set_deaths(int deaths_);
-	void set_kills(int kills_);
 	void set_ping(int ping_);
-
-	void add_death();
-	void add_kill();
 };

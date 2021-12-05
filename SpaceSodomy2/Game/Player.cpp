@@ -1,11 +1,39 @@
 #include "pch.h"
 #include "Player.h"
 
-Player::Player() {}
+int Team_Id::get_team_id() { return id.get_id(); }
+void Team_Id::set_team_id(int _id) { id.set_id(_id); }
+
+
+Combatant::Combatant(int id_, sf::Color color_) : iId(id_), color(color_) {}
+
+bool Combatant::is_friendly_fire = true;
+
+void Combatant::set_friendly_fire(bool val) { 
+	Combatant::is_friendly_fire = val; 
+}
+int Combatant::get_deaths() { return deaths; }
+int Combatant::get_kills() { return kills; }
+
+void Combatant::set_deaths(int deaths_) { deaths = deaths_; }
+void Combatant::set_kills(int kills_) { kills = kills_; }
+
+void Combatant::add_death() { deaths++; }
+void Combatant::add_kill() { kills++; }
+
+sf::Color Combatant::get_color() { return color; }
+void Combatant::set_color(sf::Color color_) { color = color_; }
+
+bool Combatant::is_hostile_to(Combatant* other) { return get_team_id() != other->get_team_id(); }
+bool Combatant::is_deals_damage_to(Combatant* other) { return Combatant::is_friendly_fire || get_team_id() == other->get_team_id(); }
+
+
+
 Player::Player(int id_, sf::Color color_, std::string name_) {
 	set_id(id_);
-	color = color_;
-	name = name_;
+	set_team_id(id_);
+	set_color(color_);
+	set_name(name_);
 }
 
 // Get methods
@@ -13,9 +41,6 @@ bool Player::get_is_alive() {
 	return is_alive;
 }
 
-sf::Color Player::get_color() {
-	return color;
-}
 std::string Player::get_name() {
 	return name;
 }
@@ -43,14 +68,6 @@ Counter* Player::get_time_to_respawn() {
 	return time_to_respawn;
 }
 
-int Player::get_deaths() {
-	return deaths;
-}
-
-int Player::get_kills() {
-	return kills;
-}
-
 int Player::get_ping() {
 	return ping;
 }
@@ -64,9 +81,7 @@ void Player::set_is_alive(bool val) {
 	is_alive = val;
 }
 
-void Player::set_color(sf::Color color_) {
-	color = color_;
-}
+
 
 void Player::set_name(std::string name_) {
 	name = name_;
@@ -95,21 +110,6 @@ void Player::set_time_to_respawn(Counter* val) {
 	time_to_respawn = val;
 }
 
-void Player::set_deaths(int deaths_) {
-	deaths = deaths_;
-}
-void Player::set_kills(int kills_) {
-	kills = kills_;
-}
-
 void Player::set_ping(int ping_) {
 	ping = ping_;
-}
-
-void Player::add_death() {
-	deaths++;
-}
-
-void Player::add_kill() {
-	kills++;
 }

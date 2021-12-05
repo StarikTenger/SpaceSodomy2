@@ -9,11 +9,11 @@ struct Gun_Prototype;
 
 class Gun : public Active_Module {
 protected:
-	float damage = 20;
-	float projectile_mass = 0.05;
-	float projectile_vel = 10;
-	float projectile_radius = 0.2;
-	float projectile_hp = 20;
+	float damage = 20.f;
+	float projectile_mass = 0.05f;
+	float projectile_vel = 10.f;
+	float projectile_radius = 0.2f;
+	float projectile_hp = 20.f;
 	Projectile_Manager* projectile_manager = nullptr;
 public:
 	void set_projectile_manager(Projectile_Manager*);
@@ -22,14 +22,14 @@ public:
 };
 
 struct Gun_Prototype {
-	float damage = 20;
+	float damage = 20.f;
 	unsigned char alias = 1;
-	float recharge_time = 0.5;
-	float stamina_cost = 10;
-	float energy_cost = 0;
-	float projectile_mass = 0.05;
-	float projectile_vel = 10;
-	float projectile_radius = 0.2;
-	float projectile_hp = 20;
+	float recharge_time = 0.5f;
+	float stamina_cost = 10.f;
+	float energy_cost = 0.f;
+	float projectile_mass = 0.05f;
+	float projectile_vel = 10.f;
+	float projectile_radius = 0.2f;
+	float projectile_hp = 20.f;
 	Effects_Prototype effect_prototype;
 };

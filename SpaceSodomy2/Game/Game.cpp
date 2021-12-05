@@ -494,7 +494,7 @@ void Game::process_players() {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(Command_Module::RESPAWN) 
-			&& player->get_id() >= 0) { // The player is human
+			&& player->get_id() >= 0) { // TODO: The player is human
 			player->set_is_alive(1);
 
 			// creating ship
@@ -528,8 +528,9 @@ void Game::process_ships() {
 		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
-				if (ship->get_player()->get_id() == damage_receiver->get_player()->get_id())
+				if (ship->get_player()->is_hostile_to(damage_receiver->get_player())) {
 					continue;
+				}
 				float angle = ship->get_body()->GetAngle();
 				b2Vec2 pos = ship->get_body()->GetPosition();
 				b2Vec2 target_pos = damage_receiver->get_body()->GetPosition();
@@ -577,7 +578,7 @@ void Game::process_ships() {
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
-					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+					ship->get_player()->is_hostile_to(damage_receiver->get_player())) {
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
@@ -587,7 +588,8 @@ void Game::process_ships() {
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
 			ship->get_player()->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr && 
+				ship->get_damage_receiver()->get_last_hit()->is_hostile_to(ship->get_player())) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
 			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
@@ -611,7 +613,7 @@ void Game::process_projectiles() {
 		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
-				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+				projectile->get_player()->is_hostile_to(damage_receiver->get_player())) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				damage_receiver->apply_effects(projectile->get_effects_def());
 			}
@@ -1177,10 +1179,16 @@ bool Game::load_parameters(std::string path) {
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
+				if (symbol == "FRIENDLY_FIRE") {
+					bool val;
+					input >> val;
+					Combatant::set_friendly_fire(val);
+					continue;
+				}
 				float temp;
 				input >> temp;
 				std::cout << "Parameter " << symbol << " set to " << temp << " in PARAMETERS \n";
-				params[symbol] = temp;
+				params[symbol] = temp; 
 			}
 			continue;
 		}
