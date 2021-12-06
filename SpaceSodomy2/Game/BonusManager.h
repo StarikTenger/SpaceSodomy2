@@ -3,7 +3,7 @@
 #include <deque>
 #include <vector>
 
-class Bonus_Manager {
+class BonusManager {
 private:
     // First is Types, second is a set
     struct Spawnpoint {
@@ -21,7 +21,7 @@ private:
     std::deque<Bonus_Def> bonuses_to_create;
     std::vector<Bonus_Prototype> bonus_prototypes;
 public:
-    Bonus_Manager();
+    BonusManager();
     void add_prototype(Bonus_Prototype);
     void set_cooldown(Bonus::Types, float);
     void set_max_count(Bonus::Types, int);

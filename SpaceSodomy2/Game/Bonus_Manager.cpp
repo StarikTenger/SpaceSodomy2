@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bonus_Manager.h"
+#include "BonusManager.h"
 
 
-Bonus_Manager::Bonus_Manager() :
+BonusManager::BonusManager() :
     spawnpoints(Bonus::Types::COUNT),
     spawnable(Bonus::Types::COUNT),
     bonus_prototypes(Bonus::Types::COUNT) {
@@ -14,14 +14,14 @@ Bonus_Manager::Bonus_Manager() :
         spawnable[i].count_max = 100;
     }
 }
-void Bonus_Manager::set_cooldown(Bonus::Types i, float t) {
+void BonusManager::set_cooldown(Bonus::Types i, float t) {
     spawnable[i].cooldown.set_max(t);
 }
-void Bonus_Manager::set_max_count(Bonus::Types i, int t) {
+void BonusManager::set_max_count(Bonus::Types i, int t) {
     spawnable[i].count_max = t;
 }
 
-void Bonus_Manager::step(float dt) {
+void BonusManager::step(float dt) {
     for (int bonus_type = 0; bonus_type < spawnpoints.size(); bonus_type++) {
         if (spawnpoints[bonus_type].size() == 0) {
             continue;
@@ -47,10 +47,10 @@ void Bonus_Manager::step(float dt) {
         }
     }
 }
-void Bonus_Manager::add_spawnpoint(Bonus::Types type, b2Vec2 pos) {
+void BonusManager::add_spawnpoint(Bonus::Types type, b2Vec2 pos) {
     spawnpoints[type].push_back({ pos, true });
 }
-bool Bonus_Manager::get_next(Bonus_Def& val) {
+bool BonusManager::get_next(Bonus_Def& val) {
     if (!bonuses_to_create.size()) {
         return false;
     }
@@ -61,16 +61,16 @@ bool Bonus_Manager::get_next(Bonus_Def& val) {
     return true;
 
 }
-void Bonus_Manager::free_bonus_spawn(Bonus::Types type, int id) {
+void BonusManager::free_bonus_spawn(Bonus::Types type, int id) {
     //std::cout << "bonus_returned with type " << type << "& id " << id <<"\n";
     spawnable[type].count--;
     spawnpoints[type][id].is_free = true;
 }
 
-Bonus_Prototype* Bonus_Manager::get_prototype(int type) {
+Bonus_Prototype* BonusManager::get_prototype(int type) {
     return &bonus_prototypes[type];
 }
 
-void Bonus_Manager::add_prototype(Bonus_Prototype prototypes) {
+void BonusManager::add_prototype(Bonus_Prototype prototypes) {
     bonus_prototypes[prototypes.type] = (prototypes);
 }

@@ -578,7 +578,7 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 }
 
 void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
-	aux::Keyboard* keyboard_, Client_Network* network_,
+	aux::Keyboard* keyboard_, ClientNetwork* network_,
 	Game_Client* game_, Replay* replay_, bool* reload_) {
 	game = game_;
 	draw = draw_;

@@ -1,57 +1,57 @@
 #include "pch.h"
-#include "Damage_Receiver.h"
+#include "DamageReceiver.h"
 
-Damage_Receiver::Damage_Receiver(b2Body* _body, Counter* _hp) {
+DamageReceiver::DamageReceiver(b2Body* _body, Counter* _hp) {
     body = _body;
     hp = _hp;
 }
 
-b2Body* Damage_Receiver::get_body() {
+b2Body* DamageReceiver::get_body() {
     return body;
 }
 
-Counter* Damage_Receiver::get_hp() {
+Counter* DamageReceiver::get_hp() {
     return hp;
 }
 
-Player* Damage_Receiver::get_last_hit() {
+Player* DamageReceiver::get_last_hit() {
     return last_hit;
 }
 
-Player* Damage_Receiver::get_player() {
+Player* DamageReceiver::get_player() {
     return player;
 }
 
-Effects* Damage_Receiver::get_effects() {
+Effects* DamageReceiver::get_effects() {
     return effects;
 }
 
-float Damage_Receiver::get_imm_frames() {
+float DamageReceiver::get_imm_frames() {
     return imm_frames;
 }
 
-void Damage_Receiver::set_body(b2Body* val) {
+void DamageReceiver::set_body(b2Body* val) {
     body = val;
 }
 
-void Damage_Receiver::set_hp(Counter* val) {
+void DamageReceiver::set_hp(Counter* val) {
     hp = val;
 }
 
-void Damage_Receiver::set_player(Player* val) {
+void DamageReceiver::set_player(Player* val) {
     player = val;
 }
 
-void Damage_Receiver::set_effects(Effects* val) {
+void DamageReceiver::set_effects(Effects* val) {
     effects = val;
 }
 
-void Damage_Receiver::set_imm_frames(float val) {
+void DamageReceiver::set_imm_frames(float val) {
     imm_frames = val;
 }
 
 
-void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
+void DamageReceiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
     if (effects && effects->get_effect(Effects::Types::IMMORTALITY)->get_counter()->get() > 0) {
         return;
     }
@@ -64,7 +64,7 @@ void Damage_Receiver::damage(float value, Player* hit_by) { // Apply IMMORTALITY
     }
 }
 
-bool Damage_Receiver::apply_effects(Effects_Prototype* val) {
+bool DamageReceiver::apply_effects(Effects_Prototype* val) {
     if (!effects) {
         return false;
     }
@@ -72,7 +72,7 @@ bool Damage_Receiver::apply_effects(Effects_Prototype* val) {
     return true;
 }
 
-bool Damage_Receiver::add_effect(Effects::Types type, float val) {
+bool DamageReceiver::add_effect(Effects::Types type, float val) {
     if (!effects) {
         return false;
     }

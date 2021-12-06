@@ -56,37 +56,37 @@ void Control::process_commands() {
 	// TODO: do it in one std::map
 	if (commands_active) {
 		if (key_by_name("ENGINE_LIN_FORWARD")) 
-			command_module.set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 		if (key_by_name("ENGINE_LIN_BACKWARD"))
-			command_module.set_command(Command_Module::ENGINE_LIN_BACKWARD, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_BACKWARD, 1);
 		if (key_by_name("ENGINE_LIN_LEFT"))
-			command_module.set_command(Command_Module::ENGINE_LIN_LEFT, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_LEFT, 1);
 		if (key_by_name("ENGINE_LIN_RIGHT"))
-			command_module.set_command(Command_Module::ENGINE_LIN_RIGHT, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_RIGHT, 1);
 		if (key_by_name("ENGINE_ANG_LEFT"))
-			command_module.set_command(Command_Module::ENGINE_ANG_LEFT, 1);
+			command_module.set_command(CommandModule::ENGINE_ANG_LEFT, 1);
 		if (key_by_name("ENGINE_ANG_RIGHT"))
-			command_module.set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+			command_module.set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
 		if (key_by_name("STABILIZE_ROTATION") || stabilize_rotation_auto)
-			command_module.set_command(Command_Module::STABILIZE_ROTATION, 1);
+			command_module.set_command(CommandModule::STABILIZE_ROTATION, 1);
 		if (key_by_name("STABILIZE_ROTATION_AUTO") && !key_prev_by_name("STABILIZE_ROTATION_AUTO"))
 			stabilize_rotation_auto = !stabilize_rotation_auto;
 		if (key_by_name("SHOOT"))
-			command_module.set_command(Command_Module::SHOOT, 1);
+			command_module.set_command(CommandModule::SHOOT, 1);
 		if (key_by_name("BOOST"))
-			command_module.set_command(Command_Module::BOOST, 1);
+			command_module.set_command(CommandModule::BOOST, 1);
 		if (key_by_name("RESPAWN"))
-			command_module.set_command(Command_Module::RESPAWN, 1);
+			command_module.set_command(CommandModule::RESPAWN, 1);
 		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP"))
 			replay.increase_speed();
 		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
 			replay.decrease_speed();
 		if (key_by_name("BONUS_ACTIVATION"))
-			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
+			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
 		if (key_by_name("LEFT_MODULE"))
-			command_module.set_command(Command_Module::LEFT_MODULE, 1);
+			command_module.set_command(CommandModule::LEFT_MODULE, 1);
 		if (key_by_name("RIGHT_MODULE"))
-			command_module.set_command(Command_Module::RIGHT_MODULE, 1);
+			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
 	}
 	if (key_by_name("FULLSCREEN"))
 		draw.fullscreen_toggle();
@@ -111,7 +111,7 @@ std::string Control::commands_to_string() {
 	message += game.get_left_module_name() + " ";
 	message += game.get_right_module_name() + " ";
 	message += "#";
-	for (int i = 0; i < Command_Module::COMMAND_COUNT; i++) {
+	for (int i = 0; i < CommandModule::COMMAND_COUNT; i++) {
 		if (command_module.get_command(i))
 			message += "1";
 		else

@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "Rocket_Manager.h"
+#include "RocketManager.h"
 #include <iostream>
 
-Rocket_Manager::Rocket_Manager() {
+RocketManager::RocketManager() {
 }
 
-void Rocket_Manager::create_rocket(Rocket_Def def) {
+void RocketManager::create_rocket(Rocket_Def def) {
 	rockets_to_create.push_back(def);
 }
 
-int Rocket_Manager::get_next(Rocket_Def& def) {
+int RocketManager::get_next(Rocket_Def& def) {
 	if (!rockets_to_create.size())
 		return false;
 	def = rockets_to_create.front();

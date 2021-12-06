@@ -237,7 +237,7 @@ void Game_Client::display(int id) {
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
 					// Animation
 					float engine_len = 0.1;
-					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST)
+					if (ship->get_player()->get_command_module()->get_command(CommandModule::BOOST)
 						&& ship->get_stamina()->get() > 0)
 						engine_len = 0.4;
 					Float_Animation::State state_a;
@@ -251,7 +251,7 @@ void Game_Client::display(int id) {
 					state_b.pos += animation_time * ship->get_body()->GetLinearVelocity();
 					state_b.pos += engine_len * aux::rotate(directions[i], ship->get_body()->GetAngle());
 					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
-					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST))
+					if (ship->get_player()->get_command_module()->get_command(CommandModule::BOOST))
 						state_b.color = { 255, 255, 255, 0 };
 
 					Float_Animation animation(textures[i], state_a, state_b, animation_time, GAME);
@@ -595,7 +595,7 @@ void Game_Client::update_state(std::string source) {
 				float angle = aux::read_float(stream, 3);
 				float radius = aux::read_float(stream, 2);
 				// Creating projectile_def
-				Projectile_Def projectile_def;
+				ProjectileDef projectile_def;
 				projectile_def.pos = pos;
 				projectile_def.radius = radius;
 				projectile_def.player = players[player_id];
@@ -620,7 +620,7 @@ void Game_Client::update_state(std::string source) {
 			//float radius;
 			//radius = aux::read_float(stream, 2);
 			//// Creating projectile_def
-			//Projectile_Def projectile_def;
+			//ProjectileDef projectile_def;
 			//projectile_def.pos = pos;
 			//projectile_def.radius = radius;
 			//projectile_def.player = players[player_id];
@@ -1003,6 +1003,6 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 	}
 }
 
-Module_Manager* Game_Client::get_module_manager() {
+ModuleManager* Game_Client::get_module_manager() {
 	return &module_manager;
 }

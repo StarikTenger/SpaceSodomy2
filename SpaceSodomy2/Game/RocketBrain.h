@@ -3,11 +3,11 @@
 
 class Rocket;
 
-class Rocket_Brain {
+class RocketBrain {
 private:
     Rocket* rocket = nullptr;
-    Command_Module* command_module = nullptr;
-    Game_Objects environment;
+    CommandModule* command_module = nullptr;
+    GameObjects environment;
     float range;
     int bin_search_accuracy;
 
@@ -19,14 +19,14 @@ private:
     float homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel);
 
 public:
-    Rocket_Brain(float range, int bin_search_accuracy = 20);
+    RocketBrain(float range, int bin_search_accuracy = 20);
     // Tells if the target lies in range of the rocket
     bool is_in_range(b2Vec2 target);
 
     void set_rocket(Rocket*);
-    void set_game_objects(Game_Objects);
-    void set_command_module(Command_Module*);
+    void set_game_objects(GameObjects);
+    void set_command_module(CommandModule*);
     void step(float dt);
-    Command_Module* get_command_module();
+    CommandModule* get_command_module();
 };
 

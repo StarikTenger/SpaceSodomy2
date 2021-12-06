@@ -3,12 +3,12 @@
 #include <deque>
 #include <box2d/box2d.h>
 
-struct Event_Def {
+struct EventDef {
 	int type = 0;
 	b2Body* body = nullptr;
 	b2Vec2 pos;
-	Event_Def() {}
-	Event_Def(int _type, b2Body* _body, b2Vec2 _pos = {}) {
+	EventDef() {}
+	EventDef(int _type, b2Body* _body, b2Vec2 _pos = {}) {
 		type = _type;
 		body = _body;
 		pos = _pos;
@@ -22,18 +22,18 @@ struct Event_Def {
 /// Events are passed to the client via encode
 /// Are usually used for events and animations on client
 /// </summary>
-class Event_Manager {
+class EventManager {
 private:
-	std::deque<Event_Def> events_to_create;
+	std::deque<EventDef> events_to_create;
 
 public:
 	// Constructor
-	Event_Manager();
+	EventManager();
 
 	// Create projectile
-	void create_event(Event_Def);
+	void create_event(EventDef);
 
 	// Get another projectile
-	int get_next(Event_Def&);
+	int get_next(EventDef&);
 };
 

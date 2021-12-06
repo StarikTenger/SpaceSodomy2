@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <box2d/box2d.h>
-#include "Command_Module.h"
+#include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
 #include "Effects.h"
@@ -20,7 +20,7 @@ private:
 	bool is_linear_force_used = 0;
 
 	// Command interface
-	Command_Module* command_module = nullptr;
+	CommandModule* command_module = nullptr;
 	// Physical body
 	b2Body* body = nullptr;
 	// Stamina
@@ -35,7 +35,7 @@ private:
 public:
 	// Constructor
 	Engine();
-	Engine(b2Body*, Command_Module*, Counter*, Effects*);
+	Engine(b2Body*, CommandModule*, Counter*, Effects*);
 	// Get methods
 	float get_force_linear();
 	float get_force_angular();

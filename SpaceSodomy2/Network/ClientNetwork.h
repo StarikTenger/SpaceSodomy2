@@ -12,7 +12,7 @@
 #include <sys/timeb.h>
 #include <AuxLib/AuxLib.h>
 
-class Client_Network {
+class ClientNetwork {
 private:
 	char buffer[2048]; // receiving buffer
 	std::string serverIP = "localhost"; // Server IP address
@@ -24,8 +24,8 @@ private:
 	int token = 0;
 
 public:
-	Client_Network();
-	Client_Network(std::string serverIP_, int port_, int id_, std::string name_, int token_);
+	ClientNetwork();
+	ClientNetwork(std::string serverIP_, int port_, int id_, std::string name_, int token_);
 
 	void set_port(int port_ = 8001); // setting a new sending port
 	void set_server(std::string serverIP_ = "localhost"); // setting a new server IP address

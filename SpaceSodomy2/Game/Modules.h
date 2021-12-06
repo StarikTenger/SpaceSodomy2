@@ -1,20 +1,20 @@
 #pragma once
 #include "pch.h"
-#include "Active_Module.h"
-#include "Projectile_Manager.h"
-#include "Event_Manager.h"
+#include "ActiveModule.h"
+#include "ProjectileManager.h"
+#include "EventDef.h"
 #include "Event.h"
 #include <map>
 #include <unordered_map>
-#include "Game_Objects.h"
-#include "Damage_Receiver.h"
+#include "GameObjects.h"
+#include "DamageReceiver.h"
 #include "Wall.h"
-#include "Rocket_Manager.h"
-#include "Rocket_Brain.h"
+#include "RocketManager.h"
+#include "RocketBrain.h"
 
 struct Module_Prototype;
 
-class Module : public Active_Module {
+class Module : public ActiveModule {
 public:
     enum Type {
         HP_UP,
@@ -30,10 +30,10 @@ public:
     };
 protected:
     Type type = NONE;
-    Projectile_Manager* projectile_manager = nullptr;
-    Rocket_Manager* rocket_manager = nullptr;
+    ProjectileManager* projectile_manager = nullptr;
+    RocketManager* rocket_manager = nullptr;
     std::map<std::string, float> params;
-    Game_Objects environment;
+    GameObjects environment;
     static std::map<int, std::string> names;
     static std::map<std::string, Module::Type> named_types;
 public:
@@ -46,11 +46,11 @@ public:
     float get_param(std::string);
     void set_param(std::string, float);
     void set_type(Type);
-    void set_projectile_manager(Projectile_Manager*);
-    Projectile_Manager* get_projectile_manager();
-    void set_game_objects(Game_Objects);
-    Rocket_Manager* get_rocket_manager();
-    void set_rocket_manager(Rocket_Manager*);
+    void set_projectile_manager(ProjectileManager*);
+    ProjectileManager* get_projectile_manager();
+    void set_game_objects(GameObjects);
+    RocketManager* get_rocket_manager();
+    void set_rocket_manager(RocketManager*);
 };
 
 struct Module_Prototype {

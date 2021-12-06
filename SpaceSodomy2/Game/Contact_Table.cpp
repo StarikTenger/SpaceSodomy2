@@ -1,35 +1,35 @@
 #include "pch.h"
-#include "Contact_Table.h"
+#include "ContactTable.h"
 
-Contact_Table::Contact_Table() {
+ContactTable::ContactTable() {
 }
 
-void Contact_Table::set_collision_filter(Collision_Filter* val) {
+void ContactTable::set_collision_filter(CollisionFilter* val) {
 	collision_filter = val;
 }
 
-void Contact_Table::reset() {
+void ContactTable::reset() {
 	table.clear();
 }
 
-void Contact_Table::add(b2Body* body_a, b2Body* body_b) {
+void ContactTable::add(b2Body* body_a, b2Body* body_b) {
 	table.insert({ body_a, body_b });
 }
 
-bool Contact_Table::check(b2Body* body_a, b2Body* body_b) {
+bool ContactTable::check(b2Body* body_a, b2Body* body_b) {
 	return table.find({ body_a, body_b }) != table.end() || 
 		table.find({ body_b, body_a }) != table.end();
 }
 
-void Contact_Table::BeginContact(b2Contact* contact) {
+void ContactTable::BeginContact(b2Contact* contact) {
 	/* handle begin event */
 }
 
-void Contact_Table::EndContact(b2Contact* contact){
+void ContactTable::EndContact(b2Contact* contact){
 	/* handle end event */
 }
 
-void Contact_Table::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {
+void ContactTable::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {
 	contact->SetEnabled(0);
 	if (contact->IsTouching()) {
 		add(contact->GetFixtureA()->GetBody(),
@@ -39,6 +39,6 @@ void Contact_Table::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) 
 	}
 }
 
-void Contact_Table::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+void ContactTable::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
 	/* handle post-solve event */
 }

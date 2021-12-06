@@ -1,30 +1,30 @@
 #include "pch.h"
-#include "Collision_Filter.h"
+#include "CollisionFilter.h"
 
-int Collision_Filter::get_type(b2Fixture* fixture) {
+int CollisionFilter::get_type(b2Fixture* fixture) {
 	if (collision_table.find(fixture->GetBody()) == collision_table.end())
 		return STANDART;
 	return collision_table[fixture->GetBody()].type;
 }
 
-int Collision_Filter::get_id(b2Fixture* fixture) {
+int CollisionFilter::get_id(b2Fixture* fixture) {
 	if (collision_table.find(fixture->GetBody()) == collision_table.end())
 		return 0;
 	return collision_table[fixture->GetBody()].id;
 }
 
-Collision_Filter::Collision_Filter() {
+CollisionFilter::CollisionFilter() {
 }
 
-void Collision_Filter::add_body(b2Body* body, int type, int id) {
+void CollisionFilter::add_body(b2Body* body, int type, int id) {
 	collision_table.insert({ body, {type, id} });
 }
 
-void Collision_Filter::delete_body(b2Body* body) {
+void CollisionFilter::delete_body(b2Body* body) {
 	collision_table.erase(body);
 }
 
-bool Collision_Filter::ShouldCollide(b2Fixture* fixture_a, b2Fixture* fixture_b) {
+bool CollisionFilter::ShouldCollide(b2Fixture* fixture_a, b2Fixture* fixture_b) {
 	int type_a = get_type(fixture_a);
 	int type_b = get_type(fixture_b);
 	int id_a = get_id(fixture_a);
@@ -43,7 +43,7 @@ bool Collision_Filter::ShouldCollide(b2Fixture* fixture_a, b2Fixture* fixture_b)
 	return false;
 }
 
-void Collision_Filter::change_body(b2Body* body, Collision_Type newtype) {
+void CollisionFilter::change_body(b2Body* body, Collision_Type newtype) {
 	if (collision_table.find(body) == collision_table.end())
 		return;
 	collision_table[body].type = newtype;

@@ -4,7 +4,7 @@
 #include<Client/Game_Client.h>
 #include<string>
 #include<Client/Replay.h>
-#include<Network/Client_Network.h>
+#include<Network/ClientNetwork.h>
 
 class Menu_Processing {
 private:
@@ -27,7 +27,7 @@ private:
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
-	Client_Network* network;
+	ClientNetwork* network;
 	std::map<int, Bar*> bars;
 	std::map<int, Menu_Object*> images;
 	std::map<int, Button*> buttons;
@@ -74,7 +74,7 @@ public:
 	bool active = 1;
 	int text_field_active = 0;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
-		aux::Keyboard* keyboard_, Client_Network* network_,
+		aux::Keyboard* keyboard_, ClientNetwork* network_,
 		Game_Client* game_, Replay* replay_,
 		bool* reload_);
 	void step();

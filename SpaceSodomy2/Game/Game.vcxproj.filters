@@ -57,12 +57,6 @@
     <ClInclude Include="Gun.h">
       <Filter>Header Files\Active Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Active_Module.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Command_Module.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
@@ -78,35 +72,14 @@
     <ClInclude Include="Projectile.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile_Def.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Counter.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="entities.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Collision_Filter.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Contact_Table.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Projectile_Manager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Damage_Receiver.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="iId.h">
       <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Id_Manager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Event_Manager.h">
-      <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Effects.h">
       <Filter>Header Files\Entities</Filter>
@@ -114,38 +87,65 @@
     <ClInclude Include="Bonus.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Bonus_Slot.h">
-      <Filter>Header Files\Active Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Bonus_Manager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Hull_Prototype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Modules.h">
       <Filter>Header Files\Active Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Module_Manager.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Game_Objects.h">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Rocket.h">
       <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Rocket_Brain.h">
-      <Filter>Header Files\Brains</Filter>
-    </ClInclude>
-    <ClInclude Include="Rocket_Manager.h">
-      <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Forcefield.h">
       <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="HullPrototype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BonusSlot.h">
+      <Filter>Header Files\Active Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="RocketBrain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveModule.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageReceiver.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandModule.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BonusManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFilter.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactTable.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventDef.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjects.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="IdManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="RocketManager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +178,6 @@
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Projectile_Def.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Counter.cpp">
       <Filter>Source Files\Entities</Filter>
@@ -241,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Forcefield.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileDef.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

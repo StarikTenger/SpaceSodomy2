@@ -168,7 +168,7 @@ HUD_Processing::HUD_Processing()
 }
 
 HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
-	Game_Client* game_, Client_Network* player_network_, std::queue<int>* frame_marks_) {
+	Game_Client* game_, ClientNetwork* player_network_, std::queue<int>* frame_marks_) {
 	frame_marks = frame_marks_;
 	game = game_;
 	player_network = player_network_;

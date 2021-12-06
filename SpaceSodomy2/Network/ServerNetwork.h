@@ -15,7 +15,7 @@
 #include <deque>
 
 
-class Server_Network {
+class ServerNetwork {
 private:
 	sf::UdpSocket socket; // socket
 	char buffer[1024]; // receiving buffer
@@ -29,8 +29,8 @@ private:
 	std::string replay_path;
 	std::ofstream fout;
 public:
-	Server_Network();
-	Server_Network(int port_);
+	ServerNetwork();
+	ServerNetwork(int port_);
 
 	std::deque<std::string> get_messages(); // return deque of received messages
 	std::string get_last_message(); // return message on the top of deque (last message)

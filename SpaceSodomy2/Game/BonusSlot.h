@@ -1,19 +1,19 @@
 #pragma once
 #include "Bonus.h"
 #include "Event.h"
-#include "Bonus_Manager.h"
-#include "Active_Module.h"
+#include "BonusManager.h"
+#include "ActiveModule.h"
 
-class Bonus_Slot : public Active_Module {
+class BonusSlot : public ActiveModule {
 protected:
     Bonus::Types current_bonus = Bonus::COUNT;
-    Bonus_Manager* bonus_manager = nullptr;
+    BonusManager* bonus_manager = nullptr;
 
 public:
-    Bonus_Slot();
+    BonusSlot();
     Bonus::Types get_current_bonus();
     void activate() override;
-    void set_bonus_manager(Bonus_Manager*);
+    void set_bonus_manager(BonusManager*);
     void set_current_bonus(int val);
     void add_bonus(Bonus::Types type);
 };

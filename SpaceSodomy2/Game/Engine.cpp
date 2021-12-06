@@ -5,7 +5,7 @@
 // Constructor
 Engine::Engine() {}
 
-Engine::Engine(b2Body* _body, Command_Module* _command_module, Counter* _stamina, Effects* _effects) {
+Engine::Engine(b2Body* _body, CommandModule* _command_module, Counter* _stamina, Effects* _effects) {
 	body = _body;
 	command_module = _command_module;
 	stamina = _stamina;
@@ -28,14 +28,14 @@ void Engine::apply_force_angular(float dir) {
 }
 
 void Engine::stabilize_rotation() {
-	if (command_module->get_command(Command_Module::ENGINE_ANG_LEFT) ||
-		command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
+	if (command_module->get_command(CommandModule::ENGINE_ANG_LEFT) ||
+		command_module->get_command(CommandModule::ENGINE_ANG_RIGHT))
 		return;
 	float eps = 0.5;
 	if (body->GetAngularVelocity() < -eps)
-		command_module->set_command(Command_Module::ENGINE_ANG_RIGHT, 1);
+		command_module->set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
 	else if (body->GetAngularVelocity() > eps)
-		command_module->set_command(Command_Module::ENGINE_ANG_LEFT, 1);
+		command_module->set_command(CommandModule::ENGINE_ANG_LEFT, 1);
 	else
 		body->SetAngularVelocity(0);
 }
@@ -61,7 +61,7 @@ void Engine::step(float _dt) {
 	dt = _dt;
 	// Boost management
 	current_modifier = 1;
-	if (stamina->get() > 0 && command_module->get_command(Command_Module::BOOST)) {
+	if (stamina->get() > 0 && command_module->get_command(CommandModule::BOOST)) {
 		current_modifier *= boost_modifier;
 	}
 	if (effects) {
@@ -71,26 +71,26 @@ void Engine::step(float _dt) {
 	}
 	is_linear_force_used = 0;
 	// Command processing
-	if ((command_module->get_command(Command_Module::ROCKET_ANGLE)) ) {
+	if ((command_module->get_command(CommandModule::ROCKET_ANGLE)) ) {
 		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
 		std::cout << "tell\n";
 	}
-	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
+	if (command_module->get_command(CommandModule::STABILIZE_ROTATION))
 		stabilize_rotation();
-	if (command_module->get_command(Command_Module::ENGINE_LIN_FORWARD))
+	if (command_module->get_command(CommandModule::ENGINE_LIN_FORWARD))
 		apply_force_linear(b2Vec2(1, 0));
-	if (command_module->get_command(Command_Module::ENGINE_LIN_BACKWARD))
+	if (command_module->get_command(CommandModule::ENGINE_LIN_BACKWARD))
 		apply_force_linear(b2Vec2(-1, 0));
-	if (command_module->get_command(Command_Module::ENGINE_LIN_LEFT))
+	if (command_module->get_command(CommandModule::ENGINE_LIN_LEFT))
 		apply_force_linear(b2Vec2(0, -1));
-	if (command_module->get_command(Command_Module::ENGINE_LIN_RIGHT))
+	if (command_module->get_command(CommandModule::ENGINE_LIN_RIGHT))
 		apply_force_linear(b2Vec2(0, 1));
-	if (command_module->get_command(Command_Module::ENGINE_ANG_LEFT))
+	if (command_module->get_command(CommandModule::ENGINE_ANG_LEFT))
 		apply_force_angular(-1);
-	if (command_module->get_command(Command_Module::ENGINE_ANG_RIGHT))
+	if (command_module->get_command(CommandModule::ENGINE_ANG_RIGHT))
 		apply_force_angular(1);
 	// Boost consumption
-	if (stamina->get() > 0 && is_linear_force_used && command_module->get_command(Command_Module::BOOST)) {
+	if (stamina->get() > 0 && is_linear_force_used && command_module->get_command(CommandModule::BOOST)) {
 		stamina->modify(-dt * boost_stamina_consumption);
 	}
 }

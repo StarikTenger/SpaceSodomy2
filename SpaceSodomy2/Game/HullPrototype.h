@@ -1,5 +1,5 @@
 #pragma once
-struct Hull_Prototype {
+struct HullPrototype {
 	float hp = 100;
 	float mass = 1;
 	unsigned char alias = 1;

@@ -1,81 +1,81 @@
 #include "pch.h"
-#include "Active_Module.h"
+#include "ActiveModule.h"
 #include <iostream>
 
-Active_Module::Active_Module() {}
+ActiveModule::ActiveModule() {}
 
-void Active_Module::set(b2Body* _body, Player* _player) {
+void ActiveModule::set(b2Body* _body, Player* _player) {
 	body = _body;
 	player = _player;
 }
 
-float Active_Module::get_recharge_time() {
+float ActiveModule::get_recharge_time() {
 	return recharge_time;
 }
 
-b2Body* Active_Module::get_body()
+b2Body* ActiveModule::get_body()
 {
 	return nullptr;
 }
 
-Counter* Active_Module::get_recharge_counter() {
+Counter* ActiveModule::get_recharge_counter() {
 	return recharge_counter;
 }
 
-Counter* Active_Module::get_stamina_cooldown_delay_counter() {
+Counter* ActiveModule::get_stamina_cooldown_delay_counter() {
 	return stamina_cooldown_delay_counter;
 }
 
-Event_Manager* Active_Module::get_event_manager() {
+EventManager* ActiveModule::get_event_manager() {
 	return event_manager;
 }
 
-Counter* Active_Module::get_stamina() {
+Counter* ActiveModule::get_stamina() {
 	return stamina;
 }
-Counter* Active_Module::get_energy() {
+Counter* ActiveModule::get_energy() {
 	return energy;
 }
-Effects_Prototype* Active_Module::get_effects() {
+Effects_Prototype* ActiveModule::get_effects() {
 	return effects_prototype;
 }
 
 
-void Active_Module::set_recharge_time(float val) {
+void ActiveModule::set_recharge_time(float val) {
 	recharge_time = val;
 }
 
-void Active_Module::set_body(b2Body* val) {
+void ActiveModule::set_body(b2Body* val) {
 	body = val;
 }
 
-void Active_Module::set_recharge_counter(Counter* val) {
+void ActiveModule::set_recharge_counter(Counter* val) {
 	recharge_counter = val;
 }
 
-void Active_Module::set_bind(int val) {
+void ActiveModule::set_bind(int val) {
 	bind = val;
 }
 
-void Active_Module::set_event_manager(Event_Manager* val) {
+void ActiveModule::set_event_manager(EventManager* val) {
 	event_manager = val;
 }
 
-void Active_Module::set_stamina(Counter* val) {
+void ActiveModule::set_stamina(Counter* val) {
 	stamina = val;
 }
-void Active_Module::set_energy(Counter* val) {
+void ActiveModule::set_energy(Counter* val) {
 	energy = val;
 }
-void Active_Module::set_effects_prototype(Effects_Prototype* val) {
+void ActiveModule::set_effects_prototype(Effects_Prototype* val) {
 	effects_prototype = val;
 }
 
-void Active_Module::set_effects(Effects* val) {
+void ActiveModule::set_effects(Effects* val) {
 	effects = val;
 }
 
-void Active_Module::activate_default_side_effects() {
+void ActiveModule::activate_default_side_effects() {
 	recharge_counter->set(recharge_time);
 	stamina->modify(-stamina_cost);
 	std::cout << energy->get() << "\n";
@@ -84,7 +84,7 @@ void Active_Module::activate_default_side_effects() {
 
 }
 
-void Active_Module::step(float dt) {
+void ActiveModule::step(float dt) {
 	if (player->get_command_module()->get_command(bind) && 
 		recharge_counter->get() < 0 && 
 		stamina->get() > stamina_cost && 

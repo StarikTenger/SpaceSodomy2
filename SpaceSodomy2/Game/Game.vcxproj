@@ -157,39 +157,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Active_Module.h" />
+    <ClInclude Include="ActiveModule.h" />
     <ClInclude Include="Bonus.h" />
-    <ClInclude Include="Bonus_Manager.h" />
-    <ClInclude Include="Bonus_Slot.h" />
-    <ClInclude Include="Collision_Filter.h" />
-    <ClInclude Include="Command_Module.h" />
-    <ClInclude Include="Contact_Table.h" />
+    <ClInclude Include="BonusManager.h" />
+    <ClInclude Include="BonusSlot.h" />
+    <ClInclude Include="CollisionFilter.h" />
+    <ClInclude Include="CommandModule.h" />
+    <ClInclude Include="ContactTable.h" />
     <ClInclude Include="Counter.h" />
-    <ClInclude Include="Damage_Receiver.h" />
+    <ClInclude Include="DamageReceiver.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="entities.h" />
     <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Game_Objects.h" />
+    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Gun.h" />
-    <ClInclude Include="Hull_Prototype.h" />
-    <ClInclude Include="Id_Manager.h" />
+    <ClInclude Include="HullPrototype.h" />
+    <ClInclude Include="IdManager.h" />
     <ClInclude Include="iId.h" />
     <ClInclude Include="Modules.h" />
-    <ClInclude Include="Module_Manager.h" />
+    <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="Projectile_Def.h" />
-    <ClInclude Include="Projectile_Manager.h" />
+    <ClInclude Include="ProjectileDef.h" />
+    <ClInclude Include="ProjectileManager.h" />
     <ClInclude Include="Rocket.h" />
-    <ClInclude Include="Rocket_Brain.h" />
-    <ClInclude Include="Rocket_Manager.h" />
+    <ClInclude Include="RocketBrain.h" />
+    <ClInclude Include="RocketManager.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Event.h" />
-    <ClInclude Include="Event_Manager.h" />
+    <ClInclude Include="EventDef.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -220,7 +220,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="Projectile_Def.cpp" />
+    <ClCompile Include="ProjectileDef.cpp" />
     <ClCompile Include="Projectile_Manager.cpp" />
     <ClCompile Include="Rocket.cpp" />
     <ClCompile Include="Rocket_Brain.cpp" />

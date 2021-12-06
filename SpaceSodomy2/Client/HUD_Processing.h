@@ -2,7 +2,7 @@
 #include<Menu/Bar.h>
 #include<Client/Game_Client.h>
 #include<AuxLib/AuxLib.h>
-#include<Network/Client_Network.h>
+#include<Network/ClientNetwork.h>
 
 class HUD_Processing {
 private:
@@ -19,7 +19,7 @@ private:
 	b2Vec2 table_indent;
 
 	Game_Client* game;
-	Client_Network* player_network;
+	ClientNetwork* player_network;
 
 	Draw* draw;
 	b2Vec2* mouse_pos;
@@ -46,7 +46,7 @@ public:
 
 	HUD_Processing();
 	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
-		Client_Network* player_network_, std::queue<int>* frame_marks_);
+		ClientNetwork* player_network_, std::queue<int>* frame_marks_);
 
 	void step();
 };

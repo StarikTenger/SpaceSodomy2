@@ -2,7 +2,7 @@
 #include <vector>
 #include "iId.h"
 
-class Command_Module : public iId {
+class CommandModule : public iId {
 private:
 	std::vector<int> active = std::vector<int>(COMMAND_COUNT, 0); // Shows which commands are active
 	float rocket_angle = 0;
@@ -27,7 +27,7 @@ public:
 		COMMAND_COUNT
 	};
 	// Constructor
-	Command_Module();
+	CommandModule();
 
 	// Get methods
 	std::vector<int> get_active();

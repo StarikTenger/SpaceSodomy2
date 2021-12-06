@@ -1,40 +1,40 @@
 #pragma once
 #include "pch.h"
-#include "Game_Objects.h"
+#include "GameObjects.h"
 
-void Game_Objects::set_physics(b2World* val) {
+void GameObjects::set_physics(b2World* val) {
     physics = val;
 }
-void Game_Objects::set_ships(std::set<Ship*>* val) {
+void GameObjects::set_ships(std::set<Ship*>* val) {
     ships = val;
 }
-void Game_Objects::set_projectiles(std::set<Projectile*>* val) {
+void GameObjects::set_projectiles(std::set<Projectile*>* val) {
     projectiles = val;
 }
-void Game_Objects::set_bonuses(std::set<Bonus*>* val) {
+void GameObjects::set_bonuses(std::set<Bonus*>* val) {
     bonuses = val;
 }
-void Game_Objects::set_walls(std::set<Wall*>* val) {
+void GameObjects::set_walls(std::set<Wall*>* val) {
     walls = val;
 }
-void Game_Objects::set_damage_receivers(std::set<Damage_Receiver*>* val) {
+void GameObjects::set_damage_receivers(std::set<DamageReceiver*>* val) {
     damage_receivers = val;
 }
-b2World* Game_Objects::get_physics() {
+b2World* GameObjects::get_physics() {
     return physics;
 }
-std::set<Ship*>* Game_Objects::get_ships() {
+std::set<Ship*>* GameObjects::get_ships() {
     return ships;
 }
-std::set<Projectile*>* Game_Objects::get_projectiles() {
+std::set<Projectile*>* GameObjects::get_projectiles() {
     return projectiles;
 }
-std::set<Bonus*>* Game_Objects::get_bonuses() {
+std::set<Bonus*>* GameObjects::get_bonuses() {
     return bonuses;
 }
-std::set<Wall*>* Game_Objects::get_walls() {
+std::set<Wall*>* GameObjects::get_walls() {
     return walls;
 }
-std::set<Damage_Receiver*>* Game_Objects::get_damage_receivers() {
+std::set<DamageReceiver*>* GameObjects::get_damage_receivers() {
     return damage_receivers;
 }

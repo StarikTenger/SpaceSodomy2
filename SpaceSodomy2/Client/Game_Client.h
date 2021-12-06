@@ -38,12 +38,12 @@ private:
 	float outer_wall_thickness = 0.05;
 
 	std::vector <int> engine_commands = {
-				Command_Module::ENGINE_ANG_LEFT,
-				Command_Module::ENGINE_ANG_RIGHT,
-				Command_Module::ENGINE_LIN_BACKWARD,
-				Command_Module::ENGINE_LIN_FORWARD,
-				Command_Module::ENGINE_LIN_LEFT,
-				Command_Module::ENGINE_LIN_RIGHT
+				CommandModule::ENGINE_ANG_LEFT,
+				CommandModule::ENGINE_ANG_RIGHT,
+				CommandModule::ENGINE_LIN_BACKWARD,
+				CommandModule::ENGINE_LIN_FORWARD,
+				CommandModule::ENGINE_LIN_LEFT,
+				CommandModule::ENGINE_LIN_RIGHT
 	};
 
 public:
@@ -108,5 +108,5 @@ public:
 		                    float wall_width = 1.0,
 		                    std::string wall_name = "wall");
 
-	Module_Manager* get_module_manager();
+	ModuleManager* get_module_manager();
 };

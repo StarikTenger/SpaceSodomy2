@@ -2,11 +2,11 @@
 #include "Modules.h"
 #include <vector>
 
-class Module_Manager {
+class ModuleManager {
 private:
     std::vector<Module_Prototype> module_prototypes;
 public:
-    Module_Manager();
+    ModuleManager();
     void add_prototype(Module_Prototype);
     Module_Prototype* get_prototype(Module::Type);
     // Effective new operator overload to avoid switch statements later

@@ -32,7 +32,7 @@ Counter* Ship::get_stamina() {
 Counter* Ship::get_energy() {
 	return energy;
 }
-Damage_Receiver* Ship::get_damage_receiver() {
+DamageReceiver* Ship::get_damage_receiver() {
 	return damage_receiver;
 }
 
@@ -47,7 +47,7 @@ Effects* Ship::get_effects() {
 	return effects;
 }
 
-Bonus_Slot* Ship::get_bonus_slot() {
+BonusSlot* Ship::get_bonus_slot() {
 	return bonus_slot;
 }
 
@@ -78,7 +78,7 @@ void Ship::set_stamina(Counter* val) {
 void Ship::set_energy(Counter* val) {
 	energy = val;
 }
-void Ship::set_damage_receiver(Damage_Receiver* val) {
+void Ship::set_damage_receiver(DamageReceiver* val) {
 	damage_receiver = val;
 }
 
@@ -86,7 +86,7 @@ void Ship::set_effects(Effects* val) {
 	effects = val;
 }
 
-void Ship::set_bonus_slot(Bonus_Slot* val) {
+void Ship::set_bonus_slot(BonusSlot* val) {
 	bonus_slot = val;
 }
 

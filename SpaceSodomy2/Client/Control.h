@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <Network/Client_Network.h>
+#include <Network/ClientNetwork.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
 #include <Audio/Audio.h>
@@ -26,9 +26,9 @@ private:
 	// Zoom velocity
 	float zoom_vel = 2;
 	// Current player's commands
-	Command_Module command_module;
+	CommandModule command_module;
 	// Connection to server, contains id, name, server adress & port
-	Client_Network network;
+	ClientNetwork network;
 	// Contains game objects
 	Game_Client game;
 	// Contains window 7 other drawing stuff
