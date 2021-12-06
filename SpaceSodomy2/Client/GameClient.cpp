@@ -131,6 +131,9 @@ void GameClient::display(int id) {
 		float opacity = 1;
 		if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
 			opacity = 0.3;  // TODO: configs
+			if (ship->is_visible()) {
+				opacity = 0.7;
+			}
 		}
 		if (!ship->get_body() ||
 			!ship->get_body()->GetFixtureList() ||
@@ -232,7 +235,8 @@ void GameClient::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
-				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)) {
+				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)
+					|| ship->is_visible()) {
 					draw->image(textures[i], ship->get_body()->GetPosition(),
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
 					// Animation

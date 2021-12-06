@@ -55,6 +55,7 @@ protected:
 	// Walls
 	std::set<Wall*> walls;
 	b2Vec2 lower_left_corner, upper_right_corner;
+	Player* wall_player = nullptr; // id = -1;
 
 	// Managers
 	ProjectileManager projectile_manager;

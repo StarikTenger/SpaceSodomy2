@@ -45,16 +45,14 @@ void RocketBrain::step(float dt) {
     command_module->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
-        if (ship->get_player()->get_id() != rocket->get_player()->get_id() && 
-            is_in_range(ship->get_body()->GetWorldPoint({0,0})) 
-            && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
+        if (is_targetable(ship)) {
             command_module->set_command(CommandModule::ROCKET_ANGLE, 1);
             command_module->set_rocket_angle(calculate_dir(ship->get_body()));
             break;
         }
     }
 }
-void RocketBrain::set_command_module(CommandModule* val) {
+void Rocket_Brain::set_command_module(Command_Module* val) {
     command_module = val;
 }
 RocketBrain::RocketBrain(float range_, int bin_search_accuracy_) {

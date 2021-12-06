@@ -504,3 +504,31 @@ int aux::read_int8(std::istream& in) {
 	unsigned char val = in.get();
 	return (int)val - 1;
 }
+
+std::string aux::censor_name(std::string str) {
+	std::vector<std::string> euphemisms = {
+		"[REDACTED]",
+		"[EXPUNGED]",
+		"[BANNED]",
+		"[WINNIE_POOH]",
+		"[DEFESTRATED]",
+		"[FORBIDDEN]",
+		"[PORRIDGE]",
+		"[VETOED]",
+		"[UNAUTHORIZED]",
+		"[PROHIBITED]",
+		"[ILLEGAL]",
+		"[HRIUKNY]",
+		"[OUTLAWED]",
+		"[HARAM]"
+	};
+	if (str.size() > 20) {
+		return euphemisms[std::abs(std::rand()) % euphemisms.size()];
+	}
+	for (auto ch : str) {
+		if (!(isdigit(ch) || isupper(ch) || islower(ch) || ch == '_')) {
+			return euphemisms[std::abs(std::rand()) % euphemisms.size()];
+		}
+	}
+	return str;
+}

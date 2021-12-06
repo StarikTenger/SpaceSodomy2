@@ -97,3 +97,35 @@ void Ship::set_left_module(Module* val) {
 void Ship::set_right_module(Module* val) {
 	right_module = val;
 }
+bool Ship::is_boost_active() {
+	return get_player()->get_command_module()->get_command(Command_Module::BOOST)
+		&& get_stamina()->get() > 0;
+}
+
+bool Ship::is_visible() {
+
+
+	if (effects->get_effect(Effects::INVISIBILITY)->get_counter()->get() < b2_epsilon) {
+		return true;
+	}
+	else {
+		if (Effects::invis_flag == Effects::SHOW_NO) {
+			return false;
+		}
+		bool res = false;
+		if (Effects::invis_flag && Effects::SHOW_EFFECTS) {
+
+			if ((effects->get_effect(Effects::BERSERK)->get_counter()->get() > b2_epsilon)
+				|| (effects->get_effect(Effects::IMMORTALITY)->get_counter()->get() > b2_epsilon)
+				|| (effects->get_effect(Effects::LASER)->get_counter()->get() > b2_epsilon)
+				|| (effects->get_effect(Effects::CHARGE)->get_counter()->get() > b2_epsilon)) {
+				res = true;
+			}
+
+		}
+		if (Effects::invis_flag && Effects::SHOW_BOOST && is_boost_active()) {
+			res = true;
+		}
+		return res;
+	}
+}
