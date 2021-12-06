@@ -98,7 +98,7 @@ void Ship::set_right_module(Module* val) {
 	right_module = val;
 }
 bool Ship::is_boost_active() {
-	return get_player()->get_command_module()->get_command(Command_Module::BOOST)
+	return get_player()->get_command_module()->get_command(CommandModule::BOOST)
 		&& get_stamina()->get() > 0;
 }
 

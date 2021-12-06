@@ -52,7 +52,13 @@ void RocketBrain::step(float dt) {
         }
     }
 }
-void Rocket_Brain::set_command_module(Command_Module* val) {
+bool RocketBrain::is_targetable(Ship* ship) {
+    return
+        ship->get_player()->get_id() != rocket->get_player()->get_id()
+        && is_in_range(ship->get_body()->GetWorldPoint({ 0,0 }))
+        && ship->is_visible();
+}
+void RocketBrain::set_command_module(CommandModule* val) {
     command_module = val;
 }
 RocketBrain::RocketBrain(float range_, int bin_search_accuracy_) {

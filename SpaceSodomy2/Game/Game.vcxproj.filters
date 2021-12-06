@@ -194,9 +194,6 @@
     <ClCompile Include="Rocket.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Rocket_Brain.cpp">
-      <Filter>Source Files\Brains</Filter>
-    </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -241,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="DamageReceiver.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="RocketBrain.cpp">
+      <Filter>Source Files\Brains</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

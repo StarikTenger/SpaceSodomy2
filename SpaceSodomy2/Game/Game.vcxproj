@@ -223,7 +223,7 @@
     <ClCompile Include="ProjectileDef.cpp" />
     <ClCompile Include="ProjectileManager.cpp" />
     <ClCompile Include="Rocket.cpp" />
-    <ClCompile Include="Rocket_Brain.cpp" />
+    <ClCompile Include="RocketBrain.cpp" />
     <ClCompile Include="RocketManager.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Event.cpp" />
