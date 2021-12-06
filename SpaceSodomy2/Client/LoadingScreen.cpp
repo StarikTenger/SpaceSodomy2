@@ -1,6 +1,6 @@
-#include "Loading_Screen.h"
+#include "LoadingScreen.h"
 
-Loading_Screen::Loading_Screen(Draw* draw_) {
+LoadingScreen::LoadingScreen(Draw* draw_) {
 	draw = draw_;
 	loading_stage.set_color(sf::Color::White);
 	loading_stage.set_draw(draw);
@@ -16,7 +16,7 @@ Loading_Screen::Loading_Screen(Draw* draw_) {
 	progress_bar.set_value(0);
 }
 
-void Loading_Screen::step(int val, std::string stage) {
+void LoadingScreen::step(int val, std::string stage) {
 	draw->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize())),
 		sf::Color(0, 0, 0, 255), 0);
 	progress_bar.set_value(val);

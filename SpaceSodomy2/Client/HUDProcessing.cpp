@@ -1,11 +1,11 @@
-#include "HUD_Processing.h"
+#include "HUDProcessing.h"
 
 bool operator<(Player& a, Player& b) {
 	return (a.get_kills() > b.get_kills() ||
 		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
 }
 
-void HUD_Processing::get_buttons_names(std::string path) {
+void HUDProcessing::get_buttons_names(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -33,7 +33,7 @@ void HUD_Processing::get_buttons_names(std::string path) {
 	}
 }
 
-std::vector<b2Vec2> HUD_Processing::get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale) {
+std::vector<b2Vec2> HUDProcessing::get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale) {
 	std::vector<b2Vec2> ans;
 	if (cur_pos < b2_epsilon)
 		return ans;
@@ -85,7 +85,7 @@ std::vector<b2Vec2> HUD_Processing::get_vertices(float cur_pos, b2Vec2 center, b
 	return ans;
 }
 
-void HUD_Processing::table_step() {
+void HUDProcessing::table_step() {
 	std::vector<Player> rating_table;
 	std::map <int, sf::Color> colors;
 	for (auto player : *game->get_players()) {
@@ -139,7 +139,7 @@ void HUD_Processing::table_step() {
 	}
 }
 
-void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config) {
+void HUDProcessing::apply_bar(Bar* bar, std::stringstream* config) {
 	int use_window_cords, use_custom_color, character_size;
 	b2Vec2 pos, scale;
 	sf::Color back, front, text;
@@ -163,12 +163,12 @@ void HUD_Processing::apply_bar(Bar* bar, std::stringstream* config) {
 	bar->set_font(font_name);
 }
 
-HUD_Processing::HUD_Processing()
+HUDProcessing::HUDProcessing()
 {
 }
 
-HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
-	Game_Client* game_, ClientNetwork* player_network_, std::queue<int>* frame_marks_) {
+HUDProcessing::HUDProcessing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
+	GameClient* game_, ClientNetwork* player_network_, std::queue<int>* frame_marks_) {
 	frame_marks = frame_marks_;
 	game = game_;
 	player_network = player_network_;
@@ -316,7 +316,7 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	//interface_image.set_scale({1220, 305});
 }
 
-void HUD_Processing::step() {
+void HUDProcessing::step() {
 	get_buttons_names("keys.conf");
 	interface_image.set_scale({ 330 * interface_scale, 40 * interface_scale });
 	interface_image.set_pos(b2Vec2(0, 0) - b2Vec2(0, interface_image.get_scale().y / 2));
@@ -426,5 +426,5 @@ void HUD_Processing::step() {
 		}
 	}
 	table_step();
-	draw->draw_animations(Game_Client::HUD);
+	draw->draw_animations(GameClient::HUD);
 }

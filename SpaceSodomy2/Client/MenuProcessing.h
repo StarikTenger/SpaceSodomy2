@@ -1,12 +1,12 @@
 #pragma once
 #include<Menu/Menu.h>
 #include<AuxLib/AuxLib.h>
-#include<Client/Game_Client.h>
+#include<Client/GameClient.h>
 #include<string>
 #include<Client/Replay.h>
 #include<Network/ClientNetwork.h>
 
-class Menu_Processing {
+class MenuProcessing {
 private:
 	Menu main_menu; // main menu object
 	Menu config_menu; // config menu object
@@ -63,19 +63,19 @@ private:
 	//void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
 	//voif init_module(std::string name);
 	Draw* draw;
-	Game_Client* game;
+	GameClient* game;
 	Replay* replay;
 	bool disactivated = 0;
 	bool shader_active = 1;
 	bool* reload;
 	int module_num = 1;
 public:
-	Menu_Processing();
+	MenuProcessing();
 	bool active = 1;
 	int text_field_active = 0;
 	void init(Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, ClientNetwork* network_,
-		Game_Client* game_, Replay* replay_,
+		GameClient* game_, Replay* replay_,
 		bool* reload_);
 	void step();
 };

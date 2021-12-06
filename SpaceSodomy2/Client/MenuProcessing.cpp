@@ -1,8 +1,8 @@
-#include "Menu_Processing.h"
+#include "MenuProcessing.h"
 
-Menu_Processing::Menu_Processing() {}
+MenuProcessing::MenuProcessing() {}
 
-void Menu_Processing::init_hull(std::string name, int hp, float mass, float radius,
+void MenuProcessing::init_hull(std::string name, int hp, float mass, float radius,
 	int stamina, int stamina_recovery, Menu* hull) {
 	hull->add_image(++current_id, name + "-hull", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	hull->add_image(++current_id, name + "-hull-colors", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
@@ -20,7 +20,7 @@ void Menu_Processing::init_hull(std::string name, int hp, float mass, float radi
 		sf::Color::White, 1, mouse_pos, keyboard);
 	menus.push_back(hull);
 }
-void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description) {
+void MenuProcessing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description) {
 	int cur_but_id = 0;
 	std::ifstream file_to_comment(path_to_hulls_description);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -67,7 +67,7 @@ void Menu_Processing::init_hull_menu(b2Vec2 pos, std::string path_to_hulls_descr
 	}
 }
 
-void Menu_Processing::init_gun(std::string name, int damage, float recharge, int stamina_cost, float projectile_mass,
+void MenuProcessing::init_gun(std::string name, int damage, float recharge, int stamina_cost, float projectile_mass,
 	float projectile_radius, int projectile_vel, Menu* gun) {
 	gun->add_image(++current_id, name + "-gun", b2Vec2(-150, 150), 7, b2Vec2(200, 200), mouse_pos, 0);
 	gun->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300), 7, 20,
@@ -87,7 +87,7 @@ void Menu_Processing::init_gun(std::string name, int damage, float recharge, int
 	menus.push_back(gun);
 }
 
-void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_description) {
+void MenuProcessing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_description) {
 	int cur_but_id = 0;
 	std::ifstream file_to_comment(path_to_guns_description);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -135,14 +135,14 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	}
 }
 
-void Menu_Processing::init_module(std::string name, Menu* module, b2Vec2 add_pos) {
+void MenuProcessing::init_module(std::string name, Menu* module, b2Vec2 add_pos) {
 	module->add_button(++current_id, name + "-module", b2Vec2(-150, 150) + add_pos, 7, b2Vec2(200, 200), sf::Color::White, mouse_pos, 0);
 	module->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300) + add_pos, 7, 20,
 		sf::Color::White, 1, mouse_pos, keyboard);
 	menus.push_back(module);
 }
 
-void Menu_Processing::init_modules_menu(b2Vec2 pos, std::string path_to_modules_description) {
+void MenuProcessing::init_modules_menu(b2Vec2 pos, std::string path_to_modules_description) {
 	int cur_but_id = 0;
 	std::ifstream file_to_comment(path_to_modules_description);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -175,7 +175,7 @@ void Menu_Processing::init_modules_menu(b2Vec2 pos, std::string path_to_modules_
 	}
 }
 
-void Menu_Processing::close_settings_menus() {
+void MenuProcessing::close_settings_menus() {
 	config_menu.set_active(0);
 	keys_menu.set_active(0);
 	sound_menu.set_active(0);
@@ -192,7 +192,7 @@ void Menu_Processing::close_settings_menus() {
 	}
 }
 
-void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
+void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::vector<std::string> names;
@@ -216,7 +216,7 @@ void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::s
 	}
 	fout.close();
 }
-void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
+void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
 	b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -247,7 +247,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
-void Menu_Processing::load_HUD_settings(std::string path) {
+void MenuProcessing::load_HUD_settings(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double next;
@@ -259,14 +259,14 @@ void Menu_Processing::load_HUD_settings(std::string path) {
 	game->set_network_information_active(next);
 }
 
-void Menu_Processing::save_HUD_settings(std::string path) {
+void MenuProcessing::save_HUD_settings(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity() << "\n" << game->get_network_information_active();
 	fout.close();
 }
 
-void Menu_Processing::load_sound(std::string path) {
+void MenuProcessing::load_sound(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double volume;
@@ -276,20 +276,20 @@ void Menu_Processing::load_sound(std::string path) {
 	game->get_audio()->set_music_volume(volume);
 }
 
-void Menu_Processing::save_sound(std::string path) {
+void MenuProcessing::save_sound(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
 	fout.close();
 }
 
-void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+void MenuProcessing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << address_ << " " << port_ << " " << id_ << " " << name_;
 	fout.close();
 }
-void Menu_Processing::load_config(std::string path, std::string* address_, std::string* port_,
+void MenuProcessing::load_config(std::string path, std::string* address_, std::string* port_,
 	std::string* id_, std::string* name_) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -303,7 +303,7 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	}
 }
 
-void Menu_Processing::init_menu(std::string path_, Menu* object) {
+void MenuProcessing::init_menu(std::string path_, Menu* object) {
 	// uncomment config file
 	std::ifstream comment_file(path_);
 	std::stringstream file = aux::comment(comment_file);
@@ -577,9 +577,9 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	}
 }
 
-void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
+void MenuProcessing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, ClientNetwork* network_,
-	Game_Client* game_, Replay* replay_, bool* reload_) {
+	GameClient* game_, Replay* replay_, bool* reload_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
@@ -698,7 +698,7 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	menus.push_back(&modules_menu);
 }
 
-void Menu_Processing::step() {
+void MenuProcessing::step() {
 	replay->get_replay_frame()->step(1);
 	if (active) {
 		if (shader_active)

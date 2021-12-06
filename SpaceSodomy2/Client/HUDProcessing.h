@@ -1,10 +1,10 @@
 #pragma once
 #include<Menu/Bar.h>
-#include<Client/Game_Client.h>
+#include<Client/GameClient.h>
 #include<AuxLib/AuxLib.h>
 #include<Network/ClientNetwork.h>
 
-class HUD_Processing {
+class HUDProcessing {
 private:
 	Bar HP_bar, stamina_bar, energy_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn,
@@ -18,7 +18,7 @@ private:
 	float table_name_indent;
 	b2Vec2 table_indent;
 
-	Game_Client* game;
+	GameClient* game;
 	ClientNetwork* player_network;
 
 	Draw* draw;
@@ -44,8 +44,8 @@ private:
 public:
 	float interface_scale = 3;
 
-	HUD_Processing();
-	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
+	HUDProcessing();
+	HUDProcessing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, GameClient* game_,
 		ClientNetwork* player_network_, std::queue<int>* frame_marks_);
 
 	void step();

@@ -6,7 +6,7 @@
 #include <Menu/Constant_Text.h>
 #include <AuxLib/AuxLib.h>
 
-class Game_Client : public Game {
+class GameClient : public Game {
 private:
 	std::map<int, std::string> bonus_textures = {
 		{Bonus::COUNT, "bonusEmpty"},
