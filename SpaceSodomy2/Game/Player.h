@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp> 
 #include <string>
-#include "Command_Module.h"
+#include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
 
@@ -16,7 +16,7 @@ private:
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
-	Command_Module* command_module = nullptr;
+	CommandModule* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
 	int ping = 0;
 public:
@@ -30,7 +30,7 @@ public:
 	std::string get_hull_name();
 	std::string get_left_module_name();
 	std::string get_right_module_name();
-	Command_Module* get_command_module();
+	CommandModule* get_command_module();
 	Counter* get_time_to_respawn();
 	int get_deaths();
 	int get_kills();
@@ -43,7 +43,7 @@ public:
 	void set_hull_name(std::string val);
 	void set_left_module_name(std::string val);
 	void set_right_module_name(std::string val);
-	void set_command_module(Command_Module*);
+	void set_command_module(CommandModule*);
 	void set_time_to_respawn(Counter*);
 	void set_deaths(int deaths_);
 	void set_kills(int kills_);

@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "Bonus_Slot.h"
+#include "BonusSlot.h"
 
-Bonus_Slot::Bonus_Slot() {
-    bind = Command_Module::BONUS_ACTIVATION;
+BonusSlot::BonusSlot() {
+    bind = CommandModule::BONUS_ACTIVATION;
     recharge_time = 0;
     stamina_cost = 0;
 }
-void Bonus_Slot::add_bonus(Bonus::Types val) {
+void BonusSlot::add_bonus(Bonus::Types val) {
     if (val >= Bonus::COUNT) {
         return;
     }
@@ -18,12 +18,12 @@ void Bonus_Slot::add_bonus(Bonus::Types val) {
     }
 }
 
-Bonus::Types Bonus_Slot::get_current_bonus() {
+Bonus::Types BonusSlot::get_current_bonus() {
     return current_bonus;
 }
-void Bonus_Slot::activate() {
+void BonusSlot::activate() {
     if (current_bonus == Bonus::LASER) {
-        event_manager->create_event(Event_Def(Event::LASER, get_body()));
+        event_manager->create_event(EventDef(Event::LASER, get_body()));
     }
     activate_default_side_effects();
 
@@ -34,10 +34,10 @@ void Bonus_Slot::activate() {
     current_bonus = Bonus::COUNT;
 }
 
-void Bonus_Slot::set_bonus_manager(Bonus_Manager* val) {
+void BonusSlot::set_bonus_manager(BonusManager* val) {
     bonus_manager = val;
 }
 
-void Bonus_Slot::set_current_bonus(int val) {
+void BonusSlot::set_current_bonus(int val) {
     current_bonus = (Bonus::Types)val;
 }

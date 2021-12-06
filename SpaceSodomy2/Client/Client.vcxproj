@@ -152,19 +152,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
-    <ClCompile Include="Game_Client.cpp" />
-    <ClCompile Include="HUD_Processing.cpp" />
-    <ClCompile Include="Loading_Screen.cpp" />
+    <ClCompile Include="GameClient.cpp" />
+    <ClCompile Include="HUDProcessing.cpp" />
+    <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Menu_Processing.cpp" />
+    <ClCompile Include="MenuProcessing.cpp" />
     <ClCompile Include="Replay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control.h" />
-    <ClInclude Include="Game_Client.h" />
-    <ClInclude Include="HUD_Processing.h" />
-    <ClInclude Include="Loading_Screen.h" />
-    <ClInclude Include="Menu_Processing.h" />
+    <ClInclude Include="GameClient.h" />
+    <ClInclude Include="HUDProcessing.h" />
+    <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="MenuProcessing.h" />
     <ClInclude Include="Replay.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,15 +1,15 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <Network/Client_Network.h>
+#include <Network/ClientNetwork.h>
 #include <AuxLib/AuxLib.h>
 #include <Draw/Draw.h>
 #include <Audio/Audio.h>
-#include "HUD_Processing.h"
-#include "Menu_Processing.h"
-#include "Game_Client.h"
+#include "HUDProcessing.h"
+#include "MenuProcessing.h"
+#include "GameClient.h"
 #include "Replay.h"
-#include "Loading_Screen.h"
+#include "LoadingScreen.h"
 #include <string>
 #include <fstream>
 #include <queue>
@@ -26,17 +26,17 @@ private:
 	// Zoom velocity
 	float zoom_vel = 2;
 	// Current player's commands
-	Command_Module command_module;
+	CommandModule command_module;
 	// Connection to server, contains id, name, server adress & port
-	Client_Network network;
+	ClientNetwork network;
 	// Contains game objects
-	Game_Client game;
+	GameClient game;
 	// Contains window 7 other drawing stuff
 	Draw draw;
 	// Contains audio
 	Audio audio;
 	// Contains menu objects
-	Menu_Processing menu_processing;
+	MenuProcessing menu_processing;
 	// Contains mouse position
 	b2Vec2 mouse_pos;
 	// Keyboard structure
@@ -61,7 +61,7 @@ private:
 	// Converts commands into single string
 	std::string commands_to_string();
 	// HUD
-	HUD_Processing hud;
+	HUDProcessing hud;
 
 	// Auto stabilize rotation
 	bool stabilize_rotation_auto = 0;

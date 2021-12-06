@@ -16,7 +16,7 @@ Counter* Projectile::get_hp() {
 	return hp;
 }
 
-Damage_Receiver* Projectile::get_damage_receiver() {
+DamageReceiver* Projectile::get_damage_receiver() {
 	return damage_receiver;
 }
 
@@ -41,7 +41,7 @@ void Projectile::set_hp(Counter* val) {
 	hp = val;
 }
 
-void Projectile::set_damage_receiver(Damage_Receiver* val) {
+void Projectile::set_damage_receiver(DamageReceiver* val) {
 	damage_receiver = val;
 }
 

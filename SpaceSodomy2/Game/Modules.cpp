@@ -53,7 +53,7 @@ Module::Type Module::get_type() {
     return type;
 }
 
-void Module::set_projectile_manager(Projectile_Manager* val) {
+void Module::set_projectile_manager(ProjectileManager* val) {
     projectile_manager = val;
 }
 float Module::get_param(std::string val) {
@@ -67,17 +67,17 @@ void Module::set_type(Type val) {
     type = val;
 }
 
-Projectile_Manager* Module::get_projectile_manager() {
+ProjectileManager* Module::get_projectile_manager() {
 	return projectile_manager;
 }
-void Module::set_game_objects(Game_Objects val) {
+void Module::set_game_objects(GameObjects val) {
 	environment = val;
 }
 
-Rocket_Manager* Module::get_rocket_manager() {
+RocketManager* Module::get_rocket_manager() {
 	return rocket_manager;
 }
-void Module::set_rocket_manager(Rocket_Manager* val) {
+void Module::set_rocket_manager(RocketManager* val) {
 	rocket_manager = val;
 	//std::cout << "set\n";
 }
@@ -111,10 +111,10 @@ void Shotgun_Module::activate() {
 	activate_default_side_effects();
 
 	// Event
-	event_manager->create_event(Event_Def(Event::MODULE_SHOTGUN, body));
+	event_manager->create_event(EventDef(Event::MODULE_SHOTGUN, body));
 
 	// Projectiles
-	Projectile_Def projectile_def;
+	ProjectileDef projectile_def;
 	float num = bullet_num;
 	//std::cout << num;
 	b2Vec2 impulse = {0,0};
@@ -163,7 +163,7 @@ Dash_Module::Dash_Module(Module_Prototype* base) : Module(base) {
 
 void Dash_Module::activate() {
 	// Event
-	event_manager->create_event(Event_Def(Event::MODULE_DASH, body));
+	event_manager->create_event(EventDef(Event::MODULE_DASH, body));
 
 	activate_default_side_effects();
 	body->ApplyLinearImpulseToCenter(vel * body->GetMass() * aux::angle_to_vec(body->GetAngle()), 1);
@@ -176,7 +176,7 @@ Force_Module::Force_Module(Module_Prototype* base) : Module(base) {
 
 void Force_Module::activate() {
 	activate_default_side_effects();
-	std::set<Damage_Receiver*>& receivers = *environment.get_damage_receivers();
+	std::set<DamageReceiver*>& receivers = *environment.get_damage_receivers();
 	for (auto receiver : receivers) {
 		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < radius) {
 			receiver->damage(0, player);
@@ -187,7 +187,7 @@ void Force_Module::activate() {
 			body->ApplyLinearImpulseToCenter(-impulse, 1);
 		}
 	}
-	Event_Def event_def;
+	EventDef event_def;
 	event_def.pos = body->GetPosition();
 	event_def.type = Event::MODULE_FORCE;
 	event_manager->create_event(event_def);
@@ -207,7 +207,7 @@ void Blink_Module::activate() {
 		}
 	}
 	// Event
-	event_manager->create_event(Event_Def(Event::MODULE_BLINK, nullptr, body->GetPosition()));
+	event_manager->create_event(EventDef(Event::MODULE_BLINK, nullptr, body->GetPosition()));
 
 	activate_default_side_effects();
 	body->SetTransform(newpos, body->GetAngle());
@@ -229,7 +229,7 @@ Rocket_Module::Rocket_Module(Module_Prototype* base) : Module(base) {
 }
 void Rocket_Module::activate() {
 	// Event
-	event_manager->create_event(Event_Def(Event::MODULE_ROCKET, body));
+	event_manager->create_event(EventDef(Event::MODULE_ROCKET, body));
 
 	activate_default_side_effects();
 	Rocket_Def def;

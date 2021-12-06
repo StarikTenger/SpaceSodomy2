@@ -21,11 +21,11 @@ Counter* Rocket::get_stamina() {
 	return stamina;
 }
 
-Damage_Receiver* Rocket::get_damage_receiver() {
+DamageReceiver* Rocket::get_damage_receiver() {
 	return damage_receiver;
 }
 
-Rocket_Brain* Rocket::get_rocket_brain() {
+RocketBrain* Rocket::get_rocket_brain() {
 	return brain;
 }
 float Rocket::get_blast_radius() {
@@ -61,11 +61,11 @@ void Rocket::set_stamina(Counter* val) {
 	stamina = val;
 }
 
-void Rocket::set_damage_receiver(Damage_Receiver* val) {
+void Rocket::set_damage_receiver(DamageReceiver* val) {
 	damage_receiver = val;
 }
 
-void Rocket::set_rocket_brain(Rocket_Brain* val) {
+void Rocket::set_rocket_brain(RocketBrain* val) {
 	brain = val;
 }
 void Rocket::set_blast_radius(float val) {

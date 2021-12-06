@@ -96,14 +96,14 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	return player;
 }
 
-Command_Module* Game::create_command_module() {
-	auto command_module = new Command_Module();
+CommandModule* Game::create_command_module() {
+	auto command_module = new CommandModule();
 	command_modules.insert(command_module);
 	id_manager.set_id(command_module);
 	return command_module;
 }
 
-Engine* Game::create_engine(b2Body* body, Command_Module* command_module, Counter* stamina, Effects* effs) {
+Engine* Game::create_engine(b2Body* body, CommandModule* command_module, Counter* stamina, Effects* effs) {
 	auto engine = new Engine(body, command_module, stamina, effs);
 	engines.insert(engine);
 	id_manager.set_id(engine);
@@ -119,8 +119,8 @@ Counter* Game::create_counter(float val, float change_vel) {
 	return counter;
 }
 
-Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
-	auto damage_receiver = new Damage_Receiver(body, hp);
+DamageReceiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
+	auto damage_receiver = new DamageReceiver(body, hp);
 	damage_receiver->set_imm_frames(params["imm_frames"]);
 	damage_receiver->set_player(player);
 	damage_receiver->set_effects(effs);
@@ -145,13 +145,13 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_player(player);
 
 	// Hull def
-	Hull_Prototype hull_prototype;
+	HullPrototype hull_prototype;
 	if (hulls.count(player->get_hull_name()))
 		hull_prototype = hulls[player->get_hull_name()];
 
 	// Body
 	auto body = create_round_body(pos, angle, hull_prototype.radius, hull_prototype.mass);
-	collision_filter.add_body(body, Collision_Filter::STANDART, ship->get_player()->get_id());
+	collision_filter.add_body(body, CollisionFilter::STANDART, ship->get_player()->get_id());
 	ship->set_body(body);
 
 	// Command module
@@ -222,8 +222,8 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	left->set_energy(energy);
 	right->set_stamina(stamina);
 	right->set_energy(energy);
-	left->set_bind(Command_Module::LEFT_MODULE);
-	right->set_bind(Command_Module::RIGHT_MODULE);
+	left->set_bind(CommandModule::LEFT_MODULE);
+	right->set_bind(CommandModule::RIGHT_MODULE);
 	ship->set_left_module(left);
 	ship->set_right_module(right);
 
@@ -235,21 +235,21 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	wall->set(&physics, vertices, orientation, type);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	if (type == Wall::GHOST) {
-		collision_filter.add_body(wall->get_body(), Collision_Filter::GHOST);
+		collision_filter.add_body(wall->get_body(), CollisionFilter::GHOST);
 	}
 	else {
-		collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
+		collision_filter.add_body(wall->get_body(), CollisionFilter::WALL);
 	}
 	walls.insert(wall);
 	id_manager.set_id(wall);
 	return wall;
 }
 
-Projectile* Game::create_projectile(Projectile_Def projectile_def) {
+Projectile* Game::create_projectile(ProjectileDef projectile_def) {
 	// Creating body
 	auto body = create_round_body(projectile_def.pos, projectile_def.angle, projectile_def.radius, projectile_def.mass);
 	body->SetLinearVelocity(projectile_def.vel);
-	collision_filter.add_body(body, Collision_Filter::PROJECTILE, projectile_def.player->get_id());
+	collision_filter.add_body(body, CollisionFilter::PROJECTILE, projectile_def.player->get_id());
 
 	// Creating projectile
 	auto projectile = new Projectile();
@@ -267,7 +267,7 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	return projectile;
 }
 
-Event* Game::create_event(Event_Def event_def, float playing_offset) {
+Event* Game::create_event(EventDef event_def, float playing_offset) {
 	auto event = new Event();
 	event->set_body(event_def.body);
 	event->set_type(event_def.type);
@@ -287,7 +287,7 @@ Effects* Game::create_effects(Effects_Prototype* val) {
 Bonus* Game::create_bonus(Bonus_Def val) {
 	auto ans = new Bonus;
 	auto body = create_round_body(val.pos, 0, bonus_manager.get_prototype(val.type)->radius, 1);
-	collision_filter.add_body(body, Collision_Filter::GHOST, 0);
+	collision_filter.add_body(body, CollisionFilter::GHOST, 0);
 	ans->set_id(val.get_id());
 	ans->set_body(body);
 	ans->set_type(val.type);
@@ -295,8 +295,8 @@ Bonus* Game::create_bonus(Bonus_Def val) {
 	return ans;
 }
 
-Bonus_Slot* Game::create_bonus_slot() {
-	auto bonus_slot = new Bonus_Slot;
+BonusSlot* Game::create_bonus_slot() {
+	auto bonus_slot = new BonusSlot;
 	active_modules.insert(bonus_slot);
 
 	auto counter = create_counter();
@@ -338,7 +338,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	auto body = create_round_body(def.pos + b2Vec2{0,0}, def.angle, def.base.radius, def.base.mass);
 	body->SetLinearVelocity(def.vel);
 	body->SetAngularVelocity(def.angle_vel);
-	collision_filter.add_body(body, Collision_Filter::PROJECTILE, def.player->get_id());
+	collision_filter.add_body(body, CollisionFilter::PROJECTILE, def.player->get_id());
 	rocket->set_body(body);
 
 	// Hp
@@ -358,7 +358,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	rocket->set_rocket_brain(brain);
 
 	// Command module
-	auto command_module = new Command_Module;
+	auto command_module = new CommandModule;
 
 	// Engine
 	auto engine = create_engine(body, command_module, stamina);
@@ -374,8 +374,8 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	return rocket;
 }
 
-Rocket_Brain* Game::create_rocket_brain(Rocket_Prototype* base) {
-	auto brain = new Rocket_Brain(base->range, base->bin_search_accuracy);
+RocketBrain* Game::create_rocket_brain(Rocket_Prototype* base) {
+	auto brain = new RocketBrain(base->range, base->bin_search_accuracy);
 	rocket_brains.insert(brain);
 	return brain;
 }
@@ -384,7 +384,7 @@ Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) 
 	auto forcefield = new Forcefield();
 	forcefield->set(&physics, vertices, force);
 	forcefield->get_body()->GetFixtureList()->SetRestitution(1);
-	collision_filter.add_body(forcefield->get_body(), Collision_Filter::GHOST);
+	collision_filter.add_body(forcefield->get_body(), CollisionFilter::GHOST);
 	forcefields.insert(forcefield);
 	id_manager.set_id(forcefield);
 	return forcefield;
@@ -408,7 +408,7 @@ void Game::delete_engine(Engine* engine) {
 	delete engine;
 }
 
-void Game::delete_active_module(Active_Module* active_module) {
+void Game::delete_active_module(ActiveModule* active_module) {
 	active_modules.erase(active_module);
 	delete_counter(active_module->get_recharge_counter());
 	delete active_module;
@@ -432,7 +432,7 @@ void Game::delete_ship(Ship* ship) {
 	delete ship;
 }
 
-void Game::delete_damage_receiver(Damage_Receiver* damage_receiver) {
+void Game::delete_damage_receiver(DamageReceiver* damage_receiver) {
 	damage_receivers.erase(damage_receiver);
 	delete damage_receiver;
 }
@@ -470,7 +470,7 @@ void Game::delete_rocket(Rocket* rocket) {
 	delete_counter(rocket->get_stamina());
 	delete rocket;
 }
-void Game::delete_rocket_brain(Rocket_Brain* brain) {
+void Game::delete_rocket_brain(RocketBrain* brain) {
 	rocket_brains.erase(brain);
 	delete brain->get_command_module();
 	delete brain;
@@ -493,7 +493,7 @@ void Game::process_players() {
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
-			&& player->get_command_module()->get_command(Command_Module::RESPAWN) 
+			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
 			&& player->get_id() >= 0) { // The player is human
 			player->set_is_alive(1);
 
@@ -560,19 +560,19 @@ void Game::process_ships() {
 		}
 
 		// Bonus activating
-		if (ship->get_player()->get_command_module()->get_command(Command_Module::BONUS_ACTIVATION)) {
+		if (ship->get_player()->get_command_module()->get_command(CommandModule::BONUS_ACTIVATION)) {
 			if (ship->get_bonus_slot()) {
 				if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER)
-					event_manager.create_event(Event_Def(Event::LASER, ship->get_body()));
+					event_manager.create_event(EventDef(Event::LASER, ship->get_body()));
 				ship->get_bonus_slot()->activate();				
 			}
 		}
 
 		// Apply CHARGE
 		if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() > 0) { // Apply CHARGE
-			collision_filter.change_body(ship->get_body(), Collision_Filter::PROJECTILE);
+			collision_filter.change_body(ship->get_body(), CollisionFilter::PROJECTILE);
 			if (ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->get() < 0.05) { // TODO
-				collision_filter.change_body(ship->get_body(), Collision_Filter::STANDART);
+				collision_filter.change_body(ship->get_body(), CollisionFilter::STANDART);
 				ship->get_effects()->get_effect(Effects::Types::CHARGE)->get_counter()->set(0);
 			}
 			for (auto damage_receiver : damage_receivers) {
@@ -590,7 +590,7 @@ void Game::process_ships() {
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
-			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
+			event_manager.create_event(EventDef(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
 	}
@@ -658,14 +658,14 @@ void Game::process_active_modules() {
 }
 
 void Game::process_projectile_manager() {
-	Projectile_Def projectile_def;
+	ProjectileDef projectile_def;
 	while (projectile_manager.get_next(projectile_def)) {
 		create_projectile(projectile_def);
 	}
 }
 
 void Game::process_event_manager() {
-	Event_Def event_def;
+	EventDef event_def;
 	while (event_manager.get_next(event_def)) {
 		create_event(event_def);
 	}
@@ -698,7 +698,7 @@ void Game::process_physics() {
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
-			event_manager.create_event(Event_Def(Event::WALL_HIT, nullptr, pos));
+			event_manager.create_event(EventDef(Event::WALL_HIT, nullptr, pos));
 			//std::cout << "hit\n";
 		}
 	}
@@ -827,7 +827,7 @@ void Game::process_bonuses() {
 			if (contact_table.check(bonus->get_body(), ship->get_body())) {
 				ship->get_bonus_slot()->add_bonus(bonus->get_type());
 				bonuses_to_delete.push_back(bonus);
-				event_manager.create_event(Event_Def(Event::BONUS_PICKUP, nullptr, bonus->get_body()->GetPosition()));
+				event_manager.create_event(EventDef(Event::BONUS_PICKUP, nullptr, bonus->get_body()->GetPosition()));
 			}
 		}
 	}

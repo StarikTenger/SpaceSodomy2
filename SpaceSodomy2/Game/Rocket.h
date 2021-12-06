@@ -4,11 +4,11 @@
 #include "Engine.h"
 #include "Player.h"
 #include "Counter.h"
-#include "Damage_Receiver.h"
+#include "DamageReceiver.h"
 #include "iId.h"
-#include "Game_Objects.h"
+#include "GameObjects.h"
 
-class Rocket_Brain;
+class RocketBrain;
 
 class Rocket : public iId {
 private:
@@ -18,8 +18,8 @@ private:
 	b2Body* body = nullptr;
 	Counter* hp = nullptr;
 	Counter* stamina = nullptr;
-	Damage_Receiver* damage_receiver = nullptr;
-	Rocket_Brain* brain = nullptr;
+	DamageReceiver* damage_receiver = nullptr;
+	RocketBrain* brain = nullptr;
 	float blast_radius = 0;
 	float damage = 0;
 	float blast_force = 0;
@@ -34,8 +34,8 @@ public:
 	b2Body* get_body();
 	Counter* get_hp();
 	Counter* get_stamina();
-	Damage_Receiver* get_damage_receiver();
-	Rocket_Brain* get_rocket_brain();
+	DamageReceiver* get_damage_receiver();
+	RocketBrain* get_rocket_brain();
 	float get_blast_radius();
 	float get_damage();
 	float get_blast_force();
@@ -47,8 +47,8 @@ public:
 	void set_body(b2Body*);
 	void set_hp(Counter*);
 	void set_stamina(Counter*);
-	void set_damage_receiver(Damage_Receiver*);
-	void set_rocket_brain(Rocket_Brain*);
+	void set_damage_receiver(DamageReceiver*);
+	void set_rocket_brain(RocketBrain*);
 	void set_blast_radius(float);
 	void set_damage(float);
 	void set_blast_force(float);

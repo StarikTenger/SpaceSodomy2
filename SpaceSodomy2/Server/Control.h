@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <AuxLib/AuxLib.h>
 #include <Game\Game.h>
-#include <Network\Server_Network.h>
+#include <Network\ServerNetwork.h>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -15,7 +15,7 @@ class Control {
 private:
 	// Init game & network
 	Game game;
-	Server_Network network;
+	ServerNetwork network;
 	int delay = 20; // delay between game updates
 	int disconnect_timeout = 1000; // time for reconnection
 	int last_step_time = aux::get_milli_count(); // last step time

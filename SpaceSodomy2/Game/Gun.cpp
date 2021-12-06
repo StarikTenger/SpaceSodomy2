@@ -2,7 +2,7 @@
 #include "Gun.h"
 #include <iostream>
 
-void Gun::set_projectile_manager(Projectile_Manager* _projectile_manager) {
+void Gun::set_projectile_manager(ProjectileManager* _projectile_manager) {
 	projectile_manager = _projectile_manager;
 }
 
@@ -20,7 +20,7 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 
 void Gun::activate() {
 	// Event
-	event_manager->create_event(Event_Def(Event::SHOT, body));
+	event_manager->create_event(EventDef(Event::SHOT, body));
 
 	// Apply BERSERK
 	if (effects->get_effect(Effects::BERSERK)->get_counter()->get() > 0) {
@@ -31,7 +31,7 @@ void Gun::activate() {
 		activate_default_side_effects();
 	}
 
-	Projectile_Def projectile_def;
+	ProjectileDef projectile_def;
 
 	float vel_val = projectile_vel;
 
