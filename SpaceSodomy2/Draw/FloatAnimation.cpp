@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Float_Animation.h"
+#include "FloatAnimation.h"
 
-Float_Animation::State Float_Animation::State::operator+(const State& x) {
-	Float_Animation::State state;
+FloatAnimation::State FloatAnimation::State::operator+(const State& x) {
+	FloatAnimation::State state;
 	state.pos = pos + x.pos;
 	state.scale = scale + x.scale;
 	state.color = color + x.color;
@@ -10,8 +10,8 @@ Float_Animation::State Float_Animation::State::operator+(const State& x) {
 	return state;
 }
 
-Float_Animation::State Float_Animation::State::operator*(const float x) {
-	Float_Animation::State state;
+FloatAnimation::State FloatAnimation::State::operator*(const float x) {
+	FloatAnimation::State state;
 	state.pos = x * pos;
 	state.scale = x * scale;
 	state.color = { 
@@ -23,9 +23,9 @@ Float_Animation::State Float_Animation::State::operator*(const float x) {
 	return state;
 }
 
-Float_Animation::Float_Animation() {}
+FloatAnimation::FloatAnimation() {}
 
-Float_Animation::Float_Animation(std::string _image, State _state_begin, State _state_end, float _time, int _layer) {
+FloatAnimation::FloatAnimation(std::string _image, State _state_begin, State _state_end, float _time, int _layer) {
 	layer = _layer;
 	state_current = state_begin = _state_begin;
 	state_begin.image = _image;
@@ -33,20 +33,20 @@ Float_Animation::Float_Animation(std::string _image, State _state_begin, State _
 	time_max = _time;
 }
 
-Float_Animation::State Float_Animation::get_state_current() {
+FloatAnimation::State FloatAnimation::get_state_current() {
 	state_current.image = state_begin.image;
 	return state_current;
 }
 
-int Float_Animation::get_layer() {
+int FloatAnimation::get_layer() {
 	return layer;
 }
 
-bool Float_Animation::is_alive() {
+bool FloatAnimation::is_alive() {
 	return time_current < time_max;
 }
 
-void Float_Animation::step(float dt) {
+void FloatAnimation::step(float dt) {
 	time_current += dt;
 	float progress = time_current / time_max;
 	state_current = state_begin * (1 - progress) + state_end * progress;

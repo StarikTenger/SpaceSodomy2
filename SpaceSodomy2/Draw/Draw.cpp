@@ -27,7 +27,7 @@ void Draw::load_font(std::string name, std::string path_to_font) {
 Draw::Draw() {}
 
 void Draw::step(float dt) {
-	std::set<Float_Animation*> animations_to_delete;
+	std::set<FloatAnimation*> animations_to_delete;
 	for (auto animation : animations) {
 		animation->step(dt);
 		if (!animation->is_alive())
@@ -239,8 +239,8 @@ void Draw::text(std::string text, std::string font_name, b2Vec2 pos, int size, s
 	window->draw(drawnText);
 }
 
-void Draw::create_animation(Float_Animation animation) {
-	auto animation_ptr = new Float_Animation();
+void Draw::create_animation(FloatAnimation animation) {
+	auto animation_ptr = new FloatAnimation();
 	*animation_ptr = animation;
 	animations.insert(animation_ptr);
 } 
@@ -262,18 +262,18 @@ void Draw::fadeout_animation(std::string image_name, b2Vec2 pos,
 	float duration,
 	int layer) {
 
-	Float_Animation::State state_begin;
+	FloatAnimation::State state_begin;
 	state_begin.pos = pos;
 	state_begin.scale = b2Vec2(size.first, size.first);
 	state_begin.angle = angle.first;
 	state_begin.color = color.first;
-	Float_Animation::State state_end = state_begin;
+	FloatAnimation::State state_end = state_begin;
 	state_end.pos += aux::rotate({ shift_disp.first, shift_disp.second }, 
 		aux::random_float(0, 2, 2) * b2_pi);
 	state_end.scale = b2Vec2(size.second, size.second);
 	state_end.angle = angle.second;
 	state_end.color = color.second;
-	Float_Animation animation(image_name, state_begin, state_end, duration, layer);
+	FloatAnimation animation(image_name, state_begin, state_end, duration, layer);
 	create_animation(animation);
 }
 

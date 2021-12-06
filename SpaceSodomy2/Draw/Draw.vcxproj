@@ -157,14 +157,14 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Draw.h" />
-    <ClInclude Include="Float_Animation.h" />
+    <ClInclude Include="FloatAnimation.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="Float_Animation.cpp" />
+    <ClCompile Include="FloatAnimation.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
