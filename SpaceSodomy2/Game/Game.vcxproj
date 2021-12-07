@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Active_Module.h" />
+    <ClInclude Include="Agent.h" />
     <ClInclude Include="Bonus.h" />
     <ClInclude Include="Bonus_Manager.h" />
     <ClInclude Include="Bonus_Slot.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game_Map.h" />
     <ClInclude Include="Game_Objects.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Hull_Prototype.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Projectile_Def.h" />
     <ClInclude Include="Projectile_Manager.h" />
+    <ClInclude Include="Respawn_Manager.h" />
     <ClInclude Include="Rocket.h" />
     <ClInclude Include="Rocket_Brain.h" />
     <ClInclude Include="Rocket_Manager.h" />
@@ -194,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Active_Module.cpp" />
+    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Bonus_Manager.cpp" />
     <ClCompile Include="Bonus_Slot.cpp" />
@@ -206,6 +210,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Forcefield.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_Map.cpp" />
     <ClCompile Include="Game_Objects.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Id_Manager.cpp" />
@@ -222,6 +227,7 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Projectile_Def.cpp" />
     <ClCompile Include="Projectile_Manager.cpp" />
+    <ClCompile Include="Respawn_Manager.cpp" />
     <ClCompile Include="Rocket.cpp" />
     <ClCompile Include="Rocket_Brain.cpp" />
     <ClCompile Include="Rocket_Manager.cpp" />

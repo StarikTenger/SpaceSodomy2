@@ -5,7 +5,7 @@
 
 // Projectile definition
 struct Projectile_Def {
-	Player* player = nullptr;
+	Combatant* player = nullptr;
 	b2Vec2 pos;
 	b2Vec2 vel;
 	float angle = 0.f;

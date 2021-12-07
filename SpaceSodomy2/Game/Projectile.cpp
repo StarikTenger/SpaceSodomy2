@@ -8,7 +8,7 @@ b2Body* Projectile::get_body() {
 	return body;
 }
 
-Player* Projectile::get_player() {
+Combatant* Projectile::get_combatant() {
 	return player;
 }
 
@@ -33,7 +33,7 @@ void Projectile::set_body(b2Body* val) {
 	body = val;
 }
 
-void Projectile::set_player(Player* val) {
+void Projectile::set_combatant(Combatant* val) {
 	player = val;
 }
 

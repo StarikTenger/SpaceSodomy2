@@ -21,6 +21,7 @@
 #include "Game_Objects.h"
 #include "Rocket_Brain.h"
 #include "Forcefield.h"
+#include "Respawn_Manager.h"
 
 
 class Game {
@@ -42,7 +43,7 @@ protected:
 	std::set<Command_Module*> command_modules;
 	
 	std::set<Active_Module*> active_modules;
-	std::set<Combatant*> combatants;
+	//std::set<Combatant*> combatants;
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
 	std::set<Damage_Receiver*> damage_receivers;
@@ -54,8 +55,7 @@ protected:
 	std::set<Forcefield*> forcefields;
 	
 	// Walls
-	std::set<Wall*> walls;
-	b2Vec2 lower_left_corner, upper_right_corner;
+	Game_Map walls;
 	Combatant* wall_combatant = nullptr;
 
 	// Managers
@@ -89,13 +89,13 @@ protected:
 
 	// Create functions
 	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_");
-	Combatant*       create_combatant(int id, int team_id,  sf::Color color = {}, std::string name = "_");
+	//Combatant*       create_combatant(int id, int team_id,  sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	Command_Module*  create_command_module();
 	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr, Effects* = nullptr);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
-	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
+	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Combatant* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5, int type = Wall::STANDART);
 	Projectile*      create_projectile(Projectile_Def);
@@ -110,7 +110,7 @@ protected:
 
 	// Delete functions
 	void delete_body(b2Body*);
-	void delete_wall(Wall*);
+	void delete_wall(Wall*); // WARNING: Clear the map after calling to delete the wall from Game_Map
 	void delete_projectile(Projectile*);
 	void delete_engine(Engine*);
 	void delete_active_module(Active_Module*);
@@ -123,7 +123,7 @@ protected:
 	void delete_rocket(Rocket*);
 	void delete_rocket_brain(Rocket_Brain*);
 	void delete_forcefield(Forcefield*);
-	void delete_combatant(Combatant*);
+	//void delete_combatant(Combatant*);
 
 	 // Processing functions
 	void process_players();

@@ -14,7 +14,7 @@ void Game_Objects::set_projectiles(std::set<Projectile*>* val) {
 void Game_Objects::set_bonuses(std::set<Bonus*>* val) {
     bonuses = val;
 }
-void Game_Objects::set_walls(std::set<Wall*>* val) {
+void Game_Objects::set_walls(Game_Map* val) {
     walls = val;
 }
 void Game_Objects::set_damage_receivers(std::set<Damage_Receiver*>* val) {
@@ -32,7 +32,7 @@ std::set<Projectile*>* Game_Objects::get_projectiles() {
 std::set<Bonus*>* Game_Objects::get_bonuses() {
     return bonuses;
 }
-std::set<Wall*>* Game_Objects::get_walls() {
+Game_Map* Game_Objects::get_walls() {
     return walls;
 }
 std::set<Damage_Receiver*>* Game_Objects::get_damage_receivers() {

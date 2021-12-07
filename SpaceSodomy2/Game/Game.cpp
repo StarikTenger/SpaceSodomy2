@@ -7,21 +7,7 @@
 #include "Game.h"
 
 b2Vec2 Game::get_rand_respawn_pos() {
-	bool acceptable = 0;
-	b2Vec2 respawn_point;
-	while (!acceptable) {
-		acceptable = true;
-		respawn_point = b2Vec2(aux::random_int(lower_left_corner.x, upper_right_corner.x) + aux::random_float(-1, 1, 4),
-			aux::random_int(lower_left_corner.y, upper_right_corner.y) + aux::random_float(-1, 1, 4));
-		//respawn_point = b2Vec2(0, 0);
-		for (auto wall : walls) {
-			acceptable = !aux::is_in_polygon(respawn_point, wall->get_vertices(), wall->get_orientation());
-			acceptable &= (aux::dist_from_polygon(respawn_point, wall->get_vertices()) > 1);      // TODO
-			if (!acceptable)
-				break;
-		}
-	}
-	return respawn_point;
+	return walls.get_random_coord();
 }
 
 Game::Game() {
@@ -36,7 +22,7 @@ Game::Game() {
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
 
-	wall_combatant = create_combatant(-1, -1, sf::Color::White, "_");
+	wall_combatant = new Combatant(-1, -1, sf::Color::White, "_");
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -95,19 +81,19 @@ Player* Game::create_player(int id, int team_id,  sf::Color color, std::string n
 	player->set_team_id(team_id);
 
 	players[player->get_id()] = player;
-	combatants.insert(player);
+	//combatants.insert(player);
 	return player;
 }
 
-Combatant* Game::create_combatant(int id, int team_id, sf::Color color, std::string name) {
-	auto combatant = new Combatant();
-	combatant->set_color(color);
-	combatant->set_id(id);
-	combatant->set_team_id(team_id);
-	combatant->set_name(name);
-	combatants.insert(combatant);
-	return combatant;
-}
+//Combatant* Game::create_combatant(int id, int team_id, sf::Color color, std::string name) {
+//	auto combatant = new Combatant();
+//	combatant->set_color(color);
+//	combatant->set_id(id);
+//	combatant->set_team_id(team_id);
+//	combatant->set_name(name);
+//	combatants.insert(combatant);
+//	return combatant;
+//}
 
 Command_Module* Game::create_command_module() {
 	auto command_module = new Command_Module();
@@ -132,10 +118,10 @@ Counter* Game::create_counter(float val, float change_vel) {
 	return counter;
 }
 
-Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Player* player, Effects* effs) {
+Damage_Receiver* Game::create_damage_receiver(b2Body* body, Counter* hp, Combatant* comb, Effects* effs) {
 	auto damage_receiver = new Damage_Receiver(body, hp);
 	damage_receiver->set_imm_frames(params["imm_frames"]);
-	damage_receiver->set_combatant(player);
+	damage_receiver->set_combatant(comb);
 	damage_receiver->set_effects(effs);
 	damage_receivers.insert(damage_receiver);
 	id_manager.set_id(damage_receiver);
@@ -253,7 +239,7 @@ Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float res
 	else {
 		collision_filter.add_body(wall->get_body(), Collision_Filter::WALL);
 	}
-	walls.insert(wall);
+	walls.insert_wall(wall);
 	id_manager.set_id(wall);
 	return wall;
 }
@@ -267,10 +253,10 @@ Projectile* Game::create_projectile(Projectile_Def projectile_def) {
 	// Creating projectile
 	auto projectile = new Projectile();
 	projectile->set_body(body);
-	projectile->set_player(projectile_def.player);
+	projectile->set_combatant(projectile_def.player);
 	projectile->set_damage(projectile_def.damage);
 	projectile->set_hp(create_counter(projectile_def.hp, 0));
-	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_player(), nullptr));
+	projectile->set_damage_receiver(create_damage_receiver(body, projectile->get_hp(), projectile->get_combatant(), nullptr));
 	projectile->set_effects_prototype(projectile_def.effects_prototype);
 
 	// Adding to vectors
@@ -491,7 +477,6 @@ void Game::delete_rocket_brain(Rocket_Brain* brain) {
 
 void Game::delete_wall(Wall* wall) {
 	delete_body(wall->get_body());
-	walls.erase(wall);
 	delete wall;
 }
 void Game::delete_forcefield(Forcefield* field) {
@@ -500,10 +485,10 @@ void Game::delete_forcefield(Forcefield* field) {
 	delete field;
 }
 
-void Game::delete_combatant(Combatant* comb) {
-	combatants.erase(comb);
-	delete comb;
-}
+//void Game::delete_combatant(Combatant* comb) {
+//	combatants.erase(comb);
+//	delete comb;
+//}
 
 
 void Game::process_players() {
@@ -565,7 +550,8 @@ void Game::process_ships() {
 		}
 		
 		// Spiked walls
-		for (auto wall : walls) {
+		std::set<Wall*>& wall_ref = *walls.get_walls();
+		for (auto wall : wall_ref) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
 				if (wall->get_type() == Wall::SPIKED && 
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
@@ -614,6 +600,9 @@ void Game::process_ships() {
 					ship->get_damage_receiver()->get_last_hit()->rm_kill();
 				}
 			}
+			else if (params["suicide_decreases_kills"] > 0.01) {
+				ship->get_player()->rm_kill();
+			}
 			event_manager.create_event(Event_Def(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
@@ -635,12 +624,15 @@ void Game::process_projectiles() {
 		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body())) {
-				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
-				damage_receiver->apply_effects(projectile->get_effects_def());
+				if (projectile->get_combatant()->is_deals_damage_to(damage_receiver->get_combatant())) {
+					damage_receiver->damage(projectile->get_damage(), projectile->get_combatant());
+					damage_receiver->apply_effects(projectile->get_effects_def());
+				}
 			}
 		}
 		// Checking for wall collision
-		for (auto wall : walls) {
+		std::set<Wall*>& wall_ref = *walls.get_walls();
+		for (auto wall : wall_ref) {
 			if (contact_table.check(projectile->get_body(), wall->get_body())) {
 				projectiles_to_delete.insert(projectile);
 				do_break = true;
@@ -653,7 +645,7 @@ void Game::process_projectiles() {
 		}
 		// Checking for ship collision
 		for (auto ship : ships) {
-			if (projectile->get_player()->get_id() != ship->get_player()->get_id() &&
+			if (projectile->get_combatant()->get_id() != ship->get_player()->get_id() &&
 				contact_table.check(projectile->get_body(), ship->get_body())) {
 				projectiles_to_delete.insert(projectile);
 				do_break = true;
@@ -752,7 +744,8 @@ void Game::process_rockets() {
 	std::vector<Rocket*> rockets_to_delete;
 	for (auto rocket : rockets) {
 		bool do_break = false;
-		for (auto wall : walls) {
+		std::set<Wall*>& wall_ref = *walls.get_walls();
+		for (auto wall : wall_ref) {
 			if (contact_table.check(rocket->get_body(), wall->get_body())) {
 				rockets_to_delete.push_back(rocket);
 				do_break = true;
@@ -822,24 +815,7 @@ void Game::process_forcefields() {
 }
 
 b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
-	b2Vec2 closest_intersection;
-	float closest_distance = 1e9;
-	b2Vec2 finish = start + 1e3 * aux::angle_to_vec(angle);
-	for (auto wall : walls) {
-		auto polygon = wall->get_vertices();
-		for (int i = 0; i < polygon.size(); i++) {
-			int j = (i + 1) % polygon.size();
-			auto intersection = aux::segment_intersection({ start, finish }, {polygon[i], polygon[j]});
-			if (intersection.first) {
-				float distance = b2Distance(start, intersection.second);
-				if (distance < closest_distance) {
-					closest_distance = distance;
-					closest_intersection = intersection.second;
-				}
-			}
-		}
-	}
-	return closest_intersection;
+	return walls.get_beam_intersection(start, angle);
 }
 
 void Game::process_bonuses() {
@@ -909,7 +885,7 @@ void Game::clear() {
 	// Clear players
 	for (auto player : players) {
 		delete player.second;
-		combatants.erase(player.second);
+		//combatants.erase(player.second);
 	}
 	players = {};
 	// Clear command_modules
@@ -952,11 +928,6 @@ void Game::clear() {
 		delete rocket_brain;
 	}
 	rocket_brains = {};
-	for (auto combatant : combatants) {
-		delete combatant;
-	}
-	combatants = {};
-
 
 	// Clear physics
 	b2World physics = b2World(b2Vec2_zero);
@@ -964,14 +935,12 @@ void Game::clear() {
 
 void Game::wipe_map() {
 	clear();
-	for (auto wall : walls) {
-		delete wall;
-	}
-	walls = {};
+	walls.clear();
 	for (auto field : forcefields) {
 		delete field;
 	}
 	forcefields = {};
+	delete wall_combatant;
 
 }
 
@@ -1069,31 +1038,9 @@ bool Game::load_map(std::string path) {
 				return false;
 			}
 			// Wall loaded successfully
-			create_wall(points, orientation, restitution, type)->set_id(wall_id);
-
-			if (orientation == Wall::INNER) {
-				for (auto point : points) {
-					if (!corner_init) {
-						lower_left_corner = point;
-						upper_right_corner = point;
-						corner_init = 1;
-					}
-					else {
-						lower_left_corner.x = std::min(
-							lower_left_corner.x,
-							point.x);
-						lower_left_corner.y = std::min(
-							lower_left_corner.y,
-							point.y);
-						upper_right_corner.x = std::max(
-							upper_right_corner.x,
-							point.x);
-						upper_right_corner.y = std::max(
-							upper_right_corner.y,
-							point.y);
-					}
-				}
-			}
+            auto wall = create_wall(points, orientation, restitution, type);
+			wall->set_id(wall_id);
+			walls.insert_wall(wall);
 
 			wall_id++;
 			continue;
@@ -1477,7 +1424,7 @@ std::string Game::encode() {
 	// Efficient projectiles
 	std::map<int, std::string> player_packs;
 	for (auto projectile : projectiles) {
-		int player_id = projectile->get_player()->get_id();
+		int player_id = projectile->get_combatant()->get_id();
 		// Id
 		player_packs[player_id] += aux::write_short(projectile->get_id() % 5000);
 		// Pos

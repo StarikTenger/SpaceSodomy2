@@ -196,15 +196,9 @@ Blink_Module::Blink_Module(Module_Prototype* base) : Module(base) {
 	distance = base->params["distance"];
 }
 void Blink_Module::activate() {
-	std::set<Wall*>* walls = environment.get_walls();
 	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + distance * aux::angle_to_vec(body->GetAngle());
-	for (auto wall = walls->begin(); wall != walls->end(); wall++) {
-		Wall* _wall = *wall;
-		if (_wall->get_type() == Wall::SPIKED || _wall->get_type() == Wall::STANDART) {
-			if (aux::is_in_polygon(newpos, _wall->get_vertices(), _wall->get_orientation())) {
-				return;
-			}
-		}
+	if (!environment.get_walls()->is_coordinate_allowed(newpos)) {
+		return;
 	}
 	// Event
 	event_manager->create_event(Event_Def(Event::MODULE_BLINK, nullptr, body->GetPosition()));

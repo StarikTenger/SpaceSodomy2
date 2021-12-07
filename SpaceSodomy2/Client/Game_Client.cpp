@@ -99,7 +99,8 @@ void Game_Client::display(int id) {
 
 	// Walls
 	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
-	for (auto wall : walls) {
+	std::set<Wall*>& wall_ref = *walls.get_walls();
+	for (auto wall : wall_ref) {
 		auto color = sf::Color(0, 151, 255);
 		if (wall->get_type() == Wall::SPIKED || wall->get_type() == Wall::GHOST) {
 			color = sf::Color(255, 255, 255);
@@ -335,7 +336,7 @@ void Game_Client::display(int id) {
 	// Projectiles
 	for (auto projectile : projectiles) {
 		float radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius * 2 * 2;
-		auto color = projectile->get_player()->get_color();
+		auto color = projectile->get_combatant()->get_color();
 		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius }, 
 			projectile->get_body()->GetAngle(), color);
 		radius *= 0.8;
@@ -413,7 +414,7 @@ void Game_Client::update_state(std::string source) {
 	for (auto projectile : projectiles) {
 		destroyed_objects[projectile->get_id()].type = Disappear_Animation::PROJECTILE;
 		destroyed_objects[projectile->get_id()].pos = projectile->get_body()->GetPosition();
-		destroyed_objects[projectile->get_id()].color = projectile->get_player()->get_color();
+		destroyed_objects[projectile->get_id()].color = projectile->get_combatant()->get_color();
 		destroyed_objects[projectile->get_id()].radius = projectile->get_body()->GetFixtureList()->GetShape()->m_radius;
 	}
 	for (auto rocket : rockets) {
@@ -972,7 +973,8 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 	draw->load_texture(global_wall_name,
 		"textures/walls/" + global_wall_name + ".png");
 
-	for (auto wall : walls) {
+	std::set<Wall*>& wall_ref = *walls.get_walls();
+	for (auto wall : wall_ref) {
 		wall->init_drawing(wall_width);
 		if (origin_pos.x > wall->get_origin_pos().x) {
 			origin_pos.x = wall->get_origin_pos().x;
@@ -993,7 +995,9 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 		sf::RenderTexture base;
 		base.create((end_pos.x - origin_pos.x) * scale.x, (end_pos.y - origin_pos.y) * scale.y);
 		base.clear(sf::Color::Transparent);
-		for (auto wall : walls) {
+
+		std::set<Wall*>& wall_ref = *walls.get_walls();
+		for (auto wall : wall_ref) {
 			std::cout << "making wall with id " << wall->get_id() << "\n";
 			auto temp = make_polygonal_texture(wall, scale, wall_name, wall_width, overlay_color);
 			draw->overlay_texture(base, temp, sf::Color::White,

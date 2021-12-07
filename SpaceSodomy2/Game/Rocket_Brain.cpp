@@ -42,12 +42,12 @@ void Rocket_Brain::set_game_objects(Game_Objects val) {
 }
 void Rocket_Brain::step(float dt) {
     std::set<Ship*>& ships = *environment.get_ships();
-    command_module->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+    get_command_module()->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
         if (is_targetable(ship)) {
-            command_module->set_command(Command_Module::ROCKET_ANGLE, 1);
-            command_module->set_rocket_angle(calculate_dir(ship->get_body()));
+            get_command_module()->set_command(Command_Module::ROCKET_ANGLE, 1);
+            get_command_module()->set_rocket_angle(calculate_dir(ship->get_body()));
             break;
         }
     }
@@ -59,14 +59,8 @@ bool Rocket_Brain::is_targetable(Ship* ship) {
         && ship->is_visible();
 }
 
-void Rocket_Brain::set_command_module(Command_Module* val) {
-    command_module = val;
-}
+
 Rocket_Brain::Rocket_Brain(float range_, int bin_search_accuracy_) {
     range = range_;
     bin_search_accuracy = bin_search_accuracy_;
-}
-
-Command_Module* Rocket_Brain::get_command_module() {
-    return command_module;
 }

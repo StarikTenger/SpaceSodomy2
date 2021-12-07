@@ -66,9 +66,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Ship.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
@@ -147,6 +144,18 @@
     <ClInclude Include="Forcefield.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="Agent.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="Respawn_Manager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_Map.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -162,9 +171,6 @@
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Ship.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
@@ -240,6 +246,18 @@
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Forcefield.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="Agent.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="Respawn_Manager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_Map.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>

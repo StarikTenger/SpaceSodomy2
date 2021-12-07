@@ -1,12 +1,12 @@
 #pragma once
 #include "Rocket.h"
+#include "Agent.h"
 
 class Rocket;
 
-class Rocket_Brain {
+class Rocket_Brain : public Agent {
 private:
     Rocket* rocket = nullptr;
-    Command_Module* command_module = nullptr;
     Game_Objects environment;
     float range;
     int bin_search_accuracy;
@@ -25,9 +25,7 @@ public:
 
     void set_rocket(Rocket*);
     void set_game_objects(Game_Objects);
-    void set_command_module(Command_Module*);
     void step(float dt);
     bool is_targetable(Ship* ship);
-    Command_Module* get_command_module();
 };
 
