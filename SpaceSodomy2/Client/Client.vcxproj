@@ -158,6 +158,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Game_Client.cpp" />
     <ClCompile Include="HUD_Processing.cpp" />
+    <ClCompile Include="KeybindingBox.cpp" />
     <ClCompile Include="Loading_Screen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu_Processing.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="Game_Client.h" />
     <ClInclude Include="HUD_Processing.h" />
+    <ClInclude Include="KeybindingBox.h" />
     <ClInclude Include="Loading_Screen.h" />
     <ClInclude Include="Menu_Processing.h" />
     <ClInclude Include="Replay.h" />

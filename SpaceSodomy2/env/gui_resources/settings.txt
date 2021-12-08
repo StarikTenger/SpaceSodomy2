@@ -1,0 +1,134 @@
+Renderer.1 {
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorDown = #EBEBEB;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorDown = black;
+    BorderColorFocused = #1E1EB4;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    TextColorDown = black;
+    TextColorHover = black;
+    Texture = None;
+    TextureDisabled = None;
+    TextureDown = None;
+    TextureDownFocused = None;
+    TextureDownHover = None;
+    TextureFocused = None;
+    TextureHover = None;
+}
+
+Renderer.2 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
+    TextureBackground = None;
+}
+
+Renderer.3 {
+    BackgroundColor = white;
+    BorderColor = black;
+    TextureBackground = None;
+}
+
+Renderer.4 {
+    BorderColor = #3C3C3C;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    TextureThumb = None;
+    TextureThumbHover = None;
+    TextureTrack = None;
+    TextureTrackHover = None;
+    ThumbColor = #F5F5F5;
+    ThumbColorHover = white;
+    TrackColor = #F5F5F5;
+    TrackColorHover = white;
+}
+
+Panel.Panel1 {
+    Position = (0, 10%);
+    Size = (25%, 80%);
+
+    Renderer {
+        BackgroundColor = white;
+        BorderColor = black;
+        TextureBackground = None;
+    }
+
+    Button.Audio {
+        Renderer = &1;
+        Size = (100%, 10%);
+        Text = Audio;
+        TextSize = 13;
+    }
+
+    Button.Control {
+        Position = (0, 10%);
+        Renderer = &1;
+        Size = (100%, 10%);
+        Text = Control;
+        TextSize = 13;
+    }
+}
+
+ScrollablePanel.ControlPanel {
+    ContentSize = (0, 0);
+    Position = (25%, 10%);
+    Renderer = &3;
+    Size = (50%, 80%);
+}
+
+ScrollablePanel.AudioPanel {
+    ContentSize = (0, 0);
+    Position = (25%, 10%);
+    Renderer = &3;
+    Size = (50%, 80%);
+    Visible = false;
+
+    Label.Label1 {
+        HorizontalAlignment = Center;
+        Position = (5%, 5%);
+        Renderer = &2;
+        Size = (30%, 18);
+        Text = "Music volume";
+        TextSize = 13;
+    }
+
+    Slider.MusicSlider {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 100;
+        Minimum = 0;
+        Position = (40%, 5%);
+        Renderer = &4;
+        Size = (55%, 16);
+        Step = 1;
+        Value = 100;
+    }
+
+    Label.Label2 {
+        HorizontalAlignment = Center;
+        Position = (5%, 15%);
+        Renderer = &2;
+        Size = (30%, 18);
+        Text = "Sound volume";
+        TextSize = 13;
+    }
+
+    Slider.SoundSlider {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 100;
+        Minimum = 0;
+        Position = (40%, 15%);
+        Renderer = &4;
+        Size = (55%, 16);
+        Step = 1;
+        Value = 100;
+    }
+}

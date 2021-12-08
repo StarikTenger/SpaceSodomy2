@@ -173,6 +173,7 @@ void Control::step() {
 	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
+		menu_processing.save_keys("keys.conf", menu_processing.keys_menu_vec);
 		load_keys("keys.conf");
 	}
 	// Receiving
@@ -232,6 +233,8 @@ void Control::step() {
 	}
 
 	if (reload) {
+		menu_processing.save_keys("keys.conf", menu_processing.keys_menu_vec);
+		load_keys("keys.conf");
 		load_config("client_config.conf");
 		reload = 0;
 	}

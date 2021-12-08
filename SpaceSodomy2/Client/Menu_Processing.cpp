@@ -216,8 +216,10 @@ void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::s
 	}
 	fout.close();
 }
-void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, Menu* menu,
+void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui,
 	b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size) {
+	int k = 0;
+	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -227,21 +229,49 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			if (j == 0) {
-				menu->add_constant_text(current_id, cur_name,
-					b2Vec2(pos.x - name_indent, pos.y + indent.y * i), 0, character_size, sf::Color::White,
-					2, mouse_pos, keyboard);
-				current_id++;
+				auto label = tgui::Label::create();
+				label->setText(cur_name);
+				auto size = tgui::Layout2d(
+					tgui::Layout("30%"),
+					tgui::Layout(20)
+				);
+				label->setSize(size);
+				auto layout = tgui::Layout2d(
+					tgui::Layout(std::to_string(5) + "%"),
+					tgui::Layout(std::to_string(5 + 25 * i))
+				);
+				label->setPosition(layout);
+				control_panel->add(label);
 			}
-			if (j == keys->operator[](i).size()) {
+			if (j == keys->operator[](i).size()) 
 				keys->operator[](i).push_back(new std::string(cur));
-				
-				keyboard_fields[current_id] = menu->add_keyboard_field(current_id, cur, "TextField", b2Vec2(pos.x + indent.x * (j + 1), pos.y + indent.y * i),
-					0, character_size, sf::Color::White, 1, mouse_pos, keyboard);
-				current_id++;
-			}
 			else
 				*(keys->operator[](i)[j]) = cur;
-			id_to_keyit[current_id - 1] = {i, j};
+			auto keybinding = KeybindingBox::create();
+			keybinding->setText(cur);
+			auto size = tgui::Layout2d(
+				tgui::Layout("15%"),
+				tgui::Layout(20)
+			);
+			keybinding->setSize(size);
+			auto layout = tgui::Layout2d(
+				tgui::Layout(std::to_string(40 + j * 20) + "%"),
+				tgui::Layout(std::to_string(5 + 25 * i))
+			);
+			keybinding->setPosition(layout);
+			control_panel->add(keybinding);
+			std::string name = "keybinding" + std::to_string(k);
+			keybinding->setWidgetName(name);
+			keybinding->keys = keys;
+			keybinding->reload = reload;
+			k++;
+			keybinding->onKeyPressed([=, &gui]() {
+				auto key = gui.get<KeybindingBox>(name)->keys->operator[](i)[j];
+				auto new_key = gui.get<KeybindingBox>(name)->getText().toStdString();
+				*key = new_key;
+				auto _reload = gui.get<KeybindingBox>(name)->reload;
+				*_reload = true;
+			});
 			config >> cur;
 		}
 	}
@@ -578,14 +608,30 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 }
 
 void Menu_Processing::init_tgui(tgui::Gui& gui) {
+	auto load_widgets = [&gui](std::string file_name) {
+		auto ans = tgui::Group::create();
+		ans->loadWidgetsFromFile(file_name);
+		ans->setVisible(false);
+		gui.add(ans);
+		ans->setWidgetName(file_name);
+		return ans;
+	};
+	auto close_groups = [](tgui::Gui& gui) {
+		auto wid = gui.getWidgets();
+		for (int i = 0; i < wid.size(); i++) {
+			wid[i]->setVisible(false);
+		}
+	};
+	auto main_menu = load_widgets("main_menu.txt");
+	auto settings_menu = load_widgets("settings.txt");
 	tgui::Button::Ptr play = gui.get<tgui::Button>("Play");
-	play->onClick([&gui] {
-		gui.removeAllWidgets();
+	play->onClick([&gui, &close_groups] {
+		close_groups(gui);
 	});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
-	settings->onClick([&gui] {
-		gui.removeAllWidgets();
-		gui.loadWidgetsFromFile("settings.txt");
+	settings->onClick([&gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
 }
 
@@ -647,7 +693,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	keys_menu.set_events(&events);
 	menus.push_back(&keys_menu);
 	init_menu("menu_configs/keys.conf", &keys_menu);
-	load_keys("keys.conf", &keys_menu_vec, &keys_menu, { 0, -350 }, -30, { 100, 50 }, 20);
+	load_keys("keys.conf", &keys_menu_vec, gui, { 0, -350 }, -30, { 100, 50 }, 20);
 
 	name_to_id["ApplySound"] = current_id++;
 	name_to_id["Apply"] = current_id++;
