@@ -358,15 +358,17 @@ void HUD_Processing::step() {
 	if (game->is_player_exist(player_network->get_id()) &&
 		!game->is_player_alive((player_network->get_id()))) {
 		auto player_data = game->get_player_info(player_network->get_id());
-		std::cout << player_data.time_to_respawn << '\n';
+		//std::cout << player_data.time_to_respawn << '\n';
 		time_to_respawn.set_text("Time to respawn: " +
 			std::to_string(int(player_data.time_to_respawn)));
 		float mod = abs(sin(float(aux::get_milli_count()) / 500));
 		press_r_to_respawn.set_text_color(sf::Color(255, 255, 255, 255 - 254 * mod));
-		if (game->player_by_id(player_data.time_to_respawn > 0))
+		if ((player_data.time_to_respawn > 0)) {
 			time_to_respawn.step();
-		else
+		}
+		else {
 			press_r_to_respawn.step();
+		}
 	}
 	else {
 		if (game->is_player_exist(player_network->get_id())) {
