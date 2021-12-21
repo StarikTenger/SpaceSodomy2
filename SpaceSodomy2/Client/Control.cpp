@@ -206,7 +206,7 @@ void Control::step() {
 		// Music
 		if ((game.get_ship(network.get_id()) != nullptr) &&
 			(game.get_ship(network.get_id())->get_player() != nullptr) &&
-			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
+			(game.is_player_alive(game.get_ship(network.get_id())->get_player()->get_id()))) {
 			if (respawned)
 			{
 				audio.stop_music(track);

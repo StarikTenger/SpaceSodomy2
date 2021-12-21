@@ -462,7 +462,8 @@ void Game_Client::update_state(std::string source) {
 		}
 		if (symbol == 'W') {
 			int kills = aux::read_short(stream);
-			wall_combatant = create_player(-1, -1, sf::Color::White, "WALL");
+			delete wall_combatant;
+			wall_combatant = new Combatant(-1, -1, sf::Color::White, "WALL");
 			wall_combatant->set_kills(kills);
 		}
 		// Player
@@ -501,8 +502,8 @@ void Game_Client::update_state(std::string source) {
 			//std::cout << gun << "\n";
 			player->set_deaths(deaths);
 			player->set_kills(kills);
-			player->set_is_alive(is_alive);
-			player->get_time_to_respawn()->set(float(time_to_respawn));
+			respawn_manager.set_agent_is_alive(player, is_alive);
+			respawn_manager.get_agent_timer(player)->set((float)(time_to_respawn));
 			player->set_ping(aux::get_milli_count() - connection_time);
 			//std::cout << aux::get_milli_count() - connection_time << "\n";
 		}

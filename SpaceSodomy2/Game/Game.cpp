@@ -21,6 +21,7 @@ Game::Game() {
 	game_objects.set_projectiles(&projectiles);
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
+	respawn_manager.set_game_map(&walls);
 
 	wall_combatant = new Combatant(-1, -1, sf::Color::White, "_");
 }
@@ -75,7 +76,12 @@ Player* Game::create_player(int id, int team_id,  sf::Color color, std::string n
 	player->set_color(color);
 	player->set_name(name);
 	player->set_command_module(create_command_module());
-	player->set_time_to_respawn(create_counter(0, -1));
+	Counter* timer = create_counter();
+	// TODO: unhardcode
+	timer->set(3);
+	timer->set_max(3);
+	timer->set_change_vel(-1);
+	respawn_manager.add_agent(player, timer, Respawn_Manager::RANDOM);
 	// Id
 	player->set_id(id);
 	player->set_team_id(team_id);
@@ -426,7 +432,7 @@ void Game::delete_ship(Ship* ship) {
 	delete_active_module(ship->get_left_module());
 	delete_active_module(ship->get_right_module());
 	// Player management
-	ship->get_player()->set_is_alive(0);
+	respawn_manager.kill_agent(ship->get_player());
 	ships.erase(ship);
 	delete ship;
 }
@@ -495,13 +501,10 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
-		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
-			&& player->get_command_module()->get_command(Command_Module::RESPAWN) 
-			&& player->get_id() >= 0) { // TODO: The player is human
-			player->set_is_alive(1);
-
+		if (respawn_manager.is_agent_respawn(player)
+			&& player->get_command_module()->get_command(Command_Module::RESPAWN)) {
 			// creating ship
-			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			auto ship = create_ship(player, respawn_manager.respawn_agent(player), aux::random_float(0, 2 * b2_pi, 3));
 			//auto_damage = 0;
 		}
 	}
@@ -1369,9 +1372,9 @@ std::string Game::encode() {
 			message += aux::write_short(player.second->get_deaths());
 			message += aux::write_short(player.second->get_kills());
 			// Time to respawn
-			message += aux::write_int8(int(player.second->get_time_to_respawn()->get() + 0.99));
+			message += aux::write_int8(int(respawn_manager.get_agent_timer(player.second)->get() + 0.99));
 			// Is alive
-			message += aux::write_int8(int(player.second->get_is_alive()));
+			message += aux::write_int8(int(respawn_manager.is_agent_alive(player.second)));
 			// Last connection time
 			message += aux::write_int(connection_time->operator[](player.first));
 		}
@@ -1494,15 +1497,36 @@ void Game::new_player(int id, int team_id, sf::Color color, std::string name, st
 	player->set_left_module_name(left_module);
 	player->set_right_module_name(right_module);
 	players[id] = player;
-	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(0);
+	respawn_manager.get_agent_timer(player)->set(0);
+}
+
+bool Game::is_player_exist(int id) {
+	return players.count(id);
+}
+bool Game::is_player_alive(int id) {
+	if (is_player_exist(id)) {
+		return respawn_manager.is_agent_alive(players[id]);
+	}
+	return false;
+}
+Game::Player_Info Game::get_player_info(int id) {
+	return Player_Info(
+		{
+			players[id]->get_gun_name(),
+			players[id]->get_hull_name(),
+			players[id]->get_left_module_name(),
+			players[id]->get_right_module_name(),
+			respawn_manager.get_agent_timer(players[id])->get(),
+			respawn_manager.is_agent_alive(players[id]),
+			players[id]->get_ping(),
+		}
+	);
 }
 
 Player* Game::player_by_id(int id) {
-	if (!players.count(id))
-		return nullptr;
 	return players[id];
 }
+
 int Game::count_players() {
 	int res = 0;
 	for (auto player : players) {

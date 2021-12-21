@@ -3,30 +3,24 @@
 
 class Player : public Agent {
 private:
-	bool is_alive = 1;
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
-	Counter* time_to_respawn = nullptr;
 	int ping = 0;
 public:
 	Player() = default;
 	Player(int id_, int team_id_, sf::Color color_, std::string name_);
 
-	bool get_is_alive();
 	std::string get_gun_name();
 	std::string get_hull_name();
 	std::string get_left_module_name();
 	std::string get_right_module_name();
-	Counter* get_time_to_respawn();
 	int get_ping();
 	
-	void set_is_alive(bool);
 	void set_gun_name(std::string val);
 	void set_hull_name(std::string val);
 	void set_left_module_name(std::string val);
 	void set_right_module_name(std::string val);
-	void set_time_to_respawn(Counter*);
 	void set_ping(int ping_);
 };

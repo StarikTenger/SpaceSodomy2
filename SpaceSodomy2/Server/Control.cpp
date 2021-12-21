@@ -96,7 +96,7 @@ void Control::receive() {
 		std::string command_string;
 		message >> command_string;
 		game.player_by_id(id_)->set_name(name_);
-		if (!game.player_by_id(id_)->get_is_alive()) {
+		if (!game.is_player_alive(id_)) {
 			game.player_by_id(id_)->set_gun_name(gun_name);
 			game.player_by_id(id_)->set_hull_name(hull_name);
 			game.player_by_id(id_)->set_left_module_name(left_module);

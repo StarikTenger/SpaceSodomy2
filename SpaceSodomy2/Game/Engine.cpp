@@ -73,7 +73,7 @@ void Engine::step(float _dt) {
 	// Command processing
 	if ((command_module->get_command(Command_Module::ROCKET_ANGLE)) ) {
 		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
-		std::cout << "tell\n";
+		//std::cout << "tell\n";
 	}
 	if (command_module->get_command(Command_Module::STABILIZE_ROTATION))
 		stabilize_rotation();
@@ -91,6 +91,7 @@ void Engine::step(float _dt) {
 		apply_force_angular(1);
 	// Boost consumption
 	if (stamina->get() > 0 && is_linear_force_used && command_module->get_command(Command_Module::BOOST)) {
+		//std::cout << "BOOST\n";
 		stamina->modify(-dt * boost_stamina_consumption);
 	}
 }

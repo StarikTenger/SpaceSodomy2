@@ -260,8 +260,8 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	gun_image.set_scale({ 78, 78 });
 	gun_image.set_color(sf::Color::White);
 	gun_image.set_pos({ -380, -105 });
-	if (game->player_by_id(player_network->get_id()) != nullptr)
-		gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
+	if (game->is_player_exist(player_network->get_id()))
+		gun_image.set_texture_name((game->get_player_info(player_network->get_id())).gun_name + "-gun");
 	else
 		gun_image.set_texture_name("bonusEmpty");
 
@@ -355,21 +355,24 @@ void HUD_Processing::step() {
 		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
 		//gun_image.set_texture_name(game->get_ship(player_network->get_id())->get_gun()->get_id());
 	}
-	if (game->player_by_id(player_network->get_id()) != nullptr &&
-		!game->player_by_id(player_network->get_id())->get_is_alive()) {
+	if (game->is_player_exist(player_network->get_id()) &&
+		!game->is_player_alive((player_network->get_id()))) {
+		auto player_data = game->get_player_info(player_network->get_id());
+		std::cout << player_data.time_to_respawn << '\n';
 		time_to_respawn.set_text("Time to respawn: " +
-			std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
+			std::to_string(int(player_data.time_to_respawn)));
 		float mod = abs(sin(float(aux::get_milli_count()) / 500));
 		press_r_to_respawn.set_text_color(sf::Color(255, 255, 255, 255 - 254 * mod));
-		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0)
+		if (game->player_by_id(player_data.time_to_respawn > 0))
 			time_to_respawn.step();
 		else
 			press_r_to_respawn.step();
 	}
 	else {
-		if (game->player_by_id(player_network->get_id()) != nullptr) {
-			gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
-			ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
+		if (game->is_player_exist(player_network->get_id())) {
+			auto player_data = game->get_player_info(player_network->get_id());
+			gun_image.set_texture_name(player_data.gun_name + "-gun");
+			ping.set_text(std::to_string(player_data.ping) + "ms");
 			//std::cout << ping.get_text() << "\n";
 		}
 		while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())

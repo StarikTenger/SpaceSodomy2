@@ -65,6 +65,7 @@ protected:
 	Bonus_Manager bonus_manager;
 	Module_Manager module_manager;
 	Rocket_Manager rocket_manager;
+	Respawn_Manager respawn_manager;
 	
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -165,14 +166,32 @@ public:
 	void wipe_map();
 	// Encodes class into string
 	std::string encode();
+
+
+
+
+
+	// Player interaction
 	// Creates new player
 	void new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 	int count_players();
-	// Gets player by id
-	Player* player_by_id(int id);
-	// Deletes player
 	void delete_player(int id);
+
+	// Gets player by id
+	bool is_player_alive(int id);
+	bool is_player_exist(int id);
+	struct Player_Info {
+		std::string gun_name = "default";
+		std::string hull_name = "default";
+		std::string left_module_name = "NONE";
+		std::string right_module_name = "NONE";
+		float time_to_respawn = 0.f;
+		bool is_alive = false;
+		int ping = 0;
+	};
+	Player_Info get_player_info(int id); // check for existence first
+	Player* player_by_id(int id);
 	~Game();
 };
 

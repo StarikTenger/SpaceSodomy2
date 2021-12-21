@@ -109,4 +109,6 @@ public:
 		                    std::string wall_name = "wall");
 
 	Module_Manager* get_module_manager();
+	// TODO: cleanup
+	~Game_Client() = default;
 };
