@@ -283,23 +283,24 @@ void Menu_Processing::save_sound(std::string path) {
 	fout.close();
 }
 
-void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_, std::string team_name_) {
 	std::ofstream fout;
 	fout.open(path);
-	fout << address_ << " " << port_ << " " << id_ << " " << name_;
+	fout << address_ << " " << port_ << " " << id_ << " " << name_ << " " << team_name_ << " ";
 	fout.close();
 }
 void Menu_Processing::load_config(std::string path, std::string* address_, std::string* port_,
-	std::string* id_, std::string* name_) {
+	std::string* id_, std::string* name_, std::string* team_name_) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	config >> *(address_);
 	config >> *(port_);
 	config >> *(id_);
 	config >> *(name_);
+	config >> *(team_name_);
 	if ((*id_) == "0") {
 		*id_ = std::to_string(aux::random_int(1, 100000));
-		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
+		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_, *team_name_);
 	}
 }
 
@@ -600,18 +601,22 @@ void Menu_Processing::init(Draw* draw_, b2Vec2* mouse_pos_,
 	config_menu.set_draw(draw);
 	config_menu.set_active(0);
 	config_menu.set_events(&events);
-	std::string ServerIP, Port, ID, Name;
-	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name);
+	std::string ServerIP, Port, ID, Team_name, Name, TeamName;
+	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, &TeamName);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
 	constant_texts[name_to_id["ServerIPText"]]->set_text("Server IP:");
 	constant_texts[name_to_id["PortText"]]->set_text("Port:");
 	constant_texts[name_to_id["IDText"]]->set_text("ID:");
 	constant_texts[name_to_id["NameText"]]->set_text("Name:");
+	constant_texts[name_to_id["TeamNameText"]]->set_text("Team Name:");
+
 	text_fields[name_to_id["ServerIP"]]->set_text(ServerIP);
 	text_fields[name_to_id["Port"]]->set_text(Port);
 	constant_texts[name_to_id["ID"]]->set_text(ID);
 	text_fields[name_to_id["Name"]]->set_text(Name);
+	text_fields[name_to_id["TeamName"]]->set_text(TeamName);
+
 	// set settigs menu 
 	settings_menu.set_draw(draw);
 	settings_menu.set_active(0);
@@ -776,11 +781,13 @@ void Menu_Processing::step() {
 		}
 		if (name_to_id["ApplyClientConfig"] == events.front()) { // Apply button
 			save_config("client_config.conf", text_fields[name_to_id["ServerIP"]]->get_text(), atoi(text_fields[name_to_id["Port"]]->get_text().c_str()),
-				atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()), text_fields[name_to_id["Name"]]->get_text());
+				atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()), text_fields[name_to_id["Name"]]->get_text(), text_fields[name_to_id["TeamName"]]->get_text());
+			text_fields[name_to_id["TeamName"]]->get_text();
 			network->set_server(text_fields[name_to_id["ServerIP"]]->get_text());
 			network->set_port(atoi(text_fields[name_to_id["Port"]]->get_text().c_str()));
 			network->set_id(atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()));
 			network->set_name(text_fields[name_to_id["Name"]]->get_text());
+			network->set_team_name(text_fields[name_to_id["TeamName"]]->get_text());
 		}
 		if (name_to_id["Back"] == events.front()) { // Back button
 			main_menu.set_active(1);

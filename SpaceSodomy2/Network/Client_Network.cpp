@@ -30,6 +30,10 @@ void Client_Network::set_id(int id_) {
 	id = id_;
 }
 
+void Client_Network::set_team_name(std::string team_name_) {
+	team_name = team_name_;
+}
+
 void Client_Network::set_name(std::string name_) {
 	name = aux::censor_name(name_);
 }
@@ -63,8 +67,10 @@ void Client_Network::send(std::string data) {
 	// Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
+		team_name + " " + 
 		name + " " + std::to_string(token) + " " +
 		data;
+	/*std::cout << data << '\n';*/
 	// Sending
 	auto func = [](sf::UdpSocket* socket, std::string data,
 		std::string serverIP, int port) {

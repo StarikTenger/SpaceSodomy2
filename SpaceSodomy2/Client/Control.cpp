@@ -274,6 +274,11 @@ void Control::load_config(std::string path) {
 	std::string name_;
 	config >> name_;
 	network.set_name(name_);
+	std::string team_name_;
+	config >> team_name_;
+	network.set_team_name(team_name_);
+
+
 	// Key config
 	load_keys("keys.conf");
 	game.load_setup("setup.conf");

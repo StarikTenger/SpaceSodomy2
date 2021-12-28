@@ -55,11 +55,12 @@ void Control::receive() {
 	message << network.get_last_message();
 	//std::cout << network.get_last_message() << "\n";
 	network.del_last_message();
-	std::string IP_address_, name_, time, gun_name, hull_name, left_module, right_module;
+	std::string IP_address_, name_, team_name_, time, gun_name, hull_name, left_module, right_module;
 	message >> IP_address_;
 	int id_, token;
 	message >> id_;
 	message >> time;
+	message >> team_name_;
 	message >> name_;
 	message >> token;
 	message >> gun_name;
@@ -71,7 +72,7 @@ void Control::receive() {
 
 	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
 
-		is_accepted = game.try_new_player(id_, name_, "any team", gun_name, hull_name, left_module, right_module);
+		is_accepted = game.try_new_player(id_, name_, team_name_, gun_name, hull_name, left_module, right_module);
 		if (is_accepted) {
 			addresses.insert(IP_address_);
 			IP_by_id[id_] = IP_address_;
