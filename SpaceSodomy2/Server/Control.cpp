@@ -46,8 +46,10 @@ Control::Control() {
 void Control::receive() {
 	
 	network.receive();
-	if (network.get_last_message() == "")
+	if (network.get_last_message() == "") {
+		//std::cout << "NO_MSG_RESEIVED\n";
 		return;
+	}
 	// Splitting message
 	std::stringstream message;
 	message << network.get_last_message();
@@ -65,18 +67,24 @@ void Control::receive() {
 	message >> left_module >> right_module;
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
-	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
-		addresses.insert(IP_address_);
-		IP_by_id[id_] = IP_address_;
-		id_by_IP[IP_address_] = id_;
-		token_by_id[id_] = token;
-		time_by_id[id_] = aux::get_milli_count();
-		sf::Color new_color = aux::gen_new_player_color(game.count_players());
+	bool is_accepted = false;
 
-		game.new_player(id_, id_, new_color, name_, gun_name, hull_name, left_module, right_module); // TODO
+	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
+
+		is_accepted = game.try_new_player(id_, name_, "any team", gun_name, hull_name, left_module, right_module);
+		if (is_accepted) {
+			addresses.insert(IP_address_);
+			IP_by_id[id_] = IP_address_;
+			id_by_IP[IP_address_] = id_;
+			token_by_id[id_] = token;
+			time_by_id[id_] = aux::get_milli_count();
+		}
+		// sf::Color new_color = aux::gen_new_player_color(game.count_players());
+		//game.new_player(id_, id_, new_color, name_, gun_name, hull_name, left_module, right_module); // TODO
+
 	}
 	// Applying commands
-	if (token_by_id[id_] == token) {
+	if (token_by_id.count(id_) && token_by_id[id_] == token) {
 		IP_by_id[id_] = IP_address_;
 		id_by_IP[IP_address_] = id_;
 		time_by_id[id_] = aux::get_milli_count();
@@ -103,6 +111,8 @@ void Control::step() {
 		last_step_time += delay;
 
 		// Banning disconnected players
+		// Warning: this will not work due to Team_Assigner not having a delete_player() interface
+		// TODO : Add this interface
 		std::set <int> banned;
 		for (auto id : IP_by_id) {
 			if (aux::get_milli_count() - time_by_id[id.first] >= disconnect_timeout)

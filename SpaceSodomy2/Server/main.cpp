@@ -5,7 +5,7 @@
 int main() {
 	aux::random_seed(aux::get_milli_count());
 	Control control;
-	while (1) {  
+	while (1) {
 		control.step();
 	}
 }

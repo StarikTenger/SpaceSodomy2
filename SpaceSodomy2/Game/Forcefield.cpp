@@ -32,7 +32,7 @@ void Forcefield::set(b2World* world, std::vector<b2Vec2> _vertices, b2Vec2 force
 void Forcefield::init_drawing(float Forcefield_width) {
 
 	origin_pos = aux::origin_pos(vertices) - b2Vec2(Forcefield_width, Forcefield_width);
-	box_size = aux::box_size(vertices) + b2Vec2(Forcefield_width * 2., Forcefield_width * 2.);
+	box_size = aux::box_size(vertices) + b2Vec2(Forcefield_width * 2.f, Forcefield_width * 2.f);
 
 }
 

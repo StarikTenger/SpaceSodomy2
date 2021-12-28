@@ -130,6 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -147,6 +148,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -193,6 +195,7 @@
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Event_Manager.h" />
+    <ClInclude Include="Team_Assigner.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +237,7 @@
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="Event_Manager.cpp" />
+    <ClCompile Include="Team_Assigner.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

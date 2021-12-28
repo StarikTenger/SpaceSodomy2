@@ -71,17 +71,18 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	return gun;
 }
 
-Player* Game::create_player(int id, int team_id,  sf::Color color, std::string name) {
+Player* Game::create_player(int id, int team_id,  sf::Color color, std::string name, Respawn_Def def) {
 	auto player = new Player();
 	player->set_color(color);
 	player->set_name(name);
 	player->set_command_module(create_command_module());
 	Counter* timer = create_counter();
 	// TODO: unhardcode
-	timer->set(3);
-	timer->set_max(3);
+	timer->set(def.time_to_respawn);
+	timer->set_max(def.time_to_respawn);
+	timer->set_delay(def.delay);
 	timer->set_change_vel(-1);
-	respawn_manager.add_agent(player, timer, Respawn_Manager::RANDOM);
+	respawn_manager.add_agent(player, timer, def.algo, def.vec);
 	// Id
 	player->set_id(id);
 	player->set_team_id(team_id);
@@ -944,7 +945,7 @@ void Game::wipe_map() {
 	}
 	forcefields = {};
 	delete wall_combatant;
-
+	delete team_assigner;
 }
 
 bool Game::load_map(std::string path) {
@@ -955,12 +956,97 @@ bool Game::load_map(std::string path) {
 	int wall_id = 0;
 	int forcefield_id = 0;
 	bool corner_init = 0;
+	bool unknown_team_assigner = true;
 
 	// Parsing
 	std::string symbol;
 	while (input >> symbol) {
 		if (symbol == "END")
 			break;
+		// Game Type
+		if (symbol == "GAME_TEAM_PARAMS") {
+			std::string game_type;
+			input >> game_type;
+			if (game_type == "FFA") {
+				int number_of_players = 6;
+				Respawn_Def respawn_definition;
+
+				std::string string_1;
+				while (input >> string_1, string_1 != "END") {
+					if (string_1 == "NUMBER_OF_PLAYERS") {
+						input >> number_of_players;
+						continue;
+					}
+					if (string_1 == "SPAWN_DELAY") {
+						input >> respawn_definition.delay;
+						continue;
+					}
+					if (string_1 == "RESPAWN_TIME") {
+						input >> respawn_definition.time_to_respawn;
+						continue;
+					}
+					if (string_1 == "RESPAWN_ALGORITHM") {
+						std::string string_2;
+						input >> string_2;
+						if (string_2 == "RANDOM") {
+							respawn_definition.algo = Respawn_Manager::RANDOM;
+							continue;
+						}
+						if (string_2 == "FIXED_POINT") {
+							input >> respawn_definition.vec.x;
+							input >> respawn_definition.vec.y;
+							respawn_definition.algo = Respawn_Manager::FIXED_POINT;
+							continue;
+						}
+					}
+				}
+				team_assigner = new FFA_Team_Assigner(number_of_players, respawn_definition);
+				continue;
+			}
+			if (game_type == "Two_Teams"){
+				int first_number_of_players = 3;
+				Respawn_Def first_def;
+				std::string first_team = "red";
+				sf::Color first_color = sf::Color::Red;
+
+				int second_number_of_players = 3;
+				Respawn_Def second_def;
+				std::string second_team = "blue";
+				sf::Color second_color = sf::Color::Blue;
+
+
+				
+				std::string string_1;
+				while (string_1 != "END") {
+					if (string_1 == "NUMBER_OF_PLAYERS") {
+						input >> first_number_of_players >> second_number_of_players;
+						continue;
+					}
+					if (string_1 == "SPAWN_DELAY") {
+						input >> first_def.delay >> second_def.delay;
+						continue;
+					}
+					if (string_1 == "RESPAWN_TIME") {
+						input >> first_def.time_to_respawn >> second_def.time_to_respawn;
+						continue;
+					}
+					if (string_1 == "RESPAWN_ALGORITHM") {
+							input >> first_def.vec.x;
+							input >> first_def.vec.y;
+							first_def.algo = Respawn_Manager::FIXED_POINT;
+							input >> second_def.vec.x;
+							input >> second_def.vec.y;
+							second_def.algo = Respawn_Manager::FIXED_POINT;
+
+							continue;
+					}
+				}
+				team_assigner = new Two_Team_Assigner(first_number_of_players, second_number_of_players, first_def, second_def, first_color, second_color, first_team, second_team);
+				continue;
+			}
+       		std::cerr << "Game::load_map error: unknown game_type" << game_type << '\n';
+			continue;
+		}
 		// Wall
 		if (symbol == "FORCEFIELD") {
 			std::string symbol_1;
@@ -1076,6 +1162,9 @@ bool Game::load_map(std::string path) {
 		}
 		std::cerr << "Game::load_map: unknown symbol " << symbol << "\n";
 		return false;
+	}
+	if (unknown_team_assigner) {
+		team_assigner = new FFA_Team_Assigner(10, Respawn_Def());
 	}
 	return true;
 }
@@ -1490,8 +1579,8 @@ std::string Game::encode() {
 }
 
 void Game::new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
-	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, team_id, color, name);
+	std::string left_module, std::string right_module, Respawn_Def def) {
+	Player* player = create_player(id, team_id, color, name, def);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	player->set_left_module_name(left_module);
@@ -1499,6 +1588,17 @@ void Game::new_player(int id, int team_id, sf::Color color, std::string name, st
 	players[id] = player;
 	respawn_manager.get_agent_timer(player)->set(0);
 }
+
+bool Game::try_new_player(int id, std::string name, std::string team_name, std::string gun_name, std::string hull_name,
+	std::string left_module, std::string right_module) {
+	auto val = team_assigner->assign_team(id, team_name);
+	if (val.was_accepted) {
+		auto def = team_assigner->get_respawn_def(val.team_id);
+		new_player(id, val.team_id, val.player_color, name, gun_name, hull_name, left_module, right_module);
+	}
+	return val.was_accepted;
+}
+
 
 bool Game::is_player_exist(int id) {
 	return players.count(id);

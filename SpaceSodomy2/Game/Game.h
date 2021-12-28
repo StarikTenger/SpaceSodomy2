@@ -22,6 +22,7 @@
 #include "Rocket_Brain.h"
 #include "Forcefield.h"
 #include "Respawn_Manager.h"
+#include "Team_Assigner.h"
 
 
 class Game {
@@ -66,6 +67,7 @@ protected:
 	Module_Manager module_manager;
 	Rocket_Manager rocket_manager;
 	Respawn_Manager respawn_manager;
+	Team_Assigner* team_assigner = nullptr;
 	
 	b2World physics = b2World(b2Vec2_zero);
 
@@ -89,7 +91,7 @@ protected:
 	std::string map_path = "";
 
 	// Create functions
-	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_");
+	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_", Respawn_Def def = Respawn_Def());
 	//Combatant*       create_combatant(int id, int team_id,  sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
@@ -173,7 +175,11 @@ public:
 
 	// Player interaction
 	// Creates new player
+private:
 	void new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+		std::string left_module, std::string right_module, Respawn_Def def = Respawn_Def());
+public:
+	bool try_new_player(int id, std::string name, std::string team_name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 	int count_players();
 	void delete_player(int id);

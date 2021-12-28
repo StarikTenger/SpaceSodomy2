@@ -440,6 +440,9 @@ void Game_Client::update_state(std::string source) {
 	// Pasrsing source
 	char symbol;
 	int msg_size = aux::read_short(stream);
+	if (stream.eof()) {
+		//std::cout << "NO_MSG_FOUND\n";
+	}
 	while (symbol = stream.get(), !stream.eof()) {
 		// Map
 		if (symbol == 'M') {
