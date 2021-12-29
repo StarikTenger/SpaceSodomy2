@@ -1048,7 +1048,6 @@ bool Game::load_map(std::string path) {
 							input >> second_def.vec.x;
 							input >> second_def.vec.y;
 							second_def.algo = Respawn_Manager::FIXED_POINT;
-
 							continue;
 						}
 						std::cerr << "Game::load_map error: unknown RESPAWN_ALGORITHM: " << string_2 << '\n';
@@ -1608,7 +1607,7 @@ bool Game::try_new_player(int id, std::string name, std::string team_name, std::
 	auto val = team_assigner->assign_team(id, team_name);
 	if (val.was_accepted) {
 		auto def = team_assigner->get_respawn_def(val.team_id);
-		new_player(id, val.team_id, val.player_color, name, gun_name, hull_name, left_module, right_module);
+		new_player(id, val.team_id, val.player_color, name, gun_name, hull_name, left_module, right_module, def);
 	}
 	return val.was_accepted;
 }
