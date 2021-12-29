@@ -965,6 +965,7 @@ bool Game::load_map(std::string path) {
 			break;
 		// Game Type
 		if (symbol == "GAME_TEAM_PARAMS") {
+			unknown_team_assigner = false;
 			std::string game_type;
 			input >> game_type;
 			if (game_type == "FFA") {
@@ -998,12 +999,14 @@ bool Game::load_map(std::string path) {
 							respawn_definition.algo = Respawn_Manager::FIXED_POINT;
 							continue;
 						}
+						std::cerr << "Game::load_map error: unknown RESPAWN_ALGORITHM " << string_2 << '\n';
 					}
+					std::cerr << "Game::load_map error: unknown GAME_TEAM_PARAM of FFA game type " << string_1 << '\n';
 				}
 				team_assigner = new FFA_Team_Assigner(number_of_players, respawn_definition);
 				continue;
 			}
-			if (game_type == "Two_Teams"){
+			if (game_type == "TwoTeams"){
 				int first_number_of_players = 3;
 				Respawn_Def first_def;
 				std::string first_team = "red";
@@ -1017,7 +1020,7 @@ bool Game::load_map(std::string path) {
 
 				
 				std::string string_1;
-				while (string_1 != "END") {
+				while (input >> string_1, string_1 != "END") {
 					if (string_1 == "NUMBER_OF_PLAYERS") {
 						input >> first_number_of_players >> second_number_of_players;
 						continue;
@@ -1031,6 +1034,14 @@ bool Game::load_map(std::string path) {
 						continue;
 					}
 					if (string_1 == "RESPAWN_ALGORITHM") {
+						std::string string_2;
+						input >> string_2;
+						if (string_2 == "RANDOM") {
+							first_def.algo = Respawn_Manager::RANDOM;
+							second_def.algo = Respawn_Manager::RANDOM;
+							continue;
+						}
+						if (string_2 == "FIXED_POINT") {
 							input >> first_def.vec.x;
 							input >> first_def.vec.y;
 							first_def.algo = Respawn_Manager::FIXED_POINT;
@@ -1039,7 +1050,10 @@ bool Game::load_map(std::string path) {
 							second_def.algo = Respawn_Manager::FIXED_POINT;
 
 							continue;
+						}
+						std::cerr << "Game::load_map error: unknown RESPAWN_ALGORITHM: " << string_2 << '\n';
 					}
+					std::cerr << "Game::load_map error: unknown GAME_TEAM_PARAM of Two_Teams game type: " << string_1 << '\n';
 				}
 				team_assigner = new Two_Team_Assigner(first_number_of_players, second_number_of_players, first_def, second_def, first_color, second_color, first_team, second_team);
 				continue;
