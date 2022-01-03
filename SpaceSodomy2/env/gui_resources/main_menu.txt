@@ -23,47 +23,16 @@ Renderer.1 {
 }
 
 Group.Group1 {
-    Position = (35%, 25%);
+    Position = (0%, 50%);
     Size = (30%, 50%);
 
     Renderer {
     }
 
-    Button.Play {
-        Size = (100%, 20%);
-        Text = Play;
-        TextSize = 13;
-
-        Renderer {
-            BackgroundColor = #F5F5F5;
-            BackgroundColorDisabled = #E6E6E6;
-            BackgroundColorDown = #EBEBEB;
-            BackgroundColorHover = white;
-            BorderColor = #3C3C3C;
-            BorderColorDisabled = #7D7D7D;
-            BorderColorDown = black;
-            BorderColorFocused = #1E1EB4;
-            BorderColorHover = black;
-            Borders = (1, 1, 1, 1);
-            TextColor = #3C3C3C;
-            TextColorDisabled = #7D7D7D;
-            TextColorDown = black;
-            TextColorHover = black;
-            Texture = None;
-            TextureDisabled = None;
-            TextureDown = None;
-            TextureDownFocused = None;
-            TextureDownHover = None;
-            TextureFocused = None;
-            TextureHover = None;
-        }
-    }
-
-    Button.About {
-        Position = (0, 20%);
+    Button.Singleplayer {
         Renderer = &1;
         Size = (100%, 20%);
-        Text = About;
+        Text = Singleplayer;
         TextSize = 13;
     }
 
@@ -89,5 +58,36 @@ Group.Group1 {
         Size = (100%, 20%);
         Text = Exit;
         TextSize = 13;
+    }
+
+    Button.Button1 {
+        Position = (0, 20%);
+        Size = (100%, 20%);
+        Text = Singleplayer;
+        TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (1, 1, 1, 1);
+            TextColor = #3C3C3C;
+            TextColorDisabled = #7D7D7D;
+            TextColorDown = black;
+            TextColorHover = black;
+            Texture = None;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = None;
+        }
     }
 }

@@ -623,15 +623,28 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		}
 	};
 	auto main_menu = load_widgets("main_menu.txt");
+	main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
-	tgui::Button::Ptr play = gui.get<tgui::Button>("Play");
-	play->onClick([&gui, &close_groups] {
-		close_groups(gui);
-	});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([&gui, &close_groups] {
 		close_groups(gui);
+		std::cout << "settings";
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
+	});
+	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
+	control->onClick([&gui] {
+		gui.get<tgui::Group>("AudioPanel")->setVisible(false);
+		gui.get<tgui::Group>("ControlPanel")->setVisible(true);
+	});
+	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
+	audio->onClick([&gui] {
+		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
+		gui.get<tgui::Group>("ControlPanel")->setVisible(false);
+	});
+	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
+	back->onClick([&gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
 }
 

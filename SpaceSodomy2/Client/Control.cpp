@@ -128,7 +128,6 @@ Control::Control() {
 	// *****************
 	gui.setWindow(*draw.get_window());
 	tgui::setResourcePath("gui_resources");
-	gui.loadWidgetsFromFile("main_menu.txt");
 	// *****************
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
