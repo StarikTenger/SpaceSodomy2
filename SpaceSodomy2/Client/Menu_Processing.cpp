@@ -635,12 +635,38 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	auto main_menu = load_widgets("main_menu.txt");
 	main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
+	auto replay_menu = load_widgets("replay.txt");
+	// Initializing main menu
+	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
+	replayButton->onClick([=, &gui, &close_groups] {
+		close_groups(gui);
+		std::cout << "replay";
+		replay->set_replay_path("replays/example.ex");
+		replay->set_replay_active(1);
+		gui.get<tgui::Group>("replay.txt")->setVisible(true);
+		});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([&gui, &close_groups] {
 		close_groups(gui);
 		std::cout << "settings";
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
+	// Initializing replay menu
+	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
+	select_replay_button->onClick([=, &gui] {
+		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
+		choose_file->onFileSelect([=, &gui] {
+			auto path = choose_file->getSelectedPaths()[0].getFilename();
+			replay->set_replay_path("replays/" + path.toStdString());
+			gui.get<tgui::Label>("ReplayName")->setText(path);
+			});
+			gui.get<tgui::Group>("replay.txt")->add(choose_file);
+		});
+	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
+	spin_control->onValueChange([=](float val) {
+		replay->set_speed(val);
+		});
+	// Initializing control menu
 	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
 	control->onClick([&gui] {
 		gui.get<tgui::Group>("AudioPanel")->setVisible(false);

@@ -27,6 +27,10 @@ void Replay::set_replay_path(std::string path) {
 	replay_frame.set_max(frames.size() - 2);
 }
 
+void Replay::set_speed(float val) {
+	replay_frame.set_change_vel(val);
+}
+
 void Replay::increase_speed() {
 	if (replay_frame.get_change_vel() > -b2_epsilon && replay_frame.get_change_vel() < b2_epsilon) {
 		replay_frame.set_change_vel(0.5);

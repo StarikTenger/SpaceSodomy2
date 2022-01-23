@@ -17,6 +17,7 @@ public:
 
 	// Set methods
 	void set_replay_path(std::string path);
+	void set_speed(float val);
 	void increase_speed();
 	void decrease_speed();
 	void set_replay_active(bool val);
