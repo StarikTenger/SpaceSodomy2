@@ -296,14 +296,24 @@ void Menu_Processing::save_HUD_settings(std::string path) {
 	fout.close();
 }
 
-void Menu_Processing::load_sound(std::string path) {
+void Menu_Processing::load_sound(std::string path, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
+	auto music_slider = gui.get<tgui::Slider>("MusicSlider");
+	auto sound_slider = gui.get<tgui::Slider>("SoundSlider");
 	double volume;
 	config >> volume;
 	game->get_audio()->set_sound_volume(volume);
+	sound_slider->setValue(volume);
+	sound_slider->onValueChange([=](int new_val) {
+		game->get_audio()->set_sound_volume(new_val);
+		});
 	config >> volume;
 	game->get_audio()->set_music_volume(volume);
+	music_slider->setValue(volume);
+	music_slider->onValueChange([=](int new_val) {
+		game->get_audio()->set_music_volume(new_val);
+		});
 }
 
 void Menu_Processing::save_sound(std::string path) {
@@ -660,7 +670,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	reload = reload_;
 	*reload = 1;
 	init_tgui(gui);
-	load_sound("sound_settings.conf");
+	load_sound("sound_settings.conf", gui);
 	load_HUD_settings("HUD_settings.conf");
 	// set main menu fields
 	main_menu.set_draw(draw);
@@ -795,8 +805,6 @@ void Menu_Processing::step() {
 			auto it = id_to_keyit[keyboard_field.first];
 			*keys_menu_vec[it.first][it.second] = keyboard_field.second->get_text();
 		}
-		game->get_audio()->set_sound_volume(sliders[name_to_id["SoundVolume"]]->get_slider_value());
-		game->get_audio()->set_music_volume(sliders[name_to_id["MusicVolume"]]->get_slider_value());
 		game->set_aim_conf(sliders[name_to_id["AimConfiguration"]]->get_slider_value());
 		game->set_aim_opacity(sliders[name_to_id["AimOpacity"]]->get_slider_value());
 		game->set_network_information_active(check_boxes[name_to_id["NetworkInformation"]]->get_state());

@@ -50,7 +50,7 @@ private:
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
 	void load_HUD_settings(std::string path);
 	void save_HUD_settings(std::string path);
-	void load_sound(std::string path);
+	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
 	void init_gun(std::string, int damage, float recharge, int stamina_cost, float projectile_mass,
