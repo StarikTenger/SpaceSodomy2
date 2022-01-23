@@ -67,6 +67,7 @@ private:
 	Draw* draw;
 	Game_Client* game;
 	Replay* replay;
+	tgui::Gui* _gui;
 	bool disactivated = 0;
 	bool shader_active = 1;
 	bool* reload;

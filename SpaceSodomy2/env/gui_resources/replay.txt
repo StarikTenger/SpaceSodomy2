@@ -149,13 +149,13 @@ Group.Group1 {
         HorizontalAlignment = Center;
         Position = (7% + 150, 0);
         Renderer = &1;
-        Size = (50, 18);
+        Size = (70, 18);
         Text = "0:00";
         TextSize = 13;
     }
 
     Label.Label2 {
-        Position = (7% + 200, 0);
+        Position = (7% + 220, 0);
         Renderer = &1;
         Size = (1%, 18);
         Text = "/";
@@ -164,15 +164,15 @@ Group.Group1 {
 
     Label.MaxTime {
         HorizontalAlignment = Center;
-        Position = (8% + 200, 0);
+        Position = (8% + 220, 0);
         Renderer = &1;
-        Size = (50, 18);
+        Size = (70, 18);
         Text = "0:00";
         TextSize = 13;
     }
 
     Label.Label3 {
-        Position = (12% + 250, 0);
+        Position = (12% + 270, 0);
         Renderer = &1;
         Size = (50, 18);
         Text = "Player:";
@@ -181,7 +181,7 @@ Group.Group1 {
 
     Label.Label4 {
         HorizontalAlignment = Center;
-        Position = (12% + 300, 0);
+        Position = (12% + 320, 0);
         Renderer = &1;
         Size = (10%, 18);
         Text = None;
@@ -189,7 +189,7 @@ Group.Group1 {
     }
 
     Button.SelectReplay {
-        Position = (23% + 300, 0);
+        Position = (23% + 320, 0);
         Size = (100, 18);
         Text = "Select Replay";
         TextSize = 13;
@@ -221,7 +221,7 @@ Group.Group1 {
 
     Label.ReplayName {
         AutoSize = true;
-        Position = (24% + 400, 0);
+        Position = (24% + 420, 0);
         Renderer = &1;
         Size = (79.2, 18);
         Text = "example.ex";

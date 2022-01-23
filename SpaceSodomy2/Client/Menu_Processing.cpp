@@ -632,6 +632,15 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 			wid[i]->setVisible(false);
 		}
 	};
+	auto launch_replay = [=](tgui::Gui& gui, std::string name) {
+		replay->set_replay_path("replays/" + name);
+		replay->set_replay_active(1);
+		gui.get<tgui::Label>("ReplayName")->setText(name);
+		int max_time = replay->get_replay_frame()->get_max();
+		gui.get<tgui::Label>("MaxTime")->setText(std::to_string(max_time / 3600) + ":" +
+			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
+		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(max_time);
+	};
 	auto main_menu = load_widgets("main_menu.txt");
 	main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
@@ -640,9 +649,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
-		std::cout << "replay";
-		replay->set_replay_path("replays/example.ex");
-		replay->set_replay_active(1);
+		launch_replay(gui, "example.ex");
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
 		});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
@@ -653,18 +660,21 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	});
 	// Initializing replay menu
 	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
-	select_replay_button->onClick([=, &gui] {
+	select_replay_button->onClick([=, &gui, &launch_replay] {
 		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
 		choose_file->onFileSelect([=, &gui] {
-			auto path = choose_file->getSelectedPaths()[0].getFilename();
-			replay->set_replay_path("replays/" + path.toStdString());
-			gui.get<tgui::Label>("ReplayName")->setText(path);
+			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
+			launch_replay(gui, name);
 			});
 			gui.get<tgui::Group>("replay.txt")->add(choose_file);
 		});
 	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
 	spin_control->onValueChange([=](float val) {
 		replay->set_speed(val);
+		});
+	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
+	replay_slider->onValueChange([=](float val) {
+		replay->get_replay_frame()->set(val);
 		});
 	// Initializing control menu
 	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
@@ -695,6 +705,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	replay = replay_;
 	reload = reload_;
 	*reload = 1;
+	_gui = &gui;
 	init_tgui(gui);
 	load_sound("sound_settings.conf", gui);
 	load_HUD_settings("HUD_settings.conf");
@@ -808,6 +819,12 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 
 void Menu_Processing::step() {
 	replay->get_replay_frame()->step(1);
+	if (replay->get_replay_active()) {
+		int cur_time = replay->get_replay_frame()->get();
+		_gui->get<tgui::Label>("CurTime")->setText(std::to_string(cur_time / 3600) + ":" +
+			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
+		_gui->get<tgui::Slider>("ReplaySlider")->setValue(cur_time);
+	}
 	if (active) {
 		if (shader_active)
 			game->get_draw()->fill_rect({ 0, 0 }, aux::to_b2Vec2(sf::Vector2f(game->get_draw()->get_window()->getSize())),
