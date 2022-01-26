@@ -851,23 +851,6 @@ void Menu_Processing::step() {
 		game->set_aim_conf(sliders[name_to_id["AimConfiguration"]]->get_slider_value());
 		game->set_aim_opacity(sliders[name_to_id["AimOpacity"]]->get_slider_value());
 		game->set_network_information_active(check_boxes[name_to_id["NetworkInformation"]]->get_state());
-		if (replay->get_replay_active()) {
-			if (atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()) != network->get_id()) {
-				network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
-				if (game->get_ship(network->get_id()) != nullptr && game->get_ship(network->get_id())->get_player() != nullptr)
-					network->set_name(game->get_ship(network->get_id())->get_player()->get_name());
-				else
-					network->set_name("default");
-				text_fields[name_to_id["ReplayName"]]->set_text(network->get_name());
-			}
-			if (text_fields[name_to_id["ReplayName"]]->get_text() != network->get_name()) {
-				network->set_id(game->get_player_id(text_fields[name_to_id["ReplayName"]]->get_text()));
-				text_fields[name_to_id["ReplayID"]]->set_text(std::to_string(network->get_id()));
-			}
-			bars[name_to_id["ReplayBar"]]->set_value(sliders[name_to_id["ReplaySlider"]]->get_slider_value());
-			replay->get_replay_frame()->set(sliders[name_to_id["ReplaySlider"]]->get_slider_value());
-				//- replay->get_replay_frame()->get() - int(replay->get_replay_frame()->get()));
-		}
 		disactivated = 1;
 	}
 	if (!active) {

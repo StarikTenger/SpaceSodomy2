@@ -1,4 +1,28 @@
 Renderer.1 {
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorDown = #EBEBEB;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorDown = black;
+    BorderColorFocused = #1E1EB4;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    TextColorDown = black;
+    TextColorHover = black;
+    Texture = None;
+    TextureDisabled = None;
+    TextureDown = None;
+    TextureDownFocused = None;
+    TextureDownHover = None;
+    TextureFocused = None;
+    TextureHover = None;
+}
+
+Renderer.2 {
     BackgroundColor = transparent;
     BorderColor = #3C3C3C;
     Borders = (0, 0, 0, 0);
@@ -40,38 +64,15 @@ Group.Group1 {
 
     Button.ReplayPlay {
         Position = (2%, 0);
+        Renderer = &1;
         Size = (50, 20);
         Text = Play;
         TextSize = 13;
-
-        Renderer {
-            BackgroundColor = #F5F5F5;
-            BackgroundColorDisabled = #E6E6E6;
-            BackgroundColorDown = #EBEBEB;
-            BackgroundColorHover = white;
-            BorderColor = #3C3C3C;
-            BorderColorDisabled = #7D7D7D;
-            BorderColorDown = black;
-            BorderColorFocused = #1E1EB4;
-            BorderColorHover = black;
-            Borders = (1, 1, 1, 1);
-            TextColor = #3C3C3C;
-            TextColorDisabled = #7D7D7D;
-            TextColorDown = black;
-            TextColorHover = black;
-            Texture = None;
-            TextureDisabled = None;
-            TextureDown = None;
-            TextureDownFocused = None;
-            TextureDownHover = None;
-            TextureFocused = None;
-            TextureHover = None;
-        }
     }
 
     Label.Label1 {
         Position = (3% + 50, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (50, 20);
         Text = "Speed:";
         TextSize = 13;
@@ -148,7 +149,7 @@ Group.Group1 {
     Label.CurTime {
         HorizontalAlignment = Center;
         Position = (7% + 150, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (70, 18);
         Text = "0:00";
         TextSize = 13;
@@ -156,7 +157,7 @@ Group.Group1 {
 
     Label.Label2 {
         Position = (7% + 220, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (1%, 18);
         Text = "/";
         TextSize = 13;
@@ -165,7 +166,7 @@ Group.Group1 {
     Label.MaxTime {
         HorizontalAlignment = Center;
         Position = (8% + 220, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (70, 18);
         Text = "0:00";
         TextSize = 13;
@@ -173,16 +174,16 @@ Group.Group1 {
 
     Label.Label3 {
         Position = (12% + 270, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (50, 18);
         Text = "Player:";
         TextSize = 13;
     }
 
-    Label.Label4 {
+    Label.PlayerName {
         HorizontalAlignment = Center;
         Position = (12% + 320, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (10%, 18);
         Text = None;
         TextSize = 13;
@@ -190,39 +191,16 @@ Group.Group1 {
 
     Button.SelectReplay {
         Position = (23% + 320, 0);
+        Renderer = &1;
         Size = (100, 18);
         Text = "Select Replay";
         TextSize = 13;
-
-        Renderer {
-            BackgroundColor = #F5F5F5;
-            BackgroundColorDisabled = #E6E6E6;
-            BackgroundColorDown = #EBEBEB;
-            BackgroundColorHover = white;
-            BorderColor = #3C3C3C;
-            BorderColorDisabled = #7D7D7D;
-            BorderColorDown = black;
-            BorderColorFocused = #1E1EB4;
-            BorderColorHover = black;
-            Borders = (1, 1, 1, 1);
-            TextColor = #3C3C3C;
-            TextColorDisabled = #7D7D7D;
-            TextColorDown = black;
-            TextColorHover = black;
-            Texture = None;
-            TextureDisabled = None;
-            TextureDown = None;
-            TextureDownFocused = None;
-            TextureDownHover = None;
-            TextureFocused = None;
-            TextureHover = None;
-        }
     }
 
     Label.ReplayName {
         AutoSize = true;
         Position = (24% + 420, 0);
-        Renderer = &1;
+        Renderer = &2;
         Size = (79.2, 18);
         Text = "example.ex";
         TextSize = 13;

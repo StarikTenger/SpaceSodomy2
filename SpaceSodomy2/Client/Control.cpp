@@ -82,6 +82,56 @@ void Control::process_commands() {
 			replay.increase_speed();
 		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
 			replay.decrease_speed();
+		if (key_by_name("NEXT_PLAYER") && replay.get_replay_active() && !key_prev_by_name("NEXT_PLAYER")) {
+			if (game.get_players()->operator[](network.get_id()) == nullptr) {
+				game.get_players()->erase(game.get_players()->find(network.get_id()));
+				if (game.get_players()->size() != 0) {
+					network.set_id(game.get_players()->begin()->second->get_id());
+					gui.get<tgui::Label>("PlayerName")->setText(game.get_players()->begin()->second->get_name());
+				}
+			} else {
+				for (auto player = game.get_players()->begin(); player != game.get_players()->end(); player++) {
+					if (player->second->get_id() == network.get_id()) {
+						player++;
+						if (player == game.get_players()->end()) {
+							network.set_id(0);
+							gui.get<tgui::Label>("PlayerName")->setText("None");
+						} else {
+							network.set_id(player->second->get_id());
+							gui.get<tgui::Label>("PlayerName")->setText(player->second->get_name());
+						}
+						break;
+					}
+				}
+			}
+		}
+		if (key_by_name("PREVIOUS_PLAYER") && replay.get_replay_active() && !key_prev_by_name("PREVIOUS_PLAYER")) {
+			if (game.get_players()->operator[](network.get_id()) == nullptr) {
+				game.get_players()->erase(game.get_players()->find(network.get_id()));
+				if (game.get_players()->size() != 0) {
+					auto player = game.get_players()->end();
+					player--;
+					network.set_id(player->second->get_id());
+					gui.get<tgui::Label>("PlayerName")->setText(player->second->get_name());
+				}
+			}
+			else {
+				for (auto player = game.get_players()->begin(); player != game.get_players()->end(); player++) {
+					if (player->second->get_id() == network.get_id()) {
+						if (player == game.get_players()->begin()) {
+							network.set_id(0);
+							gui.get<tgui::Label>("PlayerName")->setText("None");
+						}
+						else {
+							player--;
+							network.set_id(player->second->get_id());
+							gui.get<tgui::Label>("PlayerName")->setText(player->second->get_name());
+						}
+						break;
+					}
+				}
+			}
+		}
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
 		if (key_by_name("LEFT_MODULE"))
