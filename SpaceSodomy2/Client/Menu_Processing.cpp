@@ -641,8 +641,10 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
 		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(max_time);
 	};
+	auto HUD = load_widgets("HUD.txt");
+	HUD->setVisible(true);
 	auto main_menu = load_widgets("main_menu.txt");
-	main_menu->setVisible(true);
+	//main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	// Initializing main menu

@@ -3,13 +3,15 @@
 #include<Client/Game_Client.h>
 #include<AuxLib/AuxLib.h>
 #include<Network/Client_Network.h>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 class HUD_Processing {
 private:
 	Bar HP_bar, stamina_bar, energy_bar;
 	Constant_Text time_to_respawn, press_r_to_respawn,
 		ping, ping_text, fps, fps_text;
-	Menu_Object bonus, left_module, right_module, interface_image, gun_image;
+	Menu_Object bonus, left_module, right_module, gun_image;
 	Text_Field bonus_tip, left_module_tip, right_module_tip;
 
 	int table_use_windows_cords;
@@ -27,7 +29,7 @@ private:
 
 	std::string bonus_button_name, left_module_button_name, right_module_button_name, respawn_button_name;
 
-	void get_buttons_names(std::string path);
+	void get_buttons_names(tgui::Gui &gui, std::string path);
 	void apply_bar(Bar* bar, std::stringstream* config);
 	void table_step();
 
@@ -45,9 +47,9 @@ public:
 	float interface_scale = 3;
 
 	HUD_Processing();
-	HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
+	HUD_Processing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
 		Client_Network* player_network_, std::queue<int>* frame_marks_);
 
-	void step();
+	void step(tgui::Gui& gui);
 };
 

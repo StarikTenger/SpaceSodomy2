@@ -208,7 +208,7 @@ Control::Control() {
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
-	hud = HUD_Processing(&draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
+	hud = HUD_Processing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();
@@ -254,7 +254,7 @@ void Control::step() {
 		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
 		menu_processing.step();
 		if (!menu_processing.active) {
-			hud.step();
+			hud.step(gui);
 		}
 		gui.draw();
 

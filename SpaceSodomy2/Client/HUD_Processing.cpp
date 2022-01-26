@@ -5,7 +5,7 @@ bool operator<(Player& a, Player& b) {
 		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
 }
 
-void HUD_Processing::get_buttons_names(std::string path) {
+void HUD_Processing::get_buttons_names(tgui::Gui &gui, std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -13,19 +13,18 @@ void HUD_Processing::get_buttons_names(std::string path) {
 		config >> cur_name >> cur;
 		if (cur_name == "RESPAWN") {
 			respawn_button_name = cur;
-			press_r_to_respawn.set_text("Press " + cur + " to respawn");
 		}
 		if (cur_name == "BONUS_ACTIVATION") {
 			bonus_button_name = cur;
-			bonus_tip.set_text(cur);
+			gui.get<tgui::Label>("BonusTip")->setText(cur);
 		}
 		if (cur_name == "LEFT_MODULE") {
 			left_module_button_name = cur;
-			left_module_tip.set_text(cur);
+			gui.get<tgui::Label>("LeftModuleTip")->setText(cur);
 		}
 		if (cur_name == "RIGHT_MODULE") {
 			right_module_button_name = cur;
-			right_module_tip.set_text(cur);
+			gui.get<tgui::Label>("RightModuleTip")->setText(cur);
 		}
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			config >> cur;
@@ -167,7 +166,7 @@ HUD_Processing::HUD_Processing()
 {
 }
 
-HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
+HUD_Processing::HUD_Processing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
 	Game_Client* game_, Client_Network* player_network_, std::queue<int>* frame_marks_) {
 	frame_marks = frame_marks_;
 	game = game_;
@@ -305,126 +304,127 @@ HUD_Processing::HUD_Processing(Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* k
 	stamina_bar.set_max_value(stamina_bar_max_val);
 	energy_bar.set_value(energy_bar_val);
 	energy_bar.set_max_value(energy_bar_max_val);
-
-	interface_image.set_texture_name("interface");
-	interface_image.set_color(sf::Color::White);
-	interface_image.set_draw(draw);
-	interface_image.set_use_window_cords(4);
-	interface_image.set_pos({ 0, -20 });
-	interface_image.set_use_picture_scale(0);
-	interface_image.set_scale({ 330, 40 });
-	//interface_image.set_scale({1220, 305});
 }
 
-void HUD_Processing::step() {
-	get_buttons_names("keys.conf");
-	interface_image.set_scale({ 330 * interface_scale, 40 * interface_scale });
-	interface_image.set_pos(b2Vec2(0, 0) - b2Vec2(0, interface_image.get_scale().y / 2));
-	b2Vec2 cur_icon_scale = interface_scale * b2Vec2(30, 30);
-	bonus.set_scale(cur_icon_scale);
-	bonus.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-130, 0));
-	gun_image.set_scale(cur_icon_scale);
-	gun_image.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-100, 0));
-	right_module.set_scale(cur_icon_scale);
-	right_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(130, 0));
-	left_module.set_scale(cur_icon_scale);
-	left_module.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(100, 0));
-	HP_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
-	stamina_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
-	energy_bar.set_scale(interface_scale * b2Vec2(130, 8.666666));
-	HP_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, -8.666666));
-	stamina_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2));
-	energy_bar.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(0, 8.666666));
-	bonus_tip.set_text_scale(0.1 * interface_scale / text_mod);
-	left_module_tip.set_text_scale(0.1 * interface_scale / text_mod);
-	right_module_tip.set_text_scale(0.1 * interface_scale / text_mod);
-	text_mod = 0.1 * interface_scale;
-	bonus_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(-130, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
-	left_module_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(100, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
-	right_module_tip.set_pos(b2Vec2(0, -interface_image.get_scale().y / 2) + interface_scale * b2Vec2(130, 0) + 0.3 * b2Vec2(cur_icon_scale.x, -cur_icon_scale.y));
+void HUD_Processing::step(tgui::Gui &gui) {
+	get_buttons_names(gui, "keys.conf");
+	sf::Vector2f win_s = 
+		sf::Vector2f(1.0 * draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width,
+			1.0 * draw->get_window()->getSize().y / sf::VideoMode::getDesktopMode().height);
+	float scale = interface_scale * (win_s.x + win_s.y) / 2.0;
+	auto interface_group = gui.get<tgui::Group>("InterfaceGroup");
+	interface_group->setSize(tgui::Layout2d(330 * scale, 40 * scale));
+	interface_group->setPosition(tgui::Layout2d("50%", "100%") 
+		- tgui::Layout2d(330 * scale / 2.0, 40 * scale));	
+	gui.get<tgui::Label>("BonusTip")->setTextSize(12.5 * scale);
+	gui.get<tgui::Label>("LeftModuleTip")->setTextSize(12.5 * scale);
+	gui.get<tgui::Label>("RightModuleTip")->setTextSize(12.5 * scale);
 	if (game->get_ship(player_network->get_id()) != nullptr) {
-		HP_bar.set_value(game->get_ship(player_network->get_id())->get_hp()->get());
-		HP_bar.set_max_value(game->get_ship(player_network->get_id())->get_hp()->get_max());
-		stamina_bar.set_value(game->get_ship(player_network->get_id())->get_stamina()->get());
-		stamina_bar.set_max_value(game->get_ship(player_network->get_id())->get_stamina()->get_max());
-		energy_bar.set_value(game->get_ship(player_network->get_id())->get_energy()->get());
-		energy_bar.set_max_value(game->get_ship(player_network->get_id())->get_energy()->get_max());
-
-		bonus.set_texture_name(game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus()));
-		left_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module");
-		right_module.set_texture_name(Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module");
-		//gun_image.set_texture_name(game->get_ship(player_network->get_id())->get_gun()->get_id());
+		// HP bar processing
+		auto HP_bar = gui.get<tgui::ProgressBar>("HPBar");
+		HP_bar->setMaximum(game->get_ship(player_network->get_id())->get_hp()->get_max());
+		HP_bar->setValue(game->get_ship(player_network->get_id())->get_hp()->get());
+		HP_bar->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_hp()->get())));
+		// stamina bar processing
+		auto stamina_bar = gui.get<tgui::ProgressBar>("StaminaBar");
+		stamina_bar->setMaximum(game->get_ship(player_network->get_id())->get_stamina()->get_max());
+		stamina_bar->setValue(game->get_ship(player_network->get_id())->get_stamina()->get());
+		stamina_bar->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_stamina()->get())));
+		// energy bar processing
+		auto energy_bar = gui.get<tgui::ProgressBar>("EnergyBar");
+		energy_bar->setMaximum(game->get_ship(player_network->get_id())->get_energy()->get_max());
+		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
+		energy_bar->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
+		// interface buttons processing
+		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
+		auto bonus_texture = draw->get_texture(bonus_texture_name);
+		gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
+		auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
+		auto gun_texture = draw->get_texture(gun_texture_name);
+		gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
+		auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
+		auto left_module_texture = draw->get_texture(left_module_texture_name);
+		gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(*left_module_texture);
+		auto right_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module";
+		auto right_module_texture = draw->get_texture(right_module_texture_name);
+		gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(*right_module_texture);
 	}
+	auto respawn_info = gui.get<tgui::Label>("RespawnInfo");
+	respawn_info->setTextSize(20 * scale);
 	if (game->player_by_id(player_network->get_id()) != nullptr &&
 		!game->player_by_id(player_network->get_id())->get_is_alive()) {
-		time_to_respawn.set_text("Time to respawn: " +
-			std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
-		float mod = abs(sin(float(aux::get_milli_count()) / 500));
-		press_r_to_respawn.set_text_color(sf::Color(255, 255, 255, 255 - 254 * mod));
-		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0)
-			time_to_respawn.step();
-		else
-			press_r_to_respawn.step();
+		respawn_info->setVisible(true);
+		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0) {
+			respawn_info->setInheritedOpacity(1);
+			respawn_info->setText("Time to respawn: " +
+				std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
+		}
+		else {
+			float mod = abs(sin(float(aux::get_milli_count()) / 500));
+			respawn_info->setText("Press " + respawn_button_name + " to respawn");
+			respawn_info->setInheritedOpacity(mod);
+		}
 	}
 	else {
-		if (game->player_by_id(player_network->get_id()) != nullptr) {
-			gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
-			ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
-			//std::cout << ping.get_text() << "\n";
-		}
-		while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
-			frame_marks->pop();
-		fps.set_text(std::to_string(frame_marks->size()));
-		if (game->get_network_information_active()) {
-			fps_text.step();
-			fps.step();
-			ping_text.step();
-			ping.step();
-		}
-		if (game->get_ship(player_network->get_id()) != nullptr) {
-			HP_bar.step();
-			stamina_bar.step();
-			energy_bar.step();
-			interface_image.primitive_step();
-			bonus.primitive_step();
-			bonus_tip.step();
-			auto mtype = game->get_ship(player_network->get_id())->get_left_module()->get_type();
-			auto stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
-			auto ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
-			if (stam_param >
-				game->get_ship(player_network->get_id())->get_stamina()->get() ||
-				ener_param >
-				game->get_ship(player_network->get_id())->get_energy()->get())
-				left_module.set_color(sf::Color(150, 150, 150, 255));
-			else
-				left_module.set_color(sf::Color::White);
-			left_module.primitive_step();
-			left_module_tip.step();
-			mtype = game->get_ship(player_network->get_id())->get_right_module()->get_type();
-			stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
-			ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
-			if (stam_param >
-				game->get_ship(player_network->get_id())->get_stamina()->get() ||
-				ener_param >
-				game->get_ship(player_network->get_id())->get_energy()->get())
-				right_module.set_color(sf::Color(150, 150, 150, 255));
-			else
-				right_module.set_color(sf::Color::White);
-			right_module.primitive_step();
-			right_module_tip.step();
-			gun_image.primitive_step();
-			if (game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() > b2_epsilon) {
-				draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /
-					game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get_max(),
-					left_module.window_cords_pos(), left_module.get_screen_mode() * left_module.get_scale()), sf::Color(0, 0, 0, 150));
-			}
-			if (game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() > b2_epsilon) {
-				draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() /
-					game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get_max(),
-					right_module.window_cords_pos(), right_module.get_screen_mode() * right_module.get_scale()), sf::Color(0, 0, 0, 150));
-			}
-		}
+		respawn_info->setVisible(false);
+	//	if (game->player_by_id(player_network->get_id()) != nullptr) {
+	//		gun_image.set_texture_name(game->player_by_id(player_network->get_id())->get_gun_name() + "-gun");
+	//		ping.set_text(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
+	//		//std::cout << ping.get_text() << "\n";
+	//	}
+	//	while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
+	//		frame_marks->pop();
+	//	fps.set_text(std::to_string(frame_marks->size()));
+	//	if (game->get_network_information_active()) {
+	//		fps_text.step();
+	//		fps.step();
+	//		ping_text.step();
+	//		ping.step();
+	//	}
+	//	if (game->get_ship(player_network->get_id()) != nullptr) {
+	//		HP_bar.step();
+	//		stamina_bar.step();
+	//		energy_bar.step();
+	//		interface_image.primitive_step();
+	//		bonus.primitive_step();
+	//		bonus_tip.step();
+	//		auto mtype = game->get_ship(player_network->get_id())->get_left_module()->get_type();
+	//		auto stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
+	//		auto ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
+	//		if (stam_param >
+	//			game->get_ship(player_network->get_id())->get_stamina()->get() ||
+	//			ener_param >
+	//			game->get_ship(player_network->get_id())->get_energy()->get())
+	//			left_module.set_color(sf::Color(150, 150, 150, 255));
+	//		else
+	//			left_module.set_color(sf::Color::White);
+	//		left_module.primitive_step();
+	//		left_module_tip.step();
+	//		mtype = game->get_ship(player_network->get_id())->get_right_module()->get_type();
+	//		stam_param = game->get_module_manager()->get_prototype(mtype)->stamina_cost;
+	//		ener_param = game->get_module_manager()->get_prototype(mtype)->energy_cost;
+	//		if (stam_param >
+	//			game->get_ship(player_network->get_id())->get_stamina()->get() ||
+	//			ener_param >
+	//			game->get_ship(player_network->get_id())->get_energy()->get())
+	//			right_module.set_color(sf::Color(150, 150, 150, 255));
+	//		else
+	//			right_module.set_color(sf::Color::White);
+	//		right_module.primitive_step();
+	//		right_module_tip.step();
+	//		gun_image.primitive_step();
+	//		if (game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() > b2_epsilon) {
+	//			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /
+	//				game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get_max(),
+	//				left_module.window_cords_pos(), left_module.get_screen_mode() * left_module.get_scale()), sf::Color(0, 0, 0, 150));
+	//		}
+	//		if (game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() > b2_epsilon) {
+	//			draw->fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() /
+	//				game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get_max(),
+	//				right_module.window_cords_pos(), right_module.get_screen_mode() * right_module.get_scale()), sf::Color(0, 0, 0, 150));
+	//		}
+	//	}
 	}
-	table_step();
-	draw->draw_animations(Game_Client::HUD);
+	//table_step();
+	//draw->draw_animations(Game_Client::HUD);
 }

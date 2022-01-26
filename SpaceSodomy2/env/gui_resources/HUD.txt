@@ -1,0 +1,209 @@
+Renderer.1 {
+    Texture = "../textures/modules/NONE.png" Smooth;
+    TransparentTexture = false;
+}
+
+Group.InterfaceGroup {
+    Position = (50% - 330, 100% - 80);
+    Size = (660, 80);
+
+    Renderer {
+    }
+
+    Picture.Bonus {
+        Position = (6%, 12%);
+        Renderer = &1;
+        Size = (9.09091%, 75%);
+    }
+
+    Picture.GunImage {
+        Position = (15.3%, 12%);
+        Renderer = &1;
+        Size = (9.09091%, 75%);
+    }
+
+    Picture.LeftModule {
+        Position = (75.7%, 12%);
+        Renderer = &1;
+        Size = (9.09091%, 75%);
+    }
+
+    Picture.RightModule {
+        Position = (85%, 12%);
+        Renderer = &1;
+        Size = (9.09091%, 75%);
+    }
+
+    ProgressBar.HPBar {
+        Maximum = 100;
+        Minimum = 0;
+        Position = (30.5%, 15%);
+        Size = (39.1%, 24%);
+        Text = 0;
+        TextSize = 13;
+        Value = 50;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BorderColor = black;
+            Borders = (0, 0, 0, 0);
+            FillColor = #00FF09;
+            TextColor = black;
+            TextColorFilled = black;
+            TextureBackground = None;
+            TextureFill = None;
+        }
+    }
+
+    ProgressBar.StaminaBar {
+        Maximum = 100;
+        Minimum = 0;
+        Position = (30.5%, 39%);
+        Size = (39.1%, 24%);
+        Text = 0;
+        TextSize = 13;
+        Value = 0;
+
+        Renderer {
+            BackgroundColor = white;
+            BorderColor = black;
+            Borders = (0, 1, 0, 1);
+            FillColor = #FFF92B;
+            TextColor = black;
+            TextColorFilled = black;
+            TextureBackground = None;
+            TextureFill = None;
+        }
+    }
+
+    ProgressBar.EnergyBar {
+        Maximum = 100;
+        Minimum = 0;
+        Position = (30.5%, 63%);
+        Size = (39.1%, 24%);
+        Text = 0;
+        TextSize = 13;
+        Value = 75;
+
+        Renderer {
+            BackgroundColor = white;
+            BorderColor = black;
+            Borders = (0, 0, 0, 0);
+            FillColor = #006EFF;
+            TextColor = black;
+            TextColorFilled = black;
+            TextureBackground = None;
+            TextureFill = None;
+        }
+    }
+
+    Label.BonusTip {
+        AutoSize = true;
+        Position = (10.5455%, 12%);
+        Size = (25, 33);
+        Text = Q;
+        TextSize = 25;
+
+        Renderer {
+            TextColor = rgba(255, 255, 255, 215);
+            TextOutlineColor = black;
+            TextOutlineThickness = 2;
+            TextureBackground = None;
+
+            Scrollbar {
+                ArrowBackgroundColor = rgba(160, 160, 160, 215);
+                ArrowBackgroundColorHover = rgba(170, 170, 170, 215);
+                ArrowColor = rgba(200, 200, 200, 215);
+                ArrowColorHover = rgba(225, 225, 225, 215);
+                ThumbColor = rgba(185, 185, 185, 215);
+                ThumbColorHover = rgba(195, 195, 195, 215);
+                TrackColor = rgba(160, 160, 160, 215);
+                TrackColorHover = rgba(170, 170, 170, 215);
+            }
+        }
+    }
+
+    Label.LeftModuleTip {
+        AutoSize = true;
+        Position = (80.2455%, 12%);
+        Size = (25, 33);
+        Text = Q;
+        TextSize = 25;
+
+        Renderer {
+            BorderColor = #F1F8FF;
+            Borders = (0, 0, 0, 0);
+            TextColor = rgba(255, 255, 255, 215);
+            TextOutlineColor = black;
+            TextOutlineThickness = 2;
+            TextureBackground = None;
+
+            Scrollbar {
+                ArrowBackgroundColor = rgba(160, 160, 160, 215);
+                ArrowBackgroundColorHover = rgba(170, 170, 170, 215);
+                ArrowColor = rgba(200, 200, 200, 215);
+                ArrowColorHover = rgba(225, 225, 225, 215);
+                ThumbColor = rgba(185, 185, 185, 215);
+                ThumbColorHover = rgba(195, 195, 195, 215);
+                TrackColor = rgba(160, 160, 160, 215);
+                TrackColorHover = rgba(170, 170, 170, 215);
+            }
+        }
+    }
+
+    Label.RightModuleTip {
+        AutoSize = true;
+        Position = (89.5455%, 12%);
+        Size = (25, 33);
+        Text = Q;
+        TextSize = 25;
+
+        Renderer {
+            TextColor = rgba(255, 255, 255, 215);
+            TextOutlineColor = black;
+            TextOutlineThickness = 2;
+            TextureBackground = None;
+
+            Scrollbar {
+                ArrowBackgroundColor = rgba(160, 160, 160, 215);
+                ArrowBackgroundColorHover = rgba(170, 170, 170, 215);
+                ArrowColor = rgba(200, 200, 200, 215);
+                ArrowColorHover = rgba(225, 225, 225, 215);
+                ThumbColor = rgba(185, 185, 185, 215);
+                ThumbColorHover = rgba(195, 195, 195, 215);
+                TrackColor = rgba(160, 160, 160, 215);
+                TrackColorHover = rgba(170, 170, 170, 215);
+            }
+        }
+    }
+
+    Picture.Interface {
+        Size = (100%, 100%);
+
+        Renderer {
+            Texture = "../textures/new-interface.png" Smooth;
+            TransparentTexture = false;
+        }
+    }
+}
+
+Label.RespawnInfo {
+    HorizontalAlignment = Center;
+    Position = (25%, 45%);
+    Size = (50%, 10%);
+    Text = "Press R to respawn";
+    TextSize = 30;
+    VerticalAlignment = Center;
+    Visible = false;
+
+    Renderer {
+        BackgroundColor = transparent;
+        BorderColor = #3C3C3C;
+        Borders = (0, 0, 0, 0);
+        Opacity = 1;
+        TextColor = white;
+        TextOutlineColor = black;
+        TextOutlineThickness = 2;
+        TextureBackground = None;
+    }
+}
