@@ -136,6 +136,9 @@ void Control::process_commands() {
 				}
 			}
 		}
+		if (key_by_name("REPLAY_PLAY") && replay.get_replay_active() && !key_prev_by_name("REPLAY_PLAY")) {
+			replay.play_button(gui);
+		}
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(Command_Module::BONUS_ACTIVATION, 1);
 		if (key_by_name("LEFT_MODULE"))

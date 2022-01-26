@@ -29,45 +29,25 @@ void Replay::set_replay_path(std::string path) {
 
 void Replay::set_speed(float val) {
 	replay_frame.set_change_vel(val);
+	float eps = 0.0001;
+	if (val > eps || val < -eps)
+		speed_backup = val;
 }
 
-void Replay::increase_speed() {
-	if (replay_frame.get_change_vel() > -b2_epsilon && replay_frame.get_change_vel() < b2_epsilon) {
-		replay_frame.set_change_vel(0.5);
-		return;
-	}
-	if (replay_frame.get_change_vel() > b2_epsilon) {
-		replay_frame.set_change_vel(replay_frame.get_change_vel() * 2);
-		if (replay_frame.get_change_vel() > 64.0) {
-			replay_frame.set_change_vel(64.0);
+void Replay::play_button(tgui::Gui &gui) {
+	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
+	float eps = 0.0001;
+	if (spin_control->getValue() < eps && spin_control->getValue() > -eps) {
+		if (speed_backup < eps && speed_backup > -eps) {
+			spin_control->setValue(1);
 		}
-		return;
-	}
-	if (replay_frame.get_change_vel() < -b2_epsilon) {
-		if (replay_frame.get_change_vel() > -0.5 - b2_epsilon)
-			replay_frame.set_change_vel(0);
-		else
-			replay_frame.set_change_vel(replay_frame.get_change_vel() / 2);
-	}
-}
-
-void Replay::decrease_speed() {
-	if (replay_frame.get_change_vel() > -b2_epsilon && replay_frame.get_change_vel() < b2_epsilon) {
-		replay_frame.set_change_vel(-0.5);
-		return;
-	}
-	if (replay_frame.get_change_vel() < -b2_epsilon) {
-		replay_frame.set_change_vel(replay_frame.get_change_vel() * 2);
-		if (replay_frame.get_change_vel() < -64.0) {
-			replay_frame.set_change_vel(-64.0);
+		else {
+			spin_control->setValue(speed_backup);
 		}
-		return;
 	}
-	if (replay_frame.get_change_vel() > b2_epsilon) {
-		if (replay_frame.get_change_vel() < 0.5 + b2_epsilon)
-			replay_frame.set_change_vel(0);
-		else
-			replay_frame.set_change_vel(replay_frame.get_change_vel() / 2);
+	else {
+		speed_backup = spin_control->getValue();
+		spin_control->setValue(0);
 	}
 }
 

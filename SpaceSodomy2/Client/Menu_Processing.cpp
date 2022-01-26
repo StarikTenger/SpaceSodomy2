@@ -671,11 +671,15 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
 	spin_control->onValueChange([=](float val) {
 		replay->set_speed(val);
-		});
+	});
 	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
 	replay_slider->onValueChange([=](float val) {
 		replay->get_replay_frame()->set(val);
-		});
+	});
+	auto replay_play_button = gui.get<tgui::Button>("ReplayPlay");
+	replay_play_button->onPress([=, &gui] {
+		replay->play_button(gui);
+	});
 	// Initializing control menu
 	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
 	control->onClick([&gui] {
