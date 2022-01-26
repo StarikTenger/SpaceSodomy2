@@ -651,7 +651,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		close_groups(gui);
 		launch_replay(gui, "example.ex");
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
-		});
+	});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([&gui, &close_groups] {
 		close_groups(gui);
@@ -667,7 +667,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 			launch_replay(gui, name);
 			});
 			gui.get<tgui::Group>("replay.txt")->add(choose_file);
-		});
+	});
 	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
 	spin_control->onValueChange([=](float val) {
 		replay->set_speed(val);
@@ -683,13 +683,27 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	// Initializing control menu
 	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
 	control->onClick([&gui] {
-		gui.get<tgui::Group>("AudioPanel")->setVisible(false);
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			widget->setVisible(false);
+		}
 		gui.get<tgui::Group>("ControlPanel")->setVisible(true);
 	});
 	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
 	audio->onClick([&gui] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			widget->setVisible(false);
+		}
 		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
-		gui.get<tgui::Group>("ControlPanel")->setVisible(false);
+	});
+	tgui::Button::Ptr gui_button = gui.get<tgui::Button>("GUI");
+	gui_button->onClick([&gui] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			widget->setVisible(false);
+		}
+		gui.get<tgui::Group>("GUIPanel")->setVisible(true);
 	});
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
 	back->onClick([&gui, &close_groups] {
