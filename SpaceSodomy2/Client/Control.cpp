@@ -78,10 +78,14 @@ void Control::process_commands() {
 			command_module.set_command(Command_Module::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(Command_Module::RESPAWN, 1);
-		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP"))
-			replay.increase_speed();
-		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN"))
-			replay.decrease_speed();
+		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
+			auto spin = gui.get<tgui::SpinControl>("SpinControl");
+			spin->setValue(spin->getValue() + spin->getStep());
+		}
+		if (key_by_name("REPLAY_SPEED_DOWN") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_DOWN")) {
+			auto spin = gui.get<tgui::SpinControl>("SpinControl");
+			spin->setValue(spin->getValue() - spin->getStep());
+		}
 		if (key_by_name("NEXT_PLAYER") && replay.get_replay_active() && !key_prev_by_name("NEXT_PLAYER")) {
 			if (game.get_players()->operator[](network.get_id()) == nullptr) {
 				game.get_players()->erase(game.get_players()->find(network.get_id()));
