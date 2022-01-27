@@ -1,36 +1,57 @@
 Renderer.1 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = white;
+    TextOutlineColor = black;
+    TextOutlineThickness = 1;
+    TextureBackground = None;
+}
+
+Renderer.2 {
+}
+
+Renderer.3 {
     Texture = "../textures/modules/NONE.png" Smooth;
     TransparentTexture = false;
 }
 
+Renderer.4 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = white;
+    TextOutlineColor = black;
+    TextOutlineThickness = 2;
+    TextureBackground = None;
+}
+
 Group.InterfaceGroup {
     Position = (50% - 330, 100% - 80);
+    Renderer = &2;
     Size = (660, 80);
-
-    Renderer {
-    }
 
     Picture.Bonus {
         Position = (6%, 12%);
-        Renderer = &1;
+        Renderer = &3;
         Size = (9.09091%, 75%);
     }
 
     Picture.GunImage {
         Position = (15.3%, 12%);
-        Renderer = &1;
+        Renderer = &3;
         Size = (9.09091%, 75%);
     }
 
     Picture.LeftModule {
         Position = (75.7%, 12%);
-        Renderer = &1;
+        Renderer = &3;
         Size = (9.09091%, 75%);
     }
 
     Picture.RightModule {
         Position = (85%, 12%);
-        Renderer = &1;
+        Renderer = &3;
         Size = (9.09091%, 75%);
     }
 
@@ -39,16 +60,15 @@ Group.InterfaceGroup {
         Minimum = 0;
         Position = (30.5%, 15%);
         Size = (39.1%, 24%);
-        Text = 0;
         TextSize = 13;
         Value = 50;
 
         Renderer {
-            BackgroundColor = #F5F5F5;
+            BackgroundColor = #2C272890;
             BorderColor = black;
             Borders = (0, 0, 0, 0);
-            FillColor = #00FF09;
-            TextColor = black;
+            FillColor = red;
+            TextColor = white;
             TextColorFilled = black;
             TextureBackground = None;
             TextureFill = None;
@@ -60,16 +80,15 @@ Group.InterfaceGroup {
         Minimum = 0;
         Position = (30.5%, 39%);
         Size = (39.1%, 24%);
-        Text = 0;
         TextSize = 13;
         Value = 0;
 
         Renderer {
-            BackgroundColor = white;
+            BackgroundColor = #2C272890;
             BorderColor = black;
             Borders = (0, 1, 0, 1);
             FillColor = #FFF92B;
-            TextColor = black;
+            TextColor = white;
             TextColorFilled = black;
             TextureBackground = None;
             TextureFill = None;
@@ -81,16 +100,15 @@ Group.InterfaceGroup {
         Minimum = 0;
         Position = (30.5%, 63%);
         Size = (39.1%, 24%);
-        Text = 0;
         TextSize = 13;
         Value = 75;
 
         Renderer {
-            BackgroundColor = white;
+            BackgroundColor = #2C272890;
             BorderColor = black;
             Borders = (0, 0, 0, 0);
             FillColor = #006EFF;
-            TextColor = black;
+            TextColor = white;
             TextColorFilled = black;
             TextureBackground = None;
             TextureFill = None;
@@ -105,7 +123,7 @@ Group.InterfaceGroup {
         TextSize = 25;
 
         Renderer {
-            TextColor = rgba(255, 255, 255, 215);
+            TextColor = white;
             TextOutlineColor = black;
             TextOutlineThickness = 2;
             TextureBackground = None;
@@ -185,6 +203,33 @@ Group.InterfaceGroup {
             TransparentTexture = false;
         }
     }
+
+    Label.HPBarVal {
+        HorizontalAlignment = Center;
+        Position = (40%, 18%);
+        Renderer = &1;
+        Size = (20%, 24%);
+        Text = 0;
+        TextSize = 13;
+    }
+
+    Label.StaminaBarVal {
+        HorizontalAlignment = Center;
+        Position = (40%, 42%);
+        Renderer = &1;
+        Size = (20%, 24%);
+        Text = 0;
+        TextSize = 13;
+    }
+
+    Label.EnergyBarVal {
+        HorizontalAlignment = Center;
+        Position = (40%, 66%);
+        Renderer = &1;
+        Size = (20%, 24%);
+        Text = 0;
+        TextSize = 13;
+    }
 }
 
 Label.RespawnInfo {
@@ -206,4 +251,50 @@ Label.RespawnInfo {
         TextOutlineThickness = 2;
         TextureBackground = None;
     }
+}
+
+Group.NetworkInfo {
+    Renderer = &2;
+    Size = (300, 40);
+
+    Label.Label1 {
+        HorizontalAlignment = Center;
+        Renderer = &4;
+        Size = (20%, 18);
+        Text = "Ping:";
+        TextSize = 13;
+    }
+
+    Label.Ping {
+        HorizontalAlignment = Center;
+        Position = (20%, 0);
+        Renderer = &4;
+        Size = (20%, 18);
+        Text = 0;
+        TextSize = 13;
+    }
+
+    Label.Label3 {
+        HorizontalAlignment = Center;
+        Position = (0, 20);
+        Renderer = &4;
+        Size = (20%, 18);
+        Text = "FPS:";
+        TextSize = 13;
+    }
+
+    Label.FPS {
+        HorizontalAlignment = Center;
+        Position = (20%, 20);
+        Renderer = &4;
+        Size = (20%, 18);
+        Text = 0;
+        TextSize = 13;
+    }
+}
+
+Group.RatingTable {
+    Position = (80%, 0);
+    Renderer = &2;
+    Size = (20%, 30%);
 }
