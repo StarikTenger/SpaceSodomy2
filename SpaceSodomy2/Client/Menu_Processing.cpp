@@ -653,11 +653,11 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
 		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(max_time);
 	};
-	auto HUD = load_widgets("HUD.txt");
-	HUD->setVisible(true);
 	auto main_menu = load_widgets("main_menu.txt");
 	main_menu->setVisible(true);
+	auto HUD = load_widgets("HUD.txt");
 	auto settings_menu = load_widgets("settings.txt");
+	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	// Initializing main menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
@@ -669,9 +669,16 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
-		HUD->setVisible(true);
-		std::cout << "settings";
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
+	});
+	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
+	multiplayer->onClick([=, &gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
+	});
+	auto exit = gui.get<tgui::Button>("Exit");
+	exit->onClick([=] {
+		draw->get_window()->close();
 	});
 	// Initializing replay menu
 	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
@@ -725,6 +732,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		close_groups(gui);
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
+	// Initializing multiplayer menu
 }
 
 void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
