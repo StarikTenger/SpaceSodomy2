@@ -48,7 +48,7 @@ private:
 		std::string* id_, std::string* name_);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui,
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
-	void load_HUD_settings(std::string path);
+	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);

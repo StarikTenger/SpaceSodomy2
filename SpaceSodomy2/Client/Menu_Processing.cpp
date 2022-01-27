@@ -277,16 +277,28 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
-void Menu_Processing::load_HUD_settings(std::string path) {
+void Menu_Processing::load_HUD_settings(std::string path, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double next;
 	config >> next;
 	game->set_aim_conf(next);
+	gui.get<tgui::Slider>("AimConfiguration")->setValue(next);
+	gui.get<tgui::Slider>("AimConfiguration")->onValueChange([=](int val) {
+		game->set_aim_conf(val);
+	});
 	config >> next;
 	game->set_aim_opacity(next);
+	gui.get<tgui::Slider>("AimOpacity")->setValue(next);
+	gui.get<tgui::Slider>("AimOpacity")->onValueChange([=](int val) {
+		game->set_aim_opacity(val);
+	});
 	config >> next;
 	game->set_network_information_active(next);
+	gui.get<tgui::CheckBox>("NetworkInformation")->setChecked(next);
+	gui.get<tgui::CheckBox>("NetworkInformation")->onChange([=](bool val) {
+		game->set_network_information_active(val);
+	});
 }
 
 void Menu_Processing::save_HUD_settings(std::string path) {
@@ -644,7 +656,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	auto HUD = load_widgets("HUD.txt");
 	HUD->setVisible(true);
 	auto main_menu = load_widgets("main_menu.txt");
-	//main_menu->setVisible(true);
+	main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	// Initializing main menu
@@ -655,8 +667,9 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
 	});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
-	settings->onClick([&gui, &close_groups] {
+	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
+		HUD->setVisible(true);
 		std::cout << "settings";
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
@@ -728,7 +741,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	_gui = &gui;
 	init_tgui(gui);
 	load_sound("sound_settings.conf", gui);
-	load_HUD_settings("HUD_settings.conf");
+	load_HUD_settings("HUD_settings.conf", gui);
 	// set main menu fields
 	main_menu.set_draw(draw);
 	main_menu.set_active(1);
