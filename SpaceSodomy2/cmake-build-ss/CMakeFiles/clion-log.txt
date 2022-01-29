@@ -1,5 +1,1 @@
-/home/ter/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/ter/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/ninja/linux/ninja -G Ninja /home/ter/git/SS2/SpaceSodomy2
--- Found SFML 2.5.1 in /usr/lib/x86_64-linux-gnu/cmake/SFML
--- Configuring done
--- Generating done
--- Build files have been written to: /home/ter/git/SS2/SpaceSodomy2/cmake-build-ss
+CMakeLists.txt not found in /home/ter/git/SS2/SpaceSodomy2 Select CMakeLists.txt

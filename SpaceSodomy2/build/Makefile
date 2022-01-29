@@ -277,195 +277,6 @@ AuxLib/pch.cpp.s:
 	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/AuxLib/pch.cpp.s
 .PHONY : AuxLib/pch.cpp.s
 
-Client/Control.o: Client/Control.cpp.o
-
-.PHONY : Client/Control.o
-
-# target to build an object file
-Client/Control.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Control.cpp.o
-.PHONY : Client/Control.cpp.o
-
-Client/Control.i: Client/Control.cpp.i
-
-.PHONY : Client/Control.i
-
-# target to preprocess a source file
-Client/Control.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Control.cpp.i
-.PHONY : Client/Control.cpp.i
-
-Client/Control.s: Client/Control.cpp.s
-
-.PHONY : Client/Control.s
-
-# target to generate assembly for a file
-Client/Control.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Control.cpp.s
-.PHONY : Client/Control.cpp.s
-
-Client/GameClient.o: Client/GameClient.cpp.o
-
-.PHONY : Client/GameClient.o
-
-# target to build an object file
-Client/GameClient.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/GameClient.cpp.o
-.PHONY : Client/GameClient.cpp.o
-
-Client/GameClient.i: Client/GameClient.cpp.i
-
-.PHONY : Client/GameClient.i
-
-# target to preprocess a source file
-Client/GameClient.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/GameClient.cpp.i
-.PHONY : Client/GameClient.cpp.i
-
-Client/GameClient.s: Client/GameClient.cpp.s
-
-.PHONY : Client/GameClient.s
-
-# target to generate assembly for a file
-Client/GameClient.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/GameClient.cpp.s
-.PHONY : Client/GameClient.cpp.s
-
-Client/HUDProcessing.o: Client/HUDProcessing.cpp.o
-
-.PHONY : Client/HUDProcessing.o
-
-# target to build an object file
-Client/HUDProcessing.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/HUDProcessing.cpp.o
-.PHONY : Client/HUDProcessing.cpp.o
-
-Client/HUDProcessing.i: Client/HUDProcessing.cpp.i
-
-.PHONY : Client/HUDProcessing.i
-
-# target to preprocess a source file
-Client/HUDProcessing.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/HUDProcessing.cpp.i
-.PHONY : Client/HUDProcessing.cpp.i
-
-Client/HUDProcessing.s: Client/HUDProcessing.cpp.s
-
-.PHONY : Client/HUDProcessing.s
-
-# target to generate assembly for a file
-Client/HUDProcessing.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/HUDProcessing.cpp.s
-.PHONY : Client/HUDProcessing.cpp.s
-
-Client/LoadingScreen.o: Client/LoadingScreen.cpp.o
-
-.PHONY : Client/LoadingScreen.o
-
-# target to build an object file
-Client/LoadingScreen.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/LoadingScreen.cpp.o
-.PHONY : Client/LoadingScreen.cpp.o
-
-Client/LoadingScreen.i: Client/LoadingScreen.cpp.i
-
-.PHONY : Client/LoadingScreen.i
-
-# target to preprocess a source file
-Client/LoadingScreen.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/LoadingScreen.cpp.i
-.PHONY : Client/LoadingScreen.cpp.i
-
-Client/LoadingScreen.s: Client/LoadingScreen.cpp.s
-
-.PHONY : Client/LoadingScreen.s
-
-# target to generate assembly for a file
-Client/LoadingScreen.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/LoadingScreen.cpp.s
-.PHONY : Client/LoadingScreen.cpp.s
-
-Client/MenuProcessing.o: Client/MenuProcessing.cpp.o
-
-.PHONY : Client/MenuProcessing.o
-
-# target to build an object file
-Client/MenuProcessing.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/MenuProcessing.cpp.o
-.PHONY : Client/MenuProcessing.cpp.o
-
-Client/MenuProcessing.i: Client/MenuProcessing.cpp.i
-
-.PHONY : Client/MenuProcessing.i
-
-# target to preprocess a source file
-Client/MenuProcessing.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/MenuProcessing.cpp.i
-.PHONY : Client/MenuProcessing.cpp.i
-
-Client/MenuProcessing.s: Client/MenuProcessing.cpp.s
-
-.PHONY : Client/MenuProcessing.s
-
-# target to generate assembly for a file
-Client/MenuProcessing.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/MenuProcessing.cpp.s
-.PHONY : Client/MenuProcessing.cpp.s
-
-Client/Replay.o: Client/Replay.cpp.o
-
-.PHONY : Client/Replay.o
-
-# target to build an object file
-Client/Replay.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Replay.cpp.o
-.PHONY : Client/Replay.cpp.o
-
-Client/Replay.i: Client/Replay.cpp.i
-
-.PHONY : Client/Replay.i
-
-# target to preprocess a source file
-Client/Replay.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Replay.cpp.i
-.PHONY : Client/Replay.cpp.i
-
-Client/Replay.s: Client/Replay.cpp.s
-
-.PHONY : Client/Replay.s
-
-# target to generate assembly for a file
-Client/Replay.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/Replay.cpp.s
-.PHONY : Client/Replay.cpp.s
-
-Client/main.o: Client/main.cpp.o
-
-.PHONY : Client/main.o
-
-# target to build an object file
-Client/main.cpp.o:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/main.cpp.o
-.PHONY : Client/main.cpp.o
-
-Client/main.i: Client/main.cpp.i
-
-.PHONY : Client/main.i
-
-# target to preprocess a source file
-Client/main.cpp.i:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/main.cpp.i
-.PHONY : Client/main.cpp.i
-
-Client/main.s: Client/main.cpp.s
-
-.PHONY : Client/main.s
-
-# target to generate assembly for a file
-Client/main.cpp.s:
-	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Client/main.cpp.s
-.PHONY : Client/main.cpp.s
-
 Draw/Camera.o: Draw/Camera.cpp.o
 
 .PHONY : Draw/Camera.o
@@ -1816,6 +1627,60 @@ Network/pch.cpp.s:
 	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Network/pch.cpp.s
 .PHONY : Network/pch.cpp.s
 
+Server/Control.o: Server/Control.cpp.o
+
+.PHONY : Server/Control.o
+
+# target to build an object file
+Server/Control.cpp.o:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/Control.cpp.o
+.PHONY : Server/Control.cpp.o
+
+Server/Control.i: Server/Control.cpp.i
+
+.PHONY : Server/Control.i
+
+# target to preprocess a source file
+Server/Control.cpp.i:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/Control.cpp.i
+.PHONY : Server/Control.cpp.i
+
+Server/Control.s: Server/Control.cpp.s
+
+.PHONY : Server/Control.s
+
+# target to generate assembly for a file
+Server/Control.cpp.s:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/Control.cpp.s
+.PHONY : Server/Control.cpp.s
+
+Server/main.o: Server/main.cpp.o
+
+.PHONY : Server/main.o
+
+# target to build an object file
+Server/main.cpp.o:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/main.cpp.o
+.PHONY : Server/main.cpp.o
+
+Server/main.i: Server/main.cpp.i
+
+.PHONY : Server/main.i
+
+# target to preprocess a source file
+Server/main.cpp.i:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/main.cpp.i
+.PHONY : Server/main.cpp.i
+
+Server/main.s: Server/main.cpp.s
+
+.PHONY : Server/main.s
+
+# target to generate assembly for a file
+Server/main.cpp.s:
+	$(MAKE) -f CMakeFiles/SpaceSodomy2.dir/build.make CMakeFiles/SpaceSodomy2.dir/Server/main.cpp.s
+.PHONY : Server/main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1841,27 +1706,6 @@ help:
 	@echo "... AuxLib/pch.o"
 	@echo "... AuxLib/pch.i"
 	@echo "... AuxLib/pch.s"
-	@echo "... Client/Control.o"
-	@echo "... Client/Control.i"
-	@echo "... Client/Control.s"
-	@echo "... Client/GameClient.o"
-	@echo "... Client/GameClient.i"
-	@echo "... Client/GameClient.s"
-	@echo "... Client/HUDProcessing.o"
-	@echo "... Client/HUDProcessing.i"
-	@echo "... Client/HUDProcessing.s"
-	@echo "... Client/LoadingScreen.o"
-	@echo "... Client/LoadingScreen.i"
-	@echo "... Client/LoadingScreen.s"
-	@echo "... Client/MenuProcessing.o"
-	@echo "... Client/MenuProcessing.i"
-	@echo "... Client/MenuProcessing.s"
-	@echo "... Client/Replay.o"
-	@echo "... Client/Replay.i"
-	@echo "... Client/Replay.s"
-	@echo "... Client/main.o"
-	@echo "... Client/main.i"
-	@echo "... Client/main.s"
 	@echo "... Draw/Camera.o"
 	@echo "... Draw/Camera.i"
 	@echo "... Draw/Camera.s"
@@ -2012,6 +1856,12 @@ help:
 	@echo "... Network/pch.o"
 	@echo "... Network/pch.i"
 	@echo "... Network/pch.s"
+	@echo "... Server/Control.o"
+	@echo "... Server/Control.i"
+	@echo "... Server/Control.s"
+	@echo "... Server/main.o"
+	@echo "... Server/main.i"
+	@echo "... Server/main.s"
 .PHONY : help
 
 

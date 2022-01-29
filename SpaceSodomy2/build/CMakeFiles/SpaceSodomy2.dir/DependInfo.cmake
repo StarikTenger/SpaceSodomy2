@@ -8,13 +8,6 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ter/git/SS2/SpaceSodomy2/Audio/pch.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Audio/pch.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/AuxLib/AuxLib.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/AuxLib/AuxLib.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/AuxLib/pch.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/AuxLib/pch.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/Control.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/Control.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/GameClient.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/GameClient.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/HUDProcessing.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/HUDProcessing.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/LoadingScreen.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/LoadingScreen.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/MenuProcessing.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/MenuProcessing.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/Replay.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/Replay.cpp.o"
-  "/home/ter/git/SS2/SpaceSodomy2/Client/main.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Client/main.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/Draw/Camera.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Draw/Camera.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/Draw/Draw.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Draw/Draw.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/Draw/FloatAnimation.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Draw/FloatAnimation.cpp.o"
@@ -65,6 +58,8 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ter/git/SS2/SpaceSodomy2/Network/Network.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Network/Network.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/Network/ServerNetwork.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Network/ServerNetwork.cpp.o"
   "/home/ter/git/SS2/SpaceSodomy2/Network/pch.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Network/pch.cpp.o"
+  "/home/ter/git/SS2/SpaceSodomy2/Server/Control.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Server/Control.cpp.o"
+  "/home/ter/git/SS2/SpaceSodomy2/Server/main.cpp" "/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir/Server/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -76,7 +71,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../Game"
   "../Menu"
   "../Network"
-  "../Client"
+  "../Server"
   )
 
 # Targets to which this target links.
