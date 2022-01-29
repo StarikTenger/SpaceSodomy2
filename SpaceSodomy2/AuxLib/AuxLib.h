@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <cmath>
 #include <cstdlib>
@@ -9,8 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
-#include <direct.h>
-#include <Windows.h>
+#include <sys/stat.h>
 
 class aux {
 public:

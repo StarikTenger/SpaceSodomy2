@@ -1,10 +1,11 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <Network/ClientNetwork.h>
-#include <AuxLib/AuxLib.h>
-#include <Draw/Draw.h>
-#include <Audio/Audio.h>
+
+#include <./../Network/ClientNetwork.h>
+#include <./../AuxLib/AuxLib.h>
+#include <./../Draw/Draw.h>
+#include <./../Audio/Audio.h>
 #include "HUDProcessing.h"
 #include "MenuProcessing.h"
 #include "GameClient.h"

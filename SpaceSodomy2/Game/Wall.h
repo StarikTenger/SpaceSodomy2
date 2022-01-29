@@ -1,6 +1,6 @@
 #pragma once
 #include <box2d/box2d.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include <vector>
 #include "iId.h"
 

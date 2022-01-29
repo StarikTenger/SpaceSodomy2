@@ -10,7 +10,7 @@ Text_Field::Text_Field() {
 
 // Get methods
 std::string Text_Field::get_text() {
-	return text.getString();
+	return text.getString().toAnsiString();
 }
 sf::Font Text_Field::get_font() {
 	return *text.getFont();
@@ -73,7 +73,7 @@ void Text_Field::step() {
 	// Text entering
 	if (keyboard_active && active_field) {
 		while (!get_keyboard()->text_entered->empty()) {
-			new_text = text.getString();
+			new_text = text.getString().toAnsiString();
 			wchar_t symbol = get_keyboard()->text_entered->front();
 			if (keyboard_activated) {
 				new_text = "";

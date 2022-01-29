@@ -15,7 +15,7 @@
 #include "BonusSlot.h"
 #include "BonusManager.h"
 #include <box2d/box2d.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include <memory>
 #include "ModuleManager.h"
 #include "GameObjects.h"

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include "Control.h"
 
 int main() {

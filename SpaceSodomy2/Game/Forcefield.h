@@ -1,7 +1,7 @@
 #pragma once
 #include "iId.h"
 #include <box2d/box2d.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 
 class Forcefield : public iId {
 private:

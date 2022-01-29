@@ -4,13 +4,12 @@
 #include <SFML/Network.hpp>
 #include <fstream>
 #include <cstdio>
-#include <windows.h>
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <sys/timeb.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 
 class ClientNetwork {
 private:

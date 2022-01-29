@@ -1,6 +1,6 @@
 #pragma once
 #include <deque>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include "Counter.h"
 #include <map>
 
