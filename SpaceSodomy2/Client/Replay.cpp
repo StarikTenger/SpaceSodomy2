@@ -56,7 +56,7 @@ void Replay::set_replay_active(bool val) {
 }
 
 std::string Replay::get_cur_frame() {
-	return (frames[replay_frame.get()]);
+	return (frames[(int)(replay_frame.get() / dt)]);
 }
 
 Counter* Replay::get_replay_frame() {
@@ -65,4 +65,13 @@ Counter* Replay::get_replay_frame() {
 
 bool Replay::get_replay_active() {
 	return replay_active;
+}
+
+float Replay::get_seconds() {
+	return replay_frame.get() * dt;
+}
+
+void Replay::step(float _dt) {
+	dt = _dt;
+	replay_frame.step(dt);
 }

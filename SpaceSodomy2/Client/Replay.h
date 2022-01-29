@@ -14,6 +14,7 @@ private:
 	std::vector<std::string> frames;
 	bool replay_active = 0;
 	float speed_backup = 1;
+	float dt = 0.020;
 public:
 	Replay();
 	Replay(std::string);
@@ -28,5 +29,8 @@ public:
 	std::string get_cur_frame();
 	Counter* get_replay_frame();
 	bool get_replay_active();
+	float get_seconds();
+
+	void step(float _dt);
 };
 

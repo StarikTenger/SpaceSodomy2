@@ -642,9 +642,9 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(max_time);
 	};
 	auto HUD = load_widgets("HUD.txt");
-	HUD->setVisible(true);
+	//HUD->setVisible(true);
 	auto main_menu = load_widgets("main_menu.txt");
-	//main_menu->setVisible(true);
+	main_menu->setVisible(true);
 	auto settings_menu = load_widgets("settings.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	// Initializing main menu
@@ -838,9 +838,10 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 }
 
 void Menu_Processing::step() {
-	replay->get_replay_frame()->step(1);
+	replay->step(game->get_dt());
+	
 	if (replay->get_replay_active()) {
-		int cur_time = replay->get_replay_frame()->get();
+		int cur_time = replay->get_seconds();
 		_gui->get<tgui::Label>("CurTime")->setText(std::to_string(cur_time / 3600) + ":" +
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setValue(cur_time);

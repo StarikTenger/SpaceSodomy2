@@ -864,6 +864,10 @@ void Game::step(float _dt) {
 	process_forcefields();
 }
 
+float Game::get_dt() {
+	return dt;
+}
+
 void Game::set_dt(float _dt) {
 	dt = _dt;
 }

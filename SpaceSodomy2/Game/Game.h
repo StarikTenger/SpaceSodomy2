@@ -30,7 +30,7 @@ protected:
 
 
 	// Time step
-	float dt = 0;
+	float dt = 0.02;
 	float time = 0;
 
 	// Objects' systems
@@ -149,6 +149,8 @@ public:
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
 	void step(float dt);
+	// Get
+	float get_dt();
 	// Set
 	void set_dt(float);
 	void set_time(std::map<int, int>*);
