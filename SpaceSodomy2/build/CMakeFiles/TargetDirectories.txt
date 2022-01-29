@@ -1,7 +1,0 @@
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/install/strip.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/install/local.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/install.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/list_install_components.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/rebuild_cache.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/edit_cache.dir
-/home/ter/git/SS2/SpaceSodomy2/build/CMakeFiles/SpaceSodomy2.dir

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(SpaceSodomy2  VERSION 0.1)
+project(SpaceSodomy2 VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 14)
+
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
@@ -14,9 +15,12 @@ endif()
 
 
 find_package(Threads REQUIRED)
+
 find_package(SFML
         COMPONENTS
         system window graphics network audio REQUIRED)
+
+
 
 include_directories(Audio)
 include_directories(AuxLib)
@@ -24,31 +28,19 @@ include_directories(Draw)
 include_directories(Game)
 include_directories(Menu)
 include_directories(Network)
-include_directories(Client)
-add_executable(SpaceSodomy2 Client/main.cpp
-        Client/Control.h
-        Client/Control.cpp
+include_directories(Server)
+
+
+add_executable(SpaceSodomy2 Server/main.cpp
+        Server/Control.cpp
+        Server/Control.h
         Audio/framework.h
         Audio/pch.h
         Audio/pch.cpp
 
         Audio/Audio.h
         Audio/Audio.cpp
-        Client/GameClient.h
-        Client/GameClient.cpp
 
-        Client/HUDProcessing.h
-        Client/HUDProcessing.cpp
-        Client/LoadingScreen.cpp
-        Client/LoadingScreen.h
-
-        Client/MenuProcessing.cpp
-        Client/MenuProcessing.h
-        Client/Replay.cpp
-        Client/Replay.h
-        Client/resource.h
-        Client/resource1.h
-        Client/resource2.h
 
         AuxLib/AuxLib.cpp
         AuxLib/AuxLib.h
@@ -163,11 +155,10 @@ add_executable(SpaceSodomy2 Client/main.cpp
         Network/ServerNetwork.cpp
         Network/ServerNetwork.h
 
-
-        Client/main.cpp)
-
+        Server/main.cpp)
 target_link_libraries(SpaceSodomy2 box2d)
 target_link_libraries(SpaceSodomy2 sfml-system sfml-window sfml-graphics sfml-network sfml-audio )
 target_link_libraries(SpaceSodomy2 ${CMAKE_THREAD_LIBS_INIT})
 install(TARGETS SpaceSodomy2 DESTINATION bin)
+
 
