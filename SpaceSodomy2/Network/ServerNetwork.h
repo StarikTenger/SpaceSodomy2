@@ -4,7 +4,6 @@
 #include <SFML/Network.hpp>
 #include <fstream>
 #include <cstdio>
-#include <windows.h>
 #include <vector>
 #include <iostream>
 #include <cstdlib>

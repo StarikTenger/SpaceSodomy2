@@ -1,10 +1,10 @@
 #pragma once
-#include<Menu/Menu.h>
-#include<AuxLib/AuxLib.h>
-#include<Client/GameClient.h>
+#include<./../Menu/Menu.h>
+#include<./../AuxLib/AuxLib.h>
+#include<./../Client/GameClient.h>
 #include<string>
-#include<Client/Replay.h>
-#include<Network/ClientNetwork.h>
+#include<./../Client/Replay.h>
+#include<./../Network/ClientNetwork.h>
 
 class MenuProcessing {
 private:

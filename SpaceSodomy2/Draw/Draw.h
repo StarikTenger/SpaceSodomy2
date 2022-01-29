@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include <string>
 #include <set>
 #include <map>

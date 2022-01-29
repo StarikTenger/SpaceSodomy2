@@ -1,8 +1,8 @@
 #pragma once
-#include<Menu/Bar.h>
-#include<Client/GameClient.h>
-#include<AuxLib/AuxLib.h>
-#include<Network/ClientNetwork.h>
+#include<./../Menu/Bar.h>
+#include<./../Client/GameClient.h>
+#include<./../AuxLib/AuxLib.h>
+#include<./../Network/ClientNetwork.h>
 
 class HUDProcessing {
 private:

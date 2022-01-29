@@ -1,5 +1,5 @@
 #pragma once
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 #include "ActiveModule.h"
 #include "ProjectileManager.h"
 #include "Effects.h"

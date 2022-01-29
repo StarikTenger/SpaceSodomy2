@@ -5,7 +5,9 @@
 #include "framework.h"
 #include "AuxLib.h"
 #include <iomanip>
+
 #include <sstream>
+#include <cstdlib>
 
 // Converts color from hsv to rgb
 sf::Color aux::from_hsv(float H, float S, float V) {
@@ -395,13 +397,14 @@ b2Vec2 aux::direction(float angle) {
 }
 
 void aux::mk_dir(std::string path) {
-	if (_mkdir((path).c_str())) {
-		if (errno == EEXIST) {
-			return;
-		}
-		std::cout << "Error: could not create directory: " << path << '\n';
-	}
-	std::cout << "Directory " << path << " created\n";
+    if (system(("mkdir -p " + path).c_str())){
+        //if (_mkdir((path).c_str())) {
+        if (errno == EEXIST) {
+            return;
+        }
+        std::cout << "Error: could not create directory: " << path << '\n';
+    }
+    std::cout << "Directory " << path << " created\n";
 }
 
 float aux::vec_to_angle(b2Vec2 vec) {

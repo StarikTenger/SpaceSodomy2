@@ -1,10 +1,10 @@
 #pragma once
-#include <Game/Counter.h>
+#include <./../Game/Counter.h>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <box2d/box2d.h>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 class Replay {
 private:
 	Counter replay_frame;

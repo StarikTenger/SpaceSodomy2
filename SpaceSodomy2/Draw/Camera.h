@@ -1,7 +1,7 @@
 #pragma once
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
-#include <AuxLib/AuxLib.h>
+#include <./../AuxLib/AuxLib.h>
 
 class Camera {
 private:

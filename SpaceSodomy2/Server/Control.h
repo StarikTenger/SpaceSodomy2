@@ -1,8 +1,8 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include <AuxLib/AuxLib.h>
-#include <Game\Game.h>
-#include <Network\ServerNetwork.h>
+#include <./../AuxLib/AuxLib.h>
+#include <./../Game/Game.h>
+#include <./../Network/ServerNetwork.h>
 #include <iostream>
 #include <sstream>
 #include <string>

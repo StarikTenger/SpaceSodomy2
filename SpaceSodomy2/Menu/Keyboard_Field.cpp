@@ -10,7 +10,7 @@ Keyboard_Field::Keyboard_Field() {
 
 // Get methods
 std::string Keyboard_Field::get_text() {
-	return text.getString();
+	return text.getString().toAnsiString();
 }
 sf::Font Keyboard_Field::get_font() {
 	return *text.getFont();
