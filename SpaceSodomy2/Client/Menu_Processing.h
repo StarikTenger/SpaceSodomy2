@@ -62,8 +62,7 @@ private:
 		int stamina, int stamina_recovery, Menu* hull);
 	void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
 	void init_module(std::string name, Menu* module, b2Vec2 add_pos);
-	//void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
-	//voif init_module(std::string name);
+	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	Draw* draw;
 	Game_Client* game;
 	Replay* replay;

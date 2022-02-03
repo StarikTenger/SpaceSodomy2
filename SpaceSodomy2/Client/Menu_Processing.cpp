@@ -135,6 +135,7 @@ void Menu_Processing::init_gun_menu(b2Vec2 pos, std::string path_to_guns_descrip
 	}
 }
 
+
 void Menu_Processing::init_module(std::string name, Menu* module, b2Vec2 add_pos) {
 	module->add_button(++current_id, name + "-module", b2Vec2(-150, 150) + add_pos, 7, b2Vec2(200, 200), sf::Color::White, mouse_pos, 0);
 	module->add_constant_text(++current_id, "Name: " + name, b2Vec2(-300, 300) + add_pos, 7, 20,
@@ -629,6 +630,235 @@ void Menu_Processing::init_menu(std::string path_, Menu* object) {
 	}
 }
 
+void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
+	auto conf = gui.get<tgui::Group>("configuration.txt");
+
+	auto gun_info = conf->get<tgui::ScrollablePanel>("GunInfo");
+	auto hull_info = conf->get<tgui::ScrollablePanel>("HullInfo");
+	auto module_info = conf->get<tgui::ScrollablePanel>("ModuleInfo");
+
+	auto variants = conf->get<tgui::ScrollablePanel>("Variants");
+	tgui::ScrollablePanel::Ptr gun_vars = tgui::ScrollablePanel::copy(variants),
+		hull_vars = tgui::ScrollablePanel::copy(variants), module_vars = tgui::ScrollablePanel::copy(variants);
+
+	conf->add(hull_vars);
+	conf->add(module_vars);
+	conf->add(gun_vars);
+
+	hull_vars->setWidgetName("hull_vars");
+	gun_vars->setWidgetName("gun_vars");
+	module_vars->setWidgetName("module_vars");
+
+	conf->get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(*draw->get_texture(game->get_hull_name() + "-hull"));
+	conf->get<tgui::Picture>("CurrentHull")->onClick([=] {
+		gun_vars->setVisible(0);
+		hull_vars->setVisible(1);
+		module_vars->setVisible(0);
+	});
+
+	conf->get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(*draw->get_texture(game->get_gun_name() + "-gun"));
+	conf->get<tgui::Picture>("CurrentGun")->onClick([=] {
+		gun_vars->setVisible(1);
+		hull_vars->setVisible(0);
+		module_vars->setVisible(0);
+	});
+
+	conf->get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(*draw->get_texture(game->get_left_module_name() + "-module"));
+	conf->get<tgui::Picture>("CurrentLeftModule")->onClick([=] {
+		gun_vars->setVisible(0);
+		hull_vars->setVisible(0);
+		module_vars->setVisible(1);
+	});
+
+	conf->get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(*draw->get_texture(game->get_right_module_name() + "-module"));
+	conf->get<tgui::Picture>("CurrentRightModule")->onClick([=] {
+		gun_vars->setVisible(0);
+		hull_vars->setVisible(0);
+		module_vars->setVisible(1);
+		});
+
+	std::ifstream file_to_comment(file_name);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::map<std::string, int> gun_maxes, hull_maxes, module_maxes;
+	std::set<tgui::ScrollablePanel::Ptr> guns, hulls, modules;
+
+	auto name_transform = [](std::string name) {
+		std::transform(name.begin(), name.end(), name.begin(),
+			[](unsigned char c) { 
+				if (c == '_')
+					return int(' ');
+				else
+					return std::tolower(c); 
+			});
+		name[0] = std::toupper(name[0]);
+		return name;
+	};
+	auto close_info = [](tgui::Gui& gui) {
+		auto widgets = gui.get<tgui::Group>("InfoGroup")->getWidgets();
+		for (auto widget : widgets) {
+			widget->setVisible(0);
+		}
+	};
+	while (!config.eof()) {
+		std::string name, next;
+		config >> next;
+		if (next == "GUN") {
+			config >> name >> next;
+
+			tgui::ScrollablePanel::Ptr new_gun = tgui::ScrollablePanel::copy(gun_info);
+			new_gun->setWidgetName(name + "-gun");
+
+			new_gun->get<tgui::Picture>("GunPreview")->getRenderer()
+				->setTexture(*draw->get_texture(name + "-gun"));
+			new_gun->get<tgui::Label>("GunName")->setText(name);
+
+			auto pic = tgui::Picture::create();
+			pic->getRenderer()->setTexture(*draw->get_texture(name + "-gun"));
+			auto _game = game;
+			pic->onClick([=, &gui, &close_info] {
+				close_info(gui);
+				new_gun->setVisible(1);
+
+				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
+				gui.get<tgui::Picture>("CurrentGun")->getRenderer()
+					->setTexture(new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture());
+			});
+			gun_vars->add(pic);
+
+			while (next != "END") {
+				next = name_transform(next);
+				float val, cval;
+				int rval;
+				config >> val;
+				if (modf(val, &cval) > b2_epsilon) {
+					rval = 100 * val;
+				}
+				auto val_bar = new_gun->get<tgui::ProgressBar>(next);
+				if (val_bar != nullptr) {
+					gun_maxes[next] = std::max(gun_maxes[next], rval);
+					new_gun->get<tgui::ProgressBar>(next)->setMaximum(rval);
+					new_gun->get<tgui::ProgressBar>(next)->setValue(rval);
+				}
+				config >> next;
+			}
+
+			guns.insert(new_gun);
+			gui.get<tgui::Group>("InfoGroup")->add(new_gun);
+		}
+		if (next == "HULL") {
+			config >> name >> next;
+
+			tgui::ScrollablePanel::Ptr new_hull = tgui::ScrollablePanel::copy(hull_info);
+			new_hull->setWidgetName(name + "-hull");
+
+			new_hull->get<tgui::Picture>("HullPreview")->getRenderer()
+				->setTexture(*draw->get_texture(name + "-hull"));
+			new_hull->get<tgui::Label>("HullName")->setText(name);
+
+			auto pic = tgui::Picture::create();
+			pic->getRenderer()->setTexture(*draw->get_texture(name + "-hull"));
+			auto _game = game;
+			pic->onClick([=, &gui, &close_info] {
+				close_info(gui);
+				new_hull->setVisible(1);
+
+				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
+				gui.get<tgui::Picture>("CurrentHull")->getRenderer()
+					->setTexture(new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture());
+			});
+			hull_vars->add(pic);
+
+			while (next != "END") {
+				next = name_transform(next);
+				float val, cval;
+				int rval;
+				config >> val;
+				if (modf(val, &cval) > b2_epsilon) {
+					rval = 100 * val;
+				}
+				auto val_bar = new_hull->get<tgui::ProgressBar>(next);
+				if (val_bar != nullptr) {
+					hull_maxes[next] = std::max(hull_maxes[next], rval);
+					new_hull->get<tgui::ProgressBar>(next)->setMaximum(rval);
+					new_hull->get<tgui::ProgressBar>(next)->setValue(rval);
+				}
+				config >> next;
+			}
+
+			hulls.insert(new_hull);
+			gui.get<tgui::Group>("InfoGroup")->add(new_hull);
+		}
+		if (next == "MODULE") {
+			config >> name >> next;
+
+			tgui::ScrollablePanel::Ptr new_module = tgui::ScrollablePanel::copy(module_info);
+			new_module->setWidgetName(name + "-module");
+
+			new_module->get<tgui::Picture>("ModulePreview")->getRenderer()
+				->setTexture(*draw->get_texture(name + "-module"));
+			new_module->get<tgui::Label>("ModuleName")->setText(name);
+
+			auto pic = tgui::Picture::create();
+			pic->getRenderer()->setTexture(*draw->get_texture(name + "-module"));
+			auto _game = game;
+			pic->onClick([=, &gui, &close_info] {
+				close_info(gui);
+				new_module->setVisible(1);
+
+				if (module_num == 1) {
+					_game->set_left_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
+					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()
+						->setTexture(new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture());
+				}
+				else {
+					_game->set_right_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
+					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()
+						->setTexture(new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture());
+				}
+			});
+			module_vars->add(pic);
+
+			while (next != "END") {
+				next = name_transform(next);
+				float val, cval;
+				int rval;
+				config >> val;
+				if (modf(val, &cval) > b2_epsilon) {
+					rval = 100 * val;
+				}
+				auto val_bar = new_module->get<tgui::ProgressBar>(next);
+				if (val_bar != nullptr) {
+					module_maxes[next] = std::max(module_maxes[next], rval);
+					new_module->get<tgui::ProgressBar>(next)->setMaximum(rval);
+					new_module->get<tgui::ProgressBar>(next)->setValue(rval);
+				}
+				config >> next;
+			}
+
+			modules.insert(new_module);
+			gui.get<tgui::Group>("InfoGroup")->add(new_module);
+		}
+	}
+
+	for (auto gun : guns) {
+		for (auto param : gun_maxes) {
+			gun->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+		}
+	}
+
+	for (auto hull : hulls) {
+		for (auto param : hull_maxes) {
+			hull->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+		}
+	}
+
+	for (auto module : modules) {
+		for (auto param : module_maxes) {
+			module->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+		}
+	}
+}
+
 void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	auto load_widgets = [&gui](std::string file_name) {
 		auto ans = tgui::Group::create();
@@ -733,6 +963,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
 	// Initializing multiplayer menu
+	init_multiplayer_menu("parameters.conf", gui);
 }
 
 void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
@@ -905,6 +1136,39 @@ void Menu_Processing::step() {
 			keyboard->text_entered->pop();
 		disactivated = 0;
 	}
+
+	sf::Vector2f win_s =
+		sf::Vector2f(1.0 * draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width,
+			1.0 * draw->get_window()->getSize().y / sf::VideoMode::getDesktopMode().height);
+	auto av_rez = (win_s.x + win_s.y) / 2.0;
+	tgui::Layout2d pic_size = tgui::Layout2d(96 * av_rez, 96 * av_rez);
+
+	_gui->get<tgui::Picture>("CurrentHull")->setSize(pic_size);
+	_gui->get<tgui::Picture>("CurrentHull")->setPosition(0, "5%");
+
+	_gui->get<tgui::Picture>("CurrentGun")->setSize(pic_size);
+	_gui->get<tgui::Picture>("CurrentGun")->setPosition((std::to_string(pic_size.x.getValue()) + " + 2%").c_str(), "5%");
+
+	_gui->get<tgui::Picture>("CurrentLeftModule")->setSize(pic_size);
+	_gui->get<tgui::Picture>("CurrentLeftModule")->setPosition((std::to_string(2 * pic_size.x.getValue()) + " + 4%").c_str(), "5%");
+
+	_gui->get<tgui::Picture>("CurrentRightModule")->setSize(pic_size);
+	_gui->get<tgui::Picture>("CurrentRightModule")->setPosition((std::to_string(3 * pic_size.x.getValue()) + " + 6%").c_str(), "5%");
+
+	auto set_sizes = [=](tgui::ScrollablePanel::Ptr panel) {
+		auto widgets = panel->getWidgets();
+		for (int k = 0; k < widgets.size(); k++) {
+			widgets[k]->setSize(pic_size);
+			widgets[k]->setPosition((std::to_string((k % 4) * pic_size.x.getValue()) + " + " + std::to_string((k % 4) * 2) + "%").c_str(),
+				(std::to_string((k / 4) * pic_size.x.getValue()) + " + " + std::to_string((k / 4) * 2) + "%").c_str());
+		}
+	};
+
+	auto x = _gui->get<tgui::Group>("configuration.txt")->get<tgui::ScrollablePanel>("gun_vars");
+	set_sizes(_gui->get<tgui::ScrollablePanel>("gun_vars"));
+	set_sizes(_gui->get<tgui::ScrollablePanel>("hull_vars"));
+	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
+
 	while (!events.empty()) {
 		if (name_to_id["NewGame"] == events.front()) { // New game button
 			active = 0;
