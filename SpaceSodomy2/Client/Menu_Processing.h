@@ -45,7 +45,7 @@ private:
 	void init_tgui(tgui::Gui& gui);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
-		std::string* id_, std::string* name_);
+		std::string* id_, std::string* name_, tgui::Gui &gui);
 	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui,
 		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);

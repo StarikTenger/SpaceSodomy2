@@ -343,13 +343,15 @@ void Menu_Processing::save_config(std::string path, std::string address_, int po
 	fout.close();
 }
 void Menu_Processing::load_config(std::string path, std::string* address_, std::string* port_,
-	std::string* id_, std::string* name_) {
+	std::string* id_, std::string* name_, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	config >> *(address_);
 	config >> *(port_);
 	config >> *(id_);
 	config >> *(name_);
+	gui.get<tgui::EditBox>("ServerIP")->setText(*address_);
+	gui.get<tgui::EditBox>("Name")->setText(*name_);
 	if ((*id_) == "0") {
 		*id_ = std::to_string(aux::random_int(1, 100000));
 		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
@@ -964,6 +966,19 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	});
 	// Initializing multiplayer menu
 	init_multiplayer_menu("parameters.conf", gui);
+	gui.get<tgui::EditBox>("ServerIP")->onTextChange([=, &gui] {
+		network->set_server(gui.get<tgui::EditBox>("ServerIP")->getText().toStdString());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+	});
+	gui.get<tgui::EditBox>("Name")->onTextChange([=, &gui] {
+		network->set_name(gui.get<tgui::EditBox>("Name")->getText().toStdString());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+	});
+	gui.get<tgui::Button>("Play")->onClick([=, &close_groups, &gui] {
+		close_groups(gui);
+		HUD->setVisible(true);
+		active = false;
+	});
 }
 
 void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
@@ -992,7 +1007,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	config_menu.set_active(0);
 	config_menu.set_events(&events);
 	std::string ServerIP, Port, ID, Name;
-	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name);
+	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
 	menus.push_back(&config_menu);
 	init_menu("menu_configs/client_config.conf", &config_menu);
 	constant_texts[name_to_id["ServerIPText"]]->set_text("Server IP:");
