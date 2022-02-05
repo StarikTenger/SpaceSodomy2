@@ -2,8 +2,6 @@
 #include <Game/Game.h>
 #include <Draw/Draw.h>
 #include <Audio/Audio.h>
-#include <Menu/Bar.h>
-#include <Menu/Constant_Text.h>
 #include <AuxLib/AuxLib.h>
 
 class Game_Client : public Game {

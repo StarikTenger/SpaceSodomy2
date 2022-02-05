@@ -188,7 +188,7 @@ Control::Control() {
 	// *****************
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
-	Loading_Screen loading(&draw);
+	Loading_Screen loading(&draw, gui);
 	loading.step(0, "Loading textures...");	
 	//draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
@@ -201,6 +201,7 @@ Control::Control() {
 	audio.load_musics();
 	game.set_draw(&draw);
 	game.set_audio(&audio);
+	loading.close();
 	// SFML key names
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});
