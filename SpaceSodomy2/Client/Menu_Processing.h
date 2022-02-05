@@ -11,34 +11,10 @@
 
 class Menu_Processing {
 private:
-	Menu main_menu; // main menu object
-	Menu config_menu; // config menu object
-	Menu keys_menu; // keys menu object
-	Menu settings_menu; // settings menu object
-	Menu sound_menu; // sound menu object
-	Menu gun_menu; // gun menu object
-	std::map <std::string, Menu> guns; // guns
-	Menu hull_menu; // hull menu objects
-	std::map <std::string, Menu> hulls; // hulls
-	Menu modules_menu;
-	std::map <std::string, Menu> modules; // modules
-	Menu HUD_menu;
-	Menu replay_menu;
-	Menu replay_setup_menu;
-
-	std::vector<Menu*> menus, settings_menus;
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
 	Client_Network* network;
-	std::map<int, Bar*> bars;
-	std::map<int, Menu_Object*> images;
-	std::map<int, Button*> buttons;
-	std::map<int, Constant_Text*> constant_texts;
-	std::map<int, Slider*> sliders;
-	std::map<int, Text_Field*> text_fields;
-	std::map<int, Keyboard_Field*> keyboard_fields;
-	std::map<int, Check_Box*> check_boxes;
 	std::queue<int> events; // menu events
 	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
@@ -51,8 +27,6 @@ private:
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);
-	void init_menu(std::string path_, Menu* object);
-	void close_settings_menus();
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	Draw* draw;
 	Game_Client* game;

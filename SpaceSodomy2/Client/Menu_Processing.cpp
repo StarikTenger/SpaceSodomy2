@@ -2,23 +2,6 @@
 
 Menu_Processing::Menu_Processing() {}
 
-void Menu_Processing::close_settings_menus() {
-	config_menu.set_active(0);
-	keys_menu.set_active(0);
-	sound_menu.set_active(0);
-	gun_menu.set_active(0);
-	hull_menu.set_active(0);
-	HUD_menu.set_active(0);
-	modules_menu.set_active(0);
-	for (auto it = guns.begin(); it != guns.end(); it++)
-		guns[it->first].set_active(0);
-	for (auto it = hulls.begin(); it != hulls.end(); it++)
-		hulls[it->first].set_active(0);
-	for (auto it = modules.begin(); it != modules.end(); it++) {
-		modules[it->first].set_active(0);
-	}
-}
-
 void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -180,280 +163,6 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	if ((*id_) == "0") {
 		*id_ = std::to_string(aux::random_int(1, 100000));
 		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
-	}
-}
-
-void Menu_Processing::init_menu(std::string path_, Menu* object) {
-	// uncomment config file
-	std::ifstream comment_file(path_);
-	std::stringstream file = aux::comment(comment_file);
-	for (int i = current_id; !file.eof(); i++) {
-		current_id++;
-		std::string type, next;
-		int typenum = 0, align = 0;
-		std::string texture_name, button_name, name;
-		b2Vec2 pos, scale;
-		b2Vec2 axis_scale, slider_scale;
-		int min_val, max_val, val;
-		int use_window_cords, use_image_scale, critical;
-		int character_size;
-		int discrete = 0;
-		sf::Color back_color, front_color;
-		file >> type;
-		if (type == "Button")
-			typenum = 1;
-		if (type == "TextField")
-			typenum = 2;
-		if (type == "Slider")
-			typenum = 3;
-		if (type == "KeyboardField")
-			typenum = 4;
-		if (type == "ConstantText")
-			typenum = 5;
-		if (type == "Image")
-			typenum = 6;
-		if (type == "Bar")
-			typenum = 7;
-		if (type == "CheckBox")
-			typenum = 8;
-		switch (typenum) {
-		case 1:
-			file >> next;
-			button_name = "default";
-			texture_name = "NewGame";
-			use_window_cords = 0;
-			pos = { 0, 0 };
-			use_image_scale = 1;
-			scale = { 1, 1 };
-			while (next != "END") {
-				if (next == "NAME")
-					file >> button_name;
-				if (next == "TEXTURE_NAME")
-					file >> texture_name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "SCALE") {
-					file >> scale.x >> scale.y;
-					use_image_scale = 0;
-				}
-				file >> next;
-			}
-			if (scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (scale.y == -1)
-				sf::VideoMode::getDesktopMode().height;
-			buttons[i] = object->add_button(i, texture_name, pos, use_window_cords, scale, sf::Color::White, mouse_pos, use_image_scale);
-			name_to_id[button_name] = i;
-			break;
-		case 2:
-			name = "default";
-			texture_name = "TextField";
-			use_window_cords = 0;
-			pos = { 0,0 };
-			character_size = 20;
-			align = 1;
-			file >> next;
-			while (next != "END") {
-				if (next == "NAME")
-					file >> name;
-				if (next == "TEXTURE_NAME")
-					file >> texture_name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "CHARACTER_SIZE")
-					file >> character_size;
-				if (next == "ALIGN")
-					file >> align;
-				file >> next;
-			}
-			name_to_id[name] = i;
-			text_fields[i] = object->add_text_field(i, "", texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				align, mouse_pos, keyboard);
-			break;
-		case 3:
-			name = "default";
-			use_window_cords = 0;
-			pos = { 0,0 };
-			axis_scale = { 100, 5 };
-			slider_scale = {10, 10};
-			min_val = 0;
-			discrete = 0;
-			max_val = 100;
-			file >> next;
-			while (next != "END") {
-				if (next == "NAME")
-					file >> name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "AXIS_SCALE")
-					file >> axis_scale.x >> axis_scale.y;
-				if (next == "SLIDER_SCALE")
-					file >> slider_scale.x >> slider_scale.y;
-				if (next == "MIN")
-					file >> min_val;
-				if (next == "MAX")
-					file >> max_val;
-				if (next == "DISCRETE")
-					file >> discrete;
-				file >> next;
-			}
-			if (axis_scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (axis_scale.y == -1)
-				axis_scale.y = sf::VideoMode::getDesktopMode().height;
-			if (slider_scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (slider_scale.y == -1)
-				slider_scale.y = sf::VideoMode::getDesktopMode().height;
-			sliders[i] = object->add_slider(i, pos, use_window_cords, axis_scale, slider_scale,
-				min_val, max_val, 0, mouse_pos);
-			sliders[i]->set_discrete(discrete);
-			name_to_id[name] = i;
-			break;
-		case 4:
-			texture_name = "TextField";
-			use_window_cords = 0;
-			pos = { 0,0 };
-			character_size = 20;
-			align = 1;
-			file >> next;
-			while (next != "END") {
-				if (next == "TEXTURE_NAME")
-					file >> texture_name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "CHARACTER_SIZE")
-					file >> character_size;
-				if (next == "ALIGN")
-					file >> align;
-				file >> next;
-			}
-			keyboard_fields[i] = object->add_keyboard_field(i, "", texture_name, pos, use_window_cords, character_size, sf::Color::White,
-				align, mouse_pos, keyboard);
-			break;
-		case 5:
-			name = "default";
-			use_window_cords = 0;
-			pos = { 0, 0 };
-			character_size = 20;
-			file >> next;
-			align = 2;
-			while (next != "END") {
-				if (next == "NAME")
-					file >> name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "CHARACTER_SIZE")
-					file >> character_size;
-				if (next == "ALIGN")
-					file >> align;
-				file >> next;
-			}
-			if (scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (scale.y == -1)
-				scale.y = sf::VideoMode::getDesktopMode().height;
-			name_to_id[name] = i;
-			constant_texts[i] = object->add_constant_text(i, "", pos, use_window_cords, character_size, sf::Color::White,
-				align, mouse_pos, keyboard);
-			break;
-		case 6:
-			file >> next;
-			texture_name = "NewGame";
-			use_window_cords = 0;
-			pos = { 0, 0 };
-			use_image_scale = 1;
-			scale = { 1, 1 };
-			while (next != "END") {
-				if (next == "TEXTURE_NAME")
-					file >> texture_name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "SCALE") {
-					file >> scale.x >> scale.y;
-					use_image_scale = 0;
-				}
-				file >> next;
-			}
-			if (scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (scale.y == -1)
-				scale.y = sf::VideoMode::getDesktopMode().height;
-			images[i] = object->add_image(i, texture_name, pos, use_window_cords, scale, mouse_pos, use_image_scale);
-			break;
-		case 7:
-			file >> next;
-			name = "default";
-			use_window_cords = 4;
-			pos = { 0, 0 };
-			scale = { 0, 0 };
-			character_size = 0;
-			back_color = sf::Color(140, 140, 140, 255);
-			front_color = sf::Color(200, 200, 200, 255);
-			critical = 0;
-			while (next != "END") {
-				if (next == "NAME")
-					file >> name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				if (next == "SCALE")
-					file >> scale.x >> scale.y;
-				if (next == "CRITICAL")
-					file >> critical;
-				if (next == "CHARACTER_SIZE")
-					file >> character_size;
-				if (next == "BACK_COLOR")
-					file >> back_color.r >> back_color.g >> back_color.b >> back_color.a;
-				if (next == "FRONT_COLOR")
-					file >> front_color.r >> front_color.g >> front_color.b >> front_color.a;
-				file >> next;
-			}
-			if (scale.x == -1)
-				scale.x = sf::VideoMode::getDesktopMode().width;
-			if (scale.y == -1)
-				scale.y = sf::VideoMode::getDesktopMode().height;
-			name_to_id[name] = i;
-			bars[i] = object->add_bar(i, use_window_cords, pos, scale, character_size, front_color, back_color, 0, 0, critical);
-			break;
-		case 8:
-			file >> next;
-			name = "default";
-			use_window_cords = 0;
-			pos = { 0, 0 };
-			while (next != "END") {
-				if (next == "NAME")
-					file >> name;
-				if (next == "USE_WINDOWS_CORDS")
-					file >> use_window_cords;
-				if (next == "POS")
-					file >> pos.x >> pos.y;
-				file >> next;
-			}
-			name_to_id[name] = i;
-			check_boxes[i] = object->add_check_box(i, pos, use_window_cords, mouse_pos);
-			check_boxes[i]->set_use_picture_scale(0);
-			check_boxes[i]->set_scale({ 30, 30 });
-			check_boxes[i]->set_color(sf::Color::White);
-
-		default:
-			i--;
-			current_id--;
-			break;
-		}
 	}
 }
 
@@ -821,34 +530,8 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	init_tgui(gui);
 	load_sound("sound_settings.conf", gui);
 	load_HUD_settings("HUD_settings.conf", gui);
-	// set main menu fields
-	main_menu.set_draw(draw);
-	main_menu.set_active(1);
-	main_menu.set_events(&events);
-	menus.push_back(&main_menu);
-	init_menu("menu_configs/main.conf", &main_menu);
-	// set client config menu fields
-	config_menu.set_draw(draw);
-	config_menu.set_active(0);
-	config_menu.set_events(&events);
 	std::string ServerIP, Port, ID, Name;
 	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
-	menus.push_back(&config_menu);
-	init_menu("menu_configs/client_config.conf", &config_menu);
-	constant_texts[name_to_id["ServerIPText"]]->set_text("Server IP:");
-	constant_texts[name_to_id["PortText"]]->set_text("Port:");
-	constant_texts[name_to_id["IDText"]]->set_text("ID:");
-	constant_texts[name_to_id["NameText"]]->set_text("Name:");
-	text_fields[name_to_id["ServerIP"]]->set_text(ServerIP);
-	text_fields[name_to_id["Port"]]->set_text(Port);
-	constant_texts[name_to_id["ID"]]->set_text(ID);
-	text_fields[name_to_id["Name"]]->set_text(Name);
-	// set settigs menu 
-	settings_menu.set_draw(draw);
-	settings_menu.set_active(0);
-	settings_menu.set_events(&events);
-	menus.push_back(&settings_menu);
-	init_menu("menu_configs/settings.conf", &settings_menu);
 	load_keys("keys.conf", &keys_menu_vec, gui);
 }
 
@@ -859,13 +542,6 @@ void Menu_Processing::step() {
 		_gui->get<tgui::Label>("CurTime")->setText(std::to_string(cur_time / 3600) + ":" +
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setValue(cur_time);
-	}
-	if (active) {
-		text_field_active = 0;
-		for (auto menu : menus) {
-			menu->step();
-			text_field_active |= menu->text_field_active;
-		}
 	}
 	if (!active) {
 		if (disactivated) {
@@ -912,52 +588,8 @@ void Menu_Processing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
 
 	while (!events.empty()) {
-		if (name_to_id["NewGame"] == events.front()) { // New game button
-			active = 0;
-		}
-		if (name_to_id["About"] == events.front()) { // About button
-			std::cout << "well, it works";
-		}
-		if (name_to_id["Settings"] == events.front()) { // Settings button
-			close_settings_menus();
-			main_menu.set_active(0);
-			settings_menu.set_active(1);
-			config_menu.set_active(1);
-		}
-		if (name_to_id["Exit"] == events.front()) { // Exit button
-			draw->get_window()->close();
-		}
-		if (name_to_id["ApplyClientConfig"] == events.front()) { // Apply button
-			save_config("client_config.conf", text_fields[name_to_id["ServerIP"]]->get_text(), atoi(text_fields[name_to_id["Port"]]->get_text().c_str()),
-				atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()), text_fields[name_to_id["Name"]]->get_text());
-			network->set_server(text_fields[name_to_id["ServerIP"]]->get_text());
-			network->set_port(atoi(text_fields[name_to_id["Port"]]->get_text().c_str()));
-			network->set_id(atoi(constant_texts[name_to_id["ID"]]->get_text().c_str()));
-			network->set_name(text_fields[name_to_id["Name"]]->get_text());
-		}
-		if (name_to_id["Back"] == events.front()) { // Back button
-			main_menu.set_active(1);
-			settings_menu.set_active(0);
-			close_settings_menus();
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["Main"] == events.front()) { // Main button
-			close_settings_menus();
-			config_menu.set_active(1);
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["Control"] == events.front()) { // Control button
-			close_settings_menus();
-			keys_menu.set_active(1);
-			events.push(name_to_id["Apply"]);
-		}
 		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
 			save_keys("keys.conf", keys_menu_vec);
-		}
-		if (name_to_id["Sound"] == events.front()) {
-			close_settings_menus();
-			sound_menu.set_active(1);
-			events.push(name_to_id["Apply"]);
 		}
 		if (name_to_id["Apply"] == events.front()) {
 			events.push(name_to_id["ApplyKeys"]);
@@ -969,99 +601,12 @@ void Menu_Processing::step() {
 		if (name_to_id["ApplySound"] == events.front()) {
 			save_sound("sound_settings.conf");
 		}
-		if (name_to_id["Gun"] == events.front()) {
-			events.push(name_to_id[game->get_gun_name() + "-gun"]);
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["Hull"] == events.front()) {
-			events.push(name_to_id[game->get_hull_name() + "-hull"]);
-			events.push(name_to_id["Apply"]);
-		}
 		if (name_to_id["ApplyHUD"] == events.front()) {
 			save_HUD_settings("HUD_settings.conf");
-		}
-		if (name_to_id["HUD"] == events.front()) {
-			close_settings_menus();
-			HUD_menu.set_active(1);
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["Modules"] == events.front()) {
-			if (module_num == 1) {
-				events.push(name_to_id[game->get_left_module_name() + "-module"]);
-			}
-			else {
-				events.push(name_to_id[game->get_right_module_name() + "-module"]);
-			}
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["PlayReplay"] == events.front()) {
-			shader_active = 0;
-			replay_setup_menu.set_active(0);
-			replay->set_replay_active(1);
-			replay->set_replay_path("replays/" + text_fields[name_to_id["ReplayPath"]]->get_text());
-			replay_menu.set_active(1);
-		}
-		for (auto it = guns.begin(); it != guns.end(); it++) {
-			if (name_to_id[it->first + "-gun"] == events.front()) {
-				game->set_gun_name(it->first);
-				close_settings_menus();
-				gun_menu.set_active(1);
-				guns[game->get_gun_name()].set_active(1);
-				events.push(name_to_id["Apply"]);
-			}
-		}
-		for (auto it = hulls.begin(); it != hulls.end(); it++) {
-			if (name_to_id[it->first + "-hull"] == events.front()) {
-				game->set_hull_name(it->first);
-				close_settings_menus();
-				hull_menu.set_active(1);
-				hulls[game->get_hull_name()].set_active(1);
-				events.push(name_to_id["Apply"]);
-			}
-		}
-		for (auto it = modules.begin(); it != modules.end(); it++) {
-			std::string cur_name = it->first.substr(0, it->first.size() - 1);
-			if (name_to_id[cur_name + "-module"] == events.front()) {
-				if (module_num == 1)
-					game->set_left_module_name(cur_name);
-				else
-					game->set_right_module_name(cur_name);
-				close_settings_menus();
-				modules_menu.set_active(1);
-				modules[game->get_left_module_name() + "1"].set_active(1);
-				modules[game->get_right_module_name() + "2"].set_active(1);
-				events.push(name_to_id["Apply"]);
-			}
-			if (name_to_id[cur_name + "1"] == events.front()) {
-				module_num = 1;
-			}
-			if (name_to_id[cur_name + "2"] == events.front()) {
-				module_num = 2;
-			}
-			it++;
 		}
 		if (name_to_id["ApplySetup"] == events.front()) {
 			//set_current_gun("setup.conf", cur_gun);
 			game->save_setup("setup.conf");
-		}
-		if (name_to_id["ReplayBack"] == events.front()) {
-			shader_active = 1;
-			replay_setup_menu.set_active(1);
-			replay->set_replay_active(0);
-			replay_menu.set_active(0);
-			events.push(name_to_id["Apply"]);
-		}
-		if (name_to_id["ReplaySetupBack"] == events.front()) {
-			replay_setup_menu.set_active(0);
-			main_menu.set_active(1);
-		}
-		if (name_to_id["Replay"] == events.front()) {
-			replay_setup_menu.set_active(1);
-			main_menu.set_active(0);
-		}
-		if (name_to_id["ApplyReplay"] == events.front()) {
-			network->set_name(text_fields[name_to_id["ReplayName"]]->get_text());
-			network->set_id(atoi(text_fields[name_to_id["ReplayID"]]->get_text().c_str()));
 		}
 		events.pop();
 	}
