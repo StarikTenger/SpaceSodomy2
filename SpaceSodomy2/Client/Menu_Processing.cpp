@@ -543,17 +543,6 @@ void Menu_Processing::step() {
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setValue(cur_time);
 	}
-	if (!active) {
-		if (disactivated) {
-			if (!replay->get_replay_active())
-				events.push(name_to_id["Apply"]);
-			else
-				events.push(name_to_id["ApplyReplay"]);
-		}
-		while (keyboard->text_entered->size())
-			keyboard->text_entered->pop();
-		disactivated = 0;
-	}
 
 	sf::Vector2f win_s =
 		sf::Vector2f(1.0 * draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width,

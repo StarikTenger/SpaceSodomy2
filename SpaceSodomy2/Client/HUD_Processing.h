@@ -1,5 +1,4 @@
 #pragma once
-#include<Menu/Bar.h>
 #include<Client/Game_Client.h>
 #include<AuxLib/AuxLib.h>
 #include<Network/Client_Network.h>
