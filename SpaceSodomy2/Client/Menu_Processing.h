@@ -46,22 +46,13 @@ private:
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
 		std::string* id_, std::string* name_, tgui::Gui &gui);
-	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui,
-		b2Vec2 pos, float name_indent, b2Vec2 indent, int character_size);
+	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);
 	void init_menu(std::string path_, Menu* object);
-	void init_gun(std::string, int damage, float recharge, int stamina_cost, float projectile_mass,
-		float projectile_radius, int projectile_vel, Menu* gun);
-	void init_gun_menu(b2Vec2 pos, std::string path_to_guns_description);
 	void close_settings_menus();
-	void init_hull_menu(b2Vec2 pos, std::string path_to_hulls_description);
-	void init_hull(std::string name, int hp, float mass, float radius,
-		int stamina, int stamina_recovery, Menu* hull);
-	void init_modules_menu(b2Vec2 pos, std::string path_to_modules_description);
-	void init_module(std::string name, Menu* module, b2Vec2 add_pos);
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	Draw* draw;
 	Game_Client* game;
