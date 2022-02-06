@@ -166,6 +166,17 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	}
 }
 
+void Menu_Processing::toggle_active() {
+	active = !active;
+	auto wid = _gui->getWidgets();
+	for (int i = 0; i < wid.size(); i++) {
+		wid[i]->setVisible(false);
+	}
+	_gui->get<tgui::Group>("HUD.txt")->setVisible(!active);
+	_gui->get<tgui::Group>("main_menu.txt")->setVisible(active);
+	text_field_active = active;
+}
+
 void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
 	auto conf = gui.get<tgui::Group>("configuration.txt");
 
@@ -508,10 +519,8 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		network->set_name(gui.get<tgui::EditBox>("Name")->getText().toStdString());
 		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
 	});
-	gui.get<tgui::Button>("Play")->onClick([=, &close_groups, &gui] {
-		close_groups(gui);
-		HUD->setVisible(true);
-		active = false;
+	gui.get<tgui::Button>("Play")->onClick([=] {
+		toggle_active();
 	});
 }
 

@@ -158,8 +158,9 @@ void Control::process_commands() {
 	}
 
 	// Menu
-	if (key_by_name("MENU") && !key_prev_by_name("MENU"))
-		menu_processing.active = !menu_processing.active;
+	if (key_by_name("MENU") && !key_prev_by_name("MENU")) {
+		menu_processing.toggle_active();
+	}
 }
 
 std::string Control::commands_to_string() {

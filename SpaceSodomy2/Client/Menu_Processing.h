@@ -38,6 +38,7 @@ private:
 public:
 	Menu_Processing();
 	bool active = 1;
+	void toggle_active();
 	int text_field_active = 0;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);

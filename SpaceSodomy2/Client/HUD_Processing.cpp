@@ -183,33 +183,35 @@ void HUD_Processing::step(tgui::Gui &gui) {
 	}
 	auto respawn_info = gui.get<tgui::Label>("RespawnInfo");
 	respawn_info->setTextSize(20 * scale);
-	if (game->player_by_id(player_network->get_id()) != nullptr &&
-		!game->player_by_id(player_network->get_id())->get_is_alive()) {
-		respawn_info->setVisible(true);
-		if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0) {
-			respawn_info->setInheritedOpacity(1);
-			respawn_info->setText("Time to respawn: " +
-				std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
+	if (game->player_by_id(player_network->get_id()) != nullptr) {
+		if (!game->player_by_id(player_network->get_id())->get_is_alive()) {
+			gui.get<tgui::Group>("InterfaceGroup")->setVisible(false);
+			respawn_info->setVisible(true);
+			if (game->player_by_id(player_network->get_id())->get_time_to_respawn()->get() > 0) {
+				respawn_info->setInheritedOpacity(1);
+				respawn_info->setText("Time to respawn: " +
+					std::to_string(int(game->player_by_id(player_network->get_id())->get_time_to_respawn()->get())));
+			}
+			else {
+				float mod = abs(sin(float(aux::get_milli_count()) / 500));
+				respawn_info->setText("Press " + respawn_button_name + " to respawn");
+				respawn_info->setInheritedOpacity(mod);
+			}
 		}
 		else {
-			float mod = abs(sin(float(aux::get_milli_count()) / 500));
-			respawn_info->setText("Press " + respawn_button_name + " to respawn");
-			respawn_info->setInheritedOpacity(mod);
+			respawn_info->setVisible(false);
+			gui.get<tgui::Group>("InterfaceGroup")->setVisible(true);
+			if (game->player_by_id(player_network->get_id()) != nullptr) {
+				gui.get<tgui::Label>("Ping")->setText(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
+			}
+			while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
+				frame_marks->pop();
+			gui.get<tgui::Label>("FPS")->setText(std::to_string(frame_marks->size()));
+			if (game->get_network_information_active())
+				gui.get<tgui::Group>("NetworkInfo")->setVisible(true);
+			else
+				gui.get<tgui::Group>("NetworkInfo")->setVisible(false);
 		}
 	}
-	else {
-		respawn_info->setVisible(false);
-		if (game->player_by_id(player_network->get_id()) != nullptr) {
-			gui.get<tgui::Label>("Ping")->setText(std::to_string(game->player_by_id(player_network->get_id())->get_ping()) + "ms");
-		}
-		while (!frame_marks->empty() && frame_marks->front() + 1000 < aux::get_milli_count())
-			frame_marks->pop();
-		gui.get<tgui::Label>("FPS")->setText(std::to_string(frame_marks->size()));
-		if (game->get_network_information_active())
-			gui.get<tgui::Group>("NetworkInfo")->setVisible(true);
-		else
-			gui.get<tgui::Group>("NetworkInfo")->setVisible(false);
-	}
-
 	table_step(gui, scale);
 }
