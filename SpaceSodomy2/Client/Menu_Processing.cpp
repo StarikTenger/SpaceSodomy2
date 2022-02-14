@@ -637,9 +637,10 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		replay->set_replay_active(1);
 		gui.get<tgui::Label>("ReplayName")->setText(name);
 		int max_time = replay->get_replay_frame()->get_max();
+		std::cout << max_time << " jodfshiedu\n";
 		gui.get<tgui::Label>("MaxTime")->setText(std::to_string(max_time / 3600) + ":" +
 			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
-		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(max_time);
+		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(replay->get_frame_number());
 	};
 	auto HUD = load_widgets("HUD.txt");
 	//HUD->setVisible(true);
@@ -675,8 +676,8 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 		replay->set_speed(val);
 	});
 	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
-	replay_slider->onValueChange([=](float val) {
-		replay->get_replay_frame()->set(val);
+	replay_slider->onValueChange([=](int val) {
+		replay->set_frame(val);
 	});
 	auto replay_play_button = gui.get<tgui::Button>("ReplayPlay");
 	replay_play_button->onPress([=, &gui] {
@@ -844,7 +845,7 @@ void Menu_Processing::step() {
 		int cur_time = replay->get_seconds();
 		_gui->get<tgui::Label>("CurTime")->setText(std::to_string(cur_time / 3600) + ":" +
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
-		_gui->get<tgui::Slider>("ReplaySlider")->setValue(cur_time);
+		_gui->get<tgui::Slider>("ReplaySlider")->setValue(replay->get_cur_frame_number());
 	}
 	if (active) {
 		if (shader_active)
