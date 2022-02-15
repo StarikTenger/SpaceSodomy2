@@ -280,6 +280,9 @@ void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gu
 				if (modf(val, &cval) > b2_epsilon) {
 					rval = 100 * val;
 				}
+				else {
+					rval = val;
+				}
 				auto val_bar = new_gun->get<tgui::ProgressBar>(next);
 				if (val_bar != nullptr) {
 					gun_maxes[next] = std::max(gun_maxes[next], rval);
@@ -322,6 +325,9 @@ void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gu
 				config >> val;
 				if (modf(val, &cval) > b2_epsilon) {
 					rval = 100 * val;
+				}
+				else {
+					rval = val;
 				}
 				auto val_bar = new_hull->get<tgui::ProgressBar>(next);
 				if (val_bar != nullptr) {
@@ -373,6 +379,9 @@ void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gu
 				if (modf(val, &cval) > b2_epsilon) {
 					rval = 100 * val;
 				}
+				else {
+					rval = val;
+				}
 				auto val_bar = new_module->get<tgui::ProgressBar>(next);
 				if (val_bar != nullptr) {
 					module_maxes[next] = std::max(module_maxes[next], rval);
@@ -389,19 +398,25 @@ void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gu
 
 	for (auto gun : guns) {
 		for (auto param : gun_maxes) {
-			gun->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+			auto bar = gun->get<tgui::ProgressBar>(param.first);
+			bar->setMaximum(param.second);
+			bar->setText(bar->getValue() + "/" + bar->getMaximum());
 		}
 	}
 
 	for (auto hull : hulls) {
 		for (auto param : hull_maxes) {
-			hull->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+			auto bar = hull->get<tgui::ProgressBar>(param.first);
+			bar->setMaximum(param.second);
+			bar->setText(bar->getValue() + "/" + bar->getMaximum());
 		}
 	}
 
 	for (auto module : modules) {
 		for (auto param : module_maxes) {
-			module->get<tgui::ProgressBar>(param.first)->setMaximum(param.second);
+			auto bar = module->get<tgui::ProgressBar>(param.first);
+			bar->setMaximum(param.second);
+			bar->setText(bar->getValue() + "/" + bar->getMaximum());
 		}
 	}
 }
