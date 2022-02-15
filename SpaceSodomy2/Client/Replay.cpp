@@ -83,7 +83,7 @@ bool Replay::get_replay_active() {
 }
 
 float Replay::get_seconds() {
-	return replay_frame.get() * dt;
+	return replay_frame.get();
 }
 
 int Replay::get_frame_number() {
