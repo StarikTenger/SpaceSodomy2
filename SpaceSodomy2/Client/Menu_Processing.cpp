@@ -632,7 +632,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 			wid[i]->setVisible(false);
 		}
 	};
-	auto launch_replay = [=](tgui::Gui& gui, std::string name) {
+	auto launch_replay = [=](tgui::Gui& gui, std::string name, Replay* replay) {
 		replay->set_replay_path("replays/" + name);
 		replay->set_replay_active(1);
 		gui.get<tgui::Label>("ReplayName")->setText(name);
@@ -652,7 +652,7 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
-		launch_replay(gui, "example.ex");
+		launch_replay(gui, "example.ex", replay);
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
 	});
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
@@ -665,9 +665,10 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
 	select_replay_button->onClick([=, &gui, &launch_replay] {
 		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
+		auto _replay = replay;
 		choose_file->onFileSelect([=, &gui] {
 			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
-			launch_replay(gui, name);
+			launch_replay(gui, name, _replay);
 			});
 			gui.get<tgui::Group>("replay.txt")->add(choose_file);
 	});
