@@ -24,13 +24,13 @@ void Replay::set_replay_path(std::string path) {
 		}
 		frames.push_back(msg);
 	}
-	replay_frame.set_max((frames.size() - 2) * dt); // -1-1 cause last replay string may be shchwached
+	playback_time.set_max((frames.size() - 2) * dt); // -1-1 cause last replay string may be shchwached
 	frame_number = frames.size() - 2;
-	std::cout << replay_frame.get_max() << " max\n";
+	std::cout << playback_time.get_max() << " max\n";
 }
 
 void Replay::set_speed(float val) {
-	replay_frame.set_change_vel(val);
+	playback_time.set_change_vel(val);
 	float eps = 0.0001;
 	if (val > eps || val < -eps)
 		speed_backup = val;
@@ -38,23 +38,11 @@ void Replay::set_speed(float val) {
 
 void Replay::play_button(tgui::Gui &gui) {
 	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
-	float eps = 0.0001;
-	if (spin_control->getValue() < eps && spin_control->getValue() > -eps) {
-		if (speed_backup < eps && speed_backup > -eps) {
-			spin_control->setValue(1);
-		}
-		else {
-			spin_control->setValue(speed_backup);
-		}
-	}
-	else {
-		speed_backup = spin_control->getValue();
-		spin_control->setValue(0);
-	}
+	is_paused = !is_paused;
 }
 
 void Replay::set_frame(int frame_number) {
-	replay_frame.set(frame_number * dt);
+	playback_time.set(frame_number * dt);
 	// std::cout << replay_frame.get() << " set_frame\n";
 }
 
@@ -67,15 +55,15 @@ void Replay::set_replay_active(bool val) {
 }
 
 int Replay::get_cur_frame_number() {
-	return (int)(replay_frame.get() / dt);
+	return (int)(playback_time.get() / dt);
 }
 
-std::string Replay::get_cur_frame() {
+std::string Replay::get_cur_frame() {	
 	return (frames[get_cur_frame_number()]);
 }
 
 Counter* Replay::get_replay_frame() {
-	return &replay_frame;
+	return &playback_time;
 }
 
 bool Replay::get_replay_active() {
@@ -83,7 +71,7 @@ bool Replay::get_replay_active() {
 }
 
 float Replay::get_seconds() {
-	return replay_frame.get();
+	return playback_time.get();
 }
 
 int Replay::get_frame_number() {
@@ -91,7 +79,10 @@ int Replay::get_frame_number() {
 }
 
 void Replay::step(float _dt) {
+	float real_dt = aux::get_milli_count() * 0.001 - last_frame_time;
+	last_frame_time = aux::get_milli_count() * 0.001;
 	dt = _dt;
 	// Modify counter
-	replay_frame.step(dt);
+	if (!is_paused)
+		playback_time.step(real_dt);
 }
