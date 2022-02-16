@@ -1,16 +1,19 @@
 #pragma once
 #include <Draw/Draw.h>
-#include <Menu/Constant_Text.h>
-#include <Menu/Bar.h>
 #include <string>
+#include<TGUI/TGUI.hpp>
+#include<TGUI/Backend/SFML-Graphics.hpp>
+
 class Loading_Screen {
 private:
 	Draw* draw;
-	Bar progress_bar;
-	Constant_Text loading_stage;
+	tgui::Gui* _gui;
+	tgui::ProgressBar::Ptr progress_bar = tgui::ProgressBar::create();
+	tgui::Label::Ptr loading_stage = tgui::Label::create();
 public:
-	Loading_Screen(Draw* draw_);
+	Loading_Screen(Draw* draw_, tgui::Gui &gui);
 
 	void step(int val, std::string stage);
+	void close();
 };
 
