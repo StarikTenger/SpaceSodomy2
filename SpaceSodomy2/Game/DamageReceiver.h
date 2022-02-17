@@ -5,7 +5,7 @@
 #include "iId.h"
 #include "Effects.h"
 
-class Damage_Receiver : public iId {
+class DamageReceiver : public iId {
 private:
 	b2Body* body = nullptr;
 	Counter* hp = nullptr;
@@ -16,7 +16,7 @@ private:
 public:
 
 	// Constructor
-	Damage_Receiver(b2Body* _body = nullptr, Counter* _hp = nullptr);
+	DamageReceiver(b2Body* _body = nullptr, Counter* _hp = nullptr);
 
 	// Get methods
 	b2Body* get_body();

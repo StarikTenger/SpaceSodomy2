@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "Event_Manager.h"
+#include "EventManager.h"
 
-Event_Manager::Event_Manager() {
+EventManager::EventManager() {
 	
 }
 
-void Event_Manager::create_event(Event_Def event_def) {
+void EventManager::create_event(EventDef event_def) {
 	events_to_create.push_back(event_def);
 }
 
-int Event_Manager::get_next(Event_Def& event_def) {
+int EventManager::get_next(EventDef& event_def) {
 	if (!events_to_create.size())
 		return false;
 	event_def = events_to_create.front();

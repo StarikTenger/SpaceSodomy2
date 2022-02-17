@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 
-class Collision_Filter {
+class CollisionFilter {
 private:
 	struct Collision_Info {
 		int type = STANDART;
@@ -27,7 +27,7 @@ public:
 		PROJECTILE,
 	};
 
-	Collision_Filter();
+	CollisionFilter();
 	void add_body(b2Body*, int type = STANDART, int id = 0);
 	void delete_body(b2Body*);
 	int get_type(b2Fixture*);

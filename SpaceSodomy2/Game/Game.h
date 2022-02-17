@@ -6,20 +6,20 @@
 #include <fstream>
 #include <sstream>
 #include "entities.h"
-#include "Projectile_Manager.h"
-#include "Event_Manager.h"
-#include "Id_Manager.h"
-#include "Collision_Filter.h"
-#include "Contact_Table.h"
-#include "Hull_Prototype.h"
-#include "Bonus_Slot.h"
-#include "Bonus_Manager.h"
+#include "ProjectileManager.h"
+#include "EventManager.h"
+#include "IdManager.h"
+#include "CollisionFilter.h"
+#include "ContactTable.h"
+#include "HullPrototype.h"
+#include "BonusSlot.h"
+#include "BonusManager.h"
 #include <box2d/box2d.h>
 #include <AuxLib/AuxLib.h>
 #include <memory>
-#include "Module_Manager.h"
-#include "Game_Objects.h"
-#include "Rocket_Brain.h"
+#include "ModuleManager.h"
+#include "GameObjects.h"
+#include "RocketBrain.h"
 #include "Forcefield.h"
 
 
@@ -34,22 +34,22 @@ protected:
 	float time = 0;
 
 	// Objects' systems
-	Game_Objects game_objects;
+	GameObjects game_objects;
 	std::map<int, Player*> players;
 	std::map<int, int>* connection_time;
 	std::set<Ship*> ships;
 	std::set<Engine*> engines;
-	std::set<Command_Module*> command_modules;
+	std::set<CommandModule*> command_modules;
 	
-	std::set<Active_Module*> active_modules;
+	std::set<ActiveModule*> active_modules;
 	std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
-	std::set<Damage_Receiver*> damage_receivers;
+	std::set<DamageReceiver*> damage_receivers;
 	std::set<Event*> events;
 	std::set<Effects*> effects;
 	std::set<Bonus*> bonuses;
 	std::set<Rocket*> rockets;
-	std::set<Rocket_Brain*> rocket_brains;
+	std::set<RocketBrain*> rocket_brains;
 	std::set<Forcefield*> forcefields;
 	
 	// Walls
@@ -57,24 +57,24 @@ protected:
 	b2Vec2 lower_left_corner, upper_right_corner;
 
 	// Managers
-	Projectile_Manager projectile_manager;
-	Event_Manager event_manager;
-	Id_Manager id_manager;
-	Bonus_Manager bonus_manager;
-	Module_Manager module_manager;
-	Rocket_Manager rocket_manager;
+	ProjectileManager projectile_manager;
+	EventManager event_manager;
+	IdManager id_manager;
+	BonusManager bonus_manager;
+	ModuleManager module_manager;
+	RocketManager rocket_manager;
 	
 	b2World physics = b2World(b2Vec2_zero);
 
 	// Collision control
-	Collision_Filter collision_filter;
+	CollisionFilter collision_filter;
 	// Contact table (stores pairs which are in contact)
-	Contact_Table contact_table;
+	ContactTable contact_table;
 
 	// Ship components
 	std::map<std::string, Gun_Prototype> guns;
 	std::map<unsigned char, std::string> gun_by_alias;
-	std::map<std::string, Hull_Prototype> hulls;
+	std::map<std::string, HullPrototype> hulls;
 	std::map<unsigned char, std::string> hull_by_alias;
 
 	// Stores effect Algebraic types and strengths
@@ -89,20 +89,20 @@ protected:
 	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
-	Command_Module*  create_command_module();
-	Engine*          create_engine(b2Body* = nullptr, Command_Module* = nullptr, Counter* = nullptr, Effects* = nullptr);
+	CommandModule*  create_command_module();
+	Engine*          create_engine(b2Body* = nullptr, CommandModule* = nullptr, Counter* = nullptr, Effects* = nullptr);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
-	Damage_Receiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
+	DamageReceiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
 	Wall*            create_wall(std::vector<b2Vec2> vertices, int orientation = Wall::OUTER, float restitution = 0.5, int type = Wall::STANDART);
-	Projectile*      create_projectile(Projectile_Def);
-	Event*           create_event(Event_Def, float playing_offset = 0);
+	Projectile*      create_projectile(ProjectileDef);
+	Event*           create_event(EventDef, float playing_offset = 0);
 	Effects*         create_effects(Effects_Prototype*);
 	Bonus*           create_bonus(Bonus_Def);
-	Bonus_Slot*      create_bonus_slot();
+	BonusSlot*      create_bonus_slot();
 	Module*          create_module(Module_Prototype*);
 	Rocket*          create_rocket(Rocket_Def);
-	Rocket_Brain*    create_rocket_brain(Rocket_Prototype*);
+	RocketBrain*    create_rocket_brain(Rocket_Prototype*);
 	Forcefield*      create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force);
 
 	// Delete functions
@@ -110,15 +110,15 @@ protected:
 	void delete_wall(Wall*);
 	void delete_projectile(Projectile*);
 	void delete_engine(Engine*);
-	void delete_active_module(Active_Module*);
+	void delete_active_module(ActiveModule*);
 	void delete_ship(Ship*);
-	void delete_damage_receiver(Damage_Receiver*);
+	void delete_damage_receiver(DamageReceiver*);
 	void delete_counter(Counter*);
 	void delete_event(Event*);
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
-	void delete_rocket_brain(Rocket_Brain*);
+	void delete_rocket_brain(RocketBrain*);
 	void delete_forcefield(Forcefield*);
 
 	 // Processing functions

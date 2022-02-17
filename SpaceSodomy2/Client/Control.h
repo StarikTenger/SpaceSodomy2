@@ -28,7 +28,7 @@ private:
 	// Zoom velocity
 	float zoom_vel = 2;
 	// Current player's commands
-	Command_Module command_module;
+	CommandModule command_module;
 	// Connection to server, contains id, name, server adress & port
 	Client_Network network;
 	// Contains game objects

@@ -4,7 +4,7 @@
 #include "Effects.h"
 
 // Projectile definition
-struct Projectile_Def {
+struct ProjectileDef {
 	Player* player = nullptr;
 	b2Vec2 pos;
 	b2Vec2 vel;
@@ -15,6 +15,6 @@ struct Projectile_Def {
 	float hp = 20;
 	Effects_Prototype* effects_prototype  = nullptr;
 
-	Projectile_Def();
+	ProjectileDef();
 };
 

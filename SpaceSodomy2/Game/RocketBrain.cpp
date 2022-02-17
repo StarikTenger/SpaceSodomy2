@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "Rocket_Brain.h"
+#include "RocketBrain.h"
 #include "Ship.h"
 
-float Rocket_Brain::homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel) {
+float RocketBrain::homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel) {
     return (b2Dot(pos, pos)) + 
         2.f * (b2Dot(pos , vel)) * time + 
         ((b2Dot(vel, vel)) * time) * time - 
         (1.f / 4.f * accel * accel * time * time * time * time);
 }
 
-float Rocket_Brain::calculate_dir(b2Body* body) {
+float RocketBrain::calculate_dir(b2Body* body) {
     auto target_pos = body->GetWorldPoint({ 0,0 }) - rocket->get_body()->GetWorldPoint({ 0,0 });
     auto target_vel = body->GetLinearVelocity() - rocket->get_body()->GetLinearVelocity();
     float accel = rocket->get_engine()->get_force_linear() / rocket->get_body()->GetMass();
@@ -30,38 +30,38 @@ float Rocket_Brain::calculate_dir(b2Body* body) {
     return aux::vec_to_angle(target_pos + timeLow * target_vel);
 }
 
-bool Rocket_Brain::is_in_range(b2Vec2 target) {
+bool RocketBrain::is_in_range(b2Vec2 target) {
     return (target - rocket->get_body()->GetWorldPoint({ 0,0 })).LengthSquared() < range * range;
 }
 
-void Rocket_Brain::set_rocket(Rocket* val) {
+void RocketBrain::set_rocket(Rocket* val) {
     rocket = val;
 }
-void Rocket_Brain::set_game_objects(Game_Objects val) {
+void RocketBrain::set_game_objects(GameObjects val) {
     environment = val;
 }
-void Rocket_Brain::step(float dt) {
+void RocketBrain::step(float dt) {
     std::set<Ship*>& ships = *environment.get_ships();
-    command_module->set_command(Command_Module::ENGINE_LIN_FORWARD, 1);
+    command_module->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
         if (ship->get_player()->get_id() != rocket->get_player()->get_id() && 
             is_in_range(ship->get_body()->GetWorldPoint({0,0})) 
             && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
-            command_module->set_command(Command_Module::ROCKET_ANGLE, 1);
+            command_module->set_command(CommandModule::ROCKET_ANGLE, 1);
             command_module->set_rocket_angle(calculate_dir(ship->get_body()));
             break;
         }
     }
 }
-void Rocket_Brain::set_command_module(Command_Module* val) {
+void RocketBrain::set_command_module(CommandModule* val) {
     command_module = val;
 }
-Rocket_Brain::Rocket_Brain(float range_, int bin_search_accuracy_) {
+RocketBrain::RocketBrain(float range_, int bin_search_accuracy_) {
     range = range_;
     bin_search_accuracy = bin_search_accuracy_;
 }
 
-Command_Module* Rocket_Brain::get_command_module() {
+CommandModule* RocketBrain::get_command_module() {
     return command_module;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "iId.h"
 
-class Id_Manager {
+class IdManager {
 private:
 	int id_current = 1;
 public:

@@ -1,35 +1,35 @@
 #include "pch.h"
-#include "Command_Module.h"
+#include "CommandModule.h"
 
 // Constructor
-Command_Module::Command_Module() {}
+CommandModule::CommandModule() {}
 
-std::vector<int> Command_Module::get_active() {
+std::vector<int> CommandModule::get_active() {
 	return active;
 }
 
 // Get methods
-int Command_Module::get_command(int id) {
+int CommandModule::get_command(int id) {
 	if (id < 0 || id >= active.size()) // vector out of range
 		return 0;
 	return active[id];
 }
 
 // Set methods
-void Command_Module::set_command(int id, int value) {
+void CommandModule::set_command(int id, int value) {
 	if (id < 0 || id >= active.size()) // vector out of range
 		return;
 	active[id] = value;
 }
 
-void Command_Module::reset() {
+void CommandModule::reset() {
 	for (auto& command : active)
 		command = 0;
 }
 
-void Command_Module::set_rocket_angle(float val) {
+void CommandModule::set_rocket_angle(float val) {
 	rocket_angle = val;
 }
-float Command_Module::get_rocket_angle() {
+float CommandModule::get_rocket_angle() {
 	return rocket_angle;
 }

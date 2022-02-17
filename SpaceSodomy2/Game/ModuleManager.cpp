@@ -1,19 +1,19 @@
 #pragma once
 #include "pch.h"
-#include "Module_Manager.h"
+#include "ModuleManager.h"
 
 
-Module_Manager::Module_Manager() : module_prototypes(Module::COUNT) {
+ModuleManager::ModuleManager() : module_prototypes(Module::COUNT) {
 }
 
-void Module_Manager::add_prototype(Module_Prototype val) {
+void ModuleManager::add_prototype(Module_Prototype val) {
     module_prototypes[val.type] = val;
 }
-Module_Prototype* Module_Manager::get_prototype(Module::Type type) {
+Module_Prototype* ModuleManager::get_prototype(Module::Type type) {
     return &module_prototypes[type];
 }
 
-Module* Module_Manager::new_module(Module_Prototype* base) {
+Module* ModuleManager::new_module(Module_Prototype* base) {
     switch (base->type) {
     case (Module::HP_UP):
         return new HpUp_Module(base);

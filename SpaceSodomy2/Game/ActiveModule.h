@@ -1,13 +1,13 @@
 #pragma once
 #include <box2d/box2d.h>
-#include "Event_Manager.h"
+#include "EventManager.h"
 #include "Player.h"
-#include "Command_Module.h"
+#include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
 #include "Effects.h"
 
-class Active_Module : public iId {
+class ActiveModule : public iId {
 protected:
 	float recharge_time = 10;
 	float stamina_cost = 20;
@@ -17,12 +17,12 @@ protected:
 	// Related player
 	Player* player = nullptr;
 	// Related command
-	int bind = Command_Module::SHOOT;
+	int bind = CommandModule::SHOOT;
 	// Time left
 	Counter* recharge_counter = nullptr;
 	Counter* stamina_cooldown_delay_counter = nullptr;
 	// Event manager
-	Event_Manager* event_manager = nullptr;
+	EventManager* event_manager = nullptr;
 	// Stamina
 	Counter* stamina;
 	Counter* energy;
@@ -33,8 +33,8 @@ protected:
 	
 
 public:
-	Active_Module();
-	virtual ~Active_Module() = default;
+	ActiveModule();
+	virtual ~ActiveModule() = default;
 	void set(b2Body*, Player*);
 
 	// Get methods
@@ -42,7 +42,7 @@ public:
 	b2Body* get_body();
 	Counter* get_recharge_counter();
 	Counter* get_stamina_cooldown_delay_counter();
-	Event_Manager* get_event_manager();
+	EventManager* get_event_manager();
 	Counter* get_stamina();
 	Counter* get_energy();
 	Effects_Prototype* get_effects();
@@ -52,7 +52,7 @@ public:
 	void set_body(b2Body*);
 	void set_recharge_counter(Counter*);
 	void set_bind(int);
-	void set_event_manager(Event_Manager*);
+	void set_event_manager(EventManager*);
 	void set_stamina(Counter*);
 	void set_energy(Counter*);
 	void set_effects_prototype(Effects_Prototype*);
