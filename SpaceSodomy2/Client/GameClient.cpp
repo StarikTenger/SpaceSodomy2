@@ -240,7 +240,7 @@ void GameClient::display(int id) {
 					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST)
 						&& ship->get_stamina()->get() > 0)
 						engine_len = 0.4;
-					Float_Animation::State state_a;
+					FloatAnimation::State state_a;
 					state_a.pos = ship->get_body()->GetPosition();
 					state_a.angle = ship->get_body()->GetAngle();
 					state_a.scale = { radius, radius };
@@ -254,9 +254,9 @@ void GameClient::display(int id) {
 					if (ship->get_player()->get_command_module()->get_command(Command_Module::BOOST))
 						state_b.color = { 255, 255, 255, 0 };
 
-					Float_Animation animation(textures[i], state_a, state_b, animation_time, GAME);
+					FloatAnimation animation(textures[i], state_a, state_b, animation_time, GAME);
 					state_b.pos += aux::rotate({ 0, 0.05 }, aux::random_float(0, 2, 2) * b2_pi);
-					Float_Animation animation_1(textures[i], state_a, state_b, animation_time, GAME);
+					FloatAnimation animation_1(textures[i], state_a, state_b, animation_time, GAME);
 					draw->create_animation(animation);
 					draw->create_animation(animation_1);
 				}
@@ -338,16 +338,16 @@ void GameClient::display(int id) {
 		draw->image("bullet", projectile->get_body()->GetPosition(), { radius, radius },
 			projectile->get_body()->GetAngle());
 		// Animation
-		Float_Animation::State state_begin;
+		FloatAnimation::State state_begin;
 		state_begin.pos = projectile->get_body()->GetPosition();
 		state_begin.scale = 1. * b2Vec2(radius, radius);
 		state_begin.angle = 0;
 		state_begin.color = color;
-		Float_Animation::State state_end = state_begin;
+		FloatAnimation::State state_end = state_begin;
 		state_end.scale = b2Vec2_zero;
 		state_end.color.a = 0;
 		state_end.pos += aux::rotate({ 0, 0.1 }, aux::random_float(0, 2, 2) * b2_pi);
-		Float_Animation animation("bullet", state_begin, state_end, 0.15, GAME);
+		FloatAnimation animation("bullet", state_begin, state_end, 0.15, GAME);
 		draw->create_animation(animation);
 	}
 
@@ -754,7 +754,7 @@ void GameClient::update_state(std::string source) {
 	// Damage animation
 	if (get_ship(my_id) && get_ship(my_id)->get_hp()->get() < hp_prev) {
 		// Animation
-		Float_Animation::State state_a;
+		FloatAnimation::State state_a;
 		state_a.angle = 0;
 		state_a.pos = { 0, 0 };
 		state_a.scale = aux::to_b2Vec2(sf::Vector2f(draw->get_window()->getSize()));
@@ -762,7 +762,7 @@ void GameClient::update_state(std::string source) {
 		float min_alpha = 0.5;
 		state_a.color.a = (min_alpha + ((hp_prev - get_ship(my_id)->get_hp()->get()) / get_ship(my_id)->get_hp()->get_max()) * (1 - min_alpha)) * 255;
 		state_b.color.a = 0;
-		draw->create_animation(Float_Animation("blood", state_a, state_b, 1, HUD));
+		draw->create_animation(FloatAnimation("blood", state_a, state_b, 1, HUD));
 		// Sound
 		audio->update_sound(aux::random_int(0, 1000), "damage", get_ship(my_id)->get_body()->GetPosition(), 1, 0);
 	}
@@ -784,12 +784,12 @@ void GameClient::update_state(std::string source) {
 		switch (object.second.type) {
 		case Disappear_Animation::PROJECTILE:
 			for (int i = 0; i < 10; i++) {
-				Float_Animation::State state_begin;
+				FloatAnimation::State state_begin;
 				state_begin.pos = object.second.pos;
 				state_begin.scale = object.second.radius * b2Vec2(4, 4);
 				state_begin.angle = 0;
 				state_begin.color = object.second.color;
-				Float_Animation::State state_end = state_begin;
+				FloatAnimation::State state_end = state_begin;
 				if (i != 0) {
 					state_end.scale = b2Vec2_zero;
 					state_end.pos += aux::rotate({ 0, 0.4 }, aux::random_float(0, 2, 2) * b2_pi);
@@ -798,7 +798,7 @@ void GameClient::update_state(std::string source) {
 					state_begin.color = state_end.color = { 255, 255, 255 };
 				}
 				state_end.color.a = 0;
-				Float_Animation animation("bullet", state_begin, state_end, 0.1, GAME);
+				FloatAnimation animation("bullet", state_begin, state_end, 0.1, GAME);
 				draw->create_animation(animation);
 			}
 			break;

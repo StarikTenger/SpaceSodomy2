@@ -7,7 +7,7 @@
 #include <map>
 #include <fstream>
 #include "Camera.h"
-#include "Float_Animation.h"
+#include "FloatAnimation.h"
 
 class Draw {
 private:
@@ -18,7 +18,7 @@ private:
 	// Matches fonts and names
 	std::map<std::string, sf::Font*> fonts;
 	// Animations
-	std::set<Float_Animation*> animations;
+	std::set<FloatAnimation*> animations;
 	// Name of the window
 	std::string window_name = "Space Sodomy II";
 
@@ -79,7 +79,7 @@ public:
 	void text(std::string text, std::string font_name, b2Vec2 pos, int size, sf::Color color);
 
 	// Animations
-	void create_animation(Float_Animation);
+	void create_animation(FloatAnimation);
 	void draw_animations(int layer = 0);
 	void fadeout_animation(std::string image_name, b2Vec2 pos, 
 		std::pair<float, float> shift_disp, 

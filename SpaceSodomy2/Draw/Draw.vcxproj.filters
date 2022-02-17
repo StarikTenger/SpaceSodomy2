@@ -27,7 +27,7 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Float_Animation.h">
+    <ClInclude Include="FloatAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Float_Animation.cpp">
+    <ClCompile Include="FloatAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

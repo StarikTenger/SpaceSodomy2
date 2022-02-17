@@ -2,7 +2,7 @@
 #include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 
-class Float_Animation {
+class FloatAnimation {
 public:
 	struct State {
 		std::string image = "";
@@ -26,8 +26,8 @@ private:
 	float time_max = 0;
 
 public:
-	Float_Animation();
-	Float_Animation(std::string _image, State _state_begin, State _state_end, float _time, int layer = 0);
+	FloatAnimation();
+	FloatAnimation(std::string _image, State _state_begin, State _state_end, float _time, int layer = 0);
 
 	// Getters
 	State get_state_current();
