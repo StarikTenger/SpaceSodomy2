@@ -35,6 +35,8 @@ Game::Game() {
 	game_objects.set_projectiles(&projectiles);
 	game_objects.set_walls(&walls);
 	game_objects.set_ships(&ships);
+
+	wall_player = create_player(-1, sf::Color::White, "WALL");
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -490,8 +492,9 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
-		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 &&
-			player->get_command_module()->get_command(CommandModule::RESPAWN)) {
+		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
+			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
+			&& player->get_id() >= 0) { // The player is human
 			player->set_is_alive(1);
 
 			// creating ship
@@ -549,6 +552,9 @@ void Game::process_ships() {
 					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
 					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
+					if (ship->get_hp()->get() < b2_epsilon) {
+						wall_player->add_kill();
+					}
 				}
 			}
 		}
@@ -1152,6 +1158,25 @@ bool Game::load_parameters(std::string path) {
 			}
 			return _effects;
 		};
+		if (symbol == "INVIS_FLAG") {
+			Effects::invis_flag = Effects::Invisibility_Flag::SHOW_NO;
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "SHOW_EFFECTS") {
+					Effects::invis_flag = Effects::invis_flag || Effects::Invisibility_Flag::SHOW_EFFECTS;
+					std::cout << "Invisibility flag SHOW_EFFECTS set\n";
+					continue;
+				}
+				if (symbol == "SHOW_BOOST") {
+					Effects::invis_flag = Effects::invis_flag || Effects::Invisibility_Flag::SHOW_BOOST;
+					std::cout << "Invisibility flag SHOW_BOOST set\n";
+					continue;
+				}
+				std::cerr << "Error: Unknown invisibility flag " << symbol << "\n";
+			}
+			continue;
+		}
 		if (symbol == "PARAMETERS") {
 			while (input >> symbol) {
 				if (symbol == "END")

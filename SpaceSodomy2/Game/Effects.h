@@ -8,6 +8,14 @@ struct Effects_Prototype;
 
 class Effects {
 public:
+    // Flags are ordered
+    enum Invisibility_Flag {
+        SHOW_NO = 0b00,
+        SHOW_EFFECTS = 0b01,
+        SHOW_BOOST = 0b10,
+    };
+    static int invis_flag;
+
     enum Types {
         INSTANT_HP,
         INSTANT_ENERGY,

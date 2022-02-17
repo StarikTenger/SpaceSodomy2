@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Effects.h"
 
+int Effects::invis_flag = Invisibility_Flag::SHOW_BOOST || Invisibility_Flag::SHOW_EFFECTS;
 
 Effects::Effect::Effect() {
     duration.set_change_vel(-1);
