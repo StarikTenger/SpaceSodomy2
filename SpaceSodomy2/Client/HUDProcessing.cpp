@@ -167,19 +167,26 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		energy_bar->setMaximum(game->get_ship(player_network->get_id())->get_energy()->get_max());
 		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
 		gui.get<tgui::Label>("EnergyBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
+
 		// interface buttons processing
-		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
-		auto bonus_texture = draw->get_texture(bonus_texture_name);
-		gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
-		auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
-		auto gun_texture = draw->get_texture(gun_texture_name);
-		gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
-		auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
-		auto left_module_texture = draw->get_texture(left_module_texture_name);
-		gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(*left_module_texture);
-		auto right_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module";
-		auto right_module_texture = draw->get_texture(right_module_texture_name);
-		gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(*right_module_texture);
+		if (reload_icons) {
+			reload_icons = 0;
+			auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
+			auto bonus_texture = draw->get_texture(bonus_texture_name);
+			gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
+			auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
+			auto gun_texture = draw->get_texture(gun_texture_name);
+			gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
+			auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
+			auto left_module_texture = draw->get_texture(left_module_texture_name);
+			gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(*left_module_texture);
+			auto right_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_right_module()->get_type()) + "-module";
+			auto right_module_texture = draw->get_texture(right_module_texture_name);
+			gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(*right_module_texture);
+		}
+	}
+	else {
+		reload_icons = 1;
 	}
 	auto respawn_info = gui.get<tgui::Label>("RespawnInfo");
 	respawn_info->setTextSize(20 * scale);

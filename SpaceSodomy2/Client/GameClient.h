@@ -3,6 +3,8 @@
 #include <Draw/Draw.h>
 #include <Audio/Audio.h>
 #include <AuxLib/AuxLib.h>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 class GameClient : public Game {
 private:
@@ -44,6 +46,7 @@ private:
 				CommandModule::ENGINE_LIN_RIGHT
 	};
 
+	tgui::Gui* gui;
 public:
 	enum Animation_Layers {
 		GAME,
@@ -76,6 +79,8 @@ public:
 	void set_aim_conf(int _conf);
 	void set_aim_opacity(int _opacity);
 	void set_network_information_active(bool _active);
+
+	void set_gui(tgui::Gui* _gui);
 
 	void display(int id);
 

@@ -201,6 +201,7 @@ Control::Control() {
 	loading.step(75, "Loading tracks...");
 	audio.load_musics();
 	game.set_draw(&draw);
+	game.set_gui(&gui);
 	game.set_audio(&audio);
 	loading.close();
 	// SFML key names

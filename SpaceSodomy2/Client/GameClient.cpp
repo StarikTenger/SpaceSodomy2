@@ -73,6 +73,10 @@ void GameClient::set_aim_opacity(int _opacity) {
 	aim_opacity = _opacity;
 }
 
+void GameClient::set_gui(tgui::Gui* _gui) {
+	gui = _gui;
+}
+
 void GameClient::display(int id) {
 	// Setting id
 	my_id = id;
@@ -557,6 +561,14 @@ void GameClient::update_state(std::string source) {
 			max_energy = aux::read_short(stream);
 
 			auto ship = create_ship(players[player_id], pos, angle);
+
+			// Set bonus to HUD bonus slot
+			if (player_id == my_id && ship->get_bonus_slot()->get_current_bonus() != bonus) {
+				auto bonus_texture_name = get_bonus_texture_name(bonus);
+				auto bonus_texture = draw->get_texture(bonus_texture_name);
+				gui->get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
+			}
+
 			ship->set_id(id);
 			ship->get_body()->SetLinearVelocity(linvel);
 			ship->get_body()->GetFixtureList()->GetShape()->m_radius = radius;

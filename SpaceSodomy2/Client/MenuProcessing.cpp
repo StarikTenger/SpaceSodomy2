@@ -267,8 +267,9 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				new_gun->setVisible(1);
 
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
-				gui.get<tgui::Picture>("CurrentGun")->getRenderer()
-					->setTexture(new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture());
+				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
+				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
+				gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(texture);
 			});
 			gun_vars->add(pic);
 
@@ -313,8 +314,8 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				new_hull->setVisible(1);
 
 				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
-				gui.get<tgui::Picture>("CurrentHull")->getRenderer()
-					->setTexture(new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture());
+				auto texture = new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture();
+				gui.get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(texture);
 			});
 			hull_vars->add(pic);
 
@@ -360,13 +361,15 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 
 				if (module_num == 1) {
 					_game->set_left_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
-					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()
-						->setTexture(new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture());
+					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
+					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(texture);
+					gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(texture);
 				}
 				else {
 					_game->set_right_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
-					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()
-						->setTexture(new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture());
+					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
+					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
+					gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(texture);
 				}
 			});
 			module_vars->add(pic);

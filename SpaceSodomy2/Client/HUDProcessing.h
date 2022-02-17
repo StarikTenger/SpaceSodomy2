@@ -22,6 +22,8 @@ private:
 	std::queue<int>* frame_marks;
 
 	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);
+
+	bool reload_icons = true;
 public:
 	float interface_scale = 3;
 
