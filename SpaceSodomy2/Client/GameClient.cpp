@@ -1,79 +1,79 @@
-#include "Game_Client.h"
+#include "GameClient.h"
 #include <iostream>
 #include <thread>
 
-Draw* Game_Client::get_draw() {
+Draw* GameClient::get_draw() {
 	return draw;
 }
-Audio* Game_Client::get_audio() {
+Audio* GameClient::get_audio() {
 	return audio;
 }
 
-std::string Game_Client::get_gun_name() {
+std::string GameClient::get_gun_name() {
 	return gun_name;
 }
 
-std::string Game_Client::get_hull_name() {
+std::string GameClient::get_hull_name() {
 	return hull_name;
 }
 
-int Game_Client::get_aim_conf() {
+int GameClient::get_aim_conf() {
 	return aim_conf;
 }
 
-int Game_Client::get_aim_opacity() {
+int GameClient::get_aim_opacity() {
 	return aim_opacity;
 }
 
-std::string Game_Client::get_left_module_name() {
+std::string GameClient::get_left_module_name() {
 	return left_module_name;
 }
-std::string Game_Client::get_right_module_name() {
+std::string GameClient::get_right_module_name() {
 	return right_module_name;
 }
 
-void Game_Client::set_network_information_active(bool _active) {
+void GameClient::set_network_information_active(bool _active) {
 	network_information_active = _active;
 }
 
-std::string Game_Client::get_bonus_texture_name(int val) {
+std::string GameClient::get_bonus_texture_name(int val) {
 	return bonus_textures[val];
 }
 
-void Game_Client::set_gun_name(std::string val) {
+void GameClient::set_gun_name(std::string val) {
 	gun_name = val;
 }
 
-void Game_Client::set_hull_name(std::string val) {
+void GameClient::set_hull_name(std::string val) {
 	hull_name = val;
 }
 
-void Game_Client::set_left_module_name(std::string val) {
+void GameClient::set_left_module_name(std::string val) {
 	left_module_name = val;
 }
 
-void Game_Client::set_right_module_name(std::string val) {
+void GameClient::set_right_module_name(std::string val) {
 	right_module_name = val;
 }
 
-void Game_Client::set_draw(Draw* _draw) {
+void GameClient::set_draw(Draw* _draw) {
 	draw = _draw;
 	draw->apply_camera({ 0, 0 }, 100, 0);
 }
 
-void Game_Client::set_audio(Audio* _audio) {
+void GameClient::set_audio(Audio* _audio) {
 	audio = _audio;
 }
 
-void Game_Client::set_aim_conf(int _conf) {
+void GameClient::set_aim_conf(int _conf) {
 	aim_conf = _conf;
 }
 
-void Game_Client::set_aim_opacity(int _opacity) {
+void GameClient::set_aim_opacity(int _opacity) {
 	aim_opacity = _opacity;
 }
 
-void Game_Client::display(int id) {
+void GameClient::display(int id) {
 	// Setting id
 	my_id = id;
 
@@ -384,7 +384,7 @@ void Game_Client::display(int id) {
 	}
 }
 
-void Game_Client::update_state(std::string source) {
+void GameClient::update_state(std::string source) {
 	// Hp value to compare, is used to catch damage event
 	float hp_prev = 0;
 	if (get_ship(my_id)) {
@@ -448,7 +448,7 @@ void Game_Client::update_state(std::string source) {
 						path[i] = '_';
 					}
 				}
-				auto load_func = [](Game_Client* game_client) {
+				auto load_func = [](GameClient* game_client) {
 					game_client->load_wall_textures();
 				};
 				std::thread load_thread(load_func, this);
@@ -819,29 +819,29 @@ void Game_Client::update_state(std::string source) {
 	}
 }
 
-Ship* Game_Client::get_ship(int id) {
+Ship* GameClient::get_ship(int id) {
 	for (auto ship : ships)
 		if (ship->get_player()->get_id() == id)
 			return ship;
 	return nullptr;
 }
 
-std::map<int, Player*>* Game_Client::get_players() {
+std::map<int, Player*>* GameClient::get_players() {
 	return &players;
 }
 
-int Game_Client::get_player_id(std::string name) {
+int GameClient::get_player_id(std::string name) {
 	for (auto it = players.begin(); it != players.end(); it++)
 		if (it->second != nullptr && it->second->get_name() == name)
 			return it->second->get_id();
 	return 0;
 }
 
-bool Game_Client::get_network_information_active() {
+bool GameClient::get_network_information_active() {
 	return network_information_active;
 }
 
-void Game_Client::load_setup(std::string path) {
+void GameClient::load_setup(std::string path) {
 	std::ifstream fileInput(path);
 	std::stringstream file = (aux::comment(fileInput));
 
@@ -864,14 +864,14 @@ void Game_Client::load_setup(std::string path) {
 	}
 }
 
-void Game_Client::save_setup(std::string path) {
+void GameClient::save_setup(std::string path) {
 	std::ofstream file(path);
 	file << "GUN " << gun_name << "\n" << "HULL " << hull_name << "\n"
 		<< "LEFT_MODULE " << left_module_name << "\n" << "RIGHT_MODULE " << right_module_name;
 	file.close();
 }
 
-sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
+sf::Texture* GameClient::make_polygonal_texture(Wall* wall,
 	sf::Vector2f scale, std::string base_texture,
 	float wall_width, sf::Color overlay_color) {
 
@@ -950,7 +950,7 @@ sf::Texture* Game_Client::make_polygonal_texture(Wall* wall,
 }
 
 
-void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale, float wall_width, std::string wall_name) {
+void GameClient::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale, float wall_width, std::string wall_name) {
 	auto path = map_path;
 	for (int i = 0; i < path.size(); i++) {
 		if (path[i] == '/' || path[i] == '.') {
@@ -1003,6 +1003,6 @@ void Game_Client::load_wall_textures(sf::Color overlay_color, sf::Vector2f scale
 	}
 }
 
-Module_Manager* Game_Client::get_module_manager() {
+Module_Manager* GameClient::get_module_manager() {
 	return &module_manager;
 }

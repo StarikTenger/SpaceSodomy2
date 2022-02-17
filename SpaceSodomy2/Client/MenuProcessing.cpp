@@ -1,8 +1,8 @@
-#include "Menu_Processing.h"
+#include "MenuProcessing.h"
 
-Menu_Processing::Menu_Processing() {}
+MenuProcessing::MenuProcessing() {}
 
-void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
+void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::vector<std::string> names;
@@ -26,7 +26,7 @@ void Menu_Processing::save_keys(std::string path, std::vector<std::vector<std::s
 	}
 	fout.close();
 }
-void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
+void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
 	int k = 0;
 	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
 	std::ifstream file_to_comment(path);
@@ -86,7 +86,7 @@ void Menu_Processing::load_keys(std::string path, std::vector<std::vector<std::s
 	}
 }
 
-void Menu_Processing::load_HUD_settings(std::string path, tgui::Gui &gui) {
+void MenuProcessing::load_HUD_settings(std::string path, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double next;
@@ -110,14 +110,14 @@ void Menu_Processing::load_HUD_settings(std::string path, tgui::Gui &gui) {
 	});
 }
 
-void Menu_Processing::save_HUD_settings(std::string path) {
+void MenuProcessing::save_HUD_settings(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << game->get_aim_conf() << "\n" << game->get_aim_opacity() << "\n" << game->get_network_information_active();
 	fout.close();
 }
 
-void Menu_Processing::load_sound(std::string path, tgui::Gui &gui) {
+void MenuProcessing::load_sound(std::string path, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	auto music_slider = gui.get<tgui::Slider>("MusicSlider");
@@ -137,20 +137,20 @@ void Menu_Processing::load_sound(std::string path, tgui::Gui &gui) {
 		});
 }
 
-void Menu_Processing::save_sound(std::string path) {
+void MenuProcessing::save_sound(std::string path) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << game->get_audio()->get_sound_volume() << "\n" << game->get_audio()->get_music_volume();
 	fout.close();
 }
 
-void Menu_Processing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+void MenuProcessing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << address_ << " " << port_ << " " << id_ << " " << name_;
 	fout.close();
 }
-void Menu_Processing::load_config(std::string path, std::string* address_, std::string* port_,
+void MenuProcessing::load_config(std::string path, std::string* address_, std::string* port_,
 	std::string* id_, std::string* name_, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
@@ -166,7 +166,7 @@ void Menu_Processing::load_config(std::string path, std::string* address_, std::
 	}
 }
 
-void Menu_Processing::toggle_active() {
+void MenuProcessing::toggle_active() {
 	active = !active;
 	auto wid = _gui->getWidgets();
 	for (int i = 0; i < wid.size(); i++) {
@@ -177,7 +177,7 @@ void Menu_Processing::toggle_active() {
 	text_field_active = active;
 }
 
-void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
+void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
 	auto conf = gui.get<tgui::Group>("configuration.txt");
 
 	auto gun_info = conf->get<tgui::ScrollablePanel>("GunInfo");
@@ -421,7 +421,7 @@ void Menu_Processing::init_multiplayer_menu(std::string file_name, tgui::Gui& gu
 	}
 }
 
-void Menu_Processing::init_tgui(tgui::Gui& gui) {
+void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto load_widgets = [&gui](std::string file_name) {
 		auto ans = tgui::Group::create();
 		ans->loadWidgetsFromFile(file_name);
@@ -541,9 +541,9 @@ void Menu_Processing::init_tgui(tgui::Gui& gui) {
 	});
 }
 
-void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
+void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, Client_Network* network_,
-	Game_Client* game_, Replay* replay_, bool* reload_) {
+	GameClient* game_, Replay* replay_, bool* reload_) {
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;
@@ -561,7 +561,7 @@ void Menu_Processing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	load_keys("keys.conf", &keys_menu_vec, gui);
 }
 
-void Menu_Processing::step() {
+void MenuProcessing::step() {
 	replay->step(game->get_dt());
 	
 	if (replay->get_replay_active()) {

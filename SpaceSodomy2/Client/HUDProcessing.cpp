@@ -1,11 +1,11 @@
-#include "HUD_Processing.h"
+#include "HUDProcessing.h"
 
 bool operator<(Player& a, Player& b) {
 	return (a.get_kills() > b.get_kills() ||
 		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
 }
 
-void HUD_Processing::get_buttons_names(tgui::Gui &gui, std::string path) {
+void HUDProcessing::get_buttons_names(tgui::Gui &gui, std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -32,7 +32,7 @@ void HUD_Processing::get_buttons_names(tgui::Gui &gui, std::string path) {
 	}
 }
 
-std::vector<b2Vec2> HUD_Processing::get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale) {
+std::vector<b2Vec2> HUDProcessing::get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale) {
 	std::vector<b2Vec2> ans;
 	if (cur_pos < b2_epsilon)
 		return ans;
@@ -84,7 +84,7 @@ std::vector<b2Vec2> HUD_Processing::get_vertices(float cur_pos, b2Vec2 center, b
 	return ans;
 }
 
-void HUD_Processing::table_step(tgui::Gui &gui, float scale) {
+void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
 	std::vector<Player> rating_table;
 	for (auto player : *game->get_players()) {
 		if (player.second == nullptr)
@@ -123,12 +123,12 @@ void HUD_Processing::table_step(tgui::Gui &gui, float scale) {
 	}
 }
 
-HUD_Processing::HUD_Processing()
+HUDProcessing::HUDProcessing()
 {
 }
 
-HUD_Processing::HUD_Processing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
-	Game_Client* game_, Client_Network* player_network_, std::queue<int>* frame_marks_) {
+HUDProcessing::HUDProcessing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_,
+	GameClient* game_, Client_Network* player_network_, std::queue<int>* frame_marks_) {
 	frame_marks = frame_marks_;
 	game = game_;
 	player_network = player_network_;
@@ -137,7 +137,7 @@ HUD_Processing::HUD_Processing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, 
 	keyboard = keyboard_;
 }
 
-void HUD_Processing::step(tgui::Gui &gui) {
+void HUDProcessing::step(tgui::Gui &gui) {
 	get_buttons_names(gui, "keys.conf");
 	sf::Vector2f win_s = 
 		sf::Vector2f(1.0 * draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width,

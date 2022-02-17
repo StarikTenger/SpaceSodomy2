@@ -21,22 +21,22 @@
     <ClCompile Include="Control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game_Client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu_Processing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HUD_Processing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Replay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Loading_Screen.cpp">
+    <ClCompile Include="KeybindingBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KeybindingBox.cpp">
+    <ClCompile Include="GameClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HUDProcessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,22 +44,22 @@
     <ClInclude Include="Control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game_Client.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu_Processing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HUD_Processing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Replay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Loading_Screen.h">
+    <ClInclude Include="KeybindingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KeybindingBox.h">
+    <ClInclude Include="GameClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HUDProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuProcessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

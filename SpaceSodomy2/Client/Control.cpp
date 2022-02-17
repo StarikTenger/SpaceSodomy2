@@ -189,7 +189,7 @@ Control::Control() {
 	// *****************
 	draw.load_fonts("fonts.conf");
 	draw.apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
-	Loading_Screen loading(&draw, gui);
+	LoadingScreen loading(&draw, gui);
 	loading.step(0, "Loading textures...");	
 	//draw.fullscreen_toggle();
 	draw.load_textures("textures.conf");
@@ -210,7 +210,7 @@ Control::Control() {
 	keyboard.text_entered = &text_entered;
 	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
-	hud = HUD_Processing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
+	hud = HUDProcessing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name
 	track = audio.get_music_by_number(aux::random_int(0, 131213));
 	draw.display();

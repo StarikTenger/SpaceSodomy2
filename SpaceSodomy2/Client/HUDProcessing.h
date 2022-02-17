@@ -1,13 +1,13 @@
 #pragma once
-#include<Client/Game_Client.h>
+#include<Client/GameClient.h>
 #include<AuxLib/AuxLib.h>
 #include<Network/Client_Network.h>
 #include<TGUI/TGUI.hpp>
 #include<TGUI/Backend/SFML-Graphics.hpp>
 
-class HUD_Processing {
+class HUDProcessing {
 private:
-	Game_Client* game;
+	GameClient* game;
 	Client_Network* player_network;
 
 	Draw* draw;
@@ -25,8 +25,8 @@ private:
 public:
 	float interface_scale = 3;
 
-	HUD_Processing();
-	HUD_Processing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, Game_Client* game_,
+	HUDProcessing();
+	HUDProcessing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, GameClient* game_,
 		Client_Network* player_network_, std::queue<int>* frame_marks_);
 
 	void step(tgui::Gui& gui);

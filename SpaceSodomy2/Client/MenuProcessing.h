@@ -1,6 +1,6 @@
 #pragma once
 #include<AuxLib/AuxLib.h>
-#include<Client/Game_Client.h>
+#include<Client/GameClient.h>
 #include<string>
 #include<Client/Replay.h>
 #include<Network/Client_Network.h>
@@ -8,7 +8,7 @@
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include "KeybindingBox.h"
 
-class Menu_Processing {
+class MenuProcessing {
 private:
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
@@ -28,7 +28,7 @@ private:
 	void save_sound(std::string path);
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	Draw* draw;
-	Game_Client* game;
+	GameClient* game;
 	Replay* replay;
 	tgui::Gui* _gui;
 	bool disactivated = 0;
@@ -36,7 +36,7 @@ private:
 	bool* reload;
 	int module_num = 1;
 public:
-	Menu_Processing();
+	MenuProcessing();
 	bool active = 1;
 	void toggle_active();
 	int text_field_active = 0;
@@ -44,7 +44,7 @@ public:
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void init(tgui::Gui& gui, Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, Client_Network* network_,
-		Game_Client* game_, Replay* replay_,
+		GameClient* game_, Replay* replay_,
 		bool* reload_);
 	void step();
 };
