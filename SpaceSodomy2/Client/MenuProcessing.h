@@ -3,7 +3,7 @@
 #include<Client/GameClient.h>
 #include<string>
 #include<Client/Replay.h>
-#include<Network/Client_Network.h>
+#include<Network/ClientNetwork.h>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include "KeybindingBox.h"
@@ -13,7 +13,7 @@ private:
 	aux::Keyboard* keyboard;
 	b2Vec2* mouse_pos;
 	int current_id = 1;
-	Client_Network* network;
+	ClientNetwork* network;
 	std::queue<int> events; // menu events
 	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
@@ -43,7 +43,7 @@ public:
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
 	void init(tgui::Gui& gui, Draw* draw, b2Vec2* mouse_pos_,
-		aux::Keyboard* keyboard_, Client_Network* network_,
+		aux::Keyboard* keyboard_, ClientNetwork* network_,
 		GameClient* game_, Replay* replay_,
 		bool* reload_);
 	void step();

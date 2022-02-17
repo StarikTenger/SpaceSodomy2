@@ -1,14 +1,14 @@
 #pragma once
 #include<Client/GameClient.h>
 #include<AuxLib/AuxLib.h>
-#include<Network/Client_Network.h>
+#include<Network/ClientNetwork.h>
 #include<TGUI/TGUI.hpp>
 #include<TGUI/Backend/SFML-Graphics.hpp>
 
 class HUDProcessing {
 private:
 	GameClient* game;
-	Client_Network* player_network;
+	ClientNetwork* player_network;
 
 	Draw* draw;
 	b2Vec2* mouse_pos;
@@ -27,7 +27,7 @@ public:
 
 	HUDProcessing();
 	HUDProcessing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, aux::Keyboard* keyboard_, GameClient* game_,
-		Client_Network* player_network_, std::queue<int>* frame_marks_);
+		ClientNetwork* player_network_, std::queue<int>* frame_marks_);
 
 	void step(tgui::Gui& gui);
 };

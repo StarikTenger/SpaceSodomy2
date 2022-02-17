@@ -3,8 +3,8 @@
 
 #include "pch.h"
 #include "framework.h"
-#include "Client_Network.h"
-#include "Server_Network.h"
+#include "ClientNetwork.h"
+#include "ServerNetwork.h"
 
 // TODO: This is an example of a library function
 void fnNetwork()

@@ -542,7 +542,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 }
 
 void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
-	aux::Keyboard* keyboard_, Client_Network* network_,
+	aux::Keyboard* keyboard_, ClientNetwork* network_,
 	GameClient* game_, Replay* replay_, bool* reload_) {
 	game = game_;
 	draw = draw_;
