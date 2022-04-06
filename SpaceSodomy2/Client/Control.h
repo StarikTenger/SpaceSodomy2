@@ -21,7 +21,7 @@ private:
 	// 0 means the program is supposed to be stopped
 	int is_running = 1;
 	// Period of drawing & sending in ms
-	int delay = 20;
+	int delay = 10;
 	// Last time of activity
 
 	int time_prev = 0;

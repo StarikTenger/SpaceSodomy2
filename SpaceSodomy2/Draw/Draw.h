@@ -8,6 +8,7 @@
 #include <fstream>
 #include "Camera.h"
 #include "FloatAnimation.h"
+#include "Sprite.h"
 
 class Draw {
 private:
@@ -19,6 +20,8 @@ private:
 	std::map<std::string, sf::Font*> fonts;
 	// Animations
 	std::set<FloatAnimation*> animations;
+	// Sprites
+	std::map<std::string, Sprite> sprites;
 	// Name of the window
 	std::string window_name = "Space Sodomy II";
 
@@ -28,6 +31,7 @@ public:
 	void load_texture(std::string name, std::string path_to_texture);
 	void load_font(std::string name, std::string path_to_font);
 	void export_texture(std::string name, std::string path_to_texture);
+	bool isSprite(std::string sprite_name);
 
 	bool fullscreen = 0;
 public:
@@ -67,11 +71,11 @@ public:
 	// Primitives
 	void clear();
 	void fill_polygon(std::vector<b2Vec2> vertices, sf::Color);
-	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0);
+	void fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle = 0, std::string sprite_name = "");
 	void stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color);
 	void fill_circle(b2Vec2 pos, float r, sf::Color color);
 	void thin_line(b2Vec2 start, b2Vec2 finish, sf::Color color);
-	void thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness);
+	void thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness, std::string sprite_name = "");
 	void textured_line(std::string texture, b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness);
 	void image(std::string name, b2Vec2 pos, b2Vec2 box,
 		float angle = 0, sf::Color color = sf::Color(255, 255, 255, 255));
@@ -88,6 +92,9 @@ public:
 		std::pair<sf::Color, sf::Color> color,
 		float duration,
 		int layer = 0);
+
+	// Sprite
+	void sprite(std::string sprite_name);
 
 	void text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color);
 

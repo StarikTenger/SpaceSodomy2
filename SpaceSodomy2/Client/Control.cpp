@@ -219,7 +219,7 @@ Control::Control() {
 		sf::Color(0, 0, 0, 255), 0);
 	// Sleep(10000);
 	// Dt
-	game.set_dt(delay * 0.001);
+	game.set_dt(0.02); // TODO : hardcode
 	game.load_parameters("parameters.conf");
 	load_token("token.conf");
 }

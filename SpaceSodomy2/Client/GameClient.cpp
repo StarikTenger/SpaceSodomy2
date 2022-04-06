@@ -103,32 +103,37 @@ void GameClient::display(int id) {
 
 	// Walls
 	draw->image(global_wall_name, 0.5 * (origin_pos + end_pos), end_pos - origin_pos);
-	for (auto wall : walls) {
-		auto color = sf::Color(0, 151, 255);
-		if (wall->get_type() == Wall::SPIKED || wall->get_type() == Wall::GHOST) {
-			color = sf::Color(255, 255, 255);
-		}
-		auto vertices = wall->get_vertices();
-		for (int i = 0; i < vertices.size(); i++) {
-			int j = (i + 1) % vertices.size();
-			float thickness = 0.05;
-			draw->thick_line(vertices[i], vertices[j], color, thickness);
+	if (!draw->isSprite(global_wall_name)) {
+		std::cout << "generating wall sprite...\n";
+		for (auto wall : walls) {
+			auto color = sf::Color(0, 151, 255);
+			if (wall->get_type() == Wall::SPIKED || wall->get_type() == Wall::GHOST) {
+				color = sf::Color(255, 255, 255);
+			}
+			auto vertices = wall->get_vertices();
+			for (int i = 0; i < vertices.size(); i++) {
+				int j = (i + 1) % vertices.size();
+				float thickness = 0.05;
+				draw->thick_line(vertices[i], vertices[j], color, thickness, global_wall_name);
 
-			// Drawing wall connection
-			b2Vec2 vec_a = vertices[(i + 1) % vertices.size()] - vertices[i];
-			b2Vec2 vec_b = vertices[(vertices.size() + i - 1) % vertices.size()] - vertices[i];
-			vec_a.Normalize();
-			vec_b.Normalize();
-			b2Vec2 vec_dir = vec_a + vec_b;
-			vec_dir.Normalize();
-			float cos_val = b2Dot(vec_a, vec_b);
-			float sin_val = sqrt(abs(1 - cos_val) / 2);
-			cos_val = sqrt(abs(1 + cos_val) / 2);
-			float size_x = thickness * sin_val / 2;
-			float size_y = thickness * cos_val;
-			draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
+				// Drawing wall connection
+				b2Vec2 vec_a = vertices[(i + 1) % vertices.size()] - vertices[i];
+				b2Vec2 vec_b = vertices[(vertices.size() + i - 1) % vertices.size()] - vertices[i];
+				vec_a.Normalize();
+				vec_b.Normalize();
+				b2Vec2 vec_dir = vec_a + vec_b;
+				vec_dir.Normalize();
+				float cos_val = b2Dot(vec_a, vec_b);
+				float sin_val = sqrt(abs(1 - cos_val) / 2);
+				cos_val = sqrt(abs(1 + cos_val) / 2);
+				float size_x = thickness * sin_val / 2;
+				float size_y = thickness * cos_val;
+				draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y, global_wall_name);
+			}
 		}
 	}
+	draw->sprite(global_wall_name);
+	
 	
 	// Ships
 	for (auto ship : ships) {

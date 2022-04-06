@@ -111,6 +111,10 @@ void Draw::export_texture(std::string name, std::string path) {
 	std::cout << "Finish exporting\n";
 }
 
+bool Draw::isSprite(std::string sprite_name) {
+	return sprites.count(sprite_name);
+}
+
 void Draw::apply_camera() {
 	cam.set_borders(b2Vec2(window->getSize().x, window->getSize().y));
 	cam.apply(window);
@@ -150,14 +154,17 @@ void Draw::fill_polygon(std::vector<b2Vec2> vertices, sf::Color color) {
 	window->draw(convex);
 }
 
-void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle) {
+void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle, std::string sprite_name) {
 	sf::RectangleShape rectangle;
 	rectangle.setOrigin(box.x / 2, box.y / 2);
 	rectangle.setSize(sf::Vector2f(box.x, box.y));
 	rectangle.setFillColor(color);
 	rectangle.setPosition(pos.x, pos.y);
 	rectangle.setRotation(angle * 180 / b2_pi);
-	window->draw(rectangle);
+	if (sprite_name == "")
+		window->draw(rectangle);
+	else 
+		sprites[sprite_name].add_object(rectangle);
 }
 
 void Draw::stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color) {
@@ -190,11 +197,11 @@ void Draw::thin_line(b2Vec2 start, b2Vec2 finish, sf::Color color) {
 	window->draw(l, 2, sf::Lines);
 }
 
-void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness) {
+void Draw::thick_line(b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness, std::string sprite_name) {
 	auto mid = 0.5 * (start + finish);
 	float len = b2Distance(start, finish);
 	float ang = aux::vec_to_angle(finish - start);
-	fill_rect(mid, {len, thickness}, color, ang);
+	fill_rect(mid, {len, thickness}, color, ang, sprite_name);
 }
 
 void Draw::textured_line(std::string texture, b2Vec2 start, b2Vec2 finish, sf::Color color, float thickness) {
@@ -275,6 +282,10 @@ void Draw::fadeout_animation(std::string image_name, b2Vec2 pos,
 	state_end.color = color.second;
 	FloatAnimation animation(image_name, state_begin, state_end, duration, layer);
 	create_animation(animation);
+}
+
+void Draw::sprite(std::string sprite_name) {
+	sprites[sprite_name].draw(window);
 }
 
 void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
