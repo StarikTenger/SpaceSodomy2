@@ -173,7 +173,8 @@ void MenuProcessing::toggle_active() {
 		wid[i]->setVisible(false);
 	}
 	_gui->get<tgui::Group>("HUD.txt")->setVisible(!active);
-	_gui->get<tgui::Group>("main_menu.txt")->setVisible(active);
+	_gui->get<tgui::Group>("replay.txt")->setVisible(replay->get_replay_active() && active);
+	_gui->get<tgui::Group>("main_menu.txt")->setVisible(!replay->get_replay_active() && active);
 	text_field_active = active;
 }
 

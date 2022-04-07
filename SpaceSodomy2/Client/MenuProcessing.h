@@ -32,7 +32,6 @@ private:
 	Replay* replay;
 	tgui::Gui* _gui;
 	bool disactivated = 0;
-	bool shader_active = 1;
 	bool* reload;
 	int module_num = 1;
 	bool slider_changing = 0;
