@@ -79,10 +79,8 @@ int Replay::get_frame_number() {
 }
 
 void Replay::step(float _dt) {
-	float real_dt = aux::get_milli_count() * 0.001 - last_frame_time;
-	last_frame_time = aux::get_milli_count() * 0.001;
 	dt = _dt;
 	// Modify counter
 	if (!is_paused)
-		playback_time.step(real_dt);
+		playback_time.step(dt);
 }

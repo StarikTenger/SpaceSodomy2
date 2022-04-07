@@ -25,8 +25,6 @@ private:
 	float dt = 0.020;
 	// Amount of frames
 	int frame_number = 0;
-	// Time of last frame played
-	float last_frame_time = 0; // In real-world seconds
 public:
 	Replay();
 	Replay(std::string);

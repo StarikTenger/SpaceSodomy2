@@ -240,8 +240,11 @@ void Control::step() {
 
 	// Delay check
 	int time_current = aux::get_milli_count();
-	if (time_current - time_prev > delay) {
+	int time_delta = time_current - time_prev;
+	if (time_delta > delay) {
 		time_prev = time_current;
+		// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
+		game.set_dt(time_delta * 0.001);
 
 		// Pass message to game object
 		if (replay.get_replay_active())
