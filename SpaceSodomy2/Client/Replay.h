@@ -25,6 +25,7 @@ private:
 	float dt = 0.020;
 	// Amount of frames
 	int frame_number = 0;
+	
 public:
 	Replay();
 	Replay(std::string);

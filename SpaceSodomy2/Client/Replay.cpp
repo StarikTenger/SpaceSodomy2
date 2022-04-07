@@ -79,8 +79,8 @@ int Replay::get_frame_number() {
 }
 
 void Replay::step(float _dt) {
-	dt = _dt;
+	//dt = _dt;
 	// Modify counter
 	if (!is_paused)
-		playback_time.step(dt);
+		playback_time.step(_dt);
 }
