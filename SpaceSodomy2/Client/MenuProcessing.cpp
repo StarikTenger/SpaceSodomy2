@@ -573,6 +573,10 @@ void MenuProcessing::step() {
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setValue(replay->get_cur_frame_number());
 	}
+	if (slider_changing != _gui->get<tgui::Slider>("ReplaySlider")->isMouseDown()) {
+		slider_changing = !slider_changing;
+		replay->play_button(*_gui);
+	}
 
 	sf::Vector2f win_s =
 		sf::Vector2f(1.0 * draw->get_window()->getSize().x / sf::VideoMode::getDesktopMode().width,

@@ -35,6 +35,7 @@ private:
 	bool shader_active = 1;
 	bool* reload;
 	int module_num = 1;
+	bool slider_changing = 0;
 public:
 	MenuProcessing();
 	bool active = 1;
