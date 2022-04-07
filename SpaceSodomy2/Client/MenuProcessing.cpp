@@ -216,6 +216,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		gun_vars->setVisible(0);
 		hull_vars->setVisible(0);
 		module_vars->setVisible(1);
+		module_num = 1;
 	});
 
 	conf->get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(*draw->get_texture(game->get_right_module_name() + "-module"));
@@ -223,6 +224,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		gun_vars->setVisible(0);
 		hull_vars->setVisible(0);
 		module_vars->setVisible(1);
+		module_num = 2;
 		});
 
 	std::ifstream file_to_comment(file_name);
