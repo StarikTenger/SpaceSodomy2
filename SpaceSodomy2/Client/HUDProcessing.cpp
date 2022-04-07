@@ -168,12 +168,16 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
 		gui.get<tgui::Label>("EnergyBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
 
+		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
+		if (bonus_texture_name != bonus_icon_name) {
+			bonus_icon_name = bonus_texture_name;
+			auto bonus_texture = draw->get_texture(bonus_texture_name);
+			gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
+		}
+
 		// interface buttons processing
 		if (reload_icons) {
 			reload_icons = 0;
-			auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
-			auto bonus_texture = draw->get_texture(bonus_texture_name);
-			gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
 			auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
 			auto gun_texture = draw->get_texture(gun_texture_name);
 			gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);

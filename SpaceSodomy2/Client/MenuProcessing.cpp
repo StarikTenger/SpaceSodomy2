@@ -272,7 +272,6 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
 				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
 				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
-				gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(texture);
 			});
 			gun_vars->add(pic);
 
@@ -366,13 +365,11 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 					_game->set_left_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
 					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(texture);
-					gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(texture);
 				}
 				else {
 					_game->set_right_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
 					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
-					gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(texture);
 				}
 			});
 			module_vars->add(pic);

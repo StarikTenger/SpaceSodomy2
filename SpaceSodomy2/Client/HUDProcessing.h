@@ -24,6 +24,7 @@ private:
 	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);
 
 	bool reload_icons = true;
+	std::string bonus_icon_name = "";
 public:
 	float interface_scale = 3;
 
