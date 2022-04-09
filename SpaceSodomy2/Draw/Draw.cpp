@@ -16,7 +16,10 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 		delete tex;
 		return;
 	}
+	auto spr = new sf::Sprite();
+	spr->setTexture(*tex);
 	textures.insert(std::make_pair(name, tex));
+	sprites.insert(std::make_pair(name, spr));
 }
 void Draw::load_font(std::string name, std::string path_to_font) {
 	sf::Font* font = new sf::Font();
@@ -112,7 +115,7 @@ void Draw::export_texture(std::string name, std::string path) {
 }
 
 bool Draw::isSprite(std::string sprite_name) {
-	return sprites.count(sprite_name);
+	return line_sprites.count(sprite_name);
 }
 
 void Draw::apply_camera() {
@@ -164,7 +167,7 @@ void Draw::fill_rect(b2Vec2 pos, b2Vec2 box, sf::Color color, float angle, std::
 	if (sprite_name == "")
 		window->draw(rectangle);
 	else 
-		sprites[sprite_name].add_object(rectangle);
+		line_sprites[sprite_name].add_object(rectangle);
 }
 
 void Draw::stroke_rect(b2Vec2 pos, b2Vec2 box, sf::Color color) {
@@ -215,11 +218,10 @@ void Draw::image(std::string name, b2Vec2 pos, b2Vec2 box,
 	float angle, sf::Color color) {
 	if (!is_texture_exist(name))
 		return;
-	sf::Texture& tex = *textures[name];
+	sf::Sprite& sprite = *sprites[name];
+	const sf::Texture& tex = *textures[name];
 	b2Vec2 scale = { box.x / tex.getSize().x  , box.y / tex.getSize().y };
-	sf::Sprite sprite;
 	sprite.setOrigin(tex.getSize().x / 2, tex.getSize().y / 2);
-	sprite.setTexture(tex);
 	sprite.setScale(scale.x, scale.y);
 	sprite.setPosition(pos.x, pos.y);
 	sprite.setColor(sf::Color(
@@ -285,7 +287,7 @@ void Draw::fadeout_animation(std::string image_name, b2Vec2 pos,
 }
 
 void Draw::sprite(std::string sprite_name) {
-	sprites[sprite_name].draw(window);
+	line_sprites[sprite_name].draw(window);
 }
 
 void Draw::text(std::string text, std::string font_name, b2Vec2 pos, float size, float dir, sf::Color color) {
@@ -306,7 +308,10 @@ bool Draw::is_texture_exist(std::string name) {
 }
 
 void Draw::insert_texture(sf::Texture* tex, std::string name) {
+	auto spr = new sf::Sprite();
+	spr->setTexture(*tex);
 	textures.insert(std::make_pair(name, tex)).second;
+	sprites.insert(std::make_pair(name, spr)).second;
 }
 
 void Draw::overlay_texture(sf::RenderTexture& base, sf::Texture* im, sf::Color color, sf::Vector2i origin_pos) {

@@ -16,12 +16,13 @@ private:
 	Camera cam;
 	// Matches textures and names
 	std::map<std::string, sf::Texture*> textures;
+	std::map<std::string, sf::Sprite*> sprites;
 	// Matches fonts and names
 	std::map<std::string, sf::Font*> fonts;
 	// Animations
 	std::set<FloatAnimation*> animations;
 	// Sprites
-	std::map<std::string, Sprite> sprites;
+	std::map<std::string, Sprite> line_sprites;
 	// Name of the window
 	std::string window_name = "Space Sodomy II";
 
