@@ -173,6 +173,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="GameReadable.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="HullPrototype.h" />
     <ClInclude Include="IdManager.h" />
