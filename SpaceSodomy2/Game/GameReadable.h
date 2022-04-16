@@ -12,17 +12,32 @@ class Bonus;
 class Rocket;
 class Forcefield;
 class Wall;
+class Engine;
+class CommandModule;
+class Counter;
+class Event;
+class Effects;
 
 
 // Pavlik Morosov class for Game
 // Contains only physical objects (exclude Player)
 class GameReadable {
 public:
-    std::set<Ship*> ships;
-	std::set<ActiveModule*> active_modules;
+	float dt = 0.02;
+	float time = 0;
 
+
+    std::set<Ship*> ships;
+	std::set<Engine*> engines;
+	std::set<CommandModule*> command_modules;
+
+	std::set<ActiveModule*> active_modules;
 	std::set<Projectile*> projectiles;
+	std::set<Counter*> counters;
 	std::set<DamageReceiver*> damage_receivers;
+	std::set<Event*> events;
+	std::set<Effects*> effects;
+
 	std::set<Bonus*> bonuses;
 	std::set<Rocket*> rockets;
 	std::set<Forcefield*> forcefields;

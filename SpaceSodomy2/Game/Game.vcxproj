@@ -161,6 +161,7 @@
     <ClInclude Include="Bonus.h" />
     <ClInclude Include="BonusManager.h" />
     <ClInclude Include="BonusSlot.h" />
+    <ClInclude Include="Brain.h" />
     <ClInclude Include="CollisionFilter.h" />
     <ClInclude Include="CommandModule.h" />
     <ClInclude Include="ContactTable.h" />
@@ -191,6 +192,8 @@
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="ShipBrain.h" />
+    <ClInclude Include="ShipContinuity.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +201,7 @@
     <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="BonusManager.cpp" />
     <ClCompile Include="BonusSlot.cpp" />
+    <ClCompile Include="Brain.cpp" />
     <ClCompile Include="CollisionFilter.cpp" />
     <ClCompile Include="CommandModule.cpp" />
     <ClCompile Include="ContactTable.cpp" />
@@ -229,6 +233,8 @@
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="ShipBrain.cpp" />
+    <ClCompile Include="ShipContinuity.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

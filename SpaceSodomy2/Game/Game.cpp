@@ -345,31 +345,30 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	stamina->set_delay(0);
 	rocket->set_stamina(stamina);
 
-	auto brain = create_rocket_brain(&def.base);
-	brain->set_rocket(rocket);
+	// Rocket control
+	auto command_module = create_command_module();
+	auto brain = new RocketBrain(
+		*command_module, 
+		static_cast<const GameReadable&>(*this), 
+		rocket, 
+		def.base.range, 
+		def.base.bin_search_accuracy);
+	rocket_brains.insert(brain);
 	rocket->set_rocket_brain(brain);
 
-	// Command module
-	auto command_module = new CommandModule;
 
 	// Engine
 	auto engine = create_engine(body, command_module, stamina);
 	engine->set_force_angular(0);
 	engine->set_force_linear(def.base.force_linear);
 	rocket->set_engine(engine);
-	brain->set_command_module(command_module);
+	//brain->set_command_module(command_module);
 
 	// Damage receiver
 	auto damage_receiver = create_damage_receiver(body, hp, def.player);
 	rocket->set_damage_receiver(damage_receiver);
 
 	return rocket;
-}
-
-RocketBrain* Game::create_rocket_brain(Rocket_Prototype* base) {
-	auto brain = new RocketBrain(base->range, static_cast<const GameReadable*>(this), base->bin_search_accuracy);
-	rocket_brains.insert(brain);
-	return brain;
 }
 
 Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) {
@@ -405,6 +404,12 @@ void Game::delete_active_module(ActiveModule* active_module) {
 	delete_counter(active_module->get_recharge_counter());
 	delete active_module;
 }
+
+void Game::delete_command_module(CommandModule* _) {
+	command_modules.erase(_);
+	delete _;
+}
+
 
 void Game::delete_ship(Ship* ship) {
 	delete_body(ship->get_body());
@@ -454,18 +459,18 @@ void Game::delete_bonus(Bonus* bonus) {
 
 void Game::delete_rocket(Rocket* rocket) {
 	rockets.erase(rocket);
-	delete_rocket_brain(rocket->get_rocket_brain());
+
+	auto brain = (rocket->get_rocket_brain());
+	delete_command_module(brain->get_command_module());
+	rocket_brains.erase(brain);
+	delete brain;
+
 	delete_body(rocket->get_body());
 	delete_engine(rocket->get_engine());
 	delete_damage_receiver(rocket->get_damage_receiver());
 	delete_counter(rocket->get_hp());
 	delete_counter(rocket->get_stamina());
 	delete rocket;
-}
-void Game::delete_rocket_brain(RocketBrain* brain) {
-	rocket_brains.erase(brain);
-	delete brain->get_command_module();
-	delete brain;
 }
 
 void Game::delete_wall(Wall* wall) {
@@ -500,8 +505,8 @@ void Game::process_ships() {
 	// Deleting
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
-		if (auto_damage)
-			ship->get_hp()->modify(-dt*20);
+		//if (auto_damage)
+		//	ship->get_hp()->modify(-dt*20);
 
 		// Apply INSTANT_HP
 		auto hp_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter();
@@ -770,7 +775,7 @@ void Game::process_rockets() {
 
 void Game::process_rocket_brains() {
 	for (auto brain : rocket_brains) {
-		brain->step(dt);
+		brain->compute_action();
 	}
 }
 

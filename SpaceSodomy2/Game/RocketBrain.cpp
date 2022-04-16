@@ -34,17 +34,15 @@ bool RocketBrain::is_in_range(b2Vec2 target) {
     return (target - rocket->get_body()->GetWorldPoint({ 0,0 })).LengthSquared() < range * range;
 }
 
-void RocketBrain::set_rocket(Rocket* val) {
-    rocket = val;
-}
-void RocketBrain::step(float dt) {
-    auto ships = environment->ships;
-    command_module->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
+
+void RocketBrain::compute_action() {
+    auto ships = environment.ships;
+    command_module.set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
         if (is_targetable(ship)) {
-            command_module->set_command(CommandModule::ROCKET_ANGLE, 1);
-            command_module->set_rocket_angle(calculate_dir(ship->get_body()));
+            command_module.set_command(CommandModule::ROCKET_ANGLE, 1);
+            command_module.set_rocket_angle(calculate_dir(ship->get_body()));
             break;
         }
     }
@@ -56,15 +54,10 @@ bool RocketBrain::is_targetable(Ship* ship) {
         && ship->is_visible();
 }
 
-void RocketBrain::set_command_module(CommandModule* val) {
-    command_module = val;
-}
-RocketBrain::RocketBrain(float range_, const GameReadable* ptr, int bin_search_accuracy_) : 
-    environment(ptr), 
+
+RocketBrain::RocketBrain(CommandModule& a, const GameReadable& b, Rocket* c, float range_, int bin_search_accuracy_) :
+    iBrain(a, b),
+    rocket(c),
     range(range_), 
     bin_search_accuracy(bin_search_accuracy_) {
-}
-
-CommandModule* RocketBrain::get_command_module() {
-    return command_module;
 }

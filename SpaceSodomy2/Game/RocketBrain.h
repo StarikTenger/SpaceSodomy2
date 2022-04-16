@@ -1,14 +1,13 @@
 #pragma once
 #include "Rocket.h"
 #include "GameReadable.h"
+#include "Brain.h"
 
 class Rocket;
 
-class RocketBrain {
+class RocketBrain : public iBrain {
 private:
-    Rocket* rocket = nullptr;
-    CommandModule* command_module = nullptr;
-    const GameReadable* environment;
+    Rocket* rocket;
     float range;
     int bin_search_accuracy;
 
@@ -18,16 +17,14 @@ private:
     // Function with zeroes that correspond to hitting the target;
     // Its parameters: target.pos, target.vel, time to reach the target
     float homing_func(b2Vec2 pos, b2Vec2 vel, float time, float accel);
+    bool is_targetable(Ship* ship);
 
-public:
-    RocketBrain(float range, const GameReadable*, int bin_search_accuracy = 20);
     // Tells if the target lies in range of the rocket
     bool is_in_range(b2Vec2 target);
 
-    void set_rocket(Rocket*);
-    void set_command_module(CommandModule*);
-    void step(float dt);
-    bool is_targetable(Ship* ship);
-    CommandModule* get_command_module();
+public:
+    RocketBrain(CommandModule&, const GameReadable&, Rocket*, float range, int bin_search_accuracy = 20);
+
+    void compute_action() final;
 };
 

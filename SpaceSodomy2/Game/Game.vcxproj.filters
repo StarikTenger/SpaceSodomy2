@@ -150,6 +150,15 @@
     <ClInclude Include="GameReadable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Brain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipContinuity.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipBrain.h">
+      <Filter>Header Files\Brains</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -244,6 +253,15 @@
     </ClCompile>
     <ClCompile Include="ProjectileDef.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Brain.cpp">
+      <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="ShipContinuity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ShipBrain.cpp">
+      <Filter>Source Files\Brains</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

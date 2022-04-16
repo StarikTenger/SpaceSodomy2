@@ -31,22 +31,22 @@ protected:
 
 
 	// Time step
-	float dt = 0.02;
-	float time = 0;
+	//float dt = 0.02;
+	//float time = 0;
 
 	// Objects' systems
 	std::map<int, Player*> players;
 	std::map<int, int>* connection_time;
 	// std::set<Ship*> ships;
-	std::set<Engine*> engines;
-	std::set<CommandModule*> command_modules;
+	//std::set<Engine*> engines;
+	//std::set<CommandModule*> command_modules;
 	
 	// std::set<ActiveModule*> active_modules;
 	// std::set<Projectile*> projectiles;
-	std::set<Counter*> counters;
+	//std::set<Counter*> counters;
 	//std::set<DamageReceiver*> damage_receivers;
-	std::set<Event*> events;
-	std::set<Effects*> effects;
+	//std::set<Event*> events;
+	//std::set<Effects*> effects;
 	//std::set<Bonus*> bonuses;
 	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
@@ -103,7 +103,6 @@ protected:
 	BonusSlot*      create_bonus_slot();
 	Module*          create_module(Module_Prototype*);
 	Rocket*          create_rocket(Rocket_Def);
-	RocketBrain*    create_rocket_brain(Rocket_Prototype*);
 	Forcefield*      create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force);
 
 	// Delete functions
@@ -112,6 +111,7 @@ protected:
 	void delete_projectile(Projectile*);
 	void delete_engine(Engine*);
 	void delete_active_module(ActiveModule*);
+	void delete_command_module(CommandModule*);
 	void delete_ship(Ship*);
 	void delete_damage_receiver(DamageReceiver*);
 	void delete_counter(Counter*);
@@ -119,7 +119,6 @@ protected:
 	void delete_effects(Effects*);
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
-	void delete_rocket_brain(RocketBrain*);
 	void delete_forcefield(Forcefield*);
 
 	 // Processing functions
