@@ -6,7 +6,7 @@
 #include "Event.h"
 #include <map>
 #include <unordered_map>
-#include "GameObjects.h"
+#include "GameReadable.h"
 #include "DamageReceiver.h"
 #include "Wall.h"
 #include "RocketManager.h"
@@ -33,7 +33,7 @@ protected:
     ProjectileManager* projectile_manager = nullptr;
     RocketManager* rocket_manager = nullptr;
     std::map<std::string, float> params;
-    GameObjects environment;
+    GameReadable* environment;
     static std::map<int, std::string> names;
     static std::map<std::string, Module::Type> named_types;
 public:
@@ -48,7 +48,7 @@ public:
     void set_type(Type);
     void set_projectile_manager(ProjectileManager*);
     ProjectileManager* get_projectile_manager();
-    void set_game_objects(GameObjects);
+    void set_game_objects(GameReadable*);
     RocketManager* get_rocket_manager();
     void set_rocket_manager(RocketManager*);
 };

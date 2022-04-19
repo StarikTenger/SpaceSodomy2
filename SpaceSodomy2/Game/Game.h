@@ -21,9 +21,10 @@
 #include "GameObjects.h"
 #include "RocketBrain.h"
 #include "Forcefield.h"
+#include "GameReadable.h"
 
 
-class Game {
+class Game : public GameReadable {
 protected:
 	bool auto_damage = 0;
 	b2Vec2 get_rand_respawn_pos();
@@ -34,26 +35,25 @@ protected:
 	float time = 0;
 
 	// Objects' systems
-	GameObjects game_objects;
 	std::map<int, Player*> players;
 	std::map<int, int>* connection_time;
-	std::set<Ship*> ships;
+	// std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<CommandModule*> command_modules;
 	
-	std::set<ActiveModule*> active_modules;
-	std::set<Projectile*> projectiles;
+	// std::set<ActiveModule*> active_modules;
+	// std::set<Projectile*> projectiles;
 	std::set<Counter*> counters;
-	std::set<DamageReceiver*> damage_receivers;
+	//std::set<DamageReceiver*> damage_receivers;
 	std::set<Event*> events;
 	std::set<Effects*> effects;
-	std::set<Bonus*> bonuses;
-	std::set<Rocket*> rockets;
+	//std::set<Bonus*> bonuses;
+	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
-	std::set<Forcefield*> forcefields;
+	//std::set<Forcefield*> forcefields;
 	
 	// Walls
-	std::set<Wall*> walls;
+	// std::set<Wall*> walls;
 	b2Vec2 lower_left_corner, upper_right_corner;
 	Player* wall_player = nullptr; // id = -1;
 
@@ -65,7 +65,7 @@ protected:
 	ModuleManager module_manager;
 	RocketManager rocket_manager;
 	
-	b2World physics = b2World(b2Vec2_zero);
+	// b2World physics = b2World(b2Vec2_zero);
 
 	// Collision control
 	CollisionFilter collision_filter;
