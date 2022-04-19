@@ -78,7 +78,17 @@ void Control::process_commands() {
 			command_module.set_command(CommandModule::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(CommandModule::RESPAWN, 1);
-		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
+		if (key_by_name("BONUS_ACTIVATION"))
+			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
+		if (key_by_name("LEFT_MODULE"))
+			command_module.set_command(CommandModule::LEFT_MODULE, 1);
+		if (key_by_name("RIGHT_MODULE"))
+			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
+	}
+	if (key_by_name("FULLSCREEN"))
+		draw.fullscreen_toggle();
+
+	if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
 			auto spin = gui.get<tgui::SpinControl>("SpinControl");
 			spin->setValue(spin->getValue() + spin->getStep());
 		}
@@ -139,15 +149,6 @@ void Control::process_commands() {
 		if (key_by_name("REPLAY_PLAY") && replay.get_replay_active() && !key_prev_by_name("REPLAY_PLAY")) {
 			replay.play_button(gui);
 		}
-		if (key_by_name("BONUS_ACTIVATION"))
-			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
-		if (key_by_name("LEFT_MODULE"))
-			command_module.set_command(CommandModule::LEFT_MODULE, 1);
-		if (key_by_name("RIGHT_MODULE"))
-			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
-	}
-	if (key_by_name("FULLSCREEN"))
-		draw.fullscreen_toggle();
 
 	// Zoom out
 	if (commands_active) {
