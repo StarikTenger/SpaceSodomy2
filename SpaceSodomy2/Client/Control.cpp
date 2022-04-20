@@ -30,10 +30,6 @@ void Control::process_events(sf::Window* window) {
 			mouse_pos.x = event.mouseMove.x;
 			mouse_pos.y = event.mouseMove.y;
 			break;
-		case sf::Event::TextEntered:
-			
-			text_entered.push(wchar_t(event.text.unicode));
-			break;
 		}
 	}
 
@@ -211,7 +207,6 @@ Control::Control() {
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});
 	}
-	keyboard.text_entered = &text_entered;
 	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
 	hud = HUDProcessing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
