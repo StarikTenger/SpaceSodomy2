@@ -50,6 +50,7 @@ protected:
 	//std::set<Bonus*> bonuses;
 	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
+	std::set<ShipBrain*> ship_brains;
 	//std::set<Forcefield*> forcefields;
 	
 	// Walls
@@ -120,6 +121,7 @@ protected:
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
 	void delete_forcefield(Forcefield*);
+	void delete_brain(ShipBrain*);
 
 	 // Processing functions
 	void process_players();
@@ -139,10 +141,13 @@ protected:
 	void process_rocket_brains();
 	void process_rocket_manager();
 	void process_forcefields();
+	void process_ship_brains();
 
 	// Misc
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
+
+	const GameReadable& get_readable();
 
 public:
 	Game();

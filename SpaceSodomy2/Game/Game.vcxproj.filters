@@ -153,9 +153,6 @@
     <ClInclude Include="Brain.h">
       <Filter>Header Files\Brains</Filter>
     </ClInclude>
-    <ClInclude Include="ShipContinuity.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="ShipBrain.h">
       <Filter>Header Files\Brains</Filter>
     </ClInclude>
@@ -256,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="Brain.cpp">
       <Filter>Source Files\Brains</Filter>
-    </ClCompile>
-    <ClCompile Include="ShipContinuity.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="ShipBrain.cpp">
       <Filter>Source Files\Brains</Filter>

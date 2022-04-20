@@ -55,6 +55,10 @@ int Player::get_ping() {
 	return ping;
 }
 
+ShipBrain* Player::get_brain() {
+	return brain;
+}
+
 // Set methods
 void Player::set_is_alive(bool val) {
 	if (!val) {
@@ -104,6 +108,10 @@ void Player::set_kills(int kills_) {
 
 void Player::set_ping(int ping_) {
 	ping = ping_;
+}
+
+void Player::set_brain(ShipBrain* _) {
+	brain = _;
 }
 
 void Player::add_death() {

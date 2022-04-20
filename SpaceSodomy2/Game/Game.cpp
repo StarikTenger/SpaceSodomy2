@@ -32,6 +32,10 @@ Game::Game() : GameReadable() {
 	wall_player = create_player(-1, sf::Color::White, "WALL");
 }
 
+const GameReadable& Game::get_readable() {
+	return static_cast<const GameReadable&>(*this);
+}
+
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -83,6 +87,7 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_name(name);
 	player->set_command_module(create_command_module());
 	player->set_time_to_respawn(create_counter(0, -1));
+	player->set_brain(nullptr);
 	// Id
 	player->set_id(id);
 	players[player->get_id()] = player;
@@ -380,6 +385,18 @@ Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) 
 	id_manager.set_id(forcefield);
 	return forcefield;
 }
+//
+//ShipBrain* Game::create_network_brain(CommandModule* ptr) {
+//	auto brain = new NetworkShipBrain(*ptr, get_readable(), 0);
+//	ship_brains.insert(brain);
+//	return brain;
+//}
+//ShipBrain* Game::create_ai_brain(CommandModule* ptr) {
+//	auto brain = new NetworkShipBrain(*ptr, get_readable(), 0);
+//	ship_brains.insert(brain);
+//	return brain;
+//}
+
 
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
@@ -425,6 +442,8 @@ void Game::delete_ship(Ship* ship) {
 	delete_active_module(ship->get_right_module());
 	// Player management
 	ship->get_player()->set_is_alive(0);
+	ship->get_player()->get_brain()->set_new_id(0);
+
 	ships.erase(ship);
 	delete ship;
 }
@@ -484,6 +503,12 @@ void Game::delete_forcefield(Forcefield* field) {
 	delete field;
 }
 
+void Game::delete_brain(ShipBrain* _) {
+	ship_brains.erase(_);
+	delete _;
+}
+
+
 
 void Game::process_players() {
 	// Creating ships
@@ -496,6 +521,7 @@ void Game::process_players() {
 
 			// creating ship
 			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
+			player->get_brain()->set_new_id(ship->get_id());
 			//auto_damage = 0;
 		}
 	}
@@ -865,6 +891,7 @@ void Game::step(float _dt) {
 	process_rockets();
 	process_rocket_manager();
 	process_forcefields();
+	process_ship_brains();
 }
 
 float Game::get_dt() {
@@ -1510,6 +1537,11 @@ void Game::new_player(int id, sf::Color color, std::string name, std::string gun
 	players[id] = player;
 	player->set_is_alive(0);
 	player->get_time_to_respawn()->set(0);
+
+
+	auto brain = new NetworkShipBrain(*player->get_command_module(), get_readable());
+	ship_brains.insert(brain);
+	player->set_brain(brain);
 }
 
 Player* Game::player_by_id(int id) {
@@ -1519,6 +1551,11 @@ Player* Game::player_by_id(int id) {
 }
 
 void Game::delete_player(int id) {
+
+	if (players.count(id) == 0) {
+		return;
+	}
+
 	// Deleting ship
 	std::deque<Ship*> ships_to_delete;
 
@@ -1528,9 +1565,20 @@ void Game::delete_player(int id) {
 
 	for (auto ship : ships_to_delete)
 		delete_ship(ship);
+	auto res = *players.find(id);
+
+
+	delete_brain(res.second->get_brain());
 
 	// Deleting player
+	delete res.second;
 	players.erase(players.find(id));
+}
+
+void Game::process_ship_brains() {
+	for (auto brain : ship_brains) {
+		brain->compute_action();
+	}
 }
 
 Game::~Game() {

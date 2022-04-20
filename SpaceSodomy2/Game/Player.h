@@ -4,6 +4,7 @@
 #include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
+#include "ShipBrain.h"
 
 class Player : public iId {
 private:
@@ -18,6 +19,7 @@ private:
 	std::string right_module_name = "NONE";
 	CommandModule* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
+	ShipBrain* brain = nullptr; // Player must clean it up
 	int ping = 0;
 public:
 	Player();
@@ -35,6 +37,7 @@ public:
 	int get_deaths();
 	int get_kills();
 	int get_ping();
+	ShipBrain* get_brain();
 	
 	void set_is_alive(bool);
 	void set_color(sf::Color color_);
@@ -48,6 +51,7 @@ public:
 	void set_deaths(int deaths_);
 	void set_kills(int kills_);
 	void set_ping(int ping_);
+	void set_brain(ShipBrain*);
 
 	void add_death();
 	void add_kill();
