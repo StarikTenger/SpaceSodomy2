@@ -85,8 +85,10 @@ void Control::process_commands() {
 		if (key_by_name("RIGHT_MODULE"))
 			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
 	}
-	if (key_by_name("FULLSCREEN"))
+	if (key_by_name("FULLSCREEN")) {
 		draw.fullscreen_toggle();
+		gui.setWindow(*draw.get_window());
+	}
 
 	if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
 			auto spin = gui.get<tgui::SpinControl>("SpinControl");
