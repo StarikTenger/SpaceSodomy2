@@ -37,11 +37,8 @@ bool RocketBrain::is_in_range(b2Vec2 target) {
 void RocketBrain::set_rocket(Rocket* val) {
     rocket = val;
 }
-void RocketBrain::set_game_objects(GameObjects val) {
-    environment = val;
-}
 void RocketBrain::step(float dt) {
-    std::set<Ship*>& ships = *environment.get_ships();
+    auto ships = environment->ships;
     command_module->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 
     for (auto ship : ships) {
@@ -62,9 +59,10 @@ bool RocketBrain::is_targetable(Ship* ship) {
 void RocketBrain::set_command_module(CommandModule* val) {
     command_module = val;
 }
-RocketBrain::RocketBrain(float range_, int bin_search_accuracy_) {
-    range = range_;
-    bin_search_accuracy = bin_search_accuracy_;
+RocketBrain::RocketBrain(float range_, const GameReadable* ptr, int bin_search_accuracy_) : 
+    environment(ptr), 
+    range(range_), 
+    bin_search_accuracy(bin_search_accuracy_) {
 }
 
 CommandModule* RocketBrain::get_command_module() {

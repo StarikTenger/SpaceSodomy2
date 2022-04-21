@@ -70,7 +70,7 @@ void Module::set_type(Type val) {
 ProjectileManager* Module::get_projectile_manager() {
 	return projectile_manager;
 }
-void Module::set_game_objects(GameObjects val) {
+void Module::set_game_objects(GameReadable* val) {
 	environment = val;
 }
 
@@ -176,7 +176,7 @@ Force_Module::Force_Module(Module_Prototype* base) : Module(base) {
 
 void Force_Module::activate() {
 	activate_default_side_effects();
-	std::set<DamageReceiver*>& receivers = *environment.get_damage_receivers();
+	std::set<DamageReceiver*>& receivers = environment->damage_receivers;
 	for (auto receiver : receivers) {
 		if ((body->GetWorldPoint({ 0,0 }) - receiver->get_body()->GetWorldPoint({ 0,0 })).Length() < radius) {
 			receiver->damage(0, player);
@@ -196,9 +196,9 @@ Blink_Module::Blink_Module(Module_Prototype* base) : Module(base) {
 	distance = base->params["distance"];
 }
 void Blink_Module::activate() {
-	std::set<Wall*>* walls = environment.get_walls();
+	std::set<Wall*> walls = environment->walls;
 	b2Vec2 newpos = body->GetWorldPoint({ 0,0 }) + distance * aux::angle_to_vec(body->GetAngle());
-	for (auto wall = walls->begin(); wall != walls->end(); wall++) {
+	for (auto wall = walls.begin(); wall != walls.end(); wall++) {
 		Wall* _wall = *wall;
 		if (_wall->get_type() == Wall::SPIKED || _wall->get_type() == Wall::STANDART) {
 			if (aux::is_in_polygon(newpos, _wall->get_vertices(), _wall->get_orientation())) {

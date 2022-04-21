@@ -45,8 +45,6 @@ private:
 	b2Vec2 mouse_pos;
 	// Keyboard structure
 	aux::Keyboard keyboard;
-	// Text entered
-	std::queue<wchar_t> text_entered;
 
 	// SFML keys names
 	std::map<std::string, int> key_names;

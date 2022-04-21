@@ -71,7 +71,6 @@ public:
 		"F10", "F11", "F12", "F13", "F14", "F15", "Pause" };
 		std::vector<int> state_current = std::vector<int>(sf::Keyboard::KeyCount);
 		std::vector<int> state_prev = state_current;
-		std::queue<wchar_t>* text_entered;
 	};
 	// Get text scale
 	static float get_text_max_height(sf::Text text);

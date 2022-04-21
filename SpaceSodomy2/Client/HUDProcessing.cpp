@@ -40,12 +40,12 @@ std::vector<b2Vec2> HUDProcessing::get_vertices(float cur_pos, b2Vec2 center, b2
 	center -= b2Vec2(0, scale.y / 2.0);
 	ans.push_back(center);
 	if (cur_pos < 0.125) {
-		center += b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
+		center -= b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
 		ans.push_back(center);
 		return ans;
 	}
 	else {
-		center += b2Vec2(scale.x / 2.0, 0);
+		center -= b2Vec2(scale.x / 2.0, 0);
 		cur_pos -= 0.125;
 		ans.push_back(center);
 	}
@@ -60,12 +60,12 @@ std::vector<b2Vec2> HUDProcessing::get_vertices(float cur_pos, b2Vec2 center, b2
 		ans.push_back(center);
 	}
 	if (cur_pos < 0.25) {
-		center -= b2Vec2(scale.x * (cur_pos / 0.25), 0);
+		center += b2Vec2(scale.x * (cur_pos / 0.25), 0);
 		ans.push_back(center);
 		return ans;
 	}
 	else {
-		center -= b2Vec2(scale.x, 0);
+		center += b2Vec2(scale.x, 0);
 		cur_pos -= 0.25;
 		ans.push_back(center);
 	}
@@ -79,9 +79,39 @@ std::vector<b2Vec2> HUDProcessing::get_vertices(float cur_pos, b2Vec2 center, b2
 		cur_pos -= 0.25;
 		ans.push_back(center);
 	}
-	center += b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
+	center -= b2Vec2(scale.x / 2.0 * (cur_pos / 0.125), 0);
 	ans.push_back(center);
 	return ans;
+}
+
+void HUDProcessing::redraw_shadow(tgui::CanvasSFML::Ptr canvas, tgui::Picture::Ptr pic) {
+	canvas->setSize(pic->getSize());
+	canvas->setPosition(pic->getPosition());
+
+	canvas->clear(sf::Color(0, 0, 0, 0));
+
+	auto fill_polygon = [](std::vector<b2Vec2> vertices, sf::Color color) {
+		sf::ConvexShape convex;
+
+		convex.setPointCount(vertices.size());
+		convex.setFillColor(color);
+
+		for (int i = 0; i < vertices.size(); i++) {
+			convex.setPoint(i, aux::to_Vector2f(vertices[i]));
+		}
+		return convex;
+	};
+
+	if (pic->getWidgetName() == "LeftModule")
+		canvas->draw(fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get() /
+			game->get_ship(player_network->get_id())->get_left_module()->get_recharge_counter()->get_max(),
+			aux::to_b2Vec2(pic->getSize() * 0.5), aux::to_b2Vec2(pic->getSize())), sf::Color(0, 0, 0, 150)));
+	else
+		canvas->draw(fill_polygon(get_vertices(game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get() /
+			game->get_ship(player_network->get_id())->get_right_module()->get_recharge_counter()->get_max(),
+			aux::to_b2Vec2(pic->getSize() * 0.5), aux::to_b2Vec2(pic->getSize())), sf::Color(0, 0, 0, 150)));
+
+	canvas->display();
 }
 
 void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
@@ -168,15 +198,39 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
 		gui.get<tgui::Label>("EnergyBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
 
-		// interface buttons processing
-		if (reload_icons) {
-			reload_icons = 0;
-			auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
+		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
+		if (bonus_texture_name != bonus_icon_name) {
+			bonus_icon_name = bonus_texture_name;
 			auto bonus_texture = draw->get_texture(bonus_texture_name);
 			gui.get<tgui::Picture>("Bonus")->getRenderer()->setTexture(*bonus_texture);
+		}  
+
+		// interface buttons processing
+		auto pic = gui.get<tgui::Picture>("LeftModule");
+		auto shadow = gui.get<tgui::CanvasSFML>("LeftModule-shadow");
+		if (shadow == nullptr) {
+			auto canvas = tgui::CanvasSFML::create(pic->getSize());
+			pic->getParent()->add(canvas, pic->getWidgetName() + "-shadow");
+			shadow = gui.get<tgui::CanvasSFML>("LeftModule-shadow");
+		}
+		redraw_shadow(shadow, pic);
+
+		pic = gui.get<tgui::Picture>("RightModule");
+		shadow = gui.get<tgui::CanvasSFML>("RightModule-shadow");
+		if (shadow == nullptr) {
+			auto canvas = tgui::CanvasSFML::create(pic->getSize());
+			pic->getParent()->add(canvas, pic->getWidgetName() + "-shadow");
+			shadow = gui.get<tgui::CanvasSFML>("RightModule-shadow");
+		}
+		redraw_shadow(shadow, pic);
+		 
+
+		if (reload_icons) {
+			reload_icons = 0;
 			auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
 			auto gun_texture = draw->get_texture(gun_texture_name);
 			gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
+
 			auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
 			auto left_module_texture = draw->get_texture(left_module_texture_name);
 			gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(*left_module_texture);

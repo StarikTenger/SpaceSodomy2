@@ -24,18 +24,11 @@ b2Vec2 Game::get_rand_respawn_pos() {
 	return respawn_point;
 }
 
-Game::Game() {
+Game::Game() : GameReadable() {
 	// Contact filter
 	//physics.SetContactFilter(&collision_filter);
 	physics.SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
-	game_objects.set_physics(&physics);
-	game_objects.set_bonuses(&bonuses);
-	game_objects.set_damage_receivers(&damage_receivers);
-	game_objects.set_projectiles(&projectiles);
-	game_objects.set_walls(&walls);
-	game_objects.set_ships(&ships);
-
 	wall_player = create_player(-1, sf::Color::White, "WALL");
 }
 
@@ -320,7 +313,7 @@ Module* Game::create_module(Module_Prototype* base) {
 	module->set_projectile_manager(&projectile_manager);
 	module->set_rocket_manager(&rocket_manager);
 	module->set_event_manager(&event_manager);
-	module->set_game_objects(game_objects);
+	module->set_game_objects(static_cast<GameReadable*>(this));
 	id_manager.set_id(module);
 	return module;
 }
@@ -353,7 +346,6 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	rocket->set_stamina(stamina);
 
 	auto brain = create_rocket_brain(&def.base);
-	brain->set_game_objects(game_objects);
 	brain->set_rocket(rocket);
 	rocket->set_rocket_brain(brain);
 
@@ -375,7 +367,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 }
 
 RocketBrain* Game::create_rocket_brain(Rocket_Prototype* base) {
-	auto brain = new RocketBrain(base->range, base->bin_search_accuracy);
+	auto brain = new RocketBrain(base->range, static_cast<const GameReadable*>(this), base->bin_search_accuracy);
 	rocket_brains.insert(brain);
 	return brain;
 }
@@ -692,8 +684,8 @@ void Game::process_physics() {
 			b2WorldManifold worldManifold;
 			contact->GetWorldManifold(&worldManifold);
 			b2Vec2 pos = worldManifold.points[0];
-			if (b2Distance(b2Vec2_zero, pos) > 1e5 || b2Distance(b2Vec2_zero, pos) < b2_epsilon)
-				continue;
+			if (b2Distance(b2Vec2_zero, pos) > 1e5 || abs(pos.x) < b2_epsilon || abs(pos.y) < b2_epsilon) 
+				continue; // TODO: all collision points with zero x- or y-coordinates are now banned
 			// Adding used objects
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());

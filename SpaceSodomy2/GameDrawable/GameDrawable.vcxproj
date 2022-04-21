@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c4444a98-767e-4109-8677-ff4808f71758}</ProjectGuid>
-    <RootNamespace>Game</RootNamespace>
+    <ProjectGuid>{61367c21-7e53-4fd0-980e-48645a2ec225}</ProjectGuid>
+    <RootNamespace>GameDrawable</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -80,13 +80,11 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;C:\libraries\box2d\include;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\x64\Debug;C:\libraries\box2d\build\bin\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\libraries\SFML-2.5.1\include;C:\libraries\box2d\include;$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>C:\libraries\box2d\build\bin\Release;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -130,6 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\libraries\TGUI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -147,6 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\libraries\TGUI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -157,79 +157,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ActiveModule.h" />
-    <ClInclude Include="Bonus.h" />
-    <ClInclude Include="BonusManager.h" />
-    <ClInclude Include="BonusSlot.h" />
-    <ClInclude Include="CollisionFilter.h" />
-    <ClInclude Include="CommandModule.h" />
-    <ClInclude Include="ContactTable.h" />
-    <ClInclude Include="Counter.h" />
-    <ClInclude Include="DamageReceiver.h" />
-    <ClInclude Include="Effects.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="entities.h" />
-    <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObjects.h" />
-    <ClInclude Include="GameReadable.h" />
-    <ClInclude Include="Gun.h" />
-    <ClInclude Include="HullPrototype.h" />
-    <ClInclude Include="IdManager.h" />
-    <ClInclude Include="iId.h" />
-    <ClInclude Include="Modules.h" />
-    <ClInclude Include="ModuleManager.h" />
+    <ClInclude Include="GameDrawable.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
-    <ClInclude Include="ProjectileDef.h" />
-    <ClInclude Include="ProjectileManager.h" />
-    <ClInclude Include="Rocket.h" />
-    <ClInclude Include="RocketBrain.h" />
-    <ClInclude Include="RocketManager.h" />
-    <ClInclude Include="Ship.h" />
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="EventManager.h" />
-    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ActiveModule.cpp" />
-    <ClCompile Include="Bonus.cpp" />
-    <ClCompile Include="BonusManager.cpp" />
-    <ClCompile Include="BonusSlot.cpp" />
-    <ClCompile Include="CollisionFilter.cpp" />
-    <ClCompile Include="CommandModule.cpp" />
-    <ClCompile Include="ContactTable.cpp" />
-    <ClCompile Include="Counter.cpp" />
-    <ClCompile Include="DamageReceiver.cpp" />
-    <ClCompile Include="Effects.cpp" />
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="Forcefield.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObjects.cpp" />
-    <ClCompile Include="Gun.cpp" />
-    <ClCompile Include="IdManager.cpp" />
-    <ClCompile Include="iId.cpp" />
-    <ClCompile Include="Modules.cpp" />
-    <ClCompile Include="ModuleManager.cpp" />
+    <ClCompile Include="GameDrawable.cpp" />
     <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="ProjectileDef.cpp" />
-    <ClCompile Include="ProjectileManager.cpp" />
-    <ClCompile Include="Rocket.cpp" />
-    <ClCompile Include="RocketBrain.cpp" />
-    <ClCompile Include="RocketManager.cpp" />
-    <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="Event.cpp" />
-    <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

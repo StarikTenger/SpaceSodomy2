@@ -30,10 +30,6 @@ void Control::process_events(sf::Window* window) {
 			mouse_pos.x = event.mouseMove.x;
 			mouse_pos.y = event.mouseMove.y;
 			break;
-		case sf::Event::TextEntered:
-			
-			text_entered.push(wchar_t(event.text.unicode));
-			break;
 		}
 	}
 
@@ -78,7 +74,19 @@ void Control::process_commands() {
 			command_module.set_command(CommandModule::BOOST, 1);
 		if (key_by_name("RESPAWN"))
 			command_module.set_command(CommandModule::RESPAWN, 1);
-		if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
+		if (key_by_name("BONUS_ACTIVATION"))
+			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
+		if (key_by_name("LEFT_MODULE"))
+			command_module.set_command(CommandModule::LEFT_MODULE, 1);
+		if (key_by_name("RIGHT_MODULE"))
+			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
+	}
+	if (key_by_name("FULLSCREEN")) {
+		draw.fullscreen_toggle();
+		gui.setWindow(*draw.get_window());
+	}
+
+	if (key_by_name("REPLAY_SPEED_UP") && replay.get_replay_active() && !key_prev_by_name("REPLAY_SPEED_UP")) {
 			auto spin = gui.get<tgui::SpinControl>("SpinControl");
 			spin->setValue(spin->getValue() + spin->getStep());
 		}
@@ -139,15 +147,6 @@ void Control::process_commands() {
 		if (key_by_name("REPLAY_PLAY") && replay.get_replay_active() && !key_prev_by_name("REPLAY_PLAY")) {
 			replay.play_button(gui);
 		}
-		if (key_by_name("BONUS_ACTIVATION"))
-			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
-		if (key_by_name("LEFT_MODULE"))
-			command_module.set_command(CommandModule::LEFT_MODULE, 1);
-		if (key_by_name("RIGHT_MODULE"))
-			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
-	}
-	if (key_by_name("FULLSCREEN"))
-		draw.fullscreen_toggle();
 
 	// Zoom out
 	if (commands_active) {
@@ -208,7 +207,6 @@ Control::Control() {
 	for (int i = 0; i < keyboard.names.size(); i++) {
 		key_names.insert({keyboard.names[i], i});
 	}
-	keyboard.text_entered = &text_entered;
 	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
 	hud = HUDProcessing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
@@ -240,8 +238,11 @@ void Control::step() {
 
 	// Delay check
 	int time_current = aux::get_milli_count();
-	if (time_current - time_prev > delay) {
+	int time_delta = time_current - time_prev;
+	if (time_delta >= delay) {
 		time_prev = time_current;
+		// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
+		game.set_dt(time_delta * 0.001);
 
 		// Pass message to game object
 		if (replay.get_replay_active())

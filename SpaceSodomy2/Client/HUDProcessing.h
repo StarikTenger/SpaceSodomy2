@@ -24,6 +24,9 @@ private:
 	std::vector<b2Vec2> get_vertices(float cur_pos, b2Vec2 center, b2Vec2 scale);
 
 	bool reload_icons = true;
+	std::string bonus_icon_name = "";
+
+	void redraw_shadow(tgui::CanvasSFML::Ptr canvas, tgui::Picture::Ptr pic);
 public:
 	float interface_scale = 3;
 

@@ -14,8 +14,6 @@ private:
 	b2Vec2* mouse_pos;
 	int current_id = 1;
 	ClientNetwork* network;
-	std::queue<int> events; // menu events
-	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
 	void init_tgui(tgui::Gui& gui);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
@@ -33,9 +31,9 @@ private:
 	Replay* replay;
 	tgui::Gui* _gui;
 	bool disactivated = 0;
-	bool shader_active = 1;
 	bool* reload;
 	int module_num = 1;
+	bool slider_changing = 0;
 public:
 	MenuProcessing();
 	bool active = 1;

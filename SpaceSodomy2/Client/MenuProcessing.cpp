@@ -95,18 +95,21 @@ void MenuProcessing::load_HUD_settings(std::string path, tgui::Gui &gui) {
 	gui.get<tgui::Slider>("AimConfiguration")->setValue(next);
 	gui.get<tgui::Slider>("AimConfiguration")->onValueChange([=](int val) {
 		game->set_aim_conf(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_aim_opacity(next);
 	gui.get<tgui::Slider>("AimOpacity")->setValue(next);
 	gui.get<tgui::Slider>("AimOpacity")->onValueChange([=](int val) {
 		game->set_aim_opacity(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_network_information_active(next);
 	gui.get<tgui::CheckBox>("NetworkInformation")->setChecked(next);
 	gui.get<tgui::CheckBox>("NetworkInformation")->onChange([=](bool val) {
 		game->set_network_information_active(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 }
 
@@ -128,13 +131,15 @@ void MenuProcessing::load_sound(std::string path, tgui::Gui &gui) {
 	sound_slider->setValue(volume);
 	sound_slider->onValueChange([=](int new_val) {
 		game->get_audio()->set_sound_volume(new_val);
-		});
+		save_sound("sound_settings.conf");
+	});
 	config >> volume;
 	game->get_audio()->set_music_volume(volume);
 	music_slider->setValue(volume);
 	music_slider->onValueChange([=](int new_val) {
 		game->get_audio()->set_music_volume(new_val);
-		});
+		save_sound("sound_settings.conf");
+	});
 }
 
 void MenuProcessing::save_sound(std::string path) {
@@ -173,7 +178,8 @@ void MenuProcessing::toggle_active() {
 		wid[i]->setVisible(false);
 	}
 	_gui->get<tgui::Group>("HUD.txt")->setVisible(!active);
-	_gui->get<tgui::Group>("main_menu.txt")->setVisible(active);
+	_gui->get<tgui::Group>("replay.txt")->setVisible(replay->get_replay_active() && active);
+	_gui->get<tgui::Group>("main_menu.txt")->setVisible(!replay->get_replay_active() && active);
 	text_field_active = active;
 }
 
@@ -215,6 +221,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		gun_vars->setVisible(0);
 		hull_vars->setVisible(0);
 		module_vars->setVisible(1);
+		module_num = 1;
 	});
 
 	conf->get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(*draw->get_texture(game->get_right_module_name() + "-module"));
@@ -222,6 +229,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		gun_vars->setVisible(0);
 		hull_vars->setVisible(0);
 		module_vars->setVisible(1);
+		module_num = 2;
 		});
 
 	std::ifstream file_to_comment(file_name);
@@ -269,7 +277,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
 				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
 				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
-				gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(texture);
+				game->save_setup("setup.conf");
 			});
 			gun_vars->add(pic);
 
@@ -316,6 +324,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
 				auto texture = new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture();
 				gui.get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(texture);
+				game->save_setup("setup.conf");
 			});
 			hull_vars->add(pic);
 
@@ -363,14 +372,13 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 					_game->set_left_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
 					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(texture);
-					gui.get<tgui::Picture>("LeftModule")->getRenderer()->setTexture(texture);
 				}
 				else {
 					_game->set_right_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
 					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
-					gui.get<tgui::Picture>("RightModule")->getRenderer()->setTexture(texture);
 				}
+				game->save_setup("setup.conf");
 			});
 			module_vars->add(pic);
 
@@ -580,6 +588,10 @@ void MenuProcessing::step() {
 		_gui->get<tgui::Label>("CurTime")->setText(std::to_string(cur_time / 3600) + ":" +
 			std::to_string((cur_time / 60) % 60) + ":" + std::to_string(cur_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setValue(replay->get_cur_frame_number());
+	}
+	if (slider_changing != _gui->get<tgui::Slider>("ReplaySlider")->isMouseDown()) {
+		slider_changing = !slider_changing;
+		replay->play_button(*_gui);
 	}
 
 	sf::Vector2f win_s =
