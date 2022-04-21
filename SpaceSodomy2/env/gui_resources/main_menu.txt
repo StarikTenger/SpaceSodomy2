@@ -7,7 +7,7 @@ Group.Group1 {
     }
 
     Button.Singleplayer {
-        Position = (8%, 0);
+        Position = (3.5%, 0);
         Size = (92%, 20%);
         Text = Singleplayer;
         TextSize = 13;
@@ -38,8 +38,8 @@ Group.Group1 {
     }
 
     Button.Settings {
-        Position = (8%, 40%);
-        Size = (84%, 20%);
+        Position = (3.5%, 40%);
+        Size = (88.5%, 20%);
         Text = Settings;
         TextSize = 13;
 
@@ -69,8 +69,8 @@ Group.Group1 {
     }
 
     Button.Replay {
-        Position = (8%, 60%);
-        Size = (84%, 20%);
+        Position = (3.5%, 60%);
+        Size = (88.5%, 20%);
         Text = Replay;
         TextSize = 13;
 
@@ -131,8 +131,8 @@ Group.Group1 {
     }
 
     Button.Multiplayer {
-        Position = (8%, 20%);
-        Size = (84%, 20%);
+        Position = (3.5%, 20%);
+        Size = (88.5%, 20%);
         Text = Multiplayer;
         TextSize = 13;
 
