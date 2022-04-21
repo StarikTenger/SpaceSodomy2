@@ -103,19 +103,19 @@ void EdgarBrain::move_to_point(Ship* ship, b2Vec2 point) {
 
 	if (rand < abs(sin(dir_angle))) {
 		if (sin(dir_angle) < 0) {
-			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_LEFT, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_LEFT, 1);
 		}
 		else {
-			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_RIGHT, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_RIGHT, 1);
 		}
 	}
 
 	if (rand < abs(cos(dir_angle))) {
 		if (cos(dir_angle) < 0) {
-			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
 		}
 		else {
-			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_BACKWARD, 1);
+			command_module.set_command(CommandModule::ENGINE_LIN_BACKWARD, 1);
 		}
 	}
 }
@@ -163,6 +163,7 @@ void EdgarBrain::safety_flight(Ship* ship) {
 
 
 Ship* EdgarBrain::get_enemy(Ship* my_ship) {
+	std::vector<Ship*> targets;
 	for (auto ship : environment.ships) {
 		if (ship->get_player()->get_id() != my_ship->get_player()->get_id()) {
 			return ship;
@@ -184,13 +185,13 @@ void EdgarBrain::compute_action() {
 		/*
 		* AI code goes here
 		*/
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::SHOOT, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_LEFT, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_RIGHT, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_FORWARD, 0);
-		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_BACKWARD, 0);
+		command_module.set_command(CommandModule::ENGINE_ANG_RIGHT, 0);
+		command_module.set_command(CommandModule::SHOOT, 0);
+		command_module.set_command(CommandModule::ENGINE_ANG_LEFT, 0);
+		command_module.set_command(CommandModule::ENGINE_LIN_LEFT, 0);
+		command_module.set_command(CommandModule::ENGINE_LIN_RIGHT, 0);
+		command_module.set_command(CommandModule::ENGINE_LIN_FORWARD, 0);
+		command_module.set_command(CommandModule::ENGINE_LIN_BACKWARD, 0);
 
 		Ship* enemy = get_enemy(my_ship);
 		if (enemy != nullptr) {
