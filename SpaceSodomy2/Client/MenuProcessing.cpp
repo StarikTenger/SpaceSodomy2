@@ -627,28 +627,4 @@ void MenuProcessing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
 
 	group_formating("main_menu.txt", 1.3, 0.03);
-
-	while (!events.empty()) {
-		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
-			save_keys("keys.conf", keys_menu_vec);
-		}
-		if (name_to_id["Apply"] == events.front()) {
-			events.push(name_to_id["ApplyKeys"]);
-			events.push(name_to_id["ApplyClientConfig"]);
-			events.push(name_to_id["ApplySound"]);
-			events.push(name_to_id["ApplySetup"]);
-			events.push(name_to_id["ApplyHUD"]);
-		}
-		if (name_to_id["ApplySound"] == events.front()) {
-			save_sound("sound_settings.conf");
-		}
-		if (name_to_id["ApplyHUD"] == events.front()) {
-			save_HUD_settings("HUD_settings.conf");
-		}
-		if (name_to_id["ApplySetup"] == events.front()) {
-			//set_current_gun("setup.conf", cur_gun);
-			game->save_setup("setup.conf");
-		}
-		events.pop();
-	}
 }

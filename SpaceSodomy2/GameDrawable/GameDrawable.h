@@ -6,6 +6,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
 
+
 class GameDrawable : public Game {
 protected:
 	std::map<int, std::string> bonus_textures = {
