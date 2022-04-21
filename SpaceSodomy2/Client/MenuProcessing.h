@@ -25,6 +25,7 @@ private:
 	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
+	void group_formating(std::string groupname, float aspectratio, float textscale);
 	Draw* draw;
 	GameClient* game;
 	Replay* replay;

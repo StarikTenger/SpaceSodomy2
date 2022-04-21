@@ -572,6 +572,14 @@ void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	load_keys("keys.conf", &keys_menu_vec, gui);
 }
 
+void MenuProcessing::group_formating(std::string groupname, float aspectratio, float textscale) {
+	//saves aspect ratio of the group and updates text size
+	auto group = _gui->get <tgui::Group>(groupname);
+	float windowHeight = group->getSize().y;
+	group->setSize({ windowHeight * aspectratio }, "100%");
+	group->setTextSize(windowHeight * textscale);
+}
+
 void MenuProcessing::step() {
 	replay->step(game->get_dt());
 	
@@ -617,4 +625,6 @@ void MenuProcessing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("gun_vars"));
 	set_sizes(_gui->get<tgui::ScrollablePanel>("hull_vars"));
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
+
+	group_formating("main_menu.txt", 1.3, 0.03);
 }

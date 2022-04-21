@@ -2,9 +2,9 @@
 //
 
 #include "pch.h"
+#include "GameDrawable.h"
 #include "framework.h"
 
-#include "GameDrawable.h"
 #include <iostream>
 #include <thread>
 
