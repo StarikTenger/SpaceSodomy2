@@ -20,74 +20,60 @@ bool EdgarBrain::turn_to_angle(Ship* ship, float angle) {
 
 	auto cur_angle = ship->get_body()->GetAngle();
 	while (cur_angle > b2_pi)
-		cur_angle -= 2 * b2_pi;
+		cur_angle -= 2.f * b2_pi;
 	while (cur_angle < -b2_pi)
-		cur_angle += 2 * b2_pi;
+		cur_angle += 2.f * b2_pi;
 
 	while (angle > b2_pi)
-		angle -= 2 * b2_pi;
+		angle -= 2.f * b2_pi;
 	while (angle < -b2_pi)
-		angle += 2 * b2_pi;
+		angle += 2.f * b2_pi;
 
-	//std::cout << cur_angle << " " << angle << " " << cur_angle - angle << std::endl;
 
 	auto dif = cur_angle - angle;
 	if (abs(dif) > b2_pi) {
-		if (dif < 0) {
-			dif += 2 * b2_pi;
+		if (dif < 0.f) {
+			dif += 2.f * b2_pi;
 		}
 		else {
-			dif -= 2 * b2_pi;
+			dif -= 2.f * b2_pi;
 		}
 	}
 
-	auto dist = 2 * b2_pi;
-	auto point = 0.0;
-	if (abs(-2 * b2_pi - dif) < dist) {
-		dist = abs(-2 * b2_pi - dif);
-		point = -2 * b2_pi - dif;
+	auto dist = 2.f * b2_pi;
+	auto point = 0.0f;
+	if (abs(-2.f * b2_pi - dif) < dist) {
+		dist = abs(-2.f * b2_pi - dif);
+		point = -2.f * b2_pi - dif;
 	}
 	if (abs(dif) < dist) {
 		dist = abs(dif);
 		point = dif;
 	}
-	if (abs(2 * b2_pi - dif) < dist) {
-		dist = abs(2 * b2_pi - dif);
-		point = 2 * b2_pi - dif;
+	if (abs(2.f * b2_pi - dif) < dist) {
+		dist = abs(2.f * b2_pi - dif);
+		point = 2.f * b2_pi - dif;
 	}
-
-	std::cout << dif << " " << dist << " " << point << std::endl;
-
 	auto speed = ship->get_body()->GetAngularVelocity();
 	auto acceleration = ship->get_engine()->get_torque() / ship->get_body()->GetInertia();
 	if (dist < 0.03 || speed > b2_pi) {
-		//std::cout << "stab\n";
 		ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
 		return true;
 	}
 	else {
-		//std::cout << std::fixed;
-		//std::cout << std::setprecision(4) << point << " " << speed << " " << acceleration << " " <<
-		//	abs(point / speed) << " " << abs(speed / acceleration) << std::endl;
 		if (point > 0) {
 			if (abs(point / speed) > abs(speed / acceleration)) {
-				//std::cout << "left\n";
 				ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 1);
 			}
 			else {
-				//std::cout << "right\n";
-				//ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
 				ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
 			}
 		}
 		else {
 			if (abs(point / speed) > abs(speed / acceleration)) {
-				//std::cout << "right\n";
 				ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
 			}
 			else {
-				//std::cout << "left\n";
-				//ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 1);
 				ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
 			}
 		}
@@ -112,7 +98,6 @@ void EdgarBrain::move_to_point(Ship* ship, b2Vec2 point) {
 	auto dir_angle = cur_angle - point_angle;
 
 	auto rand = aux::random_float(0, 1, 2);
-	//std::cout << dir_angle << " " << rand << " " << cos(dir_angle) << " " << sin(dir_angle) << "\n";
 
 
 
@@ -149,13 +134,11 @@ void EdgarBrain::shoot(Ship* _ship, Ship* ship) {
 	while (cur_angle < -b2_pi)
 		cur_angle += 2 * b2_pi;
 
-	//std::cout << asin(sina) << " " << angle << std::endl;
 	if (turn_to_angle(ship, angle)) {
 		auto beam_intersection = calc_intersection(ship->get_body()->GetPosition(),
 			aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()));
 		auto a = (_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()).Length();
 		auto b = (beam_intersection - ship->get_body()->GetPosition()).Length();
-		//std::cout << a << " " << b << " " << _ship->get_player()->get_name() << "\n";
 		if (a < b) {
 			ship->get_player()->get_command_module()->set_command(CommandModule::SHOOT, 1);
 		}
@@ -198,7 +181,6 @@ void EdgarBrain::compute_action() {
         }
     }
 	if (my_ship) {
-		std::cout << "IT'S ALIIIIIIIIIIIIIIIIIIIIIVE! MUAHAHAHAHAHAHAHAHAHAHAHAHAHA \n";
 		/*
 		* AI code goes here
 		*/
@@ -219,7 +201,6 @@ void EdgarBrain::compute_action() {
 
     }
     else {
-		std::cout << "Dead :(\n ";
         command_module.set_command(CommandModule::RESPAWN, 1);
     }
 }

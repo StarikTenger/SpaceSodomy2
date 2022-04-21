@@ -75,7 +75,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	gun->set_event_manager(&event_manager);
 	// Characteristics
 	gun->import_Gun_Prototype(def);
-	gun->set_effects_prototype(&def.effect_prototype);   // TODO: can i has remove
+	gun->set_effects_prototype(&def.effect_prototype);
 	// Id
 	id_manager.set_id(gun);
 	return gun;
@@ -350,7 +350,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	stamina->set_delay(0);
 	rocket->set_stamina(stamina);
 
-	// Rocket control
+	// Rocket brain
 	auto command_module = create_command_module();
 	auto brain = new RocketBrain(
 		*command_module, 
@@ -367,7 +367,6 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 	engine->set_force_angular(0);
 	engine->set_force_linear(def.base.force_linear);
 	rocket->set_engine(engine);
-	//brain->set_command_module(command_module);
 
 	// Damage receiver
 	auto damage_receiver = create_damage_receiver(body, hp, def.player);
@@ -385,18 +384,6 @@ Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) 
 	id_manager.set_id(forcefield);
 	return forcefield;
 }
-//
-//ShipBrain* Game::create_network_brain(CommandModule* ptr) {
-//	auto brain = new NetworkShipBrain(*ptr, get_readable(), 0);
-//	ship_brains.insert(brain);
-//	return brain;
-//}
-//ShipBrain* Game::create_ai_brain(CommandModule* ptr) {
-//	auto brain = new NetworkShipBrain(*ptr, get_readable(), 0);
-//	ship_brains.insert(brain);
-//	return brain;
-//}
-
 
 void Game::delete_body(b2Body* body) {
 	physics.DestroyBody(body);
@@ -871,7 +858,6 @@ void Game::apply_command(int id, int command, int val) {
 }
 
 void Game::step(float _dt) {
-	//std::cout << projectiles.size() << "\n";
 	dt = _dt;
 	time += dt;
 	process_physics();
@@ -1543,6 +1529,9 @@ void Game::new_player(int id, sf::Color color, std::string name, std::string gun
 	ship_brains.insert(brain);
 	player->set_brain(brain);
 
+	// TODO: remove
+	// This creates a mirror opponent for each player for testing purposes
+	// Uncomment to test
 
 	//{
 	//	// Kostyl
