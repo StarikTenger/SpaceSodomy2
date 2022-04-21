@@ -95,18 +95,21 @@ void MenuProcessing::load_HUD_settings(std::string path, tgui::Gui &gui) {
 	gui.get<tgui::Slider>("AimConfiguration")->setValue(next);
 	gui.get<tgui::Slider>("AimConfiguration")->onValueChange([=](int val) {
 		game->set_aim_conf(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_aim_opacity(next);
 	gui.get<tgui::Slider>("AimOpacity")->setValue(next);
 	gui.get<tgui::Slider>("AimOpacity")->onValueChange([=](int val) {
 		game->set_aim_opacity(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_network_information_active(next);
 	gui.get<tgui::CheckBox>("NetworkInformation")->setChecked(next);
 	gui.get<tgui::CheckBox>("NetworkInformation")->onChange([=](bool val) {
 		game->set_network_information_active(val);
+		save_HUD_settings("HUD_settings.conf");
 	});
 }
 
@@ -128,13 +131,15 @@ void MenuProcessing::load_sound(std::string path, tgui::Gui &gui) {
 	sound_slider->setValue(volume);
 	sound_slider->onValueChange([=](int new_val) {
 		game->get_audio()->set_sound_volume(new_val);
-		});
+		save_sound("sound_settings.conf");
+	});
 	config >> volume;
 	game->get_audio()->set_music_volume(volume);
 	music_slider->setValue(volume);
 	music_slider->onValueChange([=](int new_val) {
 		game->get_audio()->set_music_volume(new_val);
-		});
+		save_sound("sound_settings.conf");
+	});
 }
 
 void MenuProcessing::save_sound(std::string path) {
@@ -272,6 +277,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
 				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
 				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
+				game->save_setup("setup.conf");
 			});
 			gun_vars->add(pic);
 
@@ -318,6 +324,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
 				auto texture = new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture();
 				gui.get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(texture);
+				game->save_setup("setup.conf");
 			});
 			hull_vars->add(pic);
 
@@ -371,6 +378,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
 					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
 				}
+				game->save_setup("setup.conf");
 			});
 			module_vars->add(pic);
 
@@ -609,28 +617,4 @@ void MenuProcessing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("gun_vars"));
 	set_sizes(_gui->get<tgui::ScrollablePanel>("hull_vars"));
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
-
-	while (!events.empty()) {
-		if (name_to_id["ApplyKeys"] == events.front()) { // Apply button
-			save_keys("keys.conf", keys_menu_vec);
-		}
-		if (name_to_id["Apply"] == events.front()) {
-			events.push(name_to_id["ApplyKeys"]);
-			events.push(name_to_id["ApplyClientConfig"]);
-			events.push(name_to_id["ApplySound"]);
-			events.push(name_to_id["ApplySetup"]);
-			events.push(name_to_id["ApplyHUD"]);
-		}
-		if (name_to_id["ApplySound"] == events.front()) {
-			save_sound("sound_settings.conf");
-		}
-		if (name_to_id["ApplyHUD"] == events.front()) {
-			save_HUD_settings("HUD_settings.conf");
-		}
-		if (name_to_id["ApplySetup"] == events.front()) {
-			//set_current_gun("setup.conf", cur_gun);
-			game->save_setup("setup.conf");
-		}
-		events.pop();
-	}
 }

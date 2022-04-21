@@ -14,8 +14,6 @@ private:
 	b2Vec2* mouse_pos;
 	int current_id = 1;
 	ClientNetwork* network;
-	std::queue<int> events; // menu events
-	std::map<std::string, int> name_to_id;
 	std::map<int, std::pair<int, int>> id_to_keyit;
 	void init_tgui(tgui::Gui& gui);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);

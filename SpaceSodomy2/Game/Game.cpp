@@ -702,8 +702,8 @@ void Game::process_physics() {
 			b2WorldManifold worldManifold;
 			contact->GetWorldManifold(&worldManifold);
 			b2Vec2 pos = worldManifold.points[0];
-			if (b2Distance(b2Vec2_zero, pos) > 1e5 || b2Distance(b2Vec2_zero, pos) < b2_epsilon)
-				continue;
+			if (b2Distance(b2Vec2_zero, pos) > 1e5 || abs(pos.x) < b2_epsilon || abs(pos.y) < b2_epsilon) 
+				continue; // TODO: all collision points with zero x- or y-coordinates are now banned
 			// Adding used objects
 			hit_objects.insert(contact->GetFixtureA()->GetBody());
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
