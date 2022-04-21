@@ -126,7 +126,7 @@ Group.Group1 {
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttontop.png" NoSmooth;
+            TextureHover = "../textures/menu/Buttonexit.png" NoSmooth;
         }
     }
 
