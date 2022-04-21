@@ -45,5 +45,5 @@ public:
 	// Walls
 	std::set<Wall*> walls;
 
-	b2World physics = b2World(b2Vec2_zero);
+	b2World* physics = new b2World(b2Vec2_zero);
 };

@@ -27,7 +27,7 @@ b2Vec2 Game::get_rand_respawn_pos() {
 Game::Game() : GameReadable() {
 	// Contact filter
 	//physics.SetContactFilter(&collision_filter);
-	physics.SetContactListener(&contact_table);
+	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
 	wall_player = create_player(-1, sf::Color::White, "WALL");
 
@@ -58,7 +58,7 @@ b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mas
 	fixtureDef.friction = 0;
 
 	bodyDef.linearVelocity = b2Vec2_zero;
-	b2Body* body = physics.CreateBody(&bodyDef);
+	b2Body* body = physics->CreateBody(&bodyDef);
 	body->SetSleepingAllowed(0);
 	body->CreateFixture(&fixtureDef);
 	body->GetFixtureList()->SetFriction(0);
@@ -235,7 +235,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 
 Wall* Game::create_wall(std::vector<b2Vec2> vertices, int orientation, float restitution, int type) {
 	Wall* wall = new Wall();
-	wall->set(&physics, vertices, orientation, type);
+	wall->set(physics, vertices, orientation, type);
 	wall->get_body()->GetFixtureList()->SetRestitution(restitution);
 	if (type == Wall::GHOST) {
 		collision_filter.add_body(wall->get_body(), CollisionFilter::GHOST);
@@ -382,7 +382,7 @@ Rocket* Game::create_rocket(Rocket_Def def) {
 
 Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) {
 	auto forcefield = new Forcefield();
-	forcefield->set(&physics, vertices, force);
+	forcefield->set(physics, vertices, force);
 	forcefield->get_body()->GetFixtureList()->SetRestitution(1);
 	collision_filter.add_body(forcefield->get_body(), CollisionFilter::GHOST);
 	forcefields.insert(forcefield);
@@ -391,7 +391,7 @@ Forcefield* Game::create_forcefield(std::vector<b2Vec2> vertices, b2Vec2 force) 
 }
 
 void Game::delete_body(b2Body* body) {
-	physics.DestroyBody(body);
+	physics->DestroyBody(body);
 	collision_filter.delete_body(body);
 }
 
@@ -689,13 +689,13 @@ void Game::process_event_manager() {
 void Game::process_physics() {
 	auto contact_table_prev = contact_table;
 	contact_table.reset();
-	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
+	for (b2Contact* contact = physics->GetContactList(); contact; contact = contact->GetNext()) {
 		contact->SetRestitution(contact->GetFixtureA()->GetRestitution() *
 			contact->GetFixtureB()->GetRestitution());
 	}
-	physics.Step(dt, 10, 10);
+	physics->Step(dt, 10, 10);
 	std::set<b2Body*> hit_objects; // To avoid repetitions
-	for (b2Contact* contact = physics.GetContactList(); contact; contact = contact->GetNext()) {
+	for (b2Contact* contact = physics->GetContactList(); contact; contact = contact->GetNext()) {
 		// Hit event
 		if (
 			// Check for contact
@@ -807,7 +807,7 @@ void Game::process_rocket_manager() {
 void Game::process_forcefields() {
 	// TODO: make efficient
 	for (auto field : forcefields) {
-		for (auto body = physics.GetBodyList(); body; body = body->GetNext()) {
+		for (auto body = physics->GetBodyList(); body; body = body->GetNext()) {
 			field->apply(body, dt);
 		}
 	}
@@ -948,7 +948,13 @@ void Game::clear() {
 	rocket_brains = {};
 
 	// Clear physics
-	b2World physics = b2World(b2Vec2_zero);
+	delete physics;
+	physics = new b2World(b2Vec2_zero);
+
+	contact_table = ContactTable();
+	physics->SetContactListener(&contact_table);
+	collision_filter = CollisionFilter();
+	contact_table.set_collision_filter(&collision_filter);
 }
 
 void Game::wipe_map() {
