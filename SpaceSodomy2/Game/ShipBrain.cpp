@@ -135,13 +135,8 @@ void EdgarBrain::shoot(Ship* _ship, Ship* ship) {
 		cur_angle += 2 * b2_pi;
 
 	if (turn_to_angle(ship, angle)) {
-		auto beam_intersection = calc_intersection(ship->get_body()->GetPosition(),
-			aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()));
-		auto a = (_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()).Length();
-		auto b = (beam_intersection - ship->get_body()->GetPosition()).Length();
-		if (a < b) {
+		if (is_target_visible(_ship, ship))
 			ship->get_player()->get_command_module()->set_command(CommandModule::SHOOT, 1);
-		}
 	}
 }
 
@@ -160,16 +155,33 @@ void EdgarBrain::safety_flight(Ship* ship) {
 	move_to_point(ship, flight_point);
 }
 
+bool EdgarBrain::is_target_visible(Ship* _ship, Ship* ship) {
+	auto beam_intersection = calc_intersection(ship->get_body()->GetPosition(),
+		aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()));
+	auto a = (_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()).Length();
+	auto b = (beam_intersection - ship->get_body()->GetPosition()).Length();
+	return a < b;
+}
+
 
 
 Ship* EdgarBrain::get_enemy(Ship* my_ship) {
 	std::vector<Ship*> targets;
+	
+	Ship* ship_closest = nullptr;
+	float dist = 1e5;
+	
+
 	for (auto ship : environment.ships) {
 		if (ship->get_player()->get_id() != my_ship->get_player()->get_id()) {
-			return ship;
+			auto cur_dist = b2Distance(ship->get_body()->GetPosition(), my_ship->get_body()->GetPosition());
+			if (cur_dist < dist && is_target_visible(my_ship, ship)) {
+				dist = cur_dist;
+				ship_closest = ship;
+			}
 		}
 	}
-	return nullptr;
+	return ship_closest;
 
 }
 
