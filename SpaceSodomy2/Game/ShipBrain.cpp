@@ -8,23 +8,218 @@ void ShipBrain::set_new_id(int _) { id = _; }
 
 
 NetworkShipBrain::NetworkShipBrain(CommandModule& _1, const GameReadable& _2, int _3) : ShipBrain(_1, _2, _3) {};
-AiShipBrain::AiShipBrain(CommandModule& _1, const GameReadable& _2, int _3) : ShipBrain(_1, _2, _3) {};
 
 
-void AiShipBrain::compute_action() {
+EdgarBrain::EdgarBrain(CommandModule& _1, const GameReadable& _2, std::function<b2Vec2(b2Vec2, float)> calc_intersection_, int _3) :
+    ShipBrain(_1, _2, _3), calc_intersection(calc_intersection_) {
+
+}
+
+
+bool EdgarBrain::turn_to_angle(Ship* ship, float angle) {
+
+	auto cur_angle = ship->get_body()->GetAngle();
+	while (cur_angle > b2_pi)
+		cur_angle -= 2 * b2_pi;
+	while (cur_angle < -b2_pi)
+		cur_angle += 2 * b2_pi;
+
+	while (angle > b2_pi)
+		angle -= 2 * b2_pi;
+	while (angle < -b2_pi)
+		angle += 2 * b2_pi;
+
+	//std::cout << cur_angle << " " << angle << " " << cur_angle - angle << std::endl;
+
+	auto dif = cur_angle - angle;
+	if (abs(dif) > b2_pi) {
+		if (dif < 0) {
+			dif += 2 * b2_pi;
+		}
+		else {
+			dif -= 2 * b2_pi;
+		}
+	}
+
+	auto dist = 2 * b2_pi;
+	auto point = 0.0;
+	if (abs(-2 * b2_pi - dif) < dist) {
+		dist = abs(-2 * b2_pi - dif);
+		point = -2 * b2_pi - dif;
+	}
+	if (abs(dif) < dist) {
+		dist = abs(dif);
+		point = dif;
+	}
+	if (abs(2 * b2_pi - dif) < dist) {
+		dist = abs(2 * b2_pi - dif);
+		point = 2 * b2_pi - dif;
+	}
+
+	std::cout << dif << " " << dist << " " << point << std::endl;
+
+	auto speed = ship->get_body()->GetAngularVelocity();
+	auto acceleration = ship->get_engine()->get_torque() / ship->get_body()->GetInertia();
+	if (dist < 0.03 || speed > b2_pi) {
+		//std::cout << "stab\n";
+		ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
+		return true;
+	}
+	else {
+		//std::cout << std::fixed;
+		//std::cout << std::setprecision(4) << point << " " << speed << " " << acceleration << " " <<
+		//	abs(point / speed) << " " << abs(speed / acceleration) << std::endl;
+		if (point > 0) {
+			if (abs(point / speed) > abs(speed / acceleration)) {
+				//std::cout << "left\n";
+				ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 1);
+			}
+			else {
+				//std::cout << "right\n";
+				//ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
+				ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
+			}
+		}
+		else {
+			if (abs(point / speed) > abs(speed / acceleration)) {
+				//std::cout << "right\n";
+				ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 1);
+			}
+			else {
+				//std::cout << "left\n";
+				//ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 1);
+				ship->get_player()->get_command_module()->set_command(CommandModule::STABILIZE_ROTATION, 1);
+			}
+		}
+		return false;
+	}
+}
+
+void EdgarBrain::move_to_point(Ship* ship, b2Vec2 point) {
+	auto pos = ship->get_body()->GetPosition();
+	auto speed = ship->get_body()->GetLinearVelocity();
+	auto force_linear = ship->get_engine()->get_force_linear();
+
+	auto path = point - pos;
+
+	auto cur_angle = ship->get_body()->GetAngle();
+	while (cur_angle > 2 * b2_pi)
+		cur_angle -= 2 * b2_pi;
+	while (cur_angle < 0)
+		cur_angle += 2 * b2_pi;
+
+	auto point_angle = aux::vec_to_angle(path) + b2_pi;
+	auto dir_angle = cur_angle - point_angle;
+
+	auto rand = aux::random_float(0, 1, 2);
+	//std::cout << dir_angle << " " << rand << " " << cos(dir_angle) << " " << sin(dir_angle) << "\n";
+
+
+
+	if (rand < abs(sin(dir_angle))) {
+		if (sin(dir_angle) < 0) {
+			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_LEFT, 1);
+		}
+		else {
+			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_RIGHT, 1);
+		}
+	}
+
+	if (rand < abs(cos(dir_angle))) {
+		if (cos(dir_angle) < 0) {
+			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_FORWARD, 1);
+		}
+		else {
+			ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_BACKWARD, 1);
+		}
+	}
+}
+
+void EdgarBrain::shoot(Ship* _ship, Ship* ship) {
+	auto speed = _ship->get_body()->GetLinearVelocity() - ship->get_body()->GetLinearVelocity();
+	auto bullet_speed = ship->get_gun()->get_projectile_vel();
+	auto b = aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()) - aux::vec_to_angle(speed);
+
+	auto sina = sin(b) * speed.Length() / bullet_speed;
+	auto angle = aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()) - asin(sina);
+
+	auto cur_angle = ship->get_body()->GetAngle();
+	while (cur_angle > b2_pi)
+		cur_angle -= 2 * b2_pi;
+	while (cur_angle < -b2_pi)
+		cur_angle += 2 * b2_pi;
+
+	//std::cout << asin(sina) << " " << angle << std::endl;
+	if (turn_to_angle(ship, angle)) {
+		auto beam_intersection = calc_intersection(ship->get_body()->GetPosition(),
+			aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()));
+		auto a = (_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()).Length();
+		auto b = (beam_intersection - ship->get_body()->GetPosition()).Length();
+		//std::cout << a << " " << b << " " << _ship->get_player()->get_name() << "\n";
+		if (a < b) {
+			ship->get_player()->get_command_module()->set_command(CommandModule::SHOOT, 1);
+		}
+	}
+}
+
+void EdgarBrain::safety_flight(Ship* ship) {
+	float max_dist = 0;
+	b2Vec2 flight_point;
+	auto cur_point = ship->get_body()->GetPosition();
+	int beams_num = 12;
+	for (int i = 0; i < beams_num; i++) {
+		auto intersect = calc_intersection(cur_point, (2.0 * b2_pi / float(beams_num)) * float(i));
+		if (max_dist < (intersect - cur_point).Length()) {
+			max_dist = (intersect - cur_point).Length();
+			flight_point = intersect;
+		}
+	}
+	move_to_point(ship, flight_point);
+}
+
+
+
+Ship* EdgarBrain::get_enemy(Ship* my_ship) {
+	for (auto ship : environment.ships) {
+		if (ship->get_player()->get_id() != my_ship->get_player()->get_id()) {
+			return ship;
+		}
+	}
+	return nullptr;
+
+}
+
+
+void EdgarBrain::compute_action() {
     Ship* my_ship = nullptr;
     for (auto ship : environment.ships) {
         if (ship->get_id() == id) {
             my_ship = ship;
         }
     }
-    if (my_ship) {
-        std::cout << "IT'S ALIIIIIIIIIIIIIIIIIVE!\n";
-        /*
-        * AI code goes here
-        */
+	if (my_ship) {
+		std::cout << "IT'S ALIIIIIIIIIIIIIIIIIIIIIVE! MUAHAHAHAHAHAHAHAHAHAHAHAHAHA \n";
+		/*
+		* AI code goes here
+		*/
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_RIGHT, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::SHOOT, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_ANG_LEFT, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_LEFT, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_RIGHT, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_FORWARD, 0);
+		my_ship->get_player()->get_command_module()->set_command(CommandModule::ENGINE_LIN_BACKWARD, 0);
+
+		Ship* enemy = get_enemy(my_ship);
+		if (enemy != nullptr) {
+			shoot(enemy, my_ship);
+		}
+		safety_flight(my_ship);
+
+
     }
     else {
+		std::cout << "Dead :(\n ";
         command_module.set_command(CommandModule::RESPAWN, 1);
     }
 }

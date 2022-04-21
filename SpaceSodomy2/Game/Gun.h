@@ -19,6 +19,7 @@ public:
 	void set_projectile_manager(ProjectileManager*);
 	void import_Gun_Prototype(Gun_Prototype);
 	void activate() override;
+	float get_projectile_vel();
 };
 
 struct Gun_Prototype {

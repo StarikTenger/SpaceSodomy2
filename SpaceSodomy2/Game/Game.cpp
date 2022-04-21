@@ -32,8 +32,8 @@ Game::Game() : GameReadable() {
 	wall_player = create_player(-1, sf::Color::White, "WALL");
 }
 
-const GameReadable& Game::get_readable() {
-	return static_cast<const GameReadable&>(*this);
+GameReadable& Game::get_readable() {
+	return static_cast<GameReadable&>(*this);
 }
 
 b2Body* Game::create_round_body(b2Vec2 pos, float angle, float radius, float mass) {
@@ -516,7 +516,7 @@ void Game::process_players() {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
-			&& player->get_id() >= 0) { // The player is human
+			&& player->get_id() != -1) { // The player is not the wall
 			player->set_is_alive(1);
 
 			// creating ship
@@ -1527,7 +1527,7 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name, 
+void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
@@ -1542,6 +1542,25 @@ void Game::new_player(int id, sf::Color color, std::string name, std::string gun
 	auto brain = new NetworkShipBrain(*player->get_command_module(), get_readable());
 	ship_brains.insert(brain);
 	player->set_brain(brain);
+
+
+	//{
+	//	// Kostyl
+	//	Player* player_ = create_player(- id - 100, color, name + "_is_gay");
+	//	player_->set_gun_name(gun_name);
+	//	player_->set_hull_name(hull_name);
+	//	player_->set_left_module_name(left_module);
+	//	player_->set_right_module_name(right_module);
+	//	players[-id - 100] = player_;
+	//	player_->set_is_alive(0);
+	//	player_->get_time_to_respawn()->set(0);
+
+
+	//	auto brain_ = new EdgarBrain(*player_->get_command_module(), get_readable(),
+	//		[&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);});
+	//	ship_brains.insert(brain_);
+	//	player_->set_brain(brain_);
+	//}
 }
 
 Player* Game::player_by_id(int id) {

@@ -147,7 +147,7 @@ protected:
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
 
-	const GameReadable& get_readable();
+	GameReadable& get_readable();
 
 public:
 	Game();

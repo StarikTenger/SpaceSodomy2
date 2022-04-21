@@ -48,6 +48,13 @@ float Engine::get_force_angular() {
 	return force_angular;
 }
 
+float Engine::get_torque() {
+	if (body->GetFixtureList() != nullptr)
+		return force_angular * body->GetFixtureList()->GetShape()->m_radius;
+	else
+		return force_angular;
+}
+
 // Set methods
 void Engine::set_force_linear(float value) {
 	force_linear = value;

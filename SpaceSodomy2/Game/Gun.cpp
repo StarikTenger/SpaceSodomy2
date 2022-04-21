@@ -56,3 +56,7 @@ void Gun::activate() {
 	}
 	projectile_manager->create_projectile(projectile_def);
 }
+
+float Gun::get_projectile_vel() {
+	return projectile_vel;
+}

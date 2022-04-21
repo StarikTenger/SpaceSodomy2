@@ -1,5 +1,6 @@
 #pragma once
 #include "Brain.h"
+#include <functional>
 
 class ShipBrain : public iBrain {
 protected:
@@ -17,8 +18,16 @@ public:
     void compute_action() final {};
 };
 
-class AiShipBrain : public ShipBrain {
+class EdgarBrain : public ShipBrain {
+private:
+    std::function<b2Vec2(b2Vec2, float)> calc_intersection;
+
+    void move_to_point(Ship* my_ship, b2Vec2 point);
+    bool turn_to_angle(Ship* my_ship, float angle);
+    void shoot(Ship* target, Ship* my_ship );
+    void safety_flight(Ship* my_ship);
+    Ship* get_enemy(Ship* my_ship);
 public:
-    AiShipBrain(CommandModule&, const GameReadable&, int = 0);
+    EdgarBrain(CommandModule&, const GameReadable&, std::function<b2Vec2(b2Vec2, float)> calc_intersection_, int = 0);
     void compute_action() final;
 };
