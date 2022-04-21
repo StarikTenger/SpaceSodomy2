@@ -32,9 +32,9 @@ Game::Game() : GameReadable() {
 	wall_player = create_player(-1, sf::Color::White, "WALL");
 
 	// TODO: uncomment to add Edgar bots
-	/*new_edgar_bot(11, {255, 0, 0}, "Bot_Serega", "heavy", "default", "SHOTGUN", "SHOTGUN");
+	new_edgar_bot(11, {255, 0, 0}, "Bot_Serega", "heavy", "default", "SHOTGUN", "SHOTGUN");
 	new_edgar_bot(12, {0, 255, 0}, "Bot_Oleg", "default", "heavy", "SHOTGUN", "SHOTGUN");
-	new_edgar_bot(13, {0, 0, 255 }, "Bot_EbaNy_V_ROt", "cascade", "light", "SHOTGUN", "SHOTGUN");*/
+	new_edgar_bot(13, {0, 0, 255 }, "Bot_EbaNy_V_ROt", "cascade", "light", "SHOTGUN", "SHOTGUN");
 }
 
 GameReadable& Game::get_readable() {

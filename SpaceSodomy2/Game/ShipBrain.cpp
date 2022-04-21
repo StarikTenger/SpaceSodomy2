@@ -140,13 +140,33 @@ void EdgarBrain::shoot(Ship* _ship, Ship* ship) {
 	}
 }
 
+b2Vec2 EdgarBrain::calc_volumetric_intersection(b2Vec2 cur_point, float dir_angle, float radius) {
+	auto dir = aux::angle_to_vec(dir_angle);
+
+	b2Vec2 body_pos = cur_point;
+	b2Vec2 right_pos = (radius + 0.09) * dir;
+	right_pos = body_pos + aux::rotate(right_pos, b2_pi / 2);
+	b2Vec2 left_pos = (radius + 0.09) * dir;
+	left_pos = body_pos + aux::rotate(left_pos, -b2_pi / 2);
+
+	b2Vec2 intersection_right = calc_intersection(right_pos, dir_angle);
+	b2Vec2 intersection_left = calc_intersection(left_pos, dir_angle);
+	b2Vec2 intersection = calc_intersection(body_pos, dir_angle);
+
+	intersection = std::min(std::min(b2Distance(body_pos, intersection_right), b2Distance(body_pos, intersection_left)),
+		b2Distance(body_pos, intersection)) * dir;
+
+	return cur_point + intersection;
+}
+
 void EdgarBrain::safety_flight(Ship* ship) {
 	float max_dist = 0;
 	b2Vec2 flight_point;
 	auto cur_point = ship->get_body()->GetPosition();
 	int beams_num = 12;
 	for (int i = 0; i < beams_num; i++) {
-		auto intersect = calc_intersection(cur_point, (2.0 * b2_pi / float(beams_num)) * float(i));
+		auto radius = ship->get_body()->GetFixtureList()->GetShape()->m_radius;
+		auto intersect = calc_volumetric_intersection(cur_point, (2.0 * b2_pi / float(beams_num)) * float(i), radius);
 		if (max_dist < (intersect - cur_point).Length()) {
 			max_dist = (intersect - cur_point).Length();
 			flight_point = intersect;

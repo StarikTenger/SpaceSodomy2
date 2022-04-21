@@ -27,6 +27,7 @@ private:
     void shoot(Ship* target, Ship* my_ship );
     void safety_flight(Ship* my_ship);
     bool is_target_visible(Ship* _ship, Ship* ship);
+    b2Vec2 calc_volumetric_intersection(b2Vec2 cur_point, float dir_angle, float radius);
     Ship* get_enemy(Ship* my_ship);
 public:
     EdgarBrain(CommandModule&, const GameReadable&, std::function<b2Vec2(b2Vec2, float)> calc_intersection_, int = 0);
