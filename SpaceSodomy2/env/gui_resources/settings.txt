@@ -6,7 +6,7 @@ Panel.Background {
         BackgroundColor = None;
         BorderColor = black;
         Font = "../fonts/Square.ttf";
-        TextureBackground = "../textures/menu/Buttonmiddis.png" Smooth;
+        TextureBackground = "../textures/menu/ButtonMid.png" Smooth;
         TransparentTexture = true;
     }
 
@@ -43,13 +43,13 @@ Panel.Background {
                 TextColorDown = None;
                 TextColorFocused = #4BCC3D;
                 TextColorHover = None;
-                Texture = "../textures/menu/Buttontopdis.png" Smooth;
+                Texture = "../textures/menu/ButtonTop.png" Smooth;
                 TextureDisabled = None;
                 TextureDown = None;
                 TextureDownFocused = None;
                 TextureDownHover = None;
-                TextureFocused = "../textures/menu/ButtonTopFocusHover.png" Smooth;
-                TextureHover = "../textures/menu/Buttontop.png" Smooth;
+                TextureFocused = "../textures/menu/ButtonTopFocused.png" Smooth;
+                TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
             }
         }
 
@@ -75,13 +75,13 @@ Panel.Background {
                 TextColorDown = None;
                 TextColorFocused = #4BCC3D;
                 TextColorHover = None;
-                Texture = "../textures/menu/Buttonmiddis.png" Smooth;
+                Texture = "../textures/menu/ButtonMid.png" Smooth;
                 TextureDisabled = None;
                 TextureDown = None;
                 TextureDownFocused = None;
                 TextureDownHover = None;
                 TextureFocused = "../textures/menu/ButtonMidFocused.png" Smooth;
-                TextureHover = "../textures/menu/Buttonmid.png" Smooth;
+                TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
             }
         }
 
@@ -107,13 +107,13 @@ Panel.Background {
                 TextColorDown = None;
                 TextColorFocused = None;
                 TextColorHover = None;
-                Texture = "../textures/menu/Buttontopdis.png" Smooth;
+                Texture = "../textures/menu/ButtonTop.png" Smooth;
                 TextureDisabled = None;
                 TextureDown = None;
                 TextureDownFocused = None;
                 TextureDownHover = None;
                 TextureFocused = None;
-                TextureHover = "../textures/menu/Buttontop.png" Smooth;
+                TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
             }
         }
 
@@ -139,13 +139,13 @@ Panel.Background {
                 TextColorDown = None;
                 TextColorFocused = #4BCC3D;
                 TextColorHover = None;
-                Texture = "../textures/menu/Buttonmiddis.png" Smooth;
+                Texture = "../textures/menu/ButtonMid.png" Smooth;
                 TextureDisabled = None;
                 TextureDown = None;
                 TextureDownFocused = None;
                 TextureDownHover = None;
                 TextureFocused = "../textures/menu/ButtonMidFocused.png" Smooth;
-                TextureHover = "../textures/menu/Buttonmid.png" Smooth;
+                TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
             }
         }
     }
@@ -309,7 +309,6 @@ Panel.Background {
         ScrollablePanel.AudioPanel {
             ContentSize = (0, 0);
             Size = (100%, 100%);
-            Visible = false;
 
             Renderer {
                 BackgroundColor = None;
