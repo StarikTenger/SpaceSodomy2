@@ -53,7 +53,7 @@ Panel.Background {
             }
         }
 
-        Button.Control {
+        Button.Controls {
             Position = (3.5%, 13%);
             Size = (88.5%, 13%);
             Text = Controls;
@@ -117,10 +117,10 @@ Panel.Background {
             }
         }
 
-        Button.GUI {
+        Button.HUD {
             Position = (3.5%, 26%);
             Size = (88.5%, 13%);
-            Text = GUI;
+            Text = HUD;
             TextSize = 13;
 
             Renderer {
@@ -161,7 +161,7 @@ Panel.Background {
             TextureBackground = None;
         }
 
-        ScrollablePanel.GUIPanel {
+        ScrollablePanel.HUDPanel {
             ContentSize = (0, 0);
             Size = (100%, 100%);
             Visible = false;
@@ -399,7 +399,7 @@ Panel.Background {
             }
         }
 
-        ScrollablePanel.ControlPanel {
+        ScrollablePanel.ControlsPanel {
             ContentSize = (0, 0);
             Size = (100%, 100%);
             Visible = false;

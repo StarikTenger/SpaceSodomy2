@@ -30,7 +30,7 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 //controls page in settings 
 void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
 	int k = 0;
-	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
+	auto controls_panel = gui.get<tgui::Panel>("ControlsPanel");
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	for (int i = 0; !config.eof(); i++) {
@@ -54,7 +54,7 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 					tgui::Layout(std::to_string(7 * i)+"%")
 				);
 				label->setPosition(layout);
-				control_panel->add(label);
+				controls_panel->add(label);
 			}
 			if (j == keys->operator[](i).size()) 
 				keys->operator[](i).push_back(new std::string(cur));
@@ -72,7 +72,7 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 				tgui::Layout(std::to_string(7 * i) + "%")
 			);
 			keybinding->setPosition(layout);
-			control_panel->add(keybinding);
+			controls_panel->add(keybinding);
 			std::string name = "keybinding" + std::to_string(k);
 			keybinding->setWidgetName(name);
 			keybinding->keys = keys;
@@ -478,22 +478,22 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		auto control_panel = gui.get<tgui::Group>("ControlPanel");
+		auto controls_panel = gui.get<tgui::Group>("ControlsPanel");
 		auto audio_panel = gui.get<tgui::Group>("AudioPanel");
-		auto gui_panel = gui.get<tgui::Group>("GUIPanel");
+		auto hud_panel = gui.get<tgui::Group>("HUDPanel");
 		for (auto widget : settings_panel->getWidgets()) {
 			if (widget->isVisible()) {
 				if (widget == audio_panel) {
 					auto audio_button = gui.get<tgui::ButtonBase>("Audio");
 					audio_button->setFocused(true);
 				}
-				else if (widget == control_panel) {
-					auto control_button = gui.get<tgui::ButtonBase>("Control");
-					control_button->setFocused(true);
+				else if (widget == controls_panel) {
+					auto controls_button = gui.get<tgui::ButtonBase>("Controls");
+					controls_button->setFocused(true);
 				}
-				else if (widget == gui_panel) {
-					auto gui_button = gui.get<tgui::ButtonBase>("GUI");
-					gui_button->setFocused(true);
+				else if (widget == hud_panel) {
+					auto hud_button = gui.get<tgui::ButtonBase>("HUD");
+					hud_button->setFocused(true);
 				}
 			}
 		}
@@ -531,14 +531,14 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	replay_play_button->onPress([=, &gui] {
 		replay->play_button(gui);
 	});
-	// Initializing control menu
-	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
-	control->onClick([&gui] {
+	// Initializing controls menu
+	tgui::Button::Ptr controls = gui.get<tgui::Button>("Controls");
+	controls->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
 		for (auto widget : settings_panel->getWidgets()) {
 			widget->setVisible(false);
 		}
-		gui.get<tgui::Group>("ControlPanel")->setVisible(true);
+		gui.get<tgui::Group>("ControlsPanel")->setVisible(true);
 	});
 	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
 	audio->onClick([&gui] {
@@ -548,13 +548,13 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		}
 		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
 	});
-	tgui::Button::Ptr gui_button = gui.get<tgui::Button>("GUI");
-	gui_button->onClick([&gui] {
+	tgui::Button::Ptr hud_button = gui.get<tgui::Button>("HUD");
+	hud_button->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
 		for (auto widget : settings_panel->getWidgets()) {
 			widget->setVisible(false);
 		}
-		gui.get<tgui::Group>("GUIPanel")->setVisible(true);
+		gui.get<tgui::Group>("HUDPanel")->setVisible(true);
 	});
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
 	back->onClick([&gui, &close_groups] {
