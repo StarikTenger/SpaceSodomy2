@@ -78,9 +78,9 @@ void ActiveModule::set_effects(Effects* val) {
 void ActiveModule::activate_default_side_effects() {
 	recharge_counter->set(recharge_time);
 	stamina->modify(-stamina_cost);
-	std::cout << energy->get() << "\n";
+	//std::cout << energy->get() << "\n";
 	energy->modify(-energy_cost);
-	std::cout << energy->get() << "\n";
+	//std::cout << energy->get() << "\n";
 
 }
 
@@ -89,7 +89,7 @@ void ActiveModule::step(float dt) {
 		recharge_counter->get() < 0 && 
 		stamina->get() > stamina_cost && 
 		energy->get() >= energy_cost) {
-        std::cout << "AM activate\n";
+        //std::cout << "AM activate\n";
 		activate();
 	}
 }

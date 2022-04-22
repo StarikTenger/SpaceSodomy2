@@ -532,3 +532,4 @@ std::string aux::censor_name(std::string str) {
 	}
 	return str;
 }
+

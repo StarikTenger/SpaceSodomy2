@@ -56,3 +56,21 @@ public:
 	void add_death();
 	void add_kill();
 };
+
+struct Player_Def {
+	enum Type {
+		NETWORK_PLAYER,
+		EDGAR_BOT,
+		COUNT
+	};
+	int id;
+	Type type;
+	std::string name;
+	sf::Color color = sf::Color::Cyan;
+	std::string gun_name = "default";
+	std::string hull_name = "default";
+	std::string left_module_name = "NONE";
+	std::string right_module_name = "NONE";
+
+	Player_Def(int _id, Type _type, std::string _name) : id(_id), type(_type), name(_name) {};
+};

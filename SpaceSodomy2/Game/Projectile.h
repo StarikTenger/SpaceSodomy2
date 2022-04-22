@@ -1,8 +1,8 @@
 #pragma once
 #include <box2d/box2d.h>
-#include "Player.h"
 #include "DamageReceiver.h"
 #include "iId.h"
+
 
 class Projectile : public iId {
 private:

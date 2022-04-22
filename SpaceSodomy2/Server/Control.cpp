@@ -29,6 +29,15 @@ void Control::load_config(std::string path) {
 			game.load_parameters(name);
 			std::cout << "PARAMETERS loaded\n";
 		}
+
+		if (command == "BOT_LIST") {
+			std::string name;
+			file >> name;
+			game.load_bots(name);
+			std::cout << "BOT_LIST loaded\n";
+
+		}
+
 	}
 }
 
@@ -72,7 +81,7 @@ void Control::receive() {
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
 		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
+		game.new_network_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
 	}
 	// Applying commands
 	if (token_by_id[id_] == token) {

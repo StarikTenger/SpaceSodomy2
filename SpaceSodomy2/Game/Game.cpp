@@ -30,11 +30,6 @@ Game::Game() : GameReadable() {
 	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
 	wall_player = create_player(-1, sf::Color::White, "WALL");
-
-	// TODO: uncomment to add Edgar bots
-	new_edgar_bot(11, {255, 0, 0}, "Bot_Serega", "heavy", "default", "SHOTGUN", "SHOTGUN");
-	new_edgar_bot(12, {0, 255, 0}, "Bot_Oleg", "default", "heavy", "SHOTGUN", "SHOTGUN");
-	new_edgar_bot(13, {0, 0, 255 }, "Bot_EbaNy_V_ROt", "cascade", "light", "SHOTGUN", "SHOTGUN");
 }
 
 GameReadable& Game::get_readable() {
@@ -1379,6 +1374,66 @@ bool Game::load_parameters(std::string path) {
 	return true;
 }
 
+bool Game::load_bots(std::string path) {
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
+
+	std::string symbol;
+	while (input >> symbol) {
+		if (symbol == "END")
+			break;
+
+		auto read_symbol = [&](std::string symbol_name, auto& var) {
+			if (symbol == symbol_name) {
+				decltype(var) val(var);
+				if (!(input >> val)) {
+					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					return false;
+				}
+				var = val;
+			}
+			return true;
+		};
+
+		if (symbol == "BOT") {
+			Player_Def def(aux::random_int(1, 100000000), Player_Def::EDGAR_BOT, "warning: bot name not set");
+
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "COLOR") {
+					int r, g, b;
+					input >> r >> g >> b;
+					def.color.r = r;
+					def.color.g = g;
+					def.color.b = b;
+				}
+				read_symbol("NAME", def.name);
+				read_symbol("ID", def.id);
+				read_symbol("GUN_NAME", def.gun_name);
+				read_symbol("HULL_NAME", def.hull_name);
+				read_symbol("LEFT_MODULE_NAME", def.left_module_name);
+				read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
+
+				if (symbol == "BOT_TYPE") {
+					std::string temp;
+					input >> temp;
+					if (temp == "EDGAR_BOT") {
+						def.type = Player_Def::EDGAR_BOT;
+					}
+					else {
+						std::cout << "Game::load_bots error: unknown bot type\n";
+					}
+				}
+			}
+			std::cout << def.color.r;
+			new_player(def);
+		};
+	}
+}
+
+
 std::string Game::encode() {
 	std::string message = "";
 
@@ -1524,7 +1579,7 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+void Game::new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
@@ -1558,6 +1613,26 @@ void Game::new_edgar_bot(int id, sf::Color color, std::string name, std::string 
 	ship_brains.insert(brain);
 	player->set_brain(brain);
 }
+
+void Game::new_player(Player_Def def) {
+	if (id_list.count(def.id)) {
+		std::cout << "Game::new_player error: id collision with player.name = " << def.name << "\n";
+		return;
+	}
+	id_list.insert(def.id);
+
+	switch (def.type) {
+	case (Player_Def::NETWORK_PLAYER) :
+		new_network_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+		break;
+	case (Player_Def::EDGAR_BOT) :
+		new_edgar_bot(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+		break;
+     default:
+		 std::cout << "Game::new_player error: unknown Player::Type with player.name = " << def.name << "\n";
+	}
+}
+
 
 
 Player* Game::player_by_id(int id) {

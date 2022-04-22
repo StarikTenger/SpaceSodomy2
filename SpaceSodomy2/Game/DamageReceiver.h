@@ -1,9 +1,10 @@
 #pragma once
 #include <box2d/box2d.h>
 #include "Counter.h"
-#include "Player.h"
 #include "iId.h"
 #include "Effects.h"
+
+class Player;
 
 class DamageReceiver : public iId {
 private:

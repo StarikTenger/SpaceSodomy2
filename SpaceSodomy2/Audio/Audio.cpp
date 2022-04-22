@@ -114,7 +114,7 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume_mod
 	else {
 		if (!sounds.count(name))
 			return;
-		std::cout << "NEW SOUND " << id << " " << name << "\n";
+		//std::cout << "NEW SOUND " << id << " " << name << "\n";
 		play(id, name, pos, sound_volume * activeSounds_mode[id], looped);
 	}
 	activeSounds[id]->setLoop(looped);

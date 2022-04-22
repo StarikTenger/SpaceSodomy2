@@ -37,6 +37,7 @@ protected:
 	// Objects' systems
 	std::map<int, Player*> players;
 	std::map<int, int>* connection_time;
+	std::set<int> id_list;
 	// std::set<Ship*> ships;
 	//std::set<Engine*> engines;
 	//std::set<CommandModule*> command_modules;
@@ -162,6 +163,7 @@ public:
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
+	bool load_bots(std::string path);
 	// Clears every temporary body
 	void clear();
 	// Clean all
@@ -169,10 +171,11 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	void new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	void new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 	void new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
+	void new_player(Player_Def);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player
