@@ -26,6 +26,8 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	}
 	fout.close();
 }
+
+//controls page in settings 
 void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
 	int k = 0;
 	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
@@ -41,13 +43,13 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
 				auto size = tgui::Layout2d(
-					tgui::Layout("30%"),
-					tgui::Layout(20)
+					tgui::Layout("50%"),    //size of action name
+					tgui::Layout("7%")
 				);
 				label->setSize(size);
 				auto layout = tgui::Layout2d(
-					tgui::Layout(std::to_string(5) + "%"),
-					tgui::Layout(std::to_string(5 + 25 * i))
+					tgui::Layout(std::to_string(5) + "%"),    //position of action name
+					tgui::Layout(std::to_string(7 * i)+"%")
 				);
 				label->setPosition(layout);
 				control_panel->add(label);
@@ -59,13 +61,13 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 			auto keybinding = KeybindingBox::create();
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
-				tgui::Layout("15%"),
-				tgui::Layout(20)
+				tgui::Layout("15%"),   //size of keybinding window
+				tgui::Layout("7%")
 			);
 			keybinding->setSize(size);
 			auto layout = tgui::Layout2d(
-				tgui::Layout(std::to_string(40 + j * 20) + "%"),
-				tgui::Layout(std::to_string(5 + 25 * i))
+				tgui::Layout(std::to_string(60 + j * 20) + "%"),    //position of keybinding window
+				tgui::Layout(std::to_string(7 * i) + "%")
 			);
 			keybinding->setPosition(layout);
 			control_panel->add(keybinding);
@@ -534,6 +536,10 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	});
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
 	back->onClick([&gui, &close_groups] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			widget->setVisible(false);
+		}
 		close_groups(gui);
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
@@ -627,4 +633,5 @@ void MenuProcessing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
 
 	group_formating("main_menu.txt", 1.3, 0.03);
+	group_formating("settings.txt", 1.3, 0.025);
 }
