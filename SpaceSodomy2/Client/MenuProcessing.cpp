@@ -42,6 +42,8 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 			if (j == 0) {
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
+				auto ren = label->getRenderer();
+				ren->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
 					tgui::Layout("50%"),    //size of action name
 					tgui::Layout("7%")
@@ -61,12 +63,12 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 			auto keybinding = KeybindingBox::create();
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
-				tgui::Layout("15%"),   //size of keybinding window
+				tgui::Layout("20%"),   //size of keybinding window
 				tgui::Layout("7%")
 			);
 			keybinding->setSize(size);
 			auto layout = tgui::Layout2d(
-				tgui::Layout(std::to_string(60 + j * 20) + "%"),    //position of keybinding window
+				tgui::Layout(std::to_string(55 + j * 20) + "%"),    //position of keybinding window
 				tgui::Layout(std::to_string(7 * i) + "%")
 			);
 			keybinding->setPosition(layout);
@@ -475,6 +477,26 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		auto control_panel = gui.get<tgui::Group>("ControlPanel");
+		auto audio_panel = gui.get<tgui::Group>("AudioPanel");
+		auto gui_panel = gui.get<tgui::Group>("GUIPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			if (widget->isVisible()) {
+				if (widget == audio_panel) {
+					auto audio_button = gui.get<tgui::ButtonBase>("Audio");
+					audio_button->setFocused(true);
+				}
+				else if (widget == control_panel) {
+					auto control_button = gui.get<tgui::ButtonBase>("Control");
+					control_button->setFocused(true);
+				}
+				else if (widget == gui_panel) {
+					auto gui_button = gui.get<tgui::ButtonBase>("GUI");
+					gui_button->setFocused(true);
+				}
+			}
+		}
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
 	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
@@ -537,9 +559,6 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
 	back->onClick([&gui, &close_groups] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
 		close_groups(gui);
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
