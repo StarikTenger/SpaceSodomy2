@@ -1427,10 +1427,10 @@ bool Game::load_bots(std::string path) {
 					}
 				}
 			}
-			std::cout << def.color.r;
 			new_player(def);
 		};
 	}
+	return true;
 }
 
 

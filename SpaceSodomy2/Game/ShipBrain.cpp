@@ -120,23 +120,31 @@ void EdgarBrain::move_to_point(Ship* ship, b2Vec2 point) {
 	}
 }
 
-void EdgarBrain::attack(Ship* _ship, Ship* ship) {
-	if (ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER
-		|| ship->get_effects()->get_effect(Effects::LASER)->get_counter()->get() > b2_epsilon) {
-		shoot_laser(_ship, ship);
+void EdgarBrain::attack(Ship* _ship, Ship* my_ship) {
+	if ((my_ship->get_bonus_slot()->get_current_bonus() == Bonus::CHARGE
+		|| my_ship->get_effects()->get_effect(Effects::CHARGE)->get_counter()->get() > b2_epsilon)
+		&& b2Distance(_ship->get_body()->GetPosition(), my_ship->get_body()->GetPosition()) < 7.f) {
+		command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
+		command_module.set_command(CommandModule::BOOST, 1);
+		move_to_point(my_ship, _ship->get_body()->GetPosition());
 		return;
 	}
-	auto speed = _ship->get_body()->GetLinearVelocity() - ship->get_body()->GetLinearVelocity();
-	auto bullet_speed = ship->get_gun()->get_projectile_vel();
-	auto b = aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()) - aux::vec_to_angle(speed);
+	if (my_ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER
+		|| my_ship->get_effects()->get_effect(Effects::LASER)->get_counter()->get() > b2_epsilon) {
+		shoot_laser(_ship, my_ship);
+		return;
+	}
+	auto speed = _ship->get_body()->GetLinearVelocity() - my_ship->get_body()->GetLinearVelocity();
+	auto bullet_speed = my_ship->get_gun()->get_projectile_vel();
+	auto b = aux::vec_to_angle(_ship->get_body()->GetPosition() - my_ship->get_body()->GetPosition()) - aux::vec_to_angle(speed);
 
 	auto sina = sin(b) * speed.Length() / bullet_speed;
-	auto angle = aux::vec_to_angle(_ship->get_body()->GetPosition() - ship->get_body()->GetPosition()) - asin(sina);
+	auto angle = aux::vec_to_angle(_ship->get_body()->GetPosition() - my_ship->get_body()->GetPosition()) - asin(sina);
 
 
-	if (turn_to_angle(ship, angle)) {
-		if (is_target_visible(_ship, ship->get_body())) {
-			if (ship->get_bonus_slot()->get_current_bonus() == Bonus::BERSERK) {
+	if (turn_to_angle(my_ship, angle)) {
+		if (is_target_visible(_ship, my_ship->get_body())) {
+			if (my_ship->get_bonus_slot()->get_current_bonus() == Bonus::BERSERK) {
 				command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
 			}
 			command_module.set_command(CommandModule::SHOOT, 1);
@@ -262,6 +270,7 @@ void EdgarBrain::compute_action() {
 		command_module.set_command(CommandModule::ENGINE_LIN_FORWARD, 0);
 		command_module.set_command(CommandModule::ENGINE_LIN_BACKWARD, 0);
 		command_module.set_command(CommandModule::BONUS_ACTIVATION, 0);
+		command_module.set_command(CommandModule::BOOST, 0);
 
 
 		if (my_ship->get_bonus_slot()->get_current_bonus() == Bonus::IMMORTALITY) {
