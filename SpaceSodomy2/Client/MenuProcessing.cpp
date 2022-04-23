@@ -186,12 +186,21 @@ void MenuProcessing::load_config(std::string path, std::string* address_, std::s
 	}
 }
 
+void MenuProcessing::close_widgets(tgui::Container::Ptr container) {
+	auto widgets = container->getWidgets();
+	for (auto widget : widgets)
+		widget->setVisible(false);
+}
+
+void MenuProcessing::close_groups() {
+	auto widgets = _gui->getWidgets();
+	for (auto widget : widgets)
+		widget->setVisible(false);
+};
+
 void MenuProcessing::toggle_active() {
 	active = !active;
-	auto wid = _gui->getWidgets();
-	for (int i = 0; i < wid.size(); i++) {
-		wid[i]->setVisible(false);
-	}
+	close_groups();
 	_gui->get<tgui::Group>("HUD.txt")->setVisible(!active);
 	_gui->get<tgui::Group>("replay.txt")->setVisible(replay->get_replay_active() && active);
 	_gui->get<tgui::Group>("main_menu.txt")->setVisible(!replay->get_replay_active() && active);
@@ -263,11 +272,9 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		name[0] = std::toupper(name[0]);
 		return name;
 	};
-	auto close_info = [](tgui::Gui& gui) {
-		auto widgets = gui.get<tgui::Group>("InfoGroup")->getWidgets();
-		for (auto widget : widgets) {
-			widget->setVisible(0);
-		}
+	auto close_info = [this]() {
+		auto infogroup = _gui->get<tgui::Group>("InfoGroup");
+		close_widgets(infogroup);
 	};
 	while (!config.eof()) {
 		std::string name, next;
@@ -285,13 +292,13 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			auto pic = tgui::Picture::create();
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-gun"));
 			auto _game = game;
-			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+			pic->onClick([=] {
+				close_info();
 				new_gun->setVisible(1);
 
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
 				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
-				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
+				_gui->get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
 				game->save_setup("setup.conf");
 			});
 			gun_vars->add(pic);
@@ -333,7 +340,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-hull"));
 			auto _game = game;
 			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+				close_info();
 				new_hull->setVisible(1);
 
 				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
@@ -380,7 +387,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-module"));
 			auto _game = game;
 			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+				close_info();
 				new_module->setVisible(1);
 
 				if (module_num == 1) {
@@ -456,12 +463,17 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		ans->setWidgetName(file_name);
 		return ans;
 	};
-	auto close_groups = [](tgui::Gui& gui) {
+	/*auto close_groups = [](tgui::Gui& gui) {
 		auto wid = gui.getWidgets();
 		for (int i = 0; i < wid.size(); i++) {
 			wid[i]->setVisible(false);
 		}
-	};
+	};*.
+	/*auto close_widgets = [](tgui::Container::Ptr container) {
+		auto widgets = container->getWidgets();
+		for (auto widget : widgets)
+			widget->setVisible(false);
+	};*/
 	auto launch_replay = [=](tgui::Gui& gui, std::string name, Replay* replay) {
 		replay->set_replay_path("replays/" + name);
 		replay->set_replay_active(1);
@@ -481,8 +493,8 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 
 	// Open replay menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
-	replayButton->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
+	replayButton->onClick([=, &gui] {
+		close_groups();
 		launch_replay(gui, "example.ex", replay);
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
 	});
@@ -515,8 +527,8 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 
 	// Open settings menu
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
-	settings->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
+	settings->onClick([=, &gui] {
+		close_groups();
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
 		auto controls_panel = gui.get<tgui::Group>("ControlsPanel");
 		auto audio_panel = gui.get<tgui::Group>("AudioPanel");
@@ -544,50 +556,42 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 
 	// Open controls in settings menu
 	tgui::Button::Ptr controls = gui.get<tgui::Button>("Controls");
-	controls->onClick([&gui] {
+	controls->onClick([&gui, this] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
+		close_widgets(settings_panel);
 		gui.get<tgui::Group>("ControlsPanel")->setVisible(true);
 	});
 
 
 	// Open audio in settings menu
 	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
-	audio->onClick([&gui] {
+	audio->onClick([&gui, this] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
+		close_widgets(settings_panel);
 		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
 	});
 
-
 	// Open hud in settings menu
 	tgui::Button::Ptr hud_button = gui.get<tgui::Button>("HUD");
-	hud_button->onClick([&gui] {
+	hud_button->onClick([&gui,this] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
+		close_widgets(settings_panel);
 		gui.get<tgui::Group>("HUDPanel")->setVisible(true);
 	});
 
 
 	// Back-button in settings menu
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
-	back->onClick([&gui, &close_groups] {
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		close_groups(gui);
+	back->onClick([&gui, this] {
+		close_groups();
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
 
 
 	// Open multiplayer menu
 	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
-	multiplayer->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
+	multiplayer->onClick([=, &gui] {
+		close_groups();
 		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
 		});
 	

@@ -26,6 +26,8 @@ private:
 	void save_sound(std::string path);
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	void group_formating(std::string groupname, float aspectratio, float textscale);
+	void close_widgets(tgui::Container::Ptr container);
+	void close_groups();
 	Draw* draw;
 	GameClient* game;
 	Replay* replay;
