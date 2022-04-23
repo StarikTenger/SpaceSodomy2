@@ -457,15 +457,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name) {
 	}
 }
 
-void MenuProcessing::init_tgui() {
-	auto load_widgets = [this](std::string file_name) {
-		auto ans = tgui::Group::create();
-		ans->loadWidgetsFromFile(file_name);
-		ans->setVisible(false);
-		_gui->add(ans);
-		ans->setWidgetName(file_name);
-		return ans;
-	};
+void MenuProcessing::open_replay_menu(){
 	auto launch_replay = [=](std::string name, Replay* replay) {
 		replay->set_replay_path("replays/" + name);
 		replay->set_replay_active(1);
@@ -476,12 +468,6 @@ void MenuProcessing::init_tgui() {
 			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
 		_gui->get<tgui::Slider>("ReplaySlider")->setMaximum(replay->get_frame_number());
 	};
-	auto main_menu = load_widgets("main_menu.txt");
-	main_menu->setVisible(true);
-	auto HUD = load_widgets("HUD.txt");
-	auto settings_menu = load_widgets("settings.txt");
-	auto configuration_menu = load_widgets("configuration.txt");
-	auto replay_menu = load_widgets("replay.txt");
 
 	// Open replay menu
 	tgui::Button::Ptr replayButton = _gui->get<tgui::Button>("Replay");
@@ -490,7 +476,6 @@ void MenuProcessing::init_tgui() {
 		launch_replay("example.ex", replay);
 		_gui->get<tgui::Group>("replay.txt")->setVisible(true);
 	});
-
 
 	// Initializing replay menu
 	auto select_replay_button = _gui->get<tgui::Button>("SelectReplay");
@@ -515,8 +500,9 @@ void MenuProcessing::init_tgui() {
 	replay_play_button->onPress([=] {
 		replay->play_button(*_gui);
 	});
+}
 
-
+void MenuProcessing::open_settings_menu() {
 	// Open settings menu
 	tgui::Button::Ptr settings = _gui->get<tgui::Button>("Settings");
 	settings->onClick([=] {
@@ -542,9 +528,7 @@ void MenuProcessing::init_tgui() {
 			}
 		}
 		_gui->get<tgui::Group>("settings.txt")->setVisible(true);
-		});
-
-
+	});
 
 	// Open controls in settings menu
 	tgui::Button::Ptr controls = _gui->get<tgui::Button>("Controls");
@@ -553,7 +537,6 @@ void MenuProcessing::init_tgui() {
 		close_widgets(settings_panel);
 		_gui->get<tgui::Group>("ControlsPanel")->setVisible(true);
 	});
-
 
 	// Open audio in settings menu
 	tgui::Button::Ptr audio = _gui->get<tgui::Button>("Audio");
@@ -571,22 +554,22 @@ void MenuProcessing::init_tgui() {
 		_gui->get<tgui::Group>("HUDPanel")->setVisible(true);
 	});
 
-
 	// Back-button in settings menu
 	tgui::Button::Ptr back = _gui->get<tgui::Button>("Back");
 	back->onClick([this] {
 		close_groups();
 		_gui->get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
+}
 
-
+void MenuProcessing::open_multiplayer_menu() {
 	// Open multiplayer menu
 	auto multiplayer = _gui->get<tgui::Button>("Multiplayer");
 	multiplayer->onClick([=] {
 		close_groups();
 		_gui->get<tgui::Group>("configuration.txt")->setVisible(true);
-		});
-	
+	});
+
 
 	// Initializing multiplayer menu
 	init_multiplayer_menu("parameters.conf");
@@ -601,13 +584,35 @@ void MenuProcessing::init_tgui() {
 	_gui->get<tgui::Button>("Play")->onClick([=] {
 		toggle_active();
 	});
+}
 
-
+void MenuProcessing::open_exit_menu(){
 	// exit
 	auto exit = _gui->get<tgui::Button>("Exit");
 	exit->onClick([=] {
 		draw->get_window()->close();
-		});
+	});
+}
+
+void MenuProcessing::init_tgui() {
+	auto load_widgets = [this](std::string file_name) {
+		auto ans = tgui::Group::create();
+		ans->loadWidgetsFromFile(file_name);
+		ans->setVisible(false);
+		_gui->add(ans);
+		ans->setWidgetName(file_name);
+		return ans;
+	};
+	auto main_menu = load_widgets("main_menu.txt");
+	main_menu->setVisible(true);
+	auto HUD = load_widgets("HUD.txt");
+	auto settings_menu = load_widgets("settings.txt");
+	auto configuration_menu = load_widgets("configuration.txt");
+	auto replay_menu = load_widgets("replay.txt");
+	open_replay_menu();
+	open_settings_menu();
+	open_multiplayer_menu();
+	open_exit_menu();
 }
 
 void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
