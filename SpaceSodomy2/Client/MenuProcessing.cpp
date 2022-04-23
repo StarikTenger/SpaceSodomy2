@@ -27,12 +27,15 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	fout.close();
 }
 
-//controls page in settings 
+// init controls page in settings 
 void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
+
 	int k = 0;
 	auto controls_panel = gui.get<tgui::Panel>("ControlsPanel");
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
+
+	// read keybinds from config
 	for (int i = 0; !config.eof(); i++) {
 		if (keys->size() == i)
 			keys->push_back(std::vector<std::string*>());
@@ -40,12 +43,14 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			if (j == 0) {
+
+				//name of the action
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
 				auto ren = label->getRenderer();
 				ren->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
-					tgui::Layout("50%"),    //size of action name
+					tgui::Layout("50%"),   //size of action name
 					tgui::Layout("7%")
 				);
 				label->setSize(size);
@@ -56,10 +61,13 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 				label->setPosition(layout);
 				controls_panel->add(label);
 			}
+
 			if (j == keys->operator[](i).size()) 
 				keys->operator[](i).push_back(new std::string(cur));
 			else
 				*(keys->operator[](i)[j]) = cur;
+
+			//keybinding box
 			auto keybinding = KeybindingBox::create();
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
@@ -78,6 +86,8 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 			keybinding->keys = keys;
 			keybinding->reload = reload;
 			k++;
+
+			//key rebind
 			keybinding->onKeyPressed([=, &gui]() {
 				auto key = gui.get<KeybindingBox>(name)->keys->operator[](i)[j];
 				auto new_key = gui.get<KeybindingBox>(name)->getText().toStdString();
@@ -159,6 +169,7 @@ void MenuProcessing::save_config(std::string path, std::string address_, int por
 	fout << address_ << " " << port_ << " " << id_ << " " << name_;
 	fout.close();
 }
+
 void MenuProcessing::load_config(std::string path, std::string* address_, std::string* port_,
 	std::string* id_, std::string* name_, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
@@ -467,13 +478,42 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto settings_menu = load_widgets("settings.txt");
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
-	// Initializing main menu
+
+	// Open replay menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
 		launch_replay(gui, "example.ex", replay);
 		gui.get<tgui::Group>("replay.txt")->setVisible(true);
 	});
+
+
+	// Initializing replay menu
+	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
+	select_replay_button->onClick([=, &gui, &launch_replay] {
+		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
+		auto _replay = replay;
+		choose_file->onFileSelect([=, &gui] {
+			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
+			launch_replay(gui, name, _replay);
+			});
+			gui.get<tgui::Group>("replay.txt")->add(choose_file);
+	});
+	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
+	spin_control->onValueChange([=](float val) {
+		replay->set_speed(val);
+	});
+	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
+	replay_slider->onValueChange([=](int val) {
+		replay->set_frame(val);
+	});
+	auto replay_play_button = gui.get<tgui::Button>("ReplayPlay");
+	replay_play_button->onPress([=, &gui] {
+		replay->play_button(gui);
+	});
+
+
+	// Open settings menu
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
@@ -498,40 +538,11 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 			}
 		}
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
-	});
-	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
-	multiplayer->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
-		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
-	});
-	auto exit = gui.get<tgui::Button>("Exit");
-	exit->onClick([=] {
-		draw->get_window()->close();
-	});
-	// Initializing replay menu
-	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
-	select_replay_button->onClick([=, &gui, &launch_replay] {
-		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
-		auto _replay = replay;
-		choose_file->onFileSelect([=, &gui] {
-			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
-			launch_replay(gui, name, _replay);
-			});
-			gui.get<tgui::Group>("replay.txt")->add(choose_file);
-	});
-	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
-	spin_control->onValueChange([=](float val) {
-		replay->set_speed(val);
-	});
-	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
-	replay_slider->onValueChange([=](int val) {
-		replay->set_frame(val);
-	});
-	auto replay_play_button = gui.get<tgui::Button>("ReplayPlay");
-	replay_play_button->onPress([=, &gui] {
-		replay->play_button(gui);
-	});
-	// Initializing controls menu
+		});
+
+
+
+	// Open controls in settings menu
 	tgui::Button::Ptr controls = gui.get<tgui::Button>("Controls");
 	controls->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
@@ -540,6 +551,9 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		}
 		gui.get<tgui::Group>("ControlsPanel")->setVisible(true);
 	});
+
+
+	// Open audio in settings menu
 	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
 	audio->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
@@ -548,6 +562,9 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		}
 		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
 	});
+
+
+	// Open hud in settings menu
 	tgui::Button::Ptr hud_button = gui.get<tgui::Button>("HUD");
 	hud_button->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
@@ -556,12 +573,25 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		}
 		gui.get<tgui::Group>("HUDPanel")->setVisible(true);
 	});
+
+
+	// Back-button in settings menu
 	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
 	back->onClick([&gui, &close_groups] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
 		close_groups(gui);
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
+
+
+	// Open multiplayer menu
+	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
+	multiplayer->onClick([=, &gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
+		});
+	
+
 	// Initializing multiplayer menu
 	init_multiplayer_menu("parameters.conf", gui);
 	gui.get<tgui::EditBox>("ServerIP")->onTextChange([=, &gui] {
@@ -575,6 +605,13 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	gui.get<tgui::Button>("Play")->onClick([=] {
 		toggle_active();
 	});
+
+
+	// exit
+	auto exit = gui.get<tgui::Button>("Exit");
+	exit->onClick([=] {
+		draw->get_window()->close();
+		});
 }
 
 void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
