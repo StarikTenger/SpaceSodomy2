@@ -1311,7 +1311,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
 				read_symbol("PROJECTILE_HP", guns[name].projectile_hp);
-				read_symbol("ENERGY_COST", guns[name].energy_cost);
+				read_symbol("ENERGY_CONSUMPTION", guns[name].energy_cost);
 			}
 			continue;
 		}

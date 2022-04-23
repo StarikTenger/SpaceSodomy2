@@ -1,4 +1,32 @@
 Renderer.1 {
+    BackgroundColor = white;
+    BorderColor = black;
+    TextureBackground = None;
+}
+
+Renderer.2 {
+    BackgroundColor = #F5F5F5;
+    BorderColor = black;
+    Borders = (1, 1, 1, 1);
+    FillColor = #006EFF;
+    TextColor = #3C3C3C;
+    TextColorFilled = white;
+    TextureBackground = None;
+    TextureFill = None;
+}
+
+Renderer.3 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
+    TextureBackground = None;
+}
+
+Renderer.4 {
+}
+
+Renderer.5 {
     BackgroundColor = #F5F5F5;
     BackgroundColorDisabled = #E6E6E6;
     BackgroundColorHover = white;
@@ -20,34 +48,6 @@ Renderer.1 {
     TextureHover = None;
 }
 
-Renderer.2 {
-    BackgroundColor = transparent;
-    BorderColor = #3C3C3C;
-    Borders = (0, 0, 0, 0);
-    TextColor = #3C3C3C;
-    TextureBackground = None;
-}
-
-Renderer.3 {
-}
-
-Renderer.4 {
-    BackgroundColor = #F5F5F5;
-    BorderColor = black;
-    Borders = (1, 1, 1, 1);
-    FillColor = #006EFF;
-    TextColor = #3C3C3C;
-    TextColorFilled = white;
-    TextureBackground = None;
-    TextureFill = None;
-}
-
-Renderer.5 {
-    BackgroundColor = white;
-    BorderColor = black;
-    TextureBackground = None;
-}
-
 Renderer.6 {
     Texture = "../textures/modules/NONE.png" Smooth;
     TransparentTexture = false;
@@ -55,7 +55,7 @@ Renderer.6 {
 
 Group.Build {
     Position = (5%, 5%);
-    Renderer = &3;
+    Renderer = &4;
     Size = (60%, 40%);
 
     Picture.CurrentHull {
@@ -86,18 +86,18 @@ Group.Build {
 ScrollablePanel.Variants {
     ContentSize = (480, 0);
     Position = (5%, 45%);
-    Renderer = &5;
+    Renderer = &1;
     Size = (60%, 50%);
     Visible = false;
 }
 
 Group.MultiplayerSettings {
     Position = (65%, 5%);
-    Renderer = &3;
+    Renderer = &4;
     Size = (30%, 40%);
 
     Label.Label1 {
-        Renderer = &2;
+        Renderer = &3;
         Size = (30%, 18);
         Text = "Server IP:";
         TextSize = 13;
@@ -106,7 +106,7 @@ Group.MultiplayerSettings {
 
     Label.Label2 {
         Position = (0, 25);
-        Renderer = &2;
+        Renderer = &3;
         Size = (30%, 18);
         Text = "Name:";
         TextSize = 13;
@@ -115,7 +115,7 @@ Group.MultiplayerSettings {
 
     EditBox.ServerIP {
         Position = (30%, 0);
-        Renderer = &1;
+        Renderer = &5;
         Size = (70%, 22);
         Text = localhost;
         TextSize = 13;
@@ -123,7 +123,7 @@ Group.MultiplayerSettings {
 
     EditBox.Name {
         Position = (30%, 25);
-        Renderer = &1;
+        Renderer = &5;
         Size = (70%, 22);
         Text = Name;
         TextSize = 13;
@@ -162,12 +162,12 @@ Group.MultiplayerSettings {
 
 Group.InfoGroup {
     Position = (65%, 45%);
-    Renderer = &3;
+    Renderer = &4;
     Size = (30%, 50%);
 
     ScrollablePanel.ModuleInfo {
         ContentSize = (0, 1000);
-        Renderer = &5;
+        Renderer = &1;
         Size = (100%, 100%);
         Visible = false;
 
@@ -184,7 +184,7 @@ Group.InfoGroup {
         Label.ModuleName {
             HorizontalAlignment = Center;
             Position = (96 + 5%, 30);
-            Renderer = &2;
+            Renderer = &3;
             Size = (90% - 96, 18);
             Text = None;
             TextSize = 13;
@@ -192,21 +192,21 @@ Group.InfoGroup {
 
         Group.RechargeTimeGroup {
             Position = (0, 96 + 7%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Recharge time" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label19 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Recharge time";
                 TextSize = 13;
@@ -215,21 +215,21 @@ Group.InfoGroup {
 
         Group.StaminaCostGroup {
             Position = (0, 116 + 8%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Stamina cost" {
                 Maximum = 30;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 7;
             }
 
             Label.Label20 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Stamina cost";
                 TextSize = 13;
@@ -238,21 +238,21 @@ Group.InfoGroup {
 
         Group.EnergyCostGroup {
             Position = (0, 136 + 9%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Energy cost" {
                 Maximum = 55;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 35;
             }
 
             Label.Label21 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Energy cost";
                 TextSize = 13;
@@ -262,7 +262,7 @@ Group.InfoGroup {
 
     ScrollablePanel.GunInfo {
         ContentSize = (0, 1000);
-        Renderer = &5;
+        Renderer = &1;
         Size = (100%, 100%);
         Visible = false;
 
@@ -279,7 +279,7 @@ Group.InfoGroup {
         Label.GunName {
             HorizontalAlignment = Center;
             Position = (96 + 5%, 30);
-            Renderer = &2;
+            Renderer = &3;
             Size = (90% - 96, 18);
             Text = Light;
             TextSize = 13;
@@ -287,21 +287,21 @@ Group.InfoGroup {
 
         Group.DamageGroup {
             Position = (0, 96 + 7%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.Damage {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label11 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = Damage;
                 TextSize = 13;
@@ -310,21 +310,21 @@ Group.InfoGroup {
 
         Group.RechargeGroup {
             Position = (0, 116 + 8%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.Recharge {
                 Maximum = 30;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 7;
             }
 
             Label.Label12 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = Recharge;
                 TextSize = 13;
@@ -333,21 +333,21 @@ Group.InfoGroup {
 
         Group.StaminaConsumptionGroup {
             Position = (0, 136 + 9%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Stamina consumption" {
                 Maximum = 55;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 35;
             }
 
             Label.Label13 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Stamina consumption";
                 TextSize = 13;
@@ -356,21 +356,21 @@ Group.InfoGroup {
 
         Group.ProjectileMassGroup {
             Position = (0, 156 + 10%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Projectile mass" {
                 Maximum = 130;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 80;
             }
 
             Label.Label14 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Projectile mass";
                 TextSize = 13;
@@ -379,21 +379,21 @@ Group.InfoGroup {
 
         Group.ProjectileRadiusGroup {
             Position = (0, 176 + 11%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Projectile radius" {
                 Maximum = 70;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 70;
             }
 
             Label.Label15 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Projectile radius";
                 TextSize = 13;
@@ -402,21 +402,21 @@ Group.InfoGroup {
 
         Group.ProjectileVelGroup {
             Position = (0, 196 + 12%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Projectile vel" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label16 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Projectile vel";
                 TextSize = 13;
@@ -425,21 +425,21 @@ Group.InfoGroup {
 
         Group.ProjectileHPGroup {
             Position = (0, 216 + 13%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Projectile hp" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label17 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Projectile HP";
                 TextSize = 13;
@@ -448,21 +448,21 @@ Group.InfoGroup {
 
         Group.EnergyConsumptionGroup {
             Position = (0, 236 + 14%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Energy consumption" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label10 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Energy consumption";
                 TextSize = 13;
@@ -472,7 +472,7 @@ Group.InfoGroup {
 
     ScrollablePanel.HullInfo {
         ContentSize = (0, 1000);
-        Renderer = &5;
+        Renderer = &1;
         Size = (100%, 100%);
         Visible = false;
 
@@ -489,7 +489,7 @@ Group.InfoGroup {
         Label.HullName {
             HorizontalAlignment = Center;
             Position = (96 + 5%, 30);
-            Renderer = &2;
+            Renderer = &3;
             Size = (90% - 96, 18);
             Text = Light;
             TextSize = 13;
@@ -497,21 +497,21 @@ Group.InfoGroup {
 
         Group.HPGroup {
             Position = (0, 96 + 7%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.HP {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label3 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = HP;
                 TextSize = 13;
@@ -520,21 +520,21 @@ Group.InfoGroup {
 
         Group.MassGroup {
             Position = (0, 116 + 8%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.Mass {
                 Maximum = 30;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 7;
             }
 
             Label.Label4 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = Mass;
                 TextSize = 13;
@@ -543,21 +543,21 @@ Group.InfoGroup {
 
         Group.RadiusGroup {
             Position = (0, 136 + 9%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.Radius {
                 Maximum = 55;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 35;
             }
 
             Label.Label5 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = Radius;
                 TextSize = 13;
@@ -566,21 +566,21 @@ Group.InfoGroup {
 
         Group.StaminaGroup {
             Position = (0, 156 + 10%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar.Stamina {
                 Maximum = 130;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 80;
             }
 
             Label.Label6 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = Stamina;
                 TextSize = 13;
@@ -589,21 +589,21 @@ Group.InfoGroup {
 
         Group.StaminaRecoveryGroup {
             Position = (0, 176 + 11%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Stamina recovery" {
                 Maximum = 70;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 70;
             }
 
             Label.Label7 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Stamina recovery";
                 TextSize = 13;
@@ -612,21 +612,21 @@ Group.InfoGroup {
 
         Group.AngularForce {
             Position = (0, 196 + 12%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Angular force" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label8 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Angular force";
                 TextSize = 13;
@@ -635,21 +635,21 @@ Group.InfoGroup {
 
         Group.LinearForceGroup {
             Position = (0, 216 + 13%);
-            Renderer = &3;
+            Renderer = &4;
             Size = (100%, 20);
 
             ProgressBar."Linear force" {
                 Maximum = 150;
                 Minimum = 0;
                 Position = (20%, 0);
-                Renderer = &4;
+                Renderer = &2;
                 Size = (75%, 20);
                 TextSize = 13;
                 Value = 60;
             }
 
             Label.Label9 {
-                Renderer = &2;
+                Renderer = &3;
                 Size = (17%, 18);
                 Text = "Linear force";
                 TextSize = 13;
