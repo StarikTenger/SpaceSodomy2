@@ -1,4 +1,80 @@
+#include "ClientConfigCreator.h"
 
+void ClientConfigCreator::run() {
+	// client_config.conf
+	{write_config("client_config.conf", R"(
+localhost 8001 0 Name
+		)"); }
+	// keys.conf
+	{write_config("keys.conf", R"(
+ENGINE_LIN_FORWARD W Up END
+ENGINE_LIN_BACKWARD S Down END
+ENGINE_LIN_LEFT Left END
+ENGINE_LIN_RIGHT Right END
+ENGINE_ANG_LEFT A END
+ENGINE_ANG_RIGHT D END
+SHOOT Space END
+STABILIZE_ROTATION LControl END
+STABILIZE_ROTATION_AUTO LAlt END
+BOOST LShift END
+ZOOM_IN X END
+ZOOM_OUT Z END
+RESPAWN R END
+BONUS_ACTIVATION F END
+LEFT_MODULE Q END
+RIGHT_MODULE E END
+MENU Tab END
+FULLSCREEN F11 END
+REPLAY_SPEED_UP W Up END
+REPLAY_SPEED_DOWN S Down END
+NEXT_PLAYER D Right END
+PREVIOUS_PLAYER A Left END
+REPLAY_PLAY Space END
+		)"); }
+	// sound_settings.conf
+	{write_config("sound_settings.conf", R"(
+100
+32
+		)"); }
+	// fonts.conf
+	{write_config("fonts.conf", R"(
+TEMPLATE [ font arial neon square ]
+{ * fonts/*.ttf }
+		)"); }
+	// setup.conf
+	{write_config("setup.conf", R"(
+GUN default
+HULL default
+LEFT_MODULE FORCE
+RIGHT_MODULE DASH
+		)"); }
+	// sounds.conf
+	{write_config("sounds.conf", R"(
+TEMPLATE [ explosion fire hit  
+    death laser impulse blink  ]
+{ * sounds/*.wav }
+
+shot sounds/launch.wav
+damage sounds/damage.wav
+bonus_pickup sounds/bonus_pickup.wav
+engineOn sounds/engine.wav
+engineOff sounds/engineOff.wav
+engine sounds/jet-engine.wav
+projectile_hit sounds/projectile_hit.wav
+
+# Modules
+force sounds/splash.wav
+shotgun sounds/shotgun.wav
+rocket sounds/rocket.wav
+dash sounds/dash.wav
+		)"); }
+	// musics.conf
+	{write_config("musics.conf", R"(
+TEMPLATE [ 00 04 05 06 07 08 09 10 ]
+{ ss* soundtrack/ss*.ogg }
+		)"); }
+	// textures.conf
+	{write_config("textures.conf", R"(
 # particles
 circle16 textures/particles/circle16.png
 circle32 textures/particles/circle32.png
@@ -91,4 +167,5 @@ CheckBoxActive textures/menu/check_box_active.png
 
 TEMPLATE [ default cascade snipe heavy ]
 { *-gun textures/guns/*.png }
-		
+		)"); }
+}
