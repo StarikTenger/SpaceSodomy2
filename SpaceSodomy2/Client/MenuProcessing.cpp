@@ -493,7 +493,8 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
 			launch_replay(gui, name, _replay);
 			});
-			gui.get<tgui::Group>("replay.txt")->add(choose_file);
+		choose_file->setPath(choose_file->getPath().asString() + "/replays");
+		gui.get<tgui::Group>("replay.txt")->add(choose_file);
 	});
 	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
 	spin_control->onValueChange([=](float val) {
