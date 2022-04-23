@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClientConfigCreator.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="HUDProcessing.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Replay.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClientConfigCreator.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="HUDProcessing.h" />
