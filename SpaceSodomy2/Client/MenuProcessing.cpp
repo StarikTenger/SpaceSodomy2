@@ -411,7 +411,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		for (auto param : gun_maxes) {
 			auto bar = gun->get<tgui::ProgressBar>(param.first);
 			bar->setMaximum(param.second);
-			bar->setText(bar->getValue() + "/" + bar->getMaximum());
+			bar->setText(std::to_string(bar->getValue()) + "/" + std::to_string(bar->getMaximum()));
 		}
 	}
 
@@ -419,7 +419,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		for (auto param : hull_maxes) {
 			auto bar = hull->get<tgui::ProgressBar>(param.first);
 			bar->setMaximum(param.second);
-			bar->setText(bar->getValue() + "/" + bar->getMaximum());
+			bar->setText(std::to_string(bar->getValue()) + "/" + std::to_string(bar->getMaximum()));
 		}
 	}
 
@@ -427,7 +427,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		for (auto param : module_maxes) {
 			auto bar = module->get<tgui::ProgressBar>(param.first);
 			bar->setMaximum(param.second);
-			bar->setText(bar->getValue() + "/" + bar->getMaximum());
+			bar->setText(std::to_string(bar->getValue()) + "/" + std::to_string(bar->getMaximum()));
 		}
 	}
 }
