@@ -24,12 +24,18 @@
     <ClInclude Include="AuxLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigCreator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AuxLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigCreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
