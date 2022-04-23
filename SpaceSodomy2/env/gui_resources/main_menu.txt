@@ -27,13 +27,13 @@ Group.Group1 {
             TextColorDisabled = #448ACC;
             TextColorDown = None;
             TextColorHover = None;
-            Texture = "../textures/menu/Buttontopdis.png" NoSmooth;
+            Texture = "../textures/menu/ButtonTop.png" Smooth;
             TextureDisabled = None;
             TextureDown = None;
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttontop.png" NoSmooth;
+            TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
         }
     }
 
@@ -58,13 +58,13 @@ Group.Group1 {
             TextColorDisabled = #448ACC;
             TextColorDown = None;
             TextColorHover = None;
-            Texture = "../textures/menu/Buttonmiddis.png" NoSmooth;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
             TextureDisabled = None;
             TextureDown = None;
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttonmid.png" NoSmooth;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
         }
     }
 
@@ -89,13 +89,13 @@ Group.Group1 {
             TextColorDisabled = #448ACC;
             TextColorDown = None;
             TextColorHover = None;
-            Texture = "../textures/menu/Buttonmiddis.png" NoSmooth;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
             TextureDisabled = None;
             TextureDown = None;
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttonmid.png" NoSmooth;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
         }
     }
 
@@ -120,13 +120,13 @@ Group.Group1 {
             TextColorDisabled = #448ACC;
             TextColorDown = None;
             TextColorHover = None;
-            Texture = "../textures/menu/Buttontopdis.png" NoSmooth;
+            Texture = "../textures/menu/ButtonTop.png" Smooth;
             TextureDisabled = None;
             TextureDown = None;
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttonexit.png" NoSmooth;
+            TextureHover = "../textures/menu/ButtonExit.png" Smooth;
         }
     }
 
@@ -151,13 +151,13 @@ Group.Group1 {
             TextColorDisabled = #448ACC;
             TextColorDown = None;
             TextColorHover = None;
-            Texture = "../textures/menu/Buttonmiddis.png" NoSmooth;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
             TextureDisabled = None;
             TextureDown = None;
             TextureDownFocused = None;
             TextureDownHover = None;
             TextureFocused = None;
-            TextureHover = "../textures/menu/Buttonmid.png" NoSmooth;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
         }
     }
 }
