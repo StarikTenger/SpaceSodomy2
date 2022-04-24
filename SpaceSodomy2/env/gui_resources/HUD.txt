@@ -1,4 +1,7 @@
 Renderer.1 {
+}
+
+Renderer.2 {
     BackgroundColor = transparent;
     BorderColor = #3C3C3C;
     Borders = (0, 0, 0, 0);
@@ -6,9 +9,6 @@ Renderer.1 {
     TextOutlineColor = black;
     TextOutlineThickness = 1;
     TextureBackground = None;
-}
-
-Renderer.2 {
 }
 
 Renderer.3 {
@@ -28,7 +28,7 @@ Renderer.4 {
 
 Group.InterfaceGroup {
     Position = (50% - 330, 100% - 80);
-    Renderer = &2;
+    Renderer = &1;
     Size = (660, 80);
 
     Picture.Bonus {
@@ -207,7 +207,8 @@ Group.InterfaceGroup {
     Label.HPBarVal {
         HorizontalAlignment = Center;
         Position = (40%, 18%);
-        Renderer = &1;
+        Renderer = &2;
+        ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
         TextSize = 13;
@@ -216,7 +217,8 @@ Group.InterfaceGroup {
     Label.StaminaBarVal {
         HorizontalAlignment = Center;
         Position = (40%, 42%);
-        Renderer = &1;
+        Renderer = &2;
+        ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
         TextSize = 13;
@@ -224,8 +226,9 @@ Group.InterfaceGroup {
 
     Label.EnergyBarVal {
         HorizontalAlignment = Center;
-        Position = (40%, 66%);
-        Renderer = &1;
+        Position = (40%, 64%);
+        Renderer = &2;
+        ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
         TextSize = 13;
@@ -254,7 +257,7 @@ Label.RespawnInfo {
 }
 
 Group.NetworkInfo {
-    Renderer = &2;
+    Renderer = &1;
     Size = (300, 40);
 
     Label.Label1 {
@@ -295,6 +298,6 @@ Group.NetworkInfo {
 
 Group.RatingTable {
     Position = (80%, 0);
-    Renderer = &2;
+    Renderer = &1;
     Size = (20%, 30%);
 }
