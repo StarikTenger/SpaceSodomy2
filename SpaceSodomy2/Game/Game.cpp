@@ -1397,7 +1397,7 @@ bool Game::load_bots(std::string path) {
 		};
 
 		if (symbol == "BOT") {
-			Player_Def def(aux::random_int(1, 100000000), Player_Def::EDGAR_BOT, "warning: bot name not set");
+			PlayerDef def(aux::random_int(1, 100000000), Player::Type::EDGAR_BOT, "warning: bot name not set");
 
 			while (input >> symbol) {
 				if (symbol == "END")
@@ -1420,7 +1420,7 @@ bool Game::load_bots(std::string path) {
 					std::string temp;
 					input >> temp;
 					if (temp == "EDGAR_BOT") {
-						def.type = Player_Def::EDGAR_BOT;
+						def.type = Player::Type::EDGAR_BOT;
 					}
 					else {
 						std::cout << "Game::load_bots error: unknown bot type\n";
@@ -1614,23 +1614,25 @@ void Game::new_edgar_bot(int id, sf::Color color, std::string name, std::string 
 	player->set_brain(brain);
 }
 
-void Game::new_player(Player_Def def) {
+bool Game::new_player(PlayerDef def) {
 	if (id_list.count(def.id)) {
 		std::cout << "Game::new_player error: id collision with player.name = " << def.name << "\n";
-		return;
+		return false;
 	}
 	id_list.insert(def.id);
 
 	switch (def.type) {
-	case (Player_Def::NETWORK_PLAYER) :
+	case (Player::Type::NETWORK_PLAYER) :
 		new_network_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
 		break;
-	case (Player_Def::EDGAR_BOT) :
+	case (Player::Type::EDGAR_BOT) :
 		new_edgar_bot(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
 		break;
      default:
 		 std::cout << "Game::new_player error: unknown Player::Type with player.name = " << def.name << "\n";
+		 return false;
 	}
+	return true;
 }
 
 

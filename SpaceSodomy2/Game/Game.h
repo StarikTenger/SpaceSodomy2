@@ -171,11 +171,13 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
+protected:
 	void new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 	void new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
-	void new_player(Player_Def);
+public:
+	bool new_player(PlayerDef);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player

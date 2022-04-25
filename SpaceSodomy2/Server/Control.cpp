@@ -80,9 +80,17 @@ void Control::receive() {
 		id_by_IP[IP_address_] = id_;
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
-		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_network_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
+
+
+		PlayerDef def(id_, Player::Type::NETWORK_PLAYER, name_);
+		def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+		def.gun_name = gun_name;
+		def.hull_name = hull_name;
+		def.left_module_name = left_module;
+		def.right_module_name = right_module;
+		game.new_player(def);
 	}
+
 	// Applying commands
 	if (token_by_id[id_] == token) {
 		IP_by_id[id_] = IP_address_;

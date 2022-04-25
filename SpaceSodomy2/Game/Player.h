@@ -22,6 +22,12 @@ private:
 	ShipBrain* brain = nullptr; // Player must clean it up
 	int ping = 0;
 public:
+	enum Type {
+		NETWORK_PLAYER,
+		EDGAR_BOT,
+		COUNT
+	};
+
 	Player();
 	Player(int id_, sf::Color color_, std::string name_);
 
@@ -57,20 +63,15 @@ public:
 	void add_kill();
 };
 
-struct Player_Def {
-	enum Type {
-		NETWORK_PLAYER,
-		EDGAR_BOT,
-		COUNT
-	};
+struct PlayerDef {
 	int id;
-	Type type;
+	Player::Type type;
 	std::string name;
-	sf::Color color = sf::Color::Cyan;
+	sf::Color color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
 
-	Player_Def(int _id, Type _type, std::string _name) : id(_id), type(_type), name(_name) {};
+	PlayerDef(int _id, Player::Type _type, std::string _name) : id(_id), type(_type), name(_name) {};
 };
