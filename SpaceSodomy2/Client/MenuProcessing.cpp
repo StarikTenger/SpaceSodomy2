@@ -509,31 +509,45 @@ void MenuProcessing::open_replay_menu(){
 	});
 }
 
+// Draws green selction box around settings buttons
+void MenuProcessing::reset_settings_textures() {
+	auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
+	auto controls_panel = _gui->get<tgui::Group>("ControlsPanel");
+	auto audio_panel = _gui->get<tgui::Group>("AudioPanel");
+	auto hud_panel = _gui->get<tgui::Group>("HUDPanel");
+
+	auto audio_button = _gui->get<tgui::ButtonBase>("Audio");
+	auto controls_button = _gui->get<tgui::ButtonBase>("Controls");
+	auto hud_button = _gui->get<tgui::ButtonBase>("HUD");
+
+	// Setting default texture
+	audio_button->getRenderer()->setTexture("../textures/menu/Buttontop.png");
+	controls_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
+	hud_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
+
+	// Choosing the right one
+	for (auto widget : settings_panel->getWidgets()) {
+		if (widget->isVisible()) {
+			if (widget == audio_panel) {
+				audio_button->getRenderer()->setTexture("../textures/menu/ButtonTopFocused.png");
+			}
+			else if (widget == controls_panel) {
+				controls_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+			}
+			else if (widget == hud_panel) {
+				hud_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+			}
+		}
+	}
+}
+
 void MenuProcessing::open_settings_menu() {
 	// Open settings menu
 	tgui::Button::Ptr settings = _gui->get<tgui::Button>("Settings");
+
 	settings->onClick([=] {
 		close_groups();
-		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
-		auto controls_panel = _gui->get<tgui::Group>("ControlsPanel");
-		auto audio_panel = _gui->get<tgui::Group>("AudioPanel");
-		auto hud_panel = _gui->get<tgui::Group>("HUDPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			if (widget->isVisible()) {
-				if (widget == audio_panel) {
-					auto audio_button = _gui->get<tgui::ButtonBase>("Audio");
-					audio_button->setFocused(true);
-				}
-				else if (widget == controls_panel) {
-					auto controls_button = _gui->get<tgui::ButtonBase>("Controls");
-					controls_button->setFocused(true);
-				}
-				else if (widget == hud_panel) {
-					auto hud_button = _gui->get<tgui::ButtonBase>("HUD");
-					hud_button->setFocused(true);
-				}
-			}
-		}
+		reset_settings_textures();
 		_gui->get<tgui::Group>("settings.txt")->setVisible(true);
 	});
 
@@ -543,6 +557,7 @@ void MenuProcessing::open_settings_menu() {
 		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
 		close_widgets(settings_panel);
 		_gui->get<tgui::Group>("ControlsPanel")->setVisible(true);
+		reset_settings_textures();
 	});
 
 	// Open audio in settings menu
@@ -551,6 +566,7 @@ void MenuProcessing::open_settings_menu() {
 		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
 		close_widgets(settings_panel);
 		_gui->get<tgui::Group>("AudioPanel")->setVisible(true);
+		reset_settings_textures();
 	});
 
 	// Open hud in settings menu
@@ -559,6 +575,7 @@ void MenuProcessing::open_settings_menu() {
 		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
 		close_widgets(settings_panel);
 		_gui->get<tgui::Group>("HUDPanel")->setVisible(true);
+		reset_settings_textures();
 	});
 
 	// Back-button in settings menu

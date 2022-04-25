@@ -29,6 +29,7 @@ private:
 	void close_widgets(tgui::Container::Ptr container);
 	void close_groups();
 	void open_replay_menu();
+	void reset_settings_textures();
 	void open_settings_menu();
 	void open_multiplayer_menu();
 	void open_exit_menu();
