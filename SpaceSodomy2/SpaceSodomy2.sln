@@ -45,11 +45,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{D5AA8D3F-8E3
 		env\fonts.conf = env\fonts.conf
 		env\HUD.conf = env\HUD.conf
 		env\keys.conf = env\keys.conf
-		env\musics.conf = env\musics.conf
 		env\parameters.conf = env\parameters.conf
 		env\setup.conf = env\setup.conf
 		env\sound_settings.conf = env\sound_settings.conf
 		env\sounds.conf = env\sounds.conf
+		env\soundtrack.conf = env\soundtrack.conf
 		env\textures.conf = env\textures.conf
 	EndProjectSection
 EndProject

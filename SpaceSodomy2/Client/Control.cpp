@@ -198,7 +198,7 @@ Control::Control() {
 	loading.step(50, "Loading sounds...");
 	audio.load_sounds();
 	loading.step(75, "Loading tracks...");
-	audio.load_musics();
+	audio.load_soundtrack();
 	game.set_draw(&draw);
 	game.set_gui(&gui);
 	game.set_audio(&audio);

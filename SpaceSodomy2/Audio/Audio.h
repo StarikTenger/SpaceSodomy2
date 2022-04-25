@@ -12,10 +12,10 @@
 class Audio {
 private:
 	std::map<std::string, sf::Sound*> sounds;
-	std::map<std::string, sf::Music*> musics;
+	std::map<std::string, sf::Music*> soundtrack;
 	std::map<int, sf::Sound*> activeSounds;
 	std::map<int, double> activeSounds_mode;
-	std::map<std::string, double> musics_mode;
+	std::map<std::string, double> soundtrack_mode;
 	std::priority_queue<std::pair<int, int>> sound_timeouts;
 	void load_sound(std::string name, std::string path_to_sound);
 	void load_music(std::string name, std::string path_to_music);
@@ -34,7 +34,7 @@ public:
 	double get_music_volume();
 
 	void load_sounds(std::string path = "sounds.conf");
-	void load_musics(std::string path = "musics.conf");
+	void load_soundtrack(std::string path = "soundtrack.conf");
 
 	void play(int id, std::string name, b2Vec2 pos, double z, double volume, bool looped);
 	void play(int id, std::string name, b2Vec2 pos, double volume, bool looped);

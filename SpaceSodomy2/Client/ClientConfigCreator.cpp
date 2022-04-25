@@ -68,8 +68,8 @@ shotgun sounds/shotgun.wav
 rocket sounds/rocket.wav
 dash sounds/dash.wav
 		)"); }
-	// musics.conf
-	{write_config("musics.conf", R"(
+	// soundtrack.conf
+	{write_config("soundtrack.conf", R"(
 TEMPLATE [ 00 04 05 06 07 08 09 10 ]
 { ss* soundtrack/ss*.ogg }
 		)"); }

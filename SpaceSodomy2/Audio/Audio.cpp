@@ -21,7 +21,7 @@ void Audio::load_music(std::string name, std::string path_to_music) {
 		std::cout << "Can't load soundtrack " << name << "\n";
 		return; // error
 	}
-	musics[name] = music;
+	soundtrack[name] = music;
 }
 
 void Audio::set_draw(Draw* draw_) {
@@ -34,8 +34,8 @@ void Audio::set_sound_volume(double volume) {
 }
 void Audio::set_music_volume(double volume) {
 	music_volume = volume;
-	for (auto music : musics)
-		musics[music.first]->setVolume(musics_mode[music.first] * volume);
+	for (auto music : soundtrack)
+		soundtrack[music.first]->setVolume(soundtrack_mode[music.first] * volume);
 }
 
 
@@ -62,7 +62,7 @@ void Audio::load_sounds(std::string path) {
 	std::cout << "Finish loading\n";
 }
 
-void Audio::load_musics(std::string path) {
+void Audio::load_soundtrack(std::string path) {
 	std::cout << "Musics start loading\n";
 	std::ifstream file(path);
 	std::stringstream loadedFile = aux::comment(file);
@@ -121,26 +121,26 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume_mod
 }
 
 void Audio::update_music(std::string name, double volume_mode) {
-	musics[name] = musics[name];
-	musics[name]->setLoop(1);
-	musics_mode[name] = volume_mode;
-	musics[name]->setVolume(music_volume * volume_mode);
+	soundtrack[name] = soundtrack[name];
+	soundtrack[name]->setLoop(1);
+	soundtrack_mode[name] = volume_mode;
+	soundtrack[name]->setVolume(music_volume * volume_mode);
 }
 
 void Audio::start_music(std::string name) {
-	musics[name]->play();
+	soundtrack[name]->play();
 }
 void Audio::stop_music(std::string name) {
-	musics[name]->stop();
+	soundtrack[name]->stop();
 }
 
 std::string Audio::get_music_by_number(int val) {
-	if (musics.size() == 0) {
+	if (soundtrack.size() == 0) {
 		std::cout << "no music found\n";
 		return "";
 	}
-	val %= musics.size();
-	auto it = musics.begin();
+	val %= soundtrack.size();
+	auto it = soundtrack.begin();
 	for (int i = 0; i < val; i++) {
 		it++;
 	}
