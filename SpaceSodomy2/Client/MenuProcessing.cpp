@@ -29,7 +29,7 @@ void MenuProcessing::save_keys(std::string path,
 }
 
 // init controls page in settings 
-void MenuProcessing::load_keys(std::string path, 
+void MenuProcessing::load_keys(std::string path,
 	std::vector<std::vector<std::string*>>* keys) {
 
 	int k = 0;
@@ -49,8 +49,8 @@ void MenuProcessing::load_keys(std::string path,
 				//name of the action
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
-				auto ren = label->getRenderer();
-				ren->setTextColor("#448ACC");
+				auto label_ren = label->getRenderer();
+				label_ren->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
 					tgui::Layout("50%"),   //size of action name
 					tgui::Layout("7%")
@@ -71,6 +71,13 @@ void MenuProcessing::load_keys(std::string path,
 
 			//keybinding box
 			auto keybinding = KeybindingBox::create();
+			auto keybinding_ren = keybinding->getRenderer();
+			keybinding_ren->setTexture("../textures/menu/ButtonMid.png");
+			keybinding_ren->setTextureHover("../textures/menu/ButtonMidHover.png");
+			keybinding_ren->setTextureFocused("../textures/menu/ButtonMidFocused.png");
+			keybinding_ren->setTextColor("#448ACC");
+			keybinding_ren->setCaretColor("None");
+			keybinding->setAlignment(tgui::EditBox::Alignment::Center);
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
 				tgui::Layout("20%"),   //size of keybinding window
