@@ -81,7 +81,7 @@ bool EdgarBrain::turn_to_angle(Ship* ship, float angle) {
 	}
 }
 
-void EdgarBrain::move_to_point(Ship* ship, b2Vec2 point) {
+void EdgarBrain::accelerate_towards_point(Ship* ship, b2Vec2 point) {
 	auto pos = ship->get_body()->GetPosition();
 	auto speed = ship->get_body()->GetLinearVelocity();
 	auto force_linear = ship->get_engine()->get_force_linear();
@@ -126,7 +126,7 @@ void EdgarBrain::attack(Ship* _ship, Ship* my_ship) {
 		&& b2Distance(_ship->get_body()->GetPosition(), my_ship->get_body()->GetPosition()) < 7.f) {
 		command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
 		command_module.set_command(CommandModule::BOOST, 1);
-		move_to_point(my_ship, _ship->get_body()->GetPosition());
+		accelerate_towards_point(my_ship, _ship->get_body()->GetPosition());
 		return;
 	}
 	if (my_ship->get_bonus_slot()->get_current_bonus() == Bonus::LASER
@@ -194,7 +194,7 @@ void EdgarBrain::safety_flight(Ship* ship) {
 			flight_point = intersect;
 		}
 	}
-	move_to_point(ship, flight_point);
+	accelerate_towards_point(ship, flight_point);
 }
 
 bool EdgarBrain::is_target_visible(Ship* my_ship, b2Body* target) {
@@ -245,7 +245,7 @@ bool EdgarBrain::get_bonuses(Ship* my_ship) {
 		auto body = bonus->get_body();
 		if (b2Distance(my_ship->get_body()->GetPosition(), bonus->get_body()->GetPosition()) < pickup_dist
 			&& is_target_reachable(my_ship, body)) {
-			move_to_point(my_ship, body->GetPosition());
+			accelerate_towards_point(my_ship, body->GetPosition());
 			return true;
 		}
 	}

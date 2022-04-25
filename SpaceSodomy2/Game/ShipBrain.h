@@ -23,7 +23,7 @@ class EdgarBrain : public ShipBrain {
 private:
     std::function<b2Vec2(b2Vec2, float)> calc_intersection;
 
-    void move_to_point(Ship* my_ship, b2Vec2 point);
+    void accelerate_towards_point(Ship* my_ship, b2Vec2 point);
     bool turn_to_angle(Ship* my_ship, float angle);
     void attack(Ship* target, Ship* my_ship );
     void shoot_laser(Ship* target, Ship* my_ship );
