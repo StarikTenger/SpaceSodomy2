@@ -20,6 +20,7 @@ public:
 	void set(float);
 	void set_max(float);
 	void set_delay(float);
+	void add_delay(float);
 	void restart_delay();
 	void set_change_vel(float);
 	void modify(float);

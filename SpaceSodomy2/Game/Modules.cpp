@@ -5,6 +5,7 @@ Module::Module(Module_Prototype* base) {
 	type = base->type;
 	stamina_cost = base->stamina_cost;
 	energy_cost = base->energy_cost;
+	stamina_delay = base->stamina_delay;
 	recharge_time = base->recharge_time;
 	effects_prototype = &base->effects_prototype;
 }

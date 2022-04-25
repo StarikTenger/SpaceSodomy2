@@ -93,7 +93,7 @@ protected:
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	CommandModule*  create_command_module();
-	Engine*          create_engine(b2Body* = nullptr, CommandModule* = nullptr, Counter* = nullptr, Effects* = nullptr);
+	Engine*          create_engine(b2Body* = nullptr, CommandModule* = nullptr, Counter* = nullptr, Effects* = nullptr, float stamina_delay_ = 0.7);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
 	DamageReceiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);

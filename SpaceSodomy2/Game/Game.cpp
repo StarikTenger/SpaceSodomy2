@@ -101,8 +101,8 @@ CommandModule* Game::create_command_module() {
 	return command_module;
 }
 
-Engine* Game::create_engine(b2Body* body, CommandModule* command_module, Counter* stamina, Effects* effs) {
-	auto engine = new Engine(body, command_module, stamina, effs);
+Engine* Game::create_engine(b2Body* body, CommandModule* command_module, Counter* stamina, Effects* effs, float stamina_delay_) {
+	auto engine = new Engine(body, command_module, stamina, effs, stamina_delay_);
 	engines.insert(engine);
 	id_manager.set_id(engine);
 	return engine;
@@ -165,7 +165,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Stamina
 	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
 	stamina->set_max(hull_prototype.stamina);
-	stamina->set_delay(hull_prototype.stamina_pause); 
+	stamina->set_delay(0); 
 	ship->set_stamina(stamina);
 
 	// Energy
@@ -174,7 +174,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_energy(energy);
 
 	// Engine
-	auto engine = create_engine(body, command_module, stamina, effs);
+	auto engine = create_engine(body, command_module, stamina, effs, hull_prototype.stamina_delay);
 	engine->set_force_angular(hull_prototype.force_angular);
 	engine->set_force_linear(hull_prototype.force_linear);
 	ship->set_engine(engine);
@@ -1299,6 +1299,13 @@ bool Game::load_parameters(std::string path) {
 					}
 					prototype.energy_cost = val;
 				}
+				else if (symbol == "STAMINA_DELAY") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read STAMINA_DELAY\n";
+					}
+					prototype.stamina_delay = val;
+				}
 				else {
 					float temp;
 					input >> temp;
@@ -1331,6 +1338,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_cost);
+				read_symbol("STAMINA_DELAY", guns[name].stamina_delay);
 				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
@@ -1361,7 +1369,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
 				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
 				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
-				read_symbol("STAMINA_PAUSE", hulls[name].stamina_pause);
+				read_symbol("STAMINA_DELAY", hulls[name].stamina_delay);
 				read_symbol("ENERGY", hulls[name].energy);
 				read_symbol("START_ENERGY", hulls[name].start_energy);
 				read_symbol("ENERGY_REGEN", hulls[name].energy_regen);

@@ -12,6 +12,7 @@ protected:
 	float recharge_time = 10;
 	float stamina_cost = 20;
 	float energy_cost = 0;
+	float stamina_delay = 0.7;
 	// Physical body
 	b2Body* body = nullptr;
 	// Related player
@@ -20,7 +21,7 @@ protected:
 	int bind = CommandModule::SHOOT;
 	// Time left
 	Counter* recharge_counter = nullptr;
-	Counter* stamina_cooldown_delay_counter = nullptr;
+	//Counter* stamina_cooldown_delay_counter = nullptr;  // WTF is this
 	// Event manager
 	EventManager* event_manager = nullptr;
 	// Stamina
@@ -41,7 +42,7 @@ public:
 	float get_recharge_time();
 	b2Body* get_body();
 	Counter* get_recharge_counter();
-	Counter* get_stamina_cooldown_delay_counter();
+	//Counter* get_stamina_cooldown_delay_counter();
 	EventManager* get_event_manager();
 	Counter* get_stamina();
 	Counter* get_energy();

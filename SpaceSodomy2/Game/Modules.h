@@ -60,6 +60,7 @@ struct Module_Prototype {
     float stamina_cost = 1000;
     float energy_cost = 1000;
     float recharge_time = 1000;
+    float stamina_delay = 1000;
     std::map<std::string, float> params;
     Module::Type type = Module::NONE;
 };
