@@ -2,7 +2,8 @@
 
 MenuProcessing::MenuProcessing() {}
 
-void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::string*>> keys) {
+void MenuProcessing::save_keys(std::string path, 
+	std::vector<std::vector<std::string*>> keys) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::vector<std::string> names;
@@ -27,12 +28,16 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	fout.close();
 }
 
-//controls page in settings 
-void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
+// init controls page in settings 
+void MenuProcessing::load_keys(std::string path,
+	std::vector<std::vector<std::string*>>* keys) {
+
 	int k = 0;
-	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
+	auto controls_panel = _gui->get<tgui::Panel>("ControlsPanel");
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
+
+	// read keybinds from config
 	for (int i = 0; !config.eof(); i++) {
 		if (keys->size() == i)
 			keys->push_back(std::vector<std::string*>());
@@ -40,12 +45,14 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			if (j == 0) {
+
+				//name of the action
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
-				auto ren = label->getRenderer();
-				ren->setTextColor("#448ACC");
+				auto label_ren = label->getRenderer();
+				label_ren->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
-					tgui::Layout("50%"),    //size of action name
+					tgui::Layout("50%"),   //size of action name
 					tgui::Layout("7%")
 				);
 				label->setSize(size);
@@ -54,13 +61,23 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 					tgui::Layout(std::to_string(7 * i)+"%")
 				);
 				label->setPosition(layout);
-				control_panel->add(label);
+				controls_panel->add(label);
 			}
+
 			if (j == keys->operator[](i).size()) 
 				keys->operator[](i).push_back(new std::string(cur));
 			else
 				*(keys->operator[](i)[j]) = cur;
+
+			//keybinding box
 			auto keybinding = KeybindingBox::create();
+			auto keybinding_ren = keybinding->getRenderer();
+			keybinding_ren->setTexture("../textures/menu/ButtonMid.png");
+			keybinding_ren->setTextureHover("../textures/menu/ButtonMidHover.png");
+			keybinding_ren->setTextureFocused("../textures/menu/ButtonMidFocused.png");
+			keybinding_ren->setTextColor("#448ACC");
+			keybinding_ren->setCaretColor("None");
+			keybinding->setAlignment(tgui::EditBox::Alignment::Center);
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
 				tgui::Layout("20%"),   //size of keybinding window
@@ -72,17 +89,19 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 				tgui::Layout(std::to_string(7 * i) + "%")
 			);
 			keybinding->setPosition(layout);
-			control_panel->add(keybinding);
+			controls_panel->add(keybinding);
 			std::string name = "keybinding" + std::to_string(k);
 			keybinding->setWidgetName(name);
 			keybinding->keys = keys;
 			keybinding->reload = reload;
 			k++;
-			keybinding->onKeyPressed([=, &gui]() {
-				auto key = gui.get<KeybindingBox>(name)->keys->operator[](i)[j];
-				auto new_key = gui.get<KeybindingBox>(name)->getText().toStdString();
+
+			//key rebind
+			keybinding->onKeyPressed([=]() {
+				auto key = _gui->get<KeybindingBox>(name)->keys->operator[](i)[j];
+				auto new_key = _gui->get<KeybindingBox>(name)->getText().toStdString();
 				*key = new_key;
-				auto _reload = gui.get<KeybindingBox>(name)->reload;
+				auto _reload = _gui->get<KeybindingBox>(name)->reload;
 				*_reload = true;
 			});
 			config >> cur;
@@ -90,28 +109,28 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 	}
 }
 
-void MenuProcessing::load_HUD_settings(std::string path, tgui::Gui &gui) {
+void MenuProcessing::load_HUD_settings(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	double next;
 	config >> next;
 	game->set_aim_conf(next);
-	gui.get<tgui::Slider>("AimConfiguration")->setValue(next);
-	gui.get<tgui::Slider>("AimConfiguration")->onValueChange([=](int val) {
+	_gui->get<tgui::Slider>("AimConfiguration")->setValue(next);
+	_gui->get<tgui::Slider>("AimConfiguration")->onValueChange([=](int val) {
 		game->set_aim_conf(val);
 		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_aim_opacity(next);
-	gui.get<tgui::Slider>("AimOpacity")->setValue(next);
-	gui.get<tgui::Slider>("AimOpacity")->onValueChange([=](int val) {
+	_gui->get<tgui::Slider>("AimOpacity")->setValue(next);
+	_gui->get<tgui::Slider>("AimOpacity")->onValueChange([=](int val) {
 		game->set_aim_opacity(val);
 		save_HUD_settings("HUD_settings.conf");
 	});
 	config >> next;
 	game->set_network_information_active(next);
-	gui.get<tgui::CheckBox>("NetworkInformation")->setChecked(next);
-	gui.get<tgui::CheckBox>("NetworkInformation")->onChange([=](bool val) {
+	_gui->get<tgui::CheckBox>("NetworkInformation")->setChecked(next);
+	_gui->get<tgui::CheckBox>("NetworkInformation")->onChange([=](bool val) {
 		game->set_network_information_active(val);
 		save_HUD_settings("HUD_settings.conf");
 	});
@@ -124,11 +143,11 @@ void MenuProcessing::save_HUD_settings(std::string path) {
 	fout.close();
 }
 
-void MenuProcessing::load_sound(std::string path, tgui::Gui &gui) {
+void MenuProcessing::load_sound(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
-	auto music_slider = gui.get<tgui::Slider>("MusicSlider");
-	auto sound_slider = gui.get<tgui::Slider>("SoundSlider");
+	auto music_slider = _gui->get<tgui::Slider>("MusicSlider");
+	auto sound_slider = _gui->get<tgui::Slider>("SoundSlider");
 	double volume;
 	config >> volume;
 	game->get_audio()->set_sound_volume(volume);
@@ -153,42 +172,53 @@ void MenuProcessing::save_sound(std::string path) {
 	fout.close();
 }
 
-void MenuProcessing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+void MenuProcessing::save_config(std::string path, 
+	std::string address_, int port_, int id_, std::string name_) {
 	std::ofstream fout;
 	fout.open(path);
 	fout << address_ << " " << port_ << " " << id_ << " " << name_;
 	fout.close();
 }
-void MenuProcessing::load_config(std::string path, std::string* address_, std::string* port_,
-	std::string* id_, std::string* name_, tgui::Gui &gui) {
+
+void MenuProcessing::load_config(std::string path, std::string* address_, 
+	std::string* port_, std::string* id_, std::string* name_) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	config >> *(address_);
 	config >> *(port_);
 	config >> *(id_);
 	config >> *(name_);
-	gui.get<tgui::EditBox>("ServerIP")->setText(*address_);
-	gui.get<tgui::EditBox>("Name")->setText(*name_);
+	_gui->get<tgui::EditBox>("ServerIP")->setText(*address_);
+	_gui->get<tgui::EditBox>("Name")->setText(*name_);
 	if ((*id_) == "0") {
 		*id_ = std::to_string(aux::random_int(1, 100000));
 		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
 	}
 }
 
+void MenuProcessing::close_widgets(tgui::Container::Ptr container) {
+	auto widgets = container->getWidgets();
+	for (auto widget : widgets)
+		widget->setVisible(false);
+}
+
+void MenuProcessing::close_groups() {
+	auto widgets = _gui->getWidgets();
+	for (auto widget : widgets)
+		widget->setVisible(false);
+};
+
 void MenuProcessing::toggle_active() {
 	active = !active;
-	auto wid = _gui->getWidgets();
-	for (int i = 0; i < wid.size(); i++) {
-		wid[i]->setVisible(false);
-	}
+	close_groups();
 	_gui->get<tgui::Group>("HUD.txt")->setVisible(!active);
 	_gui->get<tgui::Group>("replay.txt")->setVisible(replay->get_replay_active() && active);
 	_gui->get<tgui::Group>("main_menu.txt")->setVisible(!replay->get_replay_active() && active);
 	text_field_active = active;
 }
 
-void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
-	auto conf = gui.get<tgui::Group>("configuration.txt");
+void MenuProcessing::init_multiplayer_menu(std::string file_name) {
+	auto conf = _gui->get<tgui::Group>("configuration.txt");
 
 	auto gun_info = conf->get<tgui::ScrollablePanel>("GunInfo");
 	auto hull_info = conf->get<tgui::ScrollablePanel>("HullInfo");
@@ -252,11 +282,9 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 		name[0] = std::toupper(name[0]);
 		return name;
 	};
-	auto close_info = [](tgui::Gui& gui) {
-		auto widgets = gui.get<tgui::Group>("InfoGroup")->getWidgets();
-		for (auto widget : widgets) {
-			widget->setVisible(0);
-		}
+	auto close_info = [this]() {
+		auto infogroup = _gui->get<tgui::Group>("InfoGroup");
+		close_widgets(infogroup);
 	};
 	while (!config.eof()) {
 		std::string name, next;
@@ -274,13 +302,13 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			auto pic = tgui::Picture::create();
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-gun"));
 			auto _game = game;
-			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+			pic->onClick([=] {
+				close_info();
 				new_gun->setVisible(1);
 
 				_game->set_gun_name(new_gun->get<tgui::Label>("GunName")->getText().toStdString());
 				auto texture = new_gun->get<tgui::Picture>("GunPreview")->getRenderer()->getTexture();
-				gui.get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
+				_gui->get<tgui::Picture>("CurrentGun")->getRenderer()->setTexture(texture);
 				game->save_setup("setup.conf");
 			});
 			gun_vars->add(pic);
@@ -306,7 +334,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			}
 
 			guns.insert(new_gun);
-			gui.get<tgui::Group>("InfoGroup")->add(new_gun);
+			_gui->get<tgui::Group>("InfoGroup")->add(new_gun);
 		}
 		if (next == "HULL") {
 			config >> name >> next;
@@ -321,13 +349,13 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			auto pic = tgui::Picture::create();
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-hull"));
 			auto _game = game;
-			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+			pic->onClick([=, &close_info] {
+				close_info();
 				new_hull->setVisible(1);
 
 				_game->set_hull_name(new_hull->get<tgui::Label>("HullName")->getText().toStdString());
 				auto texture = new_hull->get<tgui::Picture>("HullPreview")->getRenderer()->getTexture();
-				gui.get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(texture);
+				_gui->get<tgui::Picture>("CurrentHull")->getRenderer()->setTexture(texture);
 				game->save_setup("setup.conf");
 			});
 			hull_vars->add(pic);
@@ -353,7 +381,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			}
 
 			hulls.insert(new_hull);
-			gui.get<tgui::Group>("InfoGroup")->add(new_hull);
+			_gui->get<tgui::Group>("InfoGroup")->add(new_hull);
 		}
 		if (next == "MODULE") {
 			config >> name >> next;
@@ -368,19 +396,19 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			auto pic = tgui::Picture::create();
 			pic->getRenderer()->setTexture(*draw->get_texture(name + "-module"));
 			auto _game = game;
-			pic->onClick([=, &gui, &close_info] {
-				close_info(gui);
+			pic->onClick([=, &close_info] {
+				close_info();
 				new_module->setVisible(1);
 
 				if (module_num == 1) {
 					_game->set_left_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
-					gui.get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(texture);
+					_gui->get<tgui::Picture>("CurrentLeftModule")->getRenderer()->setTexture(texture);
 				}
 				else {
 					_game->set_right_module_name(new_module->get<tgui::Label>("ModuleName")->getText().toStdString());
 					auto texture = new_module->get<tgui::Picture>("ModulePreview")->getRenderer()->getTexture();
-					gui.get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
+					_gui->get<tgui::Picture>("CurrentRightModule")->getRenderer()->setTexture(texture);
 				}
 				game->save_setup("setup.conf");
 			});
@@ -407,7 +435,7 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 			}
 
 			modules.insert(new_module);
-			gui.get<tgui::Group>("InfoGroup")->add(new_module);
+			_gui->get<tgui::Group>("InfoGroup")->add(new_module);
 		}
 	}
 
@@ -436,30 +464,151 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 	}
 }
 
-void MenuProcessing::init_tgui(tgui::Gui& gui) {
-	auto load_widgets = [&gui](std::string file_name) {
+void MenuProcessing::open_replay_menu(){
+	auto launch_replay = [=](std::string name, Replay* replay) {
+		replay->set_replay_path("replays/" + name);
+		replay->set_replay_active(1);
+		_gui->get<tgui::Label>("ReplayName")->setText(name);
+		int max_time = replay->get_replay_frame()->get_max();
+		std::cout << max_time << " jodfshiedu\n";
+		_gui->get<tgui::Label>("MaxTime")->setText(std::to_string(max_time / 3600) + ":" +
+			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
+		_gui->get<tgui::Slider>("ReplaySlider")->setMaximum(replay->get_frame_number());
+	};
+
+	// Open replay menu
+	tgui::Button::Ptr replayButton = _gui->get<tgui::Button>("Replay");
+	replayButton->onClick([=] {
+		close_groups();
+		launch_replay("example.ex", replay);
+		_gui->get<tgui::Group>("replay.txt")->setVisible(true);
+	});
+
+	// Initializing replay menu
+	auto select_replay_button = _gui->get<tgui::Button>("SelectReplay");
+	select_replay_button->onClick([=, &launch_replay] {
+		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
+		auto _replay = replay;
+		choose_file->onFileSelect([=] {
+			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
+			launch_replay(name, _replay);
+			});
+		_gui->get<tgui::Group>("replay.txt")->add(choose_file);
+	});
+	auto spin_control = _gui->get<tgui::SpinControl>("SpinControl");
+	spin_control->onValueChange([=](float val) {
+		replay->set_speed(val);
+	});
+	auto replay_slider = _gui->get<tgui::Slider>("ReplaySlider");
+	replay_slider->onValueChange([=](int val) {
+		replay->set_frame(val);
+	});
+	auto replay_play_button = _gui->get<tgui::Button>("ReplayPlay");
+	replay_play_button->onPress([=] {
+		replay->play_button(*_gui);
+	});
+}
+
+void MenuProcessing::open_settings_menu() {
+	// Open settings menu
+	tgui::Button::Ptr settings = _gui->get<tgui::Button>("Settings");
+	settings->onClick([=] {
+		close_groups();
+		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
+		auto controls_panel = _gui->get<tgui::Group>("ControlsPanel");
+		auto audio_panel = _gui->get<tgui::Group>("AudioPanel");
+		auto hud_panel = _gui->get<tgui::Group>("HUDPanel");
+		for (auto widget : settings_panel->getWidgets()) {
+			if (widget->isVisible()) {
+				if (widget == audio_panel) {
+					auto audio_button = _gui->get<tgui::ButtonBase>("Audio");
+					audio_button->setFocused(true);
+				}
+				else if (widget == controls_panel) {
+					auto controls_button = _gui->get<tgui::ButtonBase>("Controls");
+					controls_button->setFocused(true);
+				}
+				else if (widget == hud_panel) {
+					auto hud_button = _gui->get<tgui::ButtonBase>("HUD");
+					hud_button->setFocused(true);
+				}
+			}
+		}
+		_gui->get<tgui::Group>("settings.txt")->setVisible(true);
+	});
+
+	// Open controls in settings menu
+	tgui::Button::Ptr controls = _gui->get<tgui::Button>("Controls");
+	controls->onClick([this] {
+		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("ControlsPanel")->setVisible(true);
+	});
+
+	// Open audio in settings menu
+	tgui::Button::Ptr audio = _gui->get<tgui::Button>("Audio");
+	audio->onClick([this] {
+		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("AudioPanel")->setVisible(true);
+	});
+
+	// Open hud in settings menu
+	tgui::Button::Ptr hud_button = _gui->get<tgui::Button>("HUD");
+	hud_button->onClick([this] {
+		auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("HUDPanel")->setVisible(true);
+	});
+
+	// Back-button in settings menu
+	tgui::Button::Ptr back = _gui->get<tgui::Button>("Back");
+	back->onClick([this] {
+		close_groups();
+		_gui->get<tgui::Group>("main_menu.txt")->setVisible(true);
+	});
+}
+
+void MenuProcessing::open_multiplayer_menu() {
+	// Open multiplayer menu
+	auto multiplayer = _gui->get<tgui::Button>("Multiplayer");
+	multiplayer->onClick([=] {
+		close_groups();
+		_gui->get<tgui::Group>("configuration.txt")->setVisible(true);
+	});
+
+
+	// Initializing multiplayer menu
+	init_multiplayer_menu("parameters.conf");
+	_gui->get<tgui::EditBox>("ServerIP")->onTextChange([=] {
+		network->set_server(_gui->get<tgui::EditBox>("ServerIP")->getText().toStdString());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+	});
+	_gui->get<tgui::EditBox>("Name")->onTextChange([=] {
+		network->set_name(_gui->get<tgui::EditBox>("Name")->getText().toStdString());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+	});
+	_gui->get<tgui::Button>("Play")->onClick([=] {
+		toggle_active();
+	});
+}
+
+void MenuProcessing::open_exit_menu(){
+	// exit
+	auto exit = _gui->get<tgui::Button>("Exit");
+	exit->onClick([=] {
+		draw->get_window()->close();
+	});
+}
+
+void MenuProcessing::init_tgui() {
+	auto load_widgets = [this](std::string file_name) {
 		auto ans = tgui::Group::create();
 		ans->loadWidgetsFromFile(file_name);
 		ans->setVisible(false);
-		gui.add(ans);
+		_gui->add(ans);
 		ans->setWidgetName(file_name);
 		return ans;
-	};
-	auto close_groups = [](tgui::Gui& gui) {
-		auto wid = gui.getWidgets();
-		for (int i = 0; i < wid.size(); i++) {
-			wid[i]->setVisible(false);
-		}
-	};
-	auto launch_replay = [=](tgui::Gui& gui, std::string name, Replay* replay) {
-		replay->set_replay_path("replays/" + name);
-		replay->set_replay_active(1);
-		gui.get<tgui::Label>("ReplayName")->setText(name);
-		int max_time = replay->get_replay_frame()->get_max();
-		std::cout << max_time << " jodfshiedu\n";
-		gui.get<tgui::Label>("MaxTime")->setText(std::to_string(max_time / 3600) + ":" +
-			std::to_string((max_time / 60) % 60) + ":" + std::to_string(max_time % 60));
-		gui.get<tgui::Slider>("ReplaySlider")->setMaximum(replay->get_frame_number());
 	};
 	auto main_menu = load_widgets("main_menu.txt");
 	main_menu->setVisible(true);
@@ -467,114 +616,10 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto settings_menu = load_widgets("settings.txt");
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
-	// Initializing main menu
-	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
-	replayButton->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
-		launch_replay(gui, "example.ex", replay);
-		gui.get<tgui::Group>("replay.txt")->setVisible(true);
-	});
-	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
-	settings->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		auto control_panel = gui.get<tgui::Group>("ControlPanel");
-		auto audio_panel = gui.get<tgui::Group>("AudioPanel");
-		auto gui_panel = gui.get<tgui::Group>("GUIPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			if (widget->isVisible()) {
-				if (widget == audio_panel) {
-					auto audio_button = gui.get<tgui::ButtonBase>("Audio");
-					audio_button->setFocused(true);
-				}
-				else if (widget == control_panel) {
-					auto control_button = gui.get<tgui::ButtonBase>("Control");
-					control_button->setFocused(true);
-				}
-				else if (widget == gui_panel) {
-					auto gui_button = gui.get<tgui::ButtonBase>("GUI");
-					gui_button->setFocused(true);
-				}
-			}
-		}
-		gui.get<tgui::Group>("settings.txt")->setVisible(true);
-	});
-	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
-	multiplayer->onClick([=, &gui, &close_groups] {
-		close_groups(gui);
-		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
-	});
-	auto exit = gui.get<tgui::Button>("Exit");
-	exit->onClick([=] {
-		draw->get_window()->close();
-	});
-	// Initializing replay menu
-	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
-	select_replay_button->onClick([=, &gui, &launch_replay] {
-		auto choose_file = tgui::FileDialog::create("Open replay", "Open");
-		auto _replay = replay;
-		choose_file->onFileSelect([=, &gui] {
-			auto name = choose_file->getSelectedPaths()[0].getFilename().toStdString();
-			launch_replay(gui, name, _replay);
-			});
-			gui.get<tgui::Group>("replay.txt")->add(choose_file);
-	});
-	auto spin_control = gui.get<tgui::SpinControl>("SpinControl");
-	spin_control->onValueChange([=](float val) {
-		replay->set_speed(val);
-	});
-	auto replay_slider = gui.get<tgui::Slider>("ReplaySlider");
-	replay_slider->onValueChange([=](int val) {
-		replay->set_frame(val);
-	});
-	auto replay_play_button = gui.get<tgui::Button>("ReplayPlay");
-	replay_play_button->onPress([=, &gui] {
-		replay->play_button(gui);
-	});
-	// Initializing control menu
-	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
-	control->onClick([&gui] {
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
-		gui.get<tgui::Group>("ControlPanel")->setVisible(true);
-	});
-	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
-	audio->onClick([&gui] {
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
-		gui.get<tgui::Group>("AudioPanel")->setVisible(true);
-	});
-	tgui::Button::Ptr gui_button = gui.get<tgui::Button>("GUI");
-	gui_button->onClick([&gui] {
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		for (auto widget : settings_panel->getWidgets()) {
-			widget->setVisible(false);
-		}
-		gui.get<tgui::Group>("GUIPanel")->setVisible(true);
-	});
-	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
-	back->onClick([&gui, &close_groups] {
-		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
-		close_groups(gui);
-		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
-	});
-	// Initializing multiplayer menu
-	init_multiplayer_menu("parameters.conf", gui);
-	gui.get<tgui::EditBox>("ServerIP")->onTextChange([=, &gui] {
-		network->set_server(gui.get<tgui::EditBox>("ServerIP")->getText().toStdString());
-		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
-	});
-	gui.get<tgui::EditBox>("Name")->onTextChange([=, &gui] {
-		network->set_name(gui.get<tgui::EditBox>("Name")->getText().toStdString());
-		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
-	});
-	gui.get<tgui::Button>("Play")->onClick([=] {
-		toggle_active();
-	});
+	open_replay_menu();
+	open_settings_menu();
+	open_multiplayer_menu();
+	open_exit_menu();
 }
 
 void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
@@ -589,15 +634,16 @@ void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	reload = reload_;
 	*reload = 1;
 	_gui = &gui;
-	init_tgui(gui);
-	load_sound("sound_settings.conf", gui);
-	load_HUD_settings("HUD_settings.conf", gui);
+	init_tgui();
+	load_sound("sound_settings.conf");
+	load_HUD_settings("HUD_settings.conf");
 	std::string ServerIP, Port, ID, Name;
-	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
-	load_keys("keys.conf", &keys_menu_vec, gui);
+	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name);
+	load_keys("keys.conf", &keys_menu_vec);
 }
 
-void MenuProcessing::group_formating(std::string groupname, float aspectratio, float textscale) {
+void MenuProcessing::group_formating(std::string groupname, 
+	float aspectratio, float textscale) {
 	//saves aspect ratio of the group and updates text size
 	auto group = _gui->get <tgui::Group>(groupname);
 	float windowHeight = group->getSize().y;
