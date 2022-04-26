@@ -40,6 +40,12 @@ REPLAY_PLAY Space END
 100
 32
 		)"); }
+	// HUD_settings.conf
+	{write_config("HUD_settings.conf", R"(
+1
+121
+1
+		)"); }
 	// fonts.conf
 	{write_config("fonts.conf", R"(
 TEMPLATE [ font arial neon square ]
