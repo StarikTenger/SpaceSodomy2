@@ -1,5 +1,4 @@
 #include "MenuProcessing.h"
-
 MenuProcessing::MenuProcessing() {}
 
 void MenuProcessing::save_keys(std::string path, 
@@ -33,8 +32,13 @@ void MenuProcessing::load_keys(std::string path,
 	std::vector<std::vector<std::string*>>* keys) {
 
 	int k = 0;
-	auto controls_panel = _gui->get<tgui::Panel>("ControlsPanel");
-	std::ifstream file_to_comment(path);
+	auto controls_panel = _gui->get<tgui::ScrollablePanel>("ControlsPanel");
+
+	// scrollbar
+	auto scrollbar = tgui::ScrollbarRenderer(controls_panel->getRenderer()->getScrollbar());
+	scrollbar.setTrackColor("None");
+		
+	std::ifstream file_to_comment(path);	
 	std::stringstream config = aux::comment(file_to_comment);
 
 	// read keybinds from config
@@ -49,8 +53,7 @@ void MenuProcessing::load_keys(std::string path,
 				//name of the action
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
-				auto label_ren = label->getRenderer();
-				label_ren->setTextColor("#448ACC");
+				label->getRenderer()->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
 					tgui::Layout("50%"),   //size of action name
 					tgui::Layout("7%")
@@ -71,13 +74,17 @@ void MenuProcessing::load_keys(std::string path,
 
 			//keybinding box
 			auto keybinding = KeybindingBox::create();
-			auto keybinding_ren = keybinding->getRenderer();
-			keybinding_ren->setTexture("../textures/menu/ButtonMid.png");
-			keybinding_ren->setTextureHover("../textures/menu/ButtonMidHover.png");
-			keybinding_ren->setTextureFocused("../textures/menu/ButtonMidFocused.png");
-			keybinding_ren->setTextColor("#448ACC");
-			keybinding_ren->setCaretColor("None");
+
+			//keybinding box visuals
+			keybinding->getRenderer()->setTexture("../textures/menu/ButtonMid.png");
+			keybinding->getRenderer()->setTextureHover("../textures/menu/ButtonMidHover.png");
+			keybinding->getRenderer()->setTextureFocused("../textures/menu/ButtonMidFocused.png");
+			keybinding->getRenderer()->setTextColor("#448ACC");
+			keybinding->getRenderer()->setTextColorFocused("#4BCC3D");
+			keybinding->getRenderer()->setCaretColor("None");
 			keybinding->setAlignment(tgui::EditBox::Alignment::Center);
+
+
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
 				tgui::Layout("20%"),   //size of keybinding window
@@ -524,18 +531,24 @@ void MenuProcessing::reset_settings_textures() {
 	audio_button->getRenderer()->setTexture("../textures/menu/Buttontop.png");
 	controls_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
 	hud_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
+	audio_button->getRenderer()->setTextColor("#448ACC");
+	controls_button->getRenderer()->setTextColor("#448ACC");
+	hud_button->getRenderer()->setTextColor("#448ACC");
 
 	// Choosing the right one
 	for (auto widget : settings_panel->getWidgets()) {
 		if (widget->isVisible()) {
 			if (widget == audio_panel) {
 				audio_button->getRenderer()->setTexture("../textures/menu/ButtonTopFocused.png");
+				audio_button->getRenderer()->setTextColor("#4BCC3D");
 			}
 			else if (widget == controls_panel) {
 				controls_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+				controls_button->getRenderer()->setTextColor("#4BCC3D");
 			}
 			else if (widget == hud_panel) {
 				hud_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+				hud_button->getRenderer()->setTextColor("#4BCC3D");
 			}
 		}
 	}

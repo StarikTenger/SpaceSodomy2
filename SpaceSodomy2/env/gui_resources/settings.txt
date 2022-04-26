@@ -41,7 +41,7 @@ Panel.Background {
                 TextColor = #448ACC;
                 TextColorDisabled = #448ACC;
                 TextColorDown = None;
-                TextColorFocused = #4BCC3D;
+                TextColorFocused = None;
                 TextColorHover = None;
                 Texture = "../textures/menu/ButtonTop.png" Smooth;
                 TextureDisabled = None;
@@ -73,7 +73,7 @@ Panel.Background {
                 TextColor = #448ACC;
                 TextColorDisabled = #448ACC;
                 TextColorDown = None;
-                TextColorFocused = #4BCC3D;
+                TextColorFocused = None;
                 TextColorHover = None;
                 Texture = "../textures/menu/ButtonMid.png" Smooth;
                 TextureDisabled = None;
@@ -137,7 +137,7 @@ Panel.Background {
                 TextColor = #448ACC;
                 TextColorDisabled = #448ACC;
                 TextColorDown = None;
-                TextColorFocused = #4BCC3D;
+                TextColorFocused = None;
                 TextColorHover = None;
                 Texture = "../textures/menu/ButtonMid.png" Smooth;
                 TextureDisabled = None;
