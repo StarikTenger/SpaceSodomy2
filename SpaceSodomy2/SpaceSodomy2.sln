@@ -40,17 +40,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Draw", "Draw\Draw.vcxproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{D5AA8D3F-8E3D-4E21-8367-1EE77575CDE8}"
 	ProjectSection(SolutionItems) = preProject
-		env\client_config.conf = env\client_config.conf
-		env\config.conf = env\config.conf
-		env\fonts.conf = env\fonts.conf
-		env\HUD.conf = env\HUD.conf
-		env\keys.conf = env\keys.conf
-		env\parameters.conf = env\parameters.conf
-		env\setup.conf = env\setup.conf
-		env\sound_settings.conf = env\sound_settings.conf
-		env\sounds.conf = env\sounds.conf
-		env\soundtrack.conf = env\soundtrack.conf
-		env\textures.conf = env\textures.conf
+		env\name_filter.conf = env\name_filter.conf
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Audio\Audio.vcxproj", "{BC9ACEFF-3B10-46A8-B818-5BD87A94516F}"
@@ -64,6 +54,32 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameDrawable", "GameDrawabl
 		{C4444A98-767E-4109-8677-FF4808F71758} = {C4444A98-767E-4109-8677-FF4808F71758}
 		{0ABD97C2-A549-470A-A627-949997CDE170} = {0ABD97C2-A549-470A-A627-949997CDE170}
 		{BC9ACEFF-3B10-46A8-B818-5BD87A94516F} = {BC9ACEFF-3B10-46A8-B818-5BD87A94516F}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{7C3C71BC-58FB-41C1-B78A-15944D8D74C3}"
+	ProjectSection(SolutionItems) = preProject
+		env\fonts.conf = env\fonts.conf
+		env\HUD.conf = env\HUD.conf
+		env\sounds.conf = env\sounds.conf
+		env\soundtrack.conf = env\soundtrack.conf
+		env\textures.conf = env\textures.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Settings", "Client Settings", "{DD2B8A62-89D8-4340-99C7-0F5A23C6A055}"
+	ProjectSection(SolutionItems) = preProject
+		env\client_config.conf = env\client_config.conf
+		env\HUD_settings.conf = env\HUD_settings.conf
+		env\keys.conf = env\keys.conf
+		env\setup.conf = env\setup.conf
+		env\sound_settings.conf = env\sound_settings.conf
+		env\token.conf = env\token.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server 1", "Server 1", "{E0C66BDB-906B-4644-B47C-AF266E4430A8}"
+	ProjectSection(SolutionItems) = preProject
+		env\bot_list.conf = env\bot_list.conf
+		env\config.conf = env\config.conf
+		env\parameters.conf = env\parameters.conf
 	EndProjectSection
 EndProject
 Global
@@ -141,6 +157,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7C3C71BC-58FB-41C1-B78A-15944D8D74C3} = {D5AA8D3F-8E3D-4E21-8367-1EE77575CDE8}
+		{DD2B8A62-89D8-4340-99C7-0F5A23C6A055} = {D5AA8D3F-8E3D-4E21-8367-1EE77575CDE8}
+		{E0C66BDB-906B-4644-B47C-AF266E4430A8} = {D5AA8D3F-8E3D-4E21-8367-1EE77575CDE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C498DE8-8458-4D7C-93C7-9DCCC051580E}
