@@ -113,7 +113,7 @@ Counter* Game::create_counter(float val, float change_vel) {
 	counter->set(val);
 	counter->set_change_vel(change_vel);
 	counters.insert(counter);
-	id_manager.set_id(counter);
+	//id_manager.set_id(counter);
 	return counter;
 }
 
@@ -427,10 +427,6 @@ void Game::delete_ship(Ship* ship) {
 	delete_active_module(ship->get_bonus_slot());
 	delete_active_module(ship->get_left_module());
 	delete_active_module(ship->get_right_module());
-	// Player management
-	ship->get_player()->set_is_alive(0);
-	ship->get_player()->get_brain()->set_new_id(0);
-
 	ships.erase(ship);
 	delete ship;
 }
@@ -501,15 +497,16 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
+		//if (player->get_id() != -1) std::cout << player->get_time_to_respawn()->get() << '\n';
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
 			/*&& player->get_id() != -1*/) { // The player is not the wall
-			player->set_is_alive(1);
 
+
+			player->set_is_alive(1);
 			// creating ship
 			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
 			player->get_brain()->set_new_id(ship->get_id());
-			//auto_damage = 0;
 		}
 	}
 }
@@ -518,8 +515,6 @@ void Game::process_ships() {
 	// Deleting
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
-		//if (auto_damage)
-		//	ship->get_hp()->modify(-dt*20);
 
 		// Apply INSTANT_HP
 		auto hp_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter();
@@ -596,10 +591,17 @@ void Game::process_ships() {
 		// Death, Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
-			ship->get_player()->add_death();
+			auto player = ship->get_player();
+			player->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
+			player->set_is_alive(0);
+
+			//auto trigger = [&]() {player->get_time_to_respawn()->set(3);};
+			player->get_time_to_respawn()->set(3);			// TODO: add respawn time to config
+			player->get_brain()->set_new_id(0);
+
 			event_manager.create_event(EventDef(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
@@ -1596,7 +1598,7 @@ void Game::new_network_player(int id, sf::Color color, std::string name, std::st
 	player->set_right_module_name(right_module);
 	players[id] = player;
 	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(0);
+	player->get_time_to_respawn()->set(3);
 
 
 	auto brain = new NetworkShipBrain(*player->get_command_module(), get_readable());
@@ -1613,7 +1615,7 @@ void Game::new_edgar_bot(int id, sf::Color color, std::string name, std::string 
 	player->set_right_module_name(right_module);
 	players[id] = player;
 	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(0);
+	player->get_time_to_respawn()->set(3);
 
 
 	auto brain = new EdgarBrain(*player->get_command_module(), get_readable(), 

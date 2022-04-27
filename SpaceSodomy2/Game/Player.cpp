@@ -61,10 +61,6 @@ ShipBrain* Player::get_brain() {
 
 // Set methods
 void Player::set_is_alive(bool val) {
-	if (!val) {
-		// TODO: add respawn time to config
-		this->time_to_respawn->set(3);
-	}
 	is_alive = val;
 }
 
