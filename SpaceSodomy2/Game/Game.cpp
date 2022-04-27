@@ -503,7 +503,7 @@ void Game::process_players() {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
-			&& player->get_id() != -1) { // The player is not the wall
+			/*&& player->get_id() != -1*/) { // The player is not the wall
 			player->set_is_alive(1);
 
 			// creating ship
