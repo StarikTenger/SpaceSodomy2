@@ -37,6 +37,11 @@ void MenuProcessing::load_keys(std::string path,
 	// scrollbar
 	auto scrollbar = tgui::ScrollbarRenderer(controls_panel->getRenderer()->getScrollbar());
 	scrollbar.setTrackColor("None");
+	scrollbar.setThumbColor("#448ACC");
+	scrollbar.setThumbColorHover("None");
+	scrollbar.setArrowColor("#448ACC");
+	scrollbar.setArrowBackgroundColor("None");
+	scrollbar.setArrowBackgroundColorHover("None");
 		
 	std::ifstream file_to_comment(path);	
 	std::stringstream config = aux::comment(file_to_comment);
@@ -519,7 +524,7 @@ void MenuProcessing::open_replay_menu(){
 // Draws green selction box around settings buttons
 void MenuProcessing::reset_settings_textures() {
 	auto settings_panel = _gui->get<tgui::Group>("SettingsPanel");
-	auto controls_panel = _gui->get<tgui::Group>("ControlsPanel");
+	auto controls_panel = _gui->get<tgui::ScrollablePanel>("ControlsPanel");
 	auto audio_panel = _gui->get<tgui::Group>("AudioPanel");
 	auto hud_panel = _gui->get<tgui::Group>("HUDPanel");
 
@@ -672,13 +677,22 @@ void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
 	load_keys("keys.conf", &keys_menu_vec);
 }
 
-void MenuProcessing::group_formating(std::string groupname, 
+void MenuProcessing::widget_formating(std::string groupname, 
 	float aspectratio, float textscale) {
 	//saves aspect ratio of the group and updates text size
-	auto group = _gui->get <tgui::Group>(groupname);
-	float windowHeight = group->getSize().y;
-	group->setSize({ windowHeight * aspectratio }, "100%");
-	group->setTextSize(windowHeight * textscale);
+	auto widget = _gui->get <tgui::Widget>(groupname);
+	if (widget->isVisible()) {
+		float windowHeight = widget->getSize().y;
+		widget->setSize({ windowHeight * aspectratio }, "100%");
+		widget->setTextSize(windowHeight * textscale);
+	}
+}
+
+void MenuProcessing::scrollbar_formating(std::string scrollablepanelname, float scale) {
+	auto scrollable_panel = _gui->get<tgui::ScrollablePanel>(scrollablepanelname);
+	if (scrollable_panel->isVisible()) {
+		scrollable_panel->getRenderer()->setScrollbarWidth(scrollable_panel->getSize().x * scale);
+	}
 }
 
 void MenuProcessing::step() {
@@ -727,6 +741,7 @@ void MenuProcessing::step() {
 	set_sizes(_gui->get<tgui::ScrollablePanel>("hull_vars"));
 	set_sizes(_gui->get<tgui::ScrollablePanel>("module_vars"));
 
-	group_formating("main_menu.txt", 1.3, 0.03);
-	group_formating("settings.txt", 1.3, 0.025);
+	widget_formating("main_menu.txt", 1.3, 0.03);
+	widget_formating("settings.txt", 1.3, 0.025);
+	scrollbar_formating("ControlsPanel", 0.01);
 }

@@ -25,7 +25,8 @@ private:
 	void load_sound(std::string path);
 	void save_sound(std::string path);
 	void init_multiplayer_menu(std::string file_name);
-	void group_formating(std::string groupname, float aspectratio, float textscale);
+	void widget_formating(std::string groupname, float aspectratio, float textscale);
+	void scrollbar_formating(std::string scrollablepanelname, float scale);
 	void close_widgets(tgui::Container::Ptr container);
 	void close_groups();
 	void open_replay_menu();
