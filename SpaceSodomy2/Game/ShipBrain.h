@@ -6,22 +6,35 @@
 class ShipBrain : public iBrain {
 protected:
     int id;
+    // decide which gun and hull the bot wants
+    std::string gun_name = "default";
+    std::string hull_name = "default";
+    std::string left_module_name = "NONE";
+    std::string right_module_name = "NONE";
+    
 public:
+    enum class Type {
+        EDGAR_BRAIN,
+    };
     ShipBrain(CommandModule&, const GameReadable&, int = 0);
     void set_new_id(int);
-};
+    std::string get_gun_name();
+    std::string get_hull_name();
+    std::string get_left_module_name();
+    std::string get_right_module_name();
 
-class NetworkShipBrain : public ShipBrain {
-public:
-    NetworkShipBrain(CommandModule&, const GameReadable&, int = 0);
+    struct Equip {
+        std::string gun_name = "default";
+        std::string hull_name = "default";
+        std::string left_module_name = "NONE";
+        std::string right_module_name = "NONE";
 
-    // Do nothing
-    void compute_action() final {};
+    };
+    void suggest_equip(Equip _); // bot can reset them if it wants to
 };
 
 class EdgarBrain : public ShipBrain {
 private:
-    std::function<b2Vec2(b2Vec2, float)> calc_intersection;
 
     void accelerate_towards_point(Ship* my_ship, b2Vec2 point);
     bool turn_to_angle(Ship* my_ship, float angle);
@@ -34,6 +47,6 @@ private:
     Ship* get_enemy(Ship* my_ship);
     bool get_bonuses(Ship* my_ship);
 public:
-    EdgarBrain(CommandModule&, const GameReadable&, std::function<b2Vec2(b2Vec2, float)> calc_intersection_, int = 0);
+    EdgarBrain(CommandModule&, const GameReadable&, int = 0);
     void compute_action() final;
 };

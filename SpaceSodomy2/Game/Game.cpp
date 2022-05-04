@@ -30,6 +30,7 @@ Game::Game() : GameReadable() {
 	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
 	wall_player = create_player(-1, sf::Color::White, "WALL");
+	calc_intersection_ = [&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);};
 }
 
 GameReadable& Game::get_readable() {
