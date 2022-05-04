@@ -51,19 +51,68 @@ Control::Control() {
 		"0" + std::to_string(dt->tm_mon + 1) : std::to_string(dt->tm_mon + 1)) + "." + std::to_string(dt->tm_year + 1900) +
 		"_" + std::to_string(dt->tm_hour) + "." + std::to_string(dt->tm_min) + ".rep");
 	game.set_time(&time_by_id);
+	load_bots("bot_list.conf");
 }
 
-void Control::receive() {
-	
-	network.receive();
-	if (network.get_last_message() == "")
-		return;
-	// Splitting message
-	std::stringstream message;
-	message << network.get_last_message();
-	//std::cout << network.get_last_message() << "\n";
-	network.del_last_message();
+bool Control::load_bots(std::string path) {
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
 
+	std::string symbol;
+	while (input >> symbol) {
+		if (symbol == "END")
+			break;
+
+		auto read_symbol = [&](std::string symbol_name, auto& var) {
+			if (symbol == symbol_name) {
+				decltype(var) val(var);
+				if (!(input >> val)) {
+					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					return false;
+				}
+				var = val;
+			}
+			return true;
+		};
+
+		if (symbol == "BOT") {
+			PlayerDef def(aux::random_int(1, 100000000), "warning: bot name not set");
+
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				if (symbol == "COLOR") {
+					int r, g, b;
+					input >> r >> g >> b;
+					def.color.r = r;
+					def.color.g = g;
+					def.color.b = b;
+				}
+				read_symbol("NAME", def.name);
+				read_symbol("ID", def.id);
+				read_symbol("GUN_NAME", def.gun_name);
+				read_symbol("HULL_NAME", def.hull_name);
+				read_symbol("LEFT_MODULE_NAME", def.left_module_name);
+				read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
+			}
+			std::cout << game.new_player(def) << "\n";
+
+			BotControl bot = BotControl(def.name, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
+			ShipBrain::Equip equip;
+			equip.gun_name = def.gun_name;
+			equip.hull_name = def.hull_name;
+			equip.left_module_name = def.left_module_name;
+			equip.right_module_name = def.right_module_name;
+
+			bot.set_equip(def.name, equip);
+			bots.push_back(bot);
+		};
+	}
+	return true;
+}
+
+void  Control::parce_message(std::stringstream &message) {
 	// Received params
 	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
@@ -120,6 +169,19 @@ void Control::receive() {
 	}
 }
 
+void Control::receive() {
+	network.receive();
+	if (network.get_last_message() == "")
+		return;
+	// Splitting message
+	std::stringstream message;
+	message << network.get_last_message();
+	//std::cout << network.get_last_message() << "\n";
+	network.del_last_message();
+
+	parce_message(message);
+}
+
 void Control::step() {
 	// Receiving data
 	receive();
@@ -140,6 +202,11 @@ void Control::step() {
 			//network.del_address(IP_by_id[id]);
 		}
 		// Release next game step 
+		for (int i = 0; i < bots.size(); i++) {
+			std::stringstream message;
+			message << bots[i].get_message();
+			parce_message(message);
+		}
 		game.step(delay * 0.001);
 		// Send encoded info;
 		network.send(game.encode());

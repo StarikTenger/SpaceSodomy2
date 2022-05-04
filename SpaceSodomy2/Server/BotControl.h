@@ -3,7 +3,7 @@
 
 class BotControl {
 private:
-    CommandModule cmd_module;
+    CommandModule cmd_module = CommandModule();
     ShipBrain* brain = nullptr;
     std::string name;
     int id = aux::random_int(0, 1000000000);
@@ -12,6 +12,7 @@ private:
 public:
     BotControl(std::string bot_name, ShipBrain::Type type, const GameReadable&);
     void set_equip(std::string bot_name, ShipBrain::Equip equipment);
+ 
 
     // The bot is lazy : if a message is not needed, he does not compute action
     std::string get_message();
