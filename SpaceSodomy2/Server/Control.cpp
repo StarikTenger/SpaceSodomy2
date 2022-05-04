@@ -33,8 +33,9 @@ void Control::load_config(std::string path) {
 		if (command == "BOT_LIST") {
 			std::string name;
 			file >> name;
-			game.load_bots(name);
-			std::cout << "BOT_LIST loaded\n";
+			std::cout << "BOT_LIST ignored!\n";
+			////game.load_bots(name);
+			//std::cout << "BOT_LIST loaded\n";
 
 		}
 
@@ -62,16 +63,24 @@ void Control::receive() {
 	message << network.get_last_message();
 	//std::cout << network.get_last_message() << "\n";
 	network.del_last_message();
-	std::string IP_address_, name_, time, gun_name, hull_name, left_module, right_module;
-	message >> IP_address_;
+
+	// Received params
+	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
+
+	message >> IP_address_;
 	message >> id_;
-	message >> time;
+	{
+		std::string time;
+		message >> time; // discard
+	}
 	message >> name_;
 	message >> token;
 	message >> gun_name;
 	message >> hull_name;
 	message >> left_module >> right_module;
+
+
 	//std::cout << IP_address_ << " " << local_ << "\n";
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
@@ -82,7 +91,7 @@ void Control::receive() {
 		time_by_id[id_] = aux::get_milli_count();
 
 
-		PlayerDef def(id_, Player::Type::NETWORK_PLAYER, name_);
+		PlayerDef def(id_, name_);
 		def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 		def.gun_name = gun_name;
 		def.hull_name = hull_name;

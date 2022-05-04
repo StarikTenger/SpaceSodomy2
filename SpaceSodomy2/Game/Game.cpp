@@ -87,7 +87,6 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_name(name);
 	player->set_command_module(create_command_module());
 	player->set_time_to_respawn(create_counter(0, -1));
-	player->set_brain(nullptr);
 	// Id
 	player->set_id(id);
 	players[player->get_id()] = player;
@@ -486,10 +485,6 @@ void Game::delete_forcefield(Forcefield* field) {
 	delete field;
 }
 
-void Game::delete_brain(ShipBrain* _) {
-	ship_brains.erase(_);
-	delete _;
-}
 
 
 
@@ -506,7 +501,6 @@ void Game::process_players() {
 			player->set_is_alive(1);
 			// creating ship
 			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
-			player->get_brain()->set_new_id(ship->get_id());
 		}
 	}
 }
@@ -600,7 +594,6 @@ void Game::process_ships() {
 
 			//auto trigger = [&]() {player->get_time_to_respawn()->set(3);};
 			player->get_time_to_respawn()->set(3);			// TODO: add respawn time to config
-			player->get_brain()->set_new_id(0);
 
 			event_manager.create_event(EventDef(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
@@ -879,7 +872,6 @@ void Game::step(float _dt) {
 	process_rockets();
 	process_rocket_manager();
 	process_forcefields();
-	process_ship_brains();
 }
 
 float Game::get_dt() {
@@ -1385,61 +1377,64 @@ bool Game::load_parameters(std::string path) {
 }
 
 bool Game::load_bots(std::string path) {
-	std::ifstream file_input(path);
-	std::stringstream input = aux::comment(file_input);
+	// For now, do nothing
 
-	std::string symbol;
-	while (input >> symbol) {
-		if (symbol == "END")
-			break;
 
-		auto read_symbol = [&](std::string symbol_name, auto& var) {
-			if (symbol == symbol_name) {
-				decltype(var) val(var);
-				if (!(input >> val)) {
-					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					return false;
-				}
-				var = val;
-			}
-			return true;
-		};
+	//std::ifstream file_input(path);
+	//std::stringstream input = aux::comment(file_input);
 
-		if (symbol == "BOT") {
-			PlayerDef def(aux::random_int(1, 100000000), Player::Type::EDGAR_BOT, "warning: bot name not set");
+	//std::string symbol;
+	//while (input >> symbol) {
+	//	if (symbol == "END")
+	//		break;
 
-			while (input >> symbol) {
-				if (symbol == "END")
-					break;
-				if (symbol == "COLOR") {
-					int r, g, b;
-					input >> r >> g >> b;
-					def.color.r = r;
-					def.color.g = g;
-					def.color.b = b;
-				}
-				read_symbol("NAME", def.name);
-				read_symbol("ID", def.id);
-				read_symbol("GUN_NAME", def.gun_name);
-				read_symbol("HULL_NAME", def.hull_name);
-				read_symbol("LEFT_MODULE_NAME", def.left_module_name);
-				read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
+	//	auto read_symbol = [&](std::string symbol_name, auto& var) {
+	//		if (symbol == symbol_name) {
+	//			decltype(var) val(var);
+	//			if (!(input >> val)) {
+	//				std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
+	//				std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+	//				return false;
+	//			}
+	//			var = val;
+	//		}
+	//		return true;
+	//	};
 
-				if (symbol == "BOT_TYPE") {
-					std::string temp;
-					input >> temp;
-					if (temp == "EDGAR_BOT") {
-						def.type = Player::Type::EDGAR_BOT;
-					}
-					else {
-						std::cout << "Game::load_bots error: unknown bot type\n";
-					}
-				}
-			}
-			new_player(def);
-		};
-	}
+	//	if (symbol == "BOT") {
+	//		PlayerDef def(aux::random_int(1, 100000000), Player::Type::EDGAR_BOT, "warning: bot name not set");
+
+	//		while (input >> symbol) {
+	//			if (symbol == "END")
+	//				break;
+	//			if (symbol == "COLOR") {
+	//				int r, g, b;
+	//				input >> r >> g >> b;
+	//				def.color.r = r;
+	//				def.color.g = g;
+	//				def.color.b = b;
+	//			}
+	//			read_symbol("NAME", def.name);
+	//			read_symbol("ID", def.id);
+	//			read_symbol("GUN_NAME", def.gun_name);
+	//			read_symbol("HULL_NAME", def.hull_name);
+	//			read_symbol("LEFT_MODULE_NAME", def.left_module_name);
+	//			read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
+
+	//			if (symbol == "BOT_TYPE") {
+	//				std::string temp;
+	//				input >> temp;
+	//				if (temp == "EDGAR_BOT") {
+	//					def.type = Player::Type::EDGAR_BOT;
+	//				}
+	//				else {
+	//					std::cout << "Game::load_bots error: unknown bot type\n";
+	//				}
+	//			}
+	//		}
+	//		new_player(def);
+	//	};
+	//}
 	return true;
 }
 
@@ -1589,7 +1584,7 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+void Game::create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
@@ -1599,29 +1594,6 @@ void Game::new_network_player(int id, sf::Color color, std::string name, std::st
 	players[id] = player;
 	player->set_is_alive(0);
 	player->get_time_to_respawn()->set(3);
-
-
-	auto brain = new NetworkShipBrain(*player->get_command_module(), get_readable());
-	ship_brains.insert(brain);
-	player->set_brain(brain);
-}
-
-void Game::new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
-	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, color, name);
-	player->set_gun_name(gun_name);
-	player->set_hull_name(hull_name);
-	player->set_left_module_name(left_module);
-	player->set_right_module_name(right_module);
-	players[id] = player;
-	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(3);
-
-
-	auto brain = new EdgarBrain(*player->get_command_module(), get_readable(), 
-		[&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);});
-	ship_brains.insert(brain);
-	player->set_brain(brain);
 }
 
 bool Game::new_player(PlayerDef def) {
@@ -1631,17 +1603,8 @@ bool Game::new_player(PlayerDef def) {
 	}
 	id_list.insert(def.id);
 
-	switch (def.type) {
-	case (Player::Type::NETWORK_PLAYER) :
-		new_network_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-		break;
-	case (Player::Type::EDGAR_BOT) :
-		new_edgar_bot(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-		break;
-     default:
-		 std::cout << "Game::new_player error: unknown Player::Type with player.name = " << def.name << "\n";
-		 return false;
-	}
+	create_new_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+
 	return true;
 }
 
@@ -1671,17 +1634,9 @@ void Game::delete_player(int id) {
 	auto res = *players.find(id);
 
 
-	delete_brain(res.second->get_brain());
-
 	// Deleting player
 	delete res.second;
 	players.erase(players.find(id));
-}
-
-void Game::process_ship_brains() {
-	for (auto brain : ship_brains) {
-		brain->compute_action();
-	}
 }
 
 Game::~Game() {

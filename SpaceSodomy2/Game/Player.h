@@ -4,7 +4,8 @@
 #include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
-#include "ShipBrain.h"
+#include <AuxLib/AuxLib.h>
+
 
 class Player : public iId {
 private:
@@ -19,15 +20,8 @@ private:
 	std::string right_module_name = "NONE";
 	CommandModule* command_module = nullptr;
 	Counter* time_to_respawn = nullptr;
-	ShipBrain* brain = nullptr; // Player must clean it up
 	int ping = 0;
 public:
-	enum Type {
-		NETWORK_PLAYER,
-		EDGAR_BOT,
-		COUNT
-	};
-
 	Player();
 	Player(int id_, sf::Color color_, std::string name_);
 
@@ -43,7 +37,6 @@ public:
 	int get_deaths();
 	int get_kills();
 	int get_ping();
-	ShipBrain* get_brain();
 	
 	void set_is_alive(bool);
 	void set_color(sf::Color color_);
@@ -57,7 +50,6 @@ public:
 	void set_deaths(int deaths_);
 	void set_kills(int kills_);
 	void set_ping(int ping_);
-	void set_brain(ShipBrain*);
 
 	void add_death();
 	void add_kill();
@@ -65,7 +57,7 @@ public:
 
 struct PlayerDef {
 	int id;
-	Player::Type type;
+	//Player::Type type;
 	std::string name;
 	sf::Color color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 	std::string gun_name = "default";
@@ -73,5 +65,5 @@ struct PlayerDef {
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
 
-	PlayerDef(int _id, Player::Type _type, std::string _name) : id(_id), type(_type), name(_name) {};
+	PlayerDef(int _id, std::string _name) : id(_id), name(_name) {};
 };

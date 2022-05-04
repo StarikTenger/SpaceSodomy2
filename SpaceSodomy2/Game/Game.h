@@ -51,7 +51,6 @@ protected:
 	//std::set<Bonus*> bonuses;
 	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
-	std::set<ShipBrain*> ship_brains;
 	//std::set<Forcefield*> forcefields;
 	
 	// Walls
@@ -122,7 +121,6 @@ protected:
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
 	void delete_forcefield(Forcefield*);
-	void delete_brain(ShipBrain*);
 
 	 // Processing functions
 	void process_players();
@@ -142,15 +140,14 @@ protected:
 	void process_rocket_brains();
 	void process_rocket_manager();
 	void process_forcefields();
-	void process_ship_brains();
 
 	// Misc
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
 
+public:
 	GameReadable& get_readable();
 
-public:
 	Game();
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
@@ -172,9 +169,7 @@ public:
 	std::string encode();
 	// Creates new player
 protected:
-	void new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
-		std::string left_module, std::string right_module);
-	void new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	void create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 public:
 	bool new_player(PlayerDef);
