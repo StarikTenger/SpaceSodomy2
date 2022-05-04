@@ -64,7 +64,7 @@ bool Control::load_bots(std::string path) {
 			if (symbol == symbol_name) {
 				decltype(var) val(var);
 				if (!(input >> val)) {
-					std::cerr << "Control::load_bots: failed to read " + symbol_name + "\n";
+					std::cout << "Control::load_bots: failed to read " + symbol_name + "\n";
 					return false;
 				}
 				var = val;
@@ -86,7 +86,14 @@ bool Control::load_bots(std::string path) {
 				read_symbol("LEFT_MODULE_NAME", equip.left_module_name);
 				read_symbol("RIGHT_MODULE_NAME", equip.right_module_name);
 			}
-
+			if (name == "") {
+				std::ifstream file_input("names.conf");
+				std::stringstream input = aux::comment(file_input);
+				auto x = aux::random_int(1, 499);
+				for (int i = 0; i < x; i++)
+					input >> name;
+				name = "Bot_" + name;
+			}
 			BotControl* bot = new BotControl(name, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
 			bot->set_equip(name, equip);
 			bots.push_back(bot);
@@ -95,7 +102,7 @@ bool Control::load_bots(std::string path) {
 	return true;
 }
 
-void  Control::parse_message(std::stringstream &message) {
+void  Control::parce_message(std::stringstream &message) {
 	// Received params
 	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
@@ -160,7 +167,7 @@ void Control::receive() {
 	message << network.get_last_message();
 	network.del_last_message();
 
-	parse_message(message);
+	parce_message(message);
 }
 
 void Control::step() {
@@ -186,7 +193,7 @@ void Control::step() {
 		for (int i = 0; i < bots.size(); i++) {
 			std::stringstream message;
 			message << bots[i]->get_message();
-			parse_message(message);
+			parce_message(message);
 		}
 		game.step(delay * 0.001);
 		// Send encoded info;
