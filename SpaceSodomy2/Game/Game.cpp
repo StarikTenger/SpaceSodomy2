@@ -131,7 +131,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Creating ship
 	auto ship = new Ship();
 	ships.insert(ship);
-	id_manager.set_id(ship);
+	ship->set_id(player->get_id());
 
 	// Create effects
 	Effects_Prototype effects_prototype(effect_params);
@@ -1377,67 +1377,6 @@ bool Game::load_parameters(std::string path) {
 	return true;
 }
 
-bool Game::load_bots(std::string path) {
-	// For now, do nothing
-
-
-	//std::ifstream file_input(path);
-	//std::stringstream input = aux::comment(file_input);
-
-	//std::string symbol;
-	//while (input >> symbol) {
-	//	if (symbol == "END")
-	//		break;
-
-	//	auto read_symbol = [&](std::string symbol_name, auto& var) {
-	//		if (symbol == symbol_name) {
-	//			decltype(var) val(var);
-	//			if (!(input >> val)) {
-	//				std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-	//				std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
-	//				return false;
-	//			}
-	//			var = val;
-	//		}
-	//		return true;
-	//	};
-
-	//	if (symbol == "BOT") {
-	//		PlayerDef def(aux::random_int(1, 100000000), Player::Type::EDGAR_BOT, "warning: bot name not set");
-
-	//		while (input >> symbol) {
-	//			if (symbol == "END")
-	//				break;
-	//			if (symbol == "COLOR") {
-	//				int r, g, b;
-	//				input >> r >> g >> b;
-	//				def.color.r = r;
-	//				def.color.g = g;
-	//				def.color.b = b;
-	//			}
-	//			read_symbol("NAME", def.name);
-	//			read_symbol("ID", def.id);
-	//			read_symbol("GUN_NAME", def.gun_name);
-	//			read_symbol("HULL_NAME", def.hull_name);
-	//			read_symbol("LEFT_MODULE_NAME", def.left_module_name);
-	//			read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
-
-	//			if (symbol == "BOT_TYPE") {
-	//				std::string temp;
-	//				input >> temp;
-	//				if (temp == "EDGAR_BOT") {
-	//					def.type = Player::Type::EDGAR_BOT;
-	//				}
-	//				else {
-	//					std::cout << "Game::load_bots error: unknown bot type\n";
-	//				}
-	//			}
-	//		}
-	//		new_player(def);
-	//	};
-	//}
-	return true;
-}
 
 
 std::string Game::encode() {

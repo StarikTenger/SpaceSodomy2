@@ -21,7 +21,7 @@ private:
 	int disconnect_timeout = 1000; // time for reconnection
 	int last_step_time = aux::get_milli_count(); // last step time
 
-	std::vector <BotControl> bots;
+	std::vector <BotControl*> bots;
 
 	std::set <std::string> addresses; // IP addresses of active players
 
@@ -31,7 +31,7 @@ private:
 	std::map <int, int> token_by_id; // getting token by id
 	std::map <int, int> time_by_id; // getting last connection time by IP
 
-	void parce_message(std::stringstream &message);
+	void parse_message(std::stringstream &message);
 	void load_config(std::string path); // loading configurations from .conf file
 	bool load_bots(std::string path);
 public:

@@ -160,7 +160,6 @@ public:
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
-	bool load_bots(std::string path);
 	// Clears every temporary body
 	void clear();
 	// Clean all
