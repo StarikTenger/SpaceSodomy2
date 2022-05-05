@@ -116,7 +116,6 @@ void Shotgun_Module::activate() {
 	// Projectiles
 	ProjectileDef projectile_def;
 	float num = bullet_num;
-	//std::cout << num;
 	b2Vec2 impulse = {0,0};
 	for (float i =  -(num / 2) + 0.5; i <= num / 2 - b2_epsilon; i++) {		
 		float vel_val = velocity;
