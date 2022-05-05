@@ -493,7 +493,6 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
-		//if (player->get_id() != -1) std::cout << player->get_time_to_respawn()->get() << '\n';
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
 			/*&& player->get_id() != -1*/) { // The player is not the wall
@@ -705,7 +704,6 @@ void Game::process_physics() {
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
 			event_manager.create_event(EventDef(Event::WALL_HIT, nullptr, pos));
-			//std::cout << "hit\n";
 		}
 	}
 }
@@ -1133,7 +1131,7 @@ bool Game::load_parameters(std::string path) {
 				float val;
 				if (!(input >> val)) {
 					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					//std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
 
 					return false;
 				}
@@ -1146,7 +1144,7 @@ bool Game::load_parameters(std::string path) {
 				bool val;
 				if (!(input >> val)) {
 					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					//std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
 
 					return false;
 				}
@@ -1518,7 +1516,6 @@ std::string Game::encode() {
 		message += aux::write_float(event->get_pos().x, 2);
 		message += aux::write_float(event->get_pos().y, 2);
 	}
-	//std::cout << "message size is " << message.size() << "\n";
 	std::string ans = aux::write_short(message.size());
 	ans += (message);
 	return ans;
@@ -1538,7 +1535,7 @@ void Game::create_new_player(int id, sf::Color color, std::string name, std::str
 
 bool Game::new_player(PlayerDef def) {
 	if (id_list.count(def.id)) {
-		std::cout << "Game::new_player error: id collision with player.name = " << def.name << "\n";
+		std::cerr << "Game::new_player error: id collision with player.name = " << def.name << "\n";
 		return false;
 	}
 	id_list.insert(def.id);

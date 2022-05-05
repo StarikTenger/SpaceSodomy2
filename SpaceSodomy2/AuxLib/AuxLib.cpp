@@ -205,7 +205,6 @@ std::string aux::mask_to_string(std::vector<int> vec, int digit, char start) {
 	for (int i = 0, d = 1; i < vec.size(); i++, d *= 2) {
 		val += vec[i] * d;
 	}
-	//std::cout << "VAL " << val << "\n";
 	std::string str = "#";
 	for (; val; val /= digit) {
 		str += (char)(start + val % digit);
@@ -399,7 +398,7 @@ void aux::mk_dir(std::string path) {
 		if (errno == EEXIST) {
 			return;
 		}
-		std::cout << "Error: could not create directory: " << path << '\n';
+		std::cerr << "Error: could not create directory: " << path << '\n';
 	}
 	std::cout << "Directory " << path << " created\n";
 }

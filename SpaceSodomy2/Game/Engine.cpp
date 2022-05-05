@@ -81,7 +81,6 @@ void Engine::step(float _dt) {
 	// Command processing
 	if ((command_module->get_command(CommandModule::ROCKET_ANGLE)) ) {
 		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
-		std::cout << "tell\n";
 	}
 	if (command_module->get_command(CommandModule::STABILIZE_ROTATION))
 		stabilize_rotation();
