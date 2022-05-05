@@ -1,0 +1,84 @@
+Renderer.1 {
+}
+
+ScrollablePanel.MainPanel {
+    ContentSize = (0, 0);
+    Size = (25%, 100%);
+
+    Renderer {
+        BackgroundColor = #20283C;
+        TextureBackground = None;
+    }
+
+    Group.ToolsGroup {
+        Renderer = &1;
+        Size = (100%, 10%);
+
+        Label.ToolsLabel {
+            Size = (100%, 18);
+            Text = Tools;
+            TextSize = 13;
+
+            Renderer {
+                BackgroundColor = transparent;
+                BorderColor = #3C3C3C;
+                Borders = (0, 0, 0, 0);
+                TextColor = #9AACB9;
+                TextureBackground = None;
+            }
+        }
+
+        Picture.Cursor {
+            MouseCursor = Hand;
+            Position = (0, 20);
+            Size = (30, 30);
+
+            Renderer {
+                Texture = "resources/cursor.png" NoSmooth;
+                TransparentTexture = false;
+            }
+        }
+
+        Picture.Polygon {
+            MouseCursor = Hand;
+            Position = (31, 20);
+            Size = (30, 30);
+
+            Renderer {
+                Texture = "resources/polygon.png" NoSmooth;
+                TransparentTexture = false;
+            }
+        }
+
+        Picture.Bonus {
+            MouseCursor = Hand;
+            Position = (62, 20);
+            Size = (30, 30);
+
+            Renderer {
+                Texture = "resources/bonus.png" Smooth;
+                TransparentTexture = false;
+            }
+        }
+    }
+
+    Group.ToolSettings {
+        Position = (0, 60);
+        Renderer = &1;
+        Size = (100%, 50%);
+
+        Label.ToolName {
+            Size = (100%, 18);
+            Text = "Tool Name";
+            TextSize = 13;
+
+            Renderer {
+                BackgroundColor = transparent;
+                BorderColor = #3C3C3C;
+                Borders = (0, 0, 0, 0);
+                TextColor = #9AACB9;
+                TextureBackground = None;
+            }
+        }
+    }
+}

@@ -1,0 +1,330 @@
+Renderer.1 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #66C0F4;
+    TextureBackground = None;
+}
+
+Renderer.2 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #66C0F4;
+    TextureBackground = None;
+}
+
+Renderer.3 {
+    TextureThumb = "themes/Black.png" Part(44, 499, 30, 30) Smooth;
+    TextureThumbHover = None;
+    TextureTrack = "themes/Black.png" Part(76, 499, 20, 45) Middle(0, 15) Smooth;
+    TextureTrackHover = "themes/Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
+}
+
+Renderer.4 {
+    BackgroundColor = #FFFFFF00;
+    Borders = (3%, 2, 2, 2);
+    TextureBackground = None;
+}
+
+Renderer.5 {
+    CaretColor = rgb(110, 110, 255);
+    DefaultTextColor = #66C0F4;
+    Padding = (6, 4, 6, 4);
+    SelectedTextBackgroundColor = rgb( 10, 110, 255);
+    SelectedTextColor = White;
+    TextColor = #66C0F4;
+    Texture = "themes/Black.png" Part(34, 246, 60, 40) Middle(15, 0) Smooth;
+    TextureDisabled = None;
+    TextureFocused = "themes/Black.png" Part(0, 288, 60, 40) Middle(15, 0) Smooth;
+    TextureHover = "themes/Black.png" Part(62, 288, 60, 40) Middle(15, 0) Smooth;
+}
+
+Label.ToolLabel {
+    ScrollbarPolicy = Never;
+    Size = (100%, 5%);
+    Text = Bonus;
+    TextSize = 13;
+    VerticalAlignment = Center;
+
+    Renderer {
+        BackgroundColor = transparent;
+        BorderColor = #3C3C3C;
+        Borders = (0, 0, 0, 0);
+        TextColor = #9AACB9;
+        TextureBackground = None;
+    }
+}
+
+Panel.BerserkButton {
+    Position = (0, 5%);
+    Size = (100%, 30%);
+
+    Renderer {
+        BackgroundColor = #FFFFFF00;
+        Borders = (3%, 2, 2, 2);
+        TextureBackground = None;
+    }
+
+    Picture.Picture {
+        Position = (6% - 24, 50% - 24);
+        Size = (48, 48);
+
+        Renderer {
+            Texture = "resources/bonusBerserk.png" Smooth;
+            TransparentTexture = false;
+        }
+    }
+
+    Label.Label {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 0);
+        ScrollbarPolicy = Never;
+        Size = (91% - 30, 33%);
+        Text = Berserk;
+        TextSize = 13;
+        VerticalAlignment = Center;
+
+        Renderer {
+            BackgroundColor = transparent;
+            BorderColor = #3C3C3C;
+            Borders = (0, 0, 0, 0);
+            TextColor = #66C0F4;
+            TextureBackground = None;
+        }
+    }
+
+    Slider.Slider1 {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 100;
+        Minimum = 0;
+        Position = (20% + 24, 50% - 6);
+        Size = (150, 12);
+        Step = 1;
+        Value = 50;
+
+        Renderer {
+            TextureThumb = "themes/Black.png" Part(44, 499, 30, 30) Smooth;
+            TextureThumbHover = None;
+            TextureTrack = "themes/Black.png" Part(76, 499, 20, 45) Middle(0, 15) Smooth;
+            TextureTrackHover = "themes/Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
+        }
+    }
+
+    Label.Label2 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Max count:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Label.Label3 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (21% + 174, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = 1;
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    EditBox.EditBox1 {
+        DefaultText = 7;
+        InputValidator = "[0-1000]*";
+        Position = (20% + 24, 67% + 16);
+        Renderer = &5;
+        Size = (150, 22);
+        TextSize = 13;
+    }
+
+    Label.Label4 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 67%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Cooldown:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+}
+
+Panel.ChargeButton {
+    Position = (0, 35%);
+    Renderer = &4;
+    Size = (100%, 30%);
+
+    Label.Label1 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 0);
+        Renderer = &2;
+        ScrollbarPolicy = Never;
+        Size = (91% - 30, 33%);
+        Text = Charge;
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Slider.Slider2 {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 100;
+        Minimum = 0;
+        Position = (20% + 24, 50% - 6);
+        Renderer = &3;
+        Size = (150, 12);
+        Step = 1;
+        Value = 50;
+    }
+
+    Label.Label5 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Max count:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Label.Label6 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (21% + 174, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = 1;
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    EditBox.EditBox2 {
+        DefaultText = 7;
+        InputValidator = "[0-1000]*";
+        Position = (20% + 24, 67% + 16);
+        Renderer = &5;
+        Size = (150, 22);
+        TextSize = 13;
+    }
+
+    Label.Label7 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 67%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Cooldown:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Picture.Picture1 {
+        Position = (6% - 24, 50% - 24);
+        Size = (48, 48);
+
+        Renderer {
+            Texture = "resources/bonusCharge.png" Smooth;
+            TransparentTexture = false;
+        }
+    }
+}
+
+Panel.Panel1 {
+    Position = (0, 65%);
+    Renderer = &4;
+    Size = (100%, 30%);
+
+    Label.Label8 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 0);
+        Renderer = &2;
+        ScrollbarPolicy = Never;
+        Size = (91% - 30, 33%);
+        Text = Charge;
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Slider.Slider3 {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 100;
+        Minimum = 0;
+        Position = (20% + 24, 50% - 6);
+        Renderer = &3;
+        Size = (150, 12);
+        Step = 1;
+        Value = 50;
+    }
+
+    Label.Label9 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Max count:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Label.Label10 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (21% + 174, 34%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = 1;
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    EditBox.EditBox3 {
+        DefaultText = 7;
+        InputValidator = "[0-1000]*";
+        Position = (20% + 24, 67% + 16);
+        Renderer = &5;
+        Size = (150, 22);
+        TextSize = 13;
+    }
+
+    Label.Label11 {
+        Enabled = false;
+        MaximumTextWidth = 80;
+        Position = (9% + 24, 67%);
+        Renderer = &1;
+        ScrollbarPolicy = Never;
+        Size = (11%, 33%);
+        Text = "Cooldown:";
+        TextSize = 13;
+        VerticalAlignment = Center;
+    }
+
+    Picture.Picture2 {
+        Position = (6% - 24, 50% - 24);
+        Size = (48, 48);
+
+        Renderer {
+            Texture = "resources/bonusImmortal.png" Smooth;
+            TransparentTexture = false;
+        }
+    }
+}
