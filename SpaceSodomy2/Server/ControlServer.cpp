@@ -1,4 +1,4 @@
-#include "Control.h"
+#include "ControlServer.h"
 
 void ControlServer::load_config(std::string path) {
 	std::ifstream fileInput(path);

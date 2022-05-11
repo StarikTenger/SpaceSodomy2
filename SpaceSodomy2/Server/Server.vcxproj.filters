@@ -18,18 +18,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Control.cpp">
+    <ClCompile Include="BotControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BotControl.cpp">
+    <ClCompile Include="ControlServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Control.h">
+    <ClInclude Include="BotControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BotControl.h">
+    <ClInclude Include="ControlServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
