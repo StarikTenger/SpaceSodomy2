@@ -1,6 +1,7 @@
 #pragma once
 #include <set>
 #include <box2d/box2d.h>
+#include <functional>
 
 
 class Ship;
@@ -46,4 +47,6 @@ public:
 	std::set<Wall*> walls;
 
 	b2World* physics = new b2World(b2Vec2_zero);
+
+	std::function<b2Vec2(b2Vec2, float)> calc_intersection_;
 };

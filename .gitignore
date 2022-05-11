@@ -366,6 +366,7 @@ FodyWeavers.xsd
 
 # Client config files
 client_config.conf
+token.conf
 keys.conf
 sound_settings.conf
 setup.conf

@@ -10,6 +10,7 @@ void Gun::import_Gun_Prototype(Gun_Prototype def) {
 	damage = def.damage;
 	recharge_time = def.recharge_time;
 	stamina_cost = def.stamina_cost;
+	stamina_delay = def.stamina_delay;
 	energy_cost = def.energy_cost;
 	projectile_mass = def.projectile_mass;
 	projectile_vel = def.projectile_vel;

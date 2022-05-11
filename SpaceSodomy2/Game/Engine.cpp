@@ -5,11 +5,12 @@
 // Constructor
 Engine::Engine() {}
 
-Engine::Engine(b2Body* _body, CommandModule* _command_module, Counter* _stamina, Effects* _effects) {
+Engine::Engine(b2Body* _body, CommandModule* _command_module, Counter* _stamina, Effects* _effects, float stamina_delay_) {
 	body = _body;
 	command_module = _command_module;
 	stamina = _stamina;
 	effects = _effects;
+	stamina_delay = stamina_delay_;
 }
 
 // Forces' methods
@@ -80,7 +81,6 @@ void Engine::step(float _dt) {
 	// Command processing
 	if ((command_module->get_command(CommandModule::ROCKET_ANGLE)) ) {
 		body->SetTransform(body->GetWorldPoint({ 0,0 }), command_module->get_rocket_angle());
-		std::cout << "tell\n";
 	}
 	if (command_module->get_command(CommandModule::STABILIZE_ROTATION))
 		stabilize_rotation();
@@ -99,5 +99,6 @@ void Engine::step(float _dt) {
 	// Boost consumption
 	if (stamina->get() > 0 && is_linear_force_used && command_module->get_command(CommandModule::BOOST)) {
 		stamina->modify(-dt * boost_stamina_consumption);
+		stamina->add_delay(stamina_delay);
 	}
 }

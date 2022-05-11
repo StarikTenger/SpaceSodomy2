@@ -34,6 +34,6 @@ Module* ModuleManager::new_module(Module_Prototype* base) {
     case (Module::ROCKET):
         return new Rocket_Module(base);
     }
-    std::cout << "new_module: unknown module type\n";
+    std::cerr << "new_module: unknown module type\n";
     return new None_Module((base));
 }

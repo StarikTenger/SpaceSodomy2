@@ -5,13 +5,25 @@
 
 ShipBrain::ShipBrain(CommandModule& _1, const GameReadable& _2, int _3) : iBrain(_1, _2), id(_3) {};
 void ShipBrain::set_new_id(int _) { id = _; }
+std::string ShipBrain::get_gun_name() { return gun_name; }
+std::string ShipBrain::get_hull_name() { return hull_name; }
+std::string ShipBrain::get_left_module_name() { return left_module_name; }
+std::string ShipBrain::get_right_module_name() { return right_module_name; }
 
 
-NetworkShipBrain::NetworkShipBrain(CommandModule& _1, const GameReadable& _2, int _3) : ShipBrain(_1, _2, _3) {};
+void ShipBrain::suggest_equip(Equip _) {
+	gun_name = _.gun_name;
+	hull_name = _.hull_name;
+	left_module_name = _.left_module_name;
+	right_module_name = _.right_module_name;
+}
 
 
-EdgarBrain::EdgarBrain(CommandModule& _1, const GameReadable& _2, std::function<b2Vec2(b2Vec2, float)> calc_intersection_, int _3) :
-    ShipBrain(_1, _2, _3), calc_intersection(calc_intersection_) {
+
+
+
+EdgarBrain::EdgarBrain(CommandModule& _1, const GameReadable& _2, int _3) :
+    ShipBrain(_1, _2, _3) {
 
 }
 
@@ -171,9 +183,11 @@ b2Vec2 EdgarBrain::calc_volumetric_intersection(b2Vec2 cur_point, float dir_angl
 	b2Vec2 left_pos = (radius + 0.09) * dir;
 	left_pos = body_pos + aux::rotate(left_pos, -b2_pi / 2);
 
-	b2Vec2 intersection_right = calc_intersection(right_pos, dir_angle);
-	b2Vec2 intersection_left = calc_intersection(left_pos, dir_angle);
-	b2Vec2 intersection = calc_intersection(body_pos, dir_angle);
+	
+
+	b2Vec2 intersection_right = environment.calc_intersection_(right_pos, dir_angle);
+	b2Vec2 intersection_left = environment.calc_intersection_(left_pos, dir_angle);
+	b2Vec2 intersection = environment.calc_intersection_(body_pos, dir_angle);
 
 	intersection = std::min(std::min(b2Distance(body_pos, intersection_right), b2Distance(body_pos, intersection_left)),
 		b2Distance(body_pos, intersection)) * dir;
@@ -198,7 +212,7 @@ void EdgarBrain::safety_flight(Ship* ship) {
 }
 
 bool EdgarBrain::is_target_visible(Ship* my_ship, b2Body* target) {
-	auto beam_intersection = calc_intersection(target->GetPosition(),
+	auto beam_intersection = environment.calc_intersection_(target->GetPosition(),
 		aux::vec_to_angle(my_ship->get_body()->GetPosition() - target->GetPosition()));
 	auto a = (my_ship->get_body()->GetPosition() - target->GetPosition()).Length();
 	auto b = (beam_intersection - target->GetPosition()).Length();

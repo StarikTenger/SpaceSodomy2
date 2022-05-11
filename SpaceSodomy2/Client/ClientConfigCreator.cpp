@@ -5,6 +5,10 @@ void ClientConfigCreator::run() {
 	{write_config("client_config.conf", R"(
 localhost 8001 0 Name
 		)"); }
+	// token.conf
+	{write_config("token.conf", R"(
+0
+		)"); }
 	// keys.conf
 	{write_config("keys.conf", R"(
 ENGINE_LIN_FORWARD W Up END
@@ -35,6 +39,12 @@ REPLAY_PLAY Space END
 	{write_config("sound_settings.conf", R"(
 100
 32
+		)"); }
+	// HUD_settings.conf
+	{write_config("HUD_settings.conf", R"(
+1
+121
+1
 		)"); }
 	// fonts.conf
 	{write_config("fonts.conf", R"(

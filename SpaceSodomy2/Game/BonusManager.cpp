@@ -56,13 +56,11 @@ bool BonusManager::get_next(Bonus_Def& val) {
     }
     val = bonuses_to_create.back();
 
-    //std::cout << "exported bonus with type " << val.bonus->type << " & id " << val.get_id() << '\n';
     bonuses_to_create.pop_back();
     return true;
 
 }
 void BonusManager::free_bonus_spawn(Bonus::Types type, int id) {
-    //std::cout << "bonus_returned with type " << type << "& id " << id <<"\n";
     spawnable[type].count--;
     spawnpoints[type][id].is_free = true;
 }

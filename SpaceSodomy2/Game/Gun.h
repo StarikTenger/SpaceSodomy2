@@ -27,6 +27,7 @@ struct Gun_Prototype {
 	unsigned char alias = 1;
 	float recharge_time = 0.5;
 	float stamina_cost = 10;
+	float stamina_delay = 0.7;
 	float energy_cost = 0;
 	float projectile_mass = 0.05;
 	float projectile_vel = 10;

@@ -1,6 +1,6 @@
 #include "Control.h"
 
-void Control::load_config(std::string path) {
+void ControlServer::load_config(std::string path) {
 	std::ifstream fileInput(path);
 	std::stringstream file = aux::comment(fileInput);
 
@@ -13,6 +13,8 @@ void Control::load_config(std::string path) {
 			int port_;
 			file >> port_;
 			network.set_port(port_);
+			std::cout << "PORT set\n";
+
 		}
 
 		if (command == "MAP") {
@@ -33,15 +35,14 @@ void Control::load_config(std::string path) {
 		if (command == "BOT_LIST") {
 			std::string name;
 			file >> name;
-			game.load_bots(name);
+			load_bots(name);
 			std::cout << "BOT_LIST loaded\n";
-
 		}
 
 	}
 }
 
-Control::Control() {
+ControlServer::ControlServer() {
 	//loading data from config
 	load_config("config.conf");
 	time_t now = time(0);
@@ -52,27 +53,75 @@ Control::Control() {
 	game.set_time(&time_by_id);
 }
 
-void Control::receive() {
-	
-	network.receive();
-	if (network.get_last_message() == "")
-		return;
-	// Splitting message
-	std::stringstream message;
-	message << network.get_last_message();
-	//std::cout << network.get_last_message() << "\n";
-	network.del_last_message();
-	std::string IP_address_, name_, time, gun_name, hull_name, left_module, right_module;
-	message >> IP_address_;
+bool ControlServer::load_bots(std::string path) {
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
+
+	std::string symbol;
+	while (input >> symbol) {
+		if (symbol == "END")
+			break;
+
+		auto read_symbol = [&](std::string symbol_name, auto& var) -> bool {
+			if (symbol == symbol_name) {
+				decltype(var) val(var);
+				if (!(input >> val)) {
+					std::cout << "Control::load_bots: failed to read " + symbol_name + "\n";
+					return false;
+				}
+				var = val;
+			}
+			return true;
+		};
+
+		if (symbol == "BOT") {
+			ShipBrain::Equip equip;
+			std::string name;
+
+			while (input >> symbol) {
+				if (symbol == "END")
+					break;
+				
+				read_symbol("NAME", name);
+				read_symbol("GUN_NAME", equip.gun_name);
+				read_symbol("HULL_NAME", equip.hull_name);
+				read_symbol("LEFT_MODULE_NAME", equip.left_module_name);
+				read_symbol("RIGHT_MODULE_NAME", equip.right_module_name);
+			}
+			if (name == "") {
+				std::ifstream file_input("names.conf");
+				std::stringstream input = aux::comment(file_input);
+				auto x = aux::random_int(1, 499);
+				for (int i = 0; i < x; i++)
+					input >> name;
+				name = "Bot_" + name;
+			}
+			BotControl* bot = new BotControl(name, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
+			bot->set_equip(name, equip);
+			bots.push_back(bot);
+		};
+	}
+	return true;
+}
+
+void  ControlServer::parse_message(std::stringstream &message) {
+	// Received params
+	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
+
+	message >> IP_address_;
 	message >> id_;
-	message >> time;
+	{
+		std::string time;
+		message >> time; // discard
+	}
 	message >> name_;
 	message >> token;
 	message >> gun_name;
 	message >> hull_name;
 	message >> left_module >> right_module;
-	//std::cout << IP_address_ << " " << local_ << "\n";
+
+
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
 		addresses.insert(IP_address_);
@@ -80,9 +129,17 @@ void Control::receive() {
 		id_by_IP[IP_address_] = id_;
 		token_by_id[id_] = token;
 		time_by_id[id_] = aux::get_milli_count();
-		sf::Color new_color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		game.new_network_player(id_, new_color, name_, gun_name, hull_name, left_module, right_module);
+
+
+		PlayerDef def(id_, name_);
+		def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+		def.gun_name = gun_name;
+		def.hull_name = hull_name;
+		def.left_module_name = left_module;
+		def.right_module_name = right_module;
+		game.new_player(def);
 	}
+
 	// Applying commands
 	if (token_by_id[id_] == token) {
 		IP_by_id[id_] = IP_address_;
@@ -103,12 +160,24 @@ void Control::receive() {
 	}
 }
 
-void Control::outer_step() {
+void ControlServer::receive() {
+	network.receive();
+	if (network.get_last_message() == "")
+		return;
+	// Splitting message
+	std::stringstream message;
+	message << network.get_last_message();
+	network.del_last_message();
+
+	parse_message(message);
+}
+
+void ControlServer::outer_step() {
 	// Receiving data
 	receive();
 }
 
-void Control::inner_step(int time_time_delta) {
+void ControlServer::inner_step(int time_time_delta) {
 	// Banning disconnected players
 	std::set <int> banned;
 	for (auto id : IP_by_id) {
@@ -122,6 +191,11 @@ void Control::inner_step(int time_time_delta) {
 		//network.del_address(IP_by_id[id]);
 	}
 	// Release next game step 
+	for (int i = 0; i < bots.size(); i++) {
+		std::stringstream message;
+		message << bots[i]->get_message();
+		parse_message(message);
+	}
 	game.step(delay * 0.001);
 	// Send encoded info;
 	network.send(game.encode());

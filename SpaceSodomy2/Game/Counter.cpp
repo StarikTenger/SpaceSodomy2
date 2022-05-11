@@ -35,6 +35,9 @@ void Counter::set_max(float _max_value) {
 void Counter::set_delay(float _delay) {
 	delay = _delay;
 }
+void Counter::add_delay(float _delay) {
+	current_delay = std::max(current_delay, _delay);
+}
 
 void Counter::set_change_vel(float val) {
 	change_vel = val;
@@ -48,7 +51,7 @@ void Counter::modify(float delta) {
 }
 
 void Counter::restart_delay() {
-	current_delay = delay;
+	add_delay(delay);
 }
 
 void Counter::step(float dt) {

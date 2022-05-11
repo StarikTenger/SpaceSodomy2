@@ -21,10 +21,10 @@ b2Body* ActiveModule::get_body()
 Counter* ActiveModule::get_recharge_counter() {
 	return recharge_counter;
 }
-
-Counter* ActiveModule::get_stamina_cooldown_delay_counter() {
-	return stamina_cooldown_delay_counter;
-}
+//
+//Counter* ActiveModule::get_stamina_cooldown_delay_counter() {
+//	return stamina_cooldown_delay_counter;
+//}
 
 EventManager* ActiveModule::get_event_manager() {
 	return event_manager;
@@ -78,10 +78,9 @@ void ActiveModule::set_effects(Effects* val) {
 void ActiveModule::activate_default_side_effects() {
 	recharge_counter->set(recharge_time);
 	stamina->modify(-stamina_cost);
-	//std::cout << energy->get() << "\n";
 	energy->modify(-energy_cost);
-	//std::cout << energy->get() << "\n";
-
+	//stamina->restart_delay();
+	stamina->add_delay(stamina_delay);
 }
 
 void ActiveModule::step(float dt) {
@@ -89,7 +88,6 @@ void ActiveModule::step(float dt) {
 		recharge_counter->get() < 0 && 
 		stamina->get() > stamina_cost && 
 		energy->get() >= energy_cost) {
-        //std::cout << "AM activate\n";
 		activate();
 	}
 }

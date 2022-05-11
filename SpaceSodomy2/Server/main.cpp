@@ -4,6 +4,6 @@
 
 int main() {
 	aux::random_seed(aux::get_milli_count());
-	Control control;
+	ControlServer control;
 	control.run();
 }

@@ -51,7 +51,6 @@ protected:
 	//std::set<Bonus*> bonuses;
 	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
-	std::set<ShipBrain*> ship_brains;
 	//std::set<Forcefield*> forcefields;
 	
 	// Walls
@@ -93,7 +92,7 @@ protected:
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	CommandModule*  create_command_module();
-	Engine*          create_engine(b2Body* = nullptr, CommandModule* = nullptr, Counter* = nullptr, Effects* = nullptr);
+	Engine*          create_engine(b2Body* = nullptr, CommandModule* = nullptr, Counter* = nullptr, Effects* = nullptr, float stamina_delay_ = 0.7);
 	Counter*         create_counter(float val = 0, float change_vel = 0);
 	DamageReceiver* create_damage_receiver(b2Body* = nullptr, Counter* = nullptr, Player* = nullptr, Effects* = nullptr);
 	Ship*            create_ship(Player* player, b2Vec2 pos, float angle);
@@ -122,7 +121,6 @@ protected:
 	void delete_bonus(Bonus*);
 	void delete_rocket(Rocket*);
 	void delete_forcefield(Forcefield*);
-	void delete_brain(ShipBrain*);
 
 	 // Processing functions
 	void process_players();
@@ -142,15 +140,14 @@ protected:
 	void process_rocket_brains();
 	void process_rocket_manager();
 	void process_forcefields();
-	void process_ship_brains();
 
 	// Misc
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
 
+public:
 	GameReadable& get_readable();
 
-public:
 	Game();
 	// Sets command to player with id=id
 	void apply_command(int id, int command, int val);
@@ -163,7 +160,6 @@ public:
 	// Load funcions
 	bool load_map(std::string path);
 	bool load_parameters(std::string path);
-	bool load_bots(std::string path);
 	// Clears every temporary body
 	void clear();
 	// Clean all
@@ -171,11 +167,11 @@ public:
 	// Encodes class into string
 	std::string encode();
 	// Creates new player
-	void new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+protected:
+	void create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
-	void new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
-		std::string left_module, std::string right_module);
-	void new_player(Player_Def);
+public:
+	bool new_player(PlayerDef);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player

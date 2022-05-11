@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CommandModule.h"
+#include <iostream>
 
 // Constructor
 CommandModule::CommandModule() {}

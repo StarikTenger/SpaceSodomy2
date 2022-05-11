@@ -54,17 +54,8 @@ int Player::get_kills() {
 int Player::get_ping() {
 	return ping;
 }
-
-ShipBrain* Player::get_brain() {
-	return brain;
-}
-
 // Set methods
 void Player::set_is_alive(bool val) {
-	if (!val) {
-		// TODO: add respawn time to config
-		this->time_to_respawn->set(3);
-	}
 	is_alive = val;
 }
 
@@ -110,9 +101,6 @@ void Player::set_ping(int ping_) {
 	ping = ping_;
 }
 
-void Player::set_brain(ShipBrain* _) {
-	brain = _;
-}
 
 void Player::add_death() {
 	deaths++;

@@ -30,6 +30,7 @@ Game::Game() : GameReadable() {
 	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
 	wall_player = create_player(-1, sf::Color::White, "WALL");
+	calc_intersection_ = [&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);};
 }
 
 GameReadable& Game::get_readable() {
@@ -87,7 +88,6 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_name(name);
 	player->set_command_module(create_command_module());
 	player->set_time_to_respawn(create_counter(0, -1));
-	player->set_brain(nullptr);
 	// Id
 	player->set_id(id);
 	players[player->get_id()] = player;
@@ -101,8 +101,8 @@ CommandModule* Game::create_command_module() {
 	return command_module;
 }
 
-Engine* Game::create_engine(b2Body* body, CommandModule* command_module, Counter* stamina, Effects* effs) {
-	auto engine = new Engine(body, command_module, stamina, effs);
+Engine* Game::create_engine(b2Body* body, CommandModule* command_module, Counter* stamina, Effects* effs, float stamina_delay_) {
+	auto engine = new Engine(body, command_module, stamina, effs, stamina_delay_);
 	engines.insert(engine);
 	id_manager.set_id(engine);
 	return engine;
@@ -113,7 +113,7 @@ Counter* Game::create_counter(float val, float change_vel) {
 	counter->set(val);
 	counter->set_change_vel(change_vel);
 	counters.insert(counter);
-	id_manager.set_id(counter);
+	//id_manager.set_id(counter);
 	return counter;
 }
 
@@ -131,7 +131,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Creating ship
 	auto ship = new Ship();
 	ships.insert(ship);
-	id_manager.set_id(ship);
+	ship->set_id(player->get_id());
 
 	// Create effects
 	Effects_Prototype effects_prototype(effect_params);
@@ -165,7 +165,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	// Stamina
 	auto stamina = create_counter(hull_prototype.stamina, hull_prototype.stamina_recovery);
 	stamina->set_max(hull_prototype.stamina);
-	stamina->set_delay(hull_prototype.stamina_pause); 
+	stamina->set_delay(0); 
 	ship->set_stamina(stamina);
 
 	// Energy
@@ -174,7 +174,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	ship->set_energy(energy);
 
 	// Engine
-	auto engine = create_engine(body, command_module, stamina, effs);
+	auto engine = create_engine(body, command_module, stamina, effs, hull_prototype.stamina_delay);
 	engine->set_force_angular(hull_prototype.force_angular);
 	engine->set_force_linear(hull_prototype.force_linear);
 	ship->set_engine(engine);
@@ -427,10 +427,6 @@ void Game::delete_ship(Ship* ship) {
 	delete_active_module(ship->get_bonus_slot());
 	delete_active_module(ship->get_left_module());
 	delete_active_module(ship->get_right_module());
-	// Player management
-	ship->get_player()->set_is_alive(0);
-	ship->get_player()->get_brain()->set_new_id(0);
-
 	ships.erase(ship);
 	delete ship;
 }
@@ -490,10 +486,6 @@ void Game::delete_forcefield(Forcefield* field) {
 	delete field;
 }
 
-void Game::delete_brain(ShipBrain* _) {
-	ship_brains.erase(_);
-	delete _;
-}
 
 
 
@@ -503,13 +495,12 @@ void Game::process_players() {
 		auto player = player_pair.second;
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
-			&& player->get_id() != -1) { // The player is not the wall
-			player->set_is_alive(1);
+			/*&& player->get_id() != -1*/) { // The player is not the wall
 
+
+			player->set_is_alive(1);
 			// creating ship
 			auto ship = create_ship(player, get_rand_respawn_pos(), aux::random_float(0, 2 * b2_pi, 3));
-			player->get_brain()->set_new_id(ship->get_id());
-			//auto_damage = 0;
 		}
 	}
 }
@@ -518,8 +509,6 @@ void Game::process_ships() {
 	// Deleting
 	std::set<Ship*> ships_to_delete;
 	for (auto ship : ships) {
-		//if (auto_damage)
-		//	ship->get_hp()->modify(-dt*20);
 
 		// Apply INSTANT_HP
 		auto hp_eff = ship->get_effects()->get_effect(Effects::Types::INSTANT_HP)->get_counter();
@@ -596,10 +585,16 @@ void Game::process_ships() {
 		// Death, Checking for < zero hp
 		if (ship->get_hp()->get() <= 0) {
 			ships_to_delete.insert(ship);
-			ship->get_player()->add_death();
+			auto player = ship->get_player();
+			player->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 			}
+			player->set_is_alive(0);
+
+			//auto trigger = [&]() {player->get_time_to_respawn()->set(3);};
+			player->get_time_to_respawn()->set(3);			// TODO: add respawn time to config
+
 			event_manager.create_event(EventDef(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
 		}
 		
@@ -709,7 +704,6 @@ void Game::process_physics() {
 			hit_objects.insert(contact->GetFixtureB()->GetBody());
 			// Creating event
 			event_manager.create_event(EventDef(Event::WALL_HIT, nullptr, pos));
-			//std::cout << "hit\n";
 		}
 	}
 }
@@ -877,7 +871,6 @@ void Game::step(float _dt) {
 	process_rockets();
 	process_rocket_manager();
 	process_forcefields();
-	process_ship_brains();
 }
 
 float Game::get_dt() {
@@ -1138,7 +1131,7 @@ bool Game::load_parameters(std::string path) {
 				float val;
 				if (!(input >> val)) {
 					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					//std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
 
 					return false;
 				}
@@ -1151,7 +1144,7 @@ bool Game::load_parameters(std::string path) {
 				bool val;
 				if (!(input >> val)) {
 					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
+					//std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
 
 					return false;
 				}
@@ -1299,6 +1292,13 @@ bool Game::load_parameters(std::string path) {
 					}
 					prototype.energy_cost = val;
 				}
+				else if (symbol == "STAMINA_DELAY") {
+					float val;
+					if (!(input >> val)) {
+						std::cerr << "Game::load_parameters: failed to read STAMINA_DELAY\n";
+					}
+					prototype.stamina_delay = val;
+				}
 				else {
 					float temp;
 					input >> temp;
@@ -1331,6 +1331,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("RECHARGE", guns[name].recharge_time);
 				read_symbol("DAMAGE", guns[name].damage);
 				read_symbol("STAMINA_CONSUMPTION", guns[name].stamina_cost);
+				read_symbol("STAMINA_DELAY", guns[name].stamina_delay);
 				read_symbol("PROJECTILE_MASS", guns[name].projectile_mass);
 				read_symbol("PROJECTILE_VEL", guns[name].projectile_vel);
 				read_symbol("PROJECTILE_RADIUS", guns[name].projectile_radius);
@@ -1361,7 +1362,7 @@ bool Game::load_parameters(std::string path) {
 				read_symbol("STAMINA_RECOVERY", hulls[name].stamina_recovery);
 				read_symbol("LINEAR_FORCE", hulls[name].force_linear);
 				read_symbol("ANGULAR_FORCE", hulls[name].force_angular);
-				read_symbol("STAMINA_PAUSE", hulls[name].stamina_pause);
+				read_symbol("STAMINA_DELAY", hulls[name].stamina_delay);
 				read_symbol("ENERGY", hulls[name].energy);
 				read_symbol("START_ENERGY", hulls[name].start_energy);
 				read_symbol("ENERGY_REGEN", hulls[name].energy_regen);
@@ -1374,64 +1375,6 @@ bool Game::load_parameters(std::string path) {
 	return true;
 }
 
-bool Game::load_bots(std::string path) {
-	std::ifstream file_input(path);
-	std::stringstream input = aux::comment(file_input);
-
-	std::string symbol;
-	while (input >> symbol) {
-		if (symbol == "END")
-			break;
-
-		auto read_symbol = [&](std::string symbol_name, auto& var) {
-			if (symbol == symbol_name) {
-				decltype(var) val(var);
-				if (!(input >> val)) {
-					std::cerr << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					std::cout << "Game::load_parameters: failed to read " + symbol_name + "\n";
-					return false;
-				}
-				var = val;
-			}
-			return true;
-		};
-
-		if (symbol == "BOT") {
-			Player_Def def(aux::random_int(1, 100000000), Player_Def::EDGAR_BOT, "warning: bot name not set");
-
-			while (input >> symbol) {
-				if (symbol == "END")
-					break;
-				if (symbol == "COLOR") {
-					int r, g, b;
-					input >> r >> g >> b;
-					def.color.r = r;
-					def.color.g = g;
-					def.color.b = b;
-				}
-				read_symbol("NAME", def.name);
-				read_symbol("ID", def.id);
-				read_symbol("GUN_NAME", def.gun_name);
-				read_symbol("HULL_NAME", def.hull_name);
-				read_symbol("LEFT_MODULE_NAME", def.left_module_name);
-				read_symbol("RIGHT_MODULE_NAME", def.right_module_name);
-
-				if (symbol == "BOT_TYPE") {
-					std::string temp;
-					input >> temp;
-					if (temp == "EDGAR_BOT") {
-						def.type = Player_Def::EDGAR_BOT;
-					}
-					else {
-						std::cout << "Game::load_bots error: unknown bot type\n";
-					}
-				}
-			}
-			new_player(def);
-		};
-	}
-	return true;
-}
 
 
 std::string Game::encode() {
@@ -1573,13 +1516,12 @@ std::string Game::encode() {
 		message += aux::write_float(event->get_pos().x, 2);
 		message += aux::write_float(event->get_pos().y, 2);
 	}
-	//std::cout << "message size is " << message.size() << "\n";
 	std::string ans = aux::write_short(message.size());
 	ans += (message);
 	return ans;
 }
 
-void Game::new_network_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+void Game::create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, color, name);
 	player->set_gun_name(gun_name);
@@ -1588,49 +1530,19 @@ void Game::new_network_player(int id, sf::Color color, std::string name, std::st
 	player->set_right_module_name(right_module);
 	players[id] = player;
 	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(0);
-
-
-	auto brain = new NetworkShipBrain(*player->get_command_module(), get_readable());
-	ship_brains.insert(brain);
-	player->set_brain(brain);
+	player->get_time_to_respawn()->set(3);
 }
 
-void Game::new_edgar_bot(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
-	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, color, name);
-	player->set_gun_name(gun_name);
-	player->set_hull_name(hull_name);
-	player->set_left_module_name(left_module);
-	player->set_right_module_name(right_module);
-	players[id] = player;
-	player->set_is_alive(0);
-	player->get_time_to_respawn()->set(0);
-
-
-	auto brain = new EdgarBrain(*player->get_command_module(), get_readable(), 
-		[&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);});
-	ship_brains.insert(brain);
-	player->set_brain(brain);
-}
-
-void Game::new_player(Player_Def def) {
+bool Game::new_player(PlayerDef def) {
 	if (id_list.count(def.id)) {
-		std::cout << "Game::new_player error: id collision with player.name = " << def.name << "\n";
-		return;
+		std::cerr << "Game::new_player error: id collision with player.name = " << def.name << "\n";
+		return false;
 	}
 	id_list.insert(def.id);
 
-	switch (def.type) {
-	case (Player_Def::NETWORK_PLAYER) :
-		new_network_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-		break;
-	case (Player_Def::EDGAR_BOT) :
-		new_edgar_bot(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-		break;
-     default:
-		 std::cout << "Game::new_player error: unknown Player::Type with player.name = " << def.name << "\n";
-	}
+	create_new_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+
+	return true;
 }
 
 
@@ -1659,17 +1571,9 @@ void Game::delete_player(int id) {
 	auto res = *players.find(id);
 
 
-	delete_brain(res.second->get_brain());
-
 	// Deleting player
 	delete res.second;
 	players.erase(players.find(id));
-}
-
-void Game::process_ship_brains() {
-	for (auto brain : ship_brains) {
-		brain->compute_action();
-	}
 }
 
 Game::~Game() {

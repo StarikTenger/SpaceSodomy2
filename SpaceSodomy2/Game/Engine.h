@@ -15,6 +15,7 @@ private:
 	float current_modifier = 2;
 	float boost_modifier = 2;
 	float boost_stamina_consumption = 20;
+	float stamina_delay = 0.7;
 
 	// To manage boost correctly
 	bool is_linear_force_used = 0;
@@ -35,7 +36,7 @@ private:
 public:
 	// Constructor
 	Engine();
-	Engine(b2Body*, CommandModule*, Counter*, Effects*);
+	Engine(b2Body*, CommandModule*, Counter*, Effects*, float stamina_delay_);
 	// Get methods
 	float get_force_linear();
 	float get_force_angular();

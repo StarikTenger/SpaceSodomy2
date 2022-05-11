@@ -2,7 +2,7 @@
 #include <box2d/box2d.h>
 #include "iId.h"
 
-class Counter : public iId {
+class Counter /*: public iId*/ {
 private:
 	float value = 0;
 	float max_value = 100;
@@ -20,6 +20,7 @@ public:
 	void set(float);
 	void set_max(float);
 	void set_delay(float);
+	void add_delay(float);
 	void restart_delay();
 	void set_change_vel(float);
 	void modify(float);
