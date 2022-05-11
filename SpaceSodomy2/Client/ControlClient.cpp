@@ -1,13 +1,13 @@
-#include "Control.h"
+#include "ControlClient.h"
 
-int Control::key_by_name(std::string name) {
+int ControlClient::key_by_name(std::string name) {
 	int sum = 0;
 	for (auto k : key_matches[name])
 		sum += keyboard.state_current[k];
 	return sum;
 }
 
-int Control::key_prev_by_name(std::string name) {
+int ControlClient::key_prev_by_name(std::string name) {
 	int sum = 0;
 	for (auto k : key_matches[name])
 		sum += keyboard.state_prev[k];
@@ -15,7 +15,7 @@ int Control::key_prev_by_name(std::string name) {
 
 }
 
-void Control::process_events(sf::Window* window) {
+void ControlClient::process_events(sf::Window* window) {
 	window->setKeyRepeatEnabled(true);
 	sf::Event event;
 
@@ -42,7 +42,7 @@ void Control::process_events(sf::Window* window) {
 	}
 }
 
-void Control::process_commands() {
+void ControlClient::process_commands() {
 	command_module.reset();
 
 	bool commands_active = !menu_processing.text_field_active;
@@ -162,7 +162,7 @@ void Control::process_commands() {
 	}
 }
 
-std::string Control::commands_to_string() {
+std::string ControlClient::commands_to_string() {
 	std::string message = "";
 	message += game.get_gun_name() + " ";
 	message += game.get_hull_name() + " ";
@@ -178,7 +178,7 @@ std::string Control::commands_to_string() {
 	return message;
 }
 
-Control::Control() {
+ControlClient::ControlClient() {
 	network.set_id(1);
 	draw.create_window(600, 600, "Space Sodomy II");
 	// GUI implemetation
@@ -222,7 +222,7 @@ Control::Control() {
 	load_token("token.conf");
 }
 
-void Control::outer_step() {
+void ControlClient::outer_step() {
 	//std::cout << rDBeplay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
@@ -236,7 +236,7 @@ void Control::outer_step() {
 		running = 0;
 }
 
-void Control::inner_step(int time_delta) {
+void ControlClient::inner_step(int time_delta) {
 	// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
 	game.set_dt(time_delta * 0.001);
 
@@ -294,7 +294,7 @@ void Control::inner_step(int time_delta) {
 	}
 }
 
-int Control::load_keys(std::string path) {
+int ControlClient::load_keys(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::string symbol;
@@ -310,19 +310,19 @@ int Control::load_keys(std::string path) {
 					keys.push_back(key_names[symbol_1]);
 					continue;
 				}
-				std::cerr << "Control::load_keys: unknown symbol " << symbol << "\n";
+				std::cerr << "ControlClient::load_keys: unknown symbol " << symbol << "\n";
 				return false;
 			}
 			key_matches[symbol] = keys;
 			continue;
 		}
-		std::cerr << "Control::load_keys: unknown symbol " << symbol << "\n";
+		std::cerr << "ControlClient::load_keys: unknown symbol " << symbol << "\n";
 		return false;
 	}
 	return true;
 }
 
-void Control::load_config(std::string path) {
+void ControlClient::load_config(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	std::string address;
@@ -342,7 +342,7 @@ void Control::load_config(std::string path) {
 	game.load_setup("setup.conf");
 }
 
-void Control::load_token(std::string path) {
+void ControlClient::load_token(std::string path) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	int token;

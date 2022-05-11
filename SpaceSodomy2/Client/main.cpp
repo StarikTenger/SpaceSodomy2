@@ -1,4 +1,4 @@
-#include "Control.h"
+#include "ControlClient.h"
 #include "ClientConfigCreator.h"
 
 int main() {
@@ -10,7 +10,7 @@ int main() {
 	aux::random_seed(aux::get_milli_count());
 
 	// Init control
-	Control control;		
+	ControlClient control;
 	control.load_config("client_config.conf");
 	control.run();
 	

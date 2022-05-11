@@ -17,7 +17,7 @@
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include <Control/Control.h>
 
-class Control : public iControl {
+class ControlClient : public iControl {
 private:
 	// Zoom velocity
 	float zoom_vel = 2;
@@ -75,7 +75,7 @@ private:
 	std::queue<int> frame_marks;
 public:
 	// Default constructor
-	Control();
+	ControlClient();
 	// Get methods
 
 	// Func to call regulary
