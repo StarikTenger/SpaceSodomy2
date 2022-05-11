@@ -1,14 +1,14 @@
 Renderer.1 {
-    BackgroundColor = transparent;
-    BorderColor = #3C3C3C;
-    Borders = (0, 0, 0, 0);
-    TextColor = #66C0F4;
+    BackgroundColor = #FFFFFF00;
+    Borders = (3%, 2, 2, 2);
     TextureBackground = None;
 }
 
 Renderer.2 {
-    BackgroundColor = #FFFFFF00;
-    Borders = (3%, 2, 2, 2);
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #66C0F4;
     TextureBackground = None;
 }
 
@@ -28,9 +28,9 @@ Label.ToolLabel {
     }
 }
 
-Panel.InnerOrOuterWalls {
+Panel.WallsOrientation {
     Position = (0, 5%);
-    Renderer = &2;
+    Renderer = &1;
     Size = (100%, 30%);
 
     Picture.Picture {
@@ -47,7 +47,7 @@ Panel.InnerOrOuterWalls {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 30, 0);
-        Renderer = &1;
+        Renderer = &2;
         ScrollbarPolicy = Never;
         Size = (91% - 30, 100%);
         Text = "Inner walls";
@@ -56,16 +56,16 @@ Panel.InnerOrOuterWalls {
     }
 }
 
-Panel.SpikedOrUnspikedWalls {
+Panel.SpikedWalls {
     Position = (0, 35%);
-    Renderer = &2;
+    Renderer = &1;
     Size = (100%, 30%);
 
     Label.Label1 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 30, 0);
-        Renderer = &1;
+        Renderer = &2;
         ScrollbarPolicy = Never;
         Size = (84%, 100%);
         Text = "Spiked walls";

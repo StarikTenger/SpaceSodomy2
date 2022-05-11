@@ -15,6 +15,7 @@ ScrollablePanel.MainPanel {
         Size = (100%, 10%);
 
         Label.ToolsLabel {
+            ScrollbarPolicy = Never;
             Size = (100%, 18);
             Text = Tools;
             TextSize = 13;
@@ -28,36 +29,70 @@ ScrollablePanel.MainPanel {
             }
         }
 
-        Picture.Cursor {
+        Panel.Cursor {
             MouseCursor = Hand;
             Position = (0, 20);
-            Size = (30, 30);
+            Size = (32, 32);
 
             Renderer {
-                Texture = "resources/cursor.png" NoSmooth;
-                TransparentTexture = false;
+                BackgroundColor = #20283C;
+                BorderColor = black;
+                TextureBackground = None;
+            }
+
+            Picture.CursorPicture {
+                MouseCursor = Hand;
+                Position = (1, 1);
+                Size = (30, 30);
+
+                Renderer {
+                    Texture = "resources/cursor.png" NoSmooth;
+                    TransparentTexture = false;
+                }
             }
         }
 
-        Picture.Polygon {
-            MouseCursor = Hand;
-            Position = (31, 20);
-            Size = (30, 30);
+        Panel.Polygon {
+            Position = (32, 20);
+            Size = (32, 32);
 
             Renderer {
-                Texture = "resources/polygon.png" NoSmooth;
-                TransparentTexture = false;
+                BackgroundColor = #20283C;
+                BorderColor = black;
+                TextureBackground = None;
+            }
+
+            Picture.PolygonPicture {
+                MouseCursor = Hand;
+                Position = (1, 1);
+                Size = (30, 30);
+
+                Renderer {
+                    Texture = "resources/polygon.png" NoSmooth;
+                    TransparentTexture = false;
+                }
             }
         }
 
-        Picture.Bonus {
-            MouseCursor = Hand;
-            Position = (62, 20);
-            Size = (30, 30);
+        Panel.Bonus {
+            Position = (64, 20);
+            Size = (32, 32);
 
             Renderer {
-                Texture = "resources/bonus.png" Smooth;
-                TransparentTexture = false;
+                BackgroundColor = #20283C;
+                BorderColor = black;
+                TextureBackground = None;
+            }
+
+            Picture.BonusPicture {
+                MouseCursor = Hand;
+                Position = (1, 1);
+                Size = (30, 30);
+
+                Renderer {
+                    Texture = "resources/bonus.png" Smooth;
+                    TransparentTexture = false;
+                }
             }
         }
     }
@@ -66,19 +101,5 @@ ScrollablePanel.MainPanel {
         Position = (0, 60);
         Renderer = &1;
         Size = (100%, 50%);
-
-        Label.ToolName {
-            Size = (100%, 18);
-            Text = "Tool Name";
-            TextSize = 13;
-
-            Renderer {
-                BackgroundColor = transparent;
-                BorderColor = #3C3C3C;
-                Borders = (0, 0, 0, 0);
-                TextColor = #9AACB9;
-                TextureBackground = None;
-            }
-        }
     }
 }

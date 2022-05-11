@@ -1,33 +1,17 @@
 Renderer.1 {
-    BackgroundColor = transparent;
-    BorderColor = #3C3C3C;
-    Borders = (0, 0, 0, 0);
-    TextColor = #66C0F4;
-    TextureBackground = None;
-}
-
-Renderer.2 {
-    BackgroundColor = transparent;
-    BorderColor = #3C3C3C;
-    Borders = (0, 0, 0, 0);
-    TextColor = #66C0F4;
-    TextureBackground = None;
-}
-
-Renderer.3 {
     TextureThumb = "themes/Black.png" Part(44, 499, 30, 30) Smooth;
     TextureThumbHover = None;
     TextureTrack = "themes/Black.png" Part(76, 499, 20, 45) Middle(0, 15) Smooth;
     TextureTrackHover = "themes/Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
 }
 
-Renderer.4 {
+Renderer.2 {
     BackgroundColor = #FFFFFF00;
     Borders = (3%, 2, 2, 2);
     TextureBackground = None;
 }
 
-Renderer.5 {
+Renderer.3 {
     CaretColor = rgb(110, 110, 255);
     DefaultTextColor = #66C0F4;
     Padding = (6, 4, 6, 4);
@@ -38,6 +22,22 @@ Renderer.5 {
     TextureDisabled = None;
     TextureFocused = "themes/Black.png" Part(0, 288, 60, 40) Middle(15, 0) Smooth;
     TextureHover = "themes/Black.png" Part(62, 288, 60, 40) Middle(15, 0) Smooth;
+}
+
+Renderer.4 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #66C0F4;
+    TextureBackground = None;
+}
+
+Renderer.5 {
+    BackgroundColor = transparent;
+    BorderColor = #3C3C3C;
+    Borders = (0, 0, 0, 0);
+    TextColor = #66C0F4;
+    TextureBackground = None;
 }
 
 Label.ToolLabel {
@@ -95,41 +95,35 @@ Panel.BerserkButton {
         }
     }
 
-    Slider.Slider1 {
+    Slider.BerserkSlider {
         ChangeValueOnScroll = true;
         InvertedDirection = false;
         Maximum = 100;
         Minimum = 0;
-        Position = (20% + 24, 50% - 6);
+        Position = (29% + 24, 50% - 6);
+        Renderer = &1;
         Size = (150, 12);
         Step = 1;
         Value = 50;
-
-        Renderer {
-            TextureThumb = "themes/Black.png" Part(44, 499, 30, 30) Smooth;
-            TextureThumbHover = None;
-            TextureTrack = "themes/Black.png" Part(76, 499, 20, 45) Middle(0, 15) Smooth;
-            TextureTrackHover = "themes/Black.png" Part(98, 499, 20, 45) Middle(0, 15) Smooth;
-        }
     }
 
     Label.Label2 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 34%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Max count:";
         TextSize = 13;
         VerticalAlignment = Center;
     }
 
-    Label.Label3 {
+    Label.BerserkSliderVal {
         Enabled = false;
         MaximumTextWidth = 80;
-        Position = (21% + 174, 34%);
-        Renderer = &1;
+        Position = (30% + 174, 34%);
+        Renderer = &5;
         ScrollbarPolicy = Never;
         Size = (11%, 33%);
         Text = 1;
@@ -138,11 +132,11 @@ Panel.BerserkButton {
     }
 
     EditBox.EditBox1 {
-        DefaultText = 7;
-        InputValidator = "[0-1000]*";
-        Position = (20% + 24, 67% + 16);
-        Renderer = &5;
+        InputValidator = UInt;
+        Position = (29% + 24, 67% + 16);
+        Renderer = &3;
         Size = (150, 22);
+        Text = 7;
         TextSize = 13;
     }
 
@@ -150,9 +144,9 @@ Panel.BerserkButton {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 67%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Cooldown:";
         TextSize = 13;
         VerticalAlignment = Center;
@@ -161,14 +155,14 @@ Panel.BerserkButton {
 
 Panel.ChargeButton {
     Position = (0, 35%);
-    Renderer = &4;
+    Renderer = &2;
     Size = (100%, 30%);
 
     Label.Label1 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 0);
-        Renderer = &2;
+        Renderer = &4;
         ScrollbarPolicy = Never;
         Size = (91% - 30, 33%);
         Text = Charge;
@@ -176,13 +170,13 @@ Panel.ChargeButton {
         VerticalAlignment = Center;
     }
 
-    Slider.Slider2 {
+    Slider.ChargeSlider {
         ChangeValueOnScroll = true;
         InvertedDirection = false;
         Maximum = 100;
         Minimum = 0;
-        Position = (20% + 24, 50% - 6);
-        Renderer = &3;
+        Position = (29% + 24, 50% - 6);
+        Renderer = &1;
         Size = (150, 12);
         Step = 1;
         Value = 50;
@@ -192,19 +186,19 @@ Panel.ChargeButton {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 34%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Max count:";
         TextSize = 13;
         VerticalAlignment = Center;
     }
 
-    Label.Label6 {
+    Label.ChargeSliderVal {
         Enabled = false;
         MaximumTextWidth = 80;
-        Position = (21% + 174, 34%);
-        Renderer = &1;
+        Position = (30% + 174, 34%);
+        Renderer = &5;
         ScrollbarPolicy = Never;
         Size = (11%, 33%);
         Text = 1;
@@ -213,11 +207,11 @@ Panel.ChargeButton {
     }
 
     EditBox.EditBox2 {
-        DefaultText = 7;
-        InputValidator = "[0-1000]*";
-        Position = (20% + 24, 67% + 16);
-        Renderer = &5;
+        InputValidator = UInt;
+        Position = (29% + 24, 67% + 16);
+        Renderer = &3;
         Size = (150, 22);
+        Text = 7;
         TextSize = 13;
     }
 
@@ -225,9 +219,9 @@ Panel.ChargeButton {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 67%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Cooldown:";
         TextSize = 13;
         VerticalAlignment = Center;
@@ -244,30 +238,30 @@ Panel.ChargeButton {
     }
 }
 
-Panel.Panel1 {
+Panel.ImmortalityButton {
     Position = (0, 65%);
-    Renderer = &4;
+    Renderer = &2;
     Size = (100%, 30%);
 
     Label.Label8 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 0);
-        Renderer = &2;
+        Renderer = &4;
         ScrollbarPolicy = Never;
         Size = (91% - 30, 33%);
-        Text = Charge;
+        Text = Immortality;
         TextSize = 13;
         VerticalAlignment = Center;
     }
 
-    Slider.Slider3 {
+    Slider.ImmortalitySlider {
         ChangeValueOnScroll = true;
         InvertedDirection = false;
         Maximum = 100;
         Minimum = 0;
-        Position = (20% + 24, 50% - 6);
-        Renderer = &3;
+        Position = (29% + 24, 50% - 6);
+        Renderer = &1;
         Size = (150, 12);
         Step = 1;
         Value = 50;
@@ -277,19 +271,19 @@ Panel.Panel1 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 34%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Max count:";
         TextSize = 13;
         VerticalAlignment = Center;
     }
 
-    Label.Label10 {
+    Label.ImmortalitySliderVal {
         Enabled = false;
         MaximumTextWidth = 80;
-        Position = (21% + 174, 34%);
-        Renderer = &1;
+        Position = (30% + 174, 34%);
+        Renderer = &5;
         ScrollbarPolicy = Never;
         Size = (11%, 33%);
         Text = 1;
@@ -298,11 +292,11 @@ Panel.Panel1 {
     }
 
     EditBox.EditBox3 {
-        DefaultText = 7;
-        InputValidator = "[0-1000]*";
-        Position = (20% + 24, 67% + 16);
-        Renderer = &5;
+        InputValidator = UInt;
+        Position = (29% + 24, 67% + 16);
+        Renderer = &3;
         Size = (150, 22);
+        Text = 7;
         TextSize = 13;
     }
 
@@ -310,9 +304,9 @@ Panel.Panel1 {
         Enabled = false;
         MaximumTextWidth = 80;
         Position = (9% + 24, 67%);
-        Renderer = &1;
+        Renderer = &5;
         ScrollbarPolicy = Never;
-        Size = (11%, 33%);
+        Size = (20%, 33%);
         Text = "Cooldown:";
         TextSize = 13;
         VerticalAlignment = Center;
