@@ -222,8 +222,8 @@ Control::Control() {
 	load_token("token.conf");
 }
 
-void Control::step() {
-	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
+void Control::outer_step() {
+	//std::cout << rDBeplay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
 		menu_processing.save_keys("keys.conf", menu_processing.keys_menu_vec);
@@ -232,71 +232,66 @@ void Control::step() {
 	// Receiving
 	network.receive();
 
-	// Delay check
-	int time_current = aux::get_milli_count();
-	int time_delta = time_current - time_prev;
-	if (time_delta >= delay) {
-		time_prev = time_current;
-		// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
-		game.set_dt(time_delta * 0.001);
+	if (draw.get_window() == nullptr || !draw.get_window()->isOpen())
+		running = 0;
+}
 
-		// Pass message to game object
-		if (replay.get_replay_active())
-			game.update_state(replay.get_cur_frame());
-		else
-			game.update_state(network.get_message());
-		// Draw		
-		game.display(network.get_id());
-		//FPS
-		frame_marks.push(aux::get_milli_count());
-		// HUD
-		Camera camera_backup = *game.get_draw()->get_camera();
-		game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
-		menu_processing.step();
-		if (!menu_processing.active) {
-			hud.step(gui);
+void Control::inner_step(int time_delta) {
+	// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
+	game.set_dt(time_delta * 0.001);
+
+	// Pass message to game object
+	if (replay.get_replay_active())
+		game.update_state(replay.get_cur_frame());
+	else
+		game.update_state(network.get_message());
+	// Draw		
+	game.display(network.get_id());
+	//FPS
+	frame_marks.push(aux::get_milli_count());
+	// HUD
+	Camera camera_backup = *game.get_draw()->get_camera();
+	game.get_draw()->apply_camera(b2Vec2(0, 0), 1, 1.5 * b2_pi);
+	menu_processing.step();
+	if (!menu_processing.active) {
+		hud.step(gui);
+	}
+	gui.draw();
+
+	// Restore camera
+	game.get_draw()->set_camera(camera_backup);
+	game.get_draw()->display();
+
+	// Event processing
+	process_events(draw.get_window());
+	process_commands();
+
+	// Sending
+	network.send(commands_to_string());
+
+	// Music
+	if ((game.get_ship(network.get_id()) != nullptr) &&
+		(game.get_ship(network.get_id())->get_player() != nullptr) &&
+		(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
+		if (respawned)
+		{
+			audio.stop_music(track);
+			track = audio.get_music_by_number(aux::random_int(0, 131213));
+			audio.start_music(track);
 		}
-		gui.draw();
-
-		// Restore camera
-		game.get_draw()->set_camera(camera_backup);
-		game.get_draw()->display();
-
-		// Event processing
-		process_events(draw.get_window());
-		process_commands();
-
-		// Sending
-		network.send(commands_to_string());
-
-		// Music
-		if ((game.get_ship(network.get_id()) != nullptr) &&
-			(game.get_ship(network.get_id())->get_player() != nullptr) &&
-			(game.get_ship(network.get_id())->get_player()->get_is_alive())) {
-			if (respawned)
-			{
-				audio.stop_music(track);
-				track = audio.get_music_by_number(aux::random_int(0, 131213));
-				audio.start_music(track);
-			}
-			audio.update_music(track, 1);
-			respawned = 0;
-		}
-		else {
-			respawned = 1;
-			audio.update_music(track, 1.0 / 8);
-		}
+		audio.update_music(track, 1);
+		respawned = 0;
+	}
+	else {
+		respawned = 1;
+		audio.update_music(track, 1.0 / 8);
 	}
 
+	// Reload
 	if (reload) {
-		menu_processing.save_keys("keys.conf", menu_processing.keys_menu_vec);
-		load_keys("keys.conf");
 		load_config("client_config.conf");
 		reload = 0;
 	}
-
-	if (draw.get_window() == nullptr || !draw.get_window()->isOpen())
-		running = 0;
 }
 
 int Control::load_keys(std::string path) {

@@ -103,28 +103,26 @@ void Control::receive() {
 	}
 }
 
-void Control::step() {
+void Control::outer_step() {
 	// Receiving data
 	receive();
-	// Check if the time for the next update has come
-	if (aux::get_milli_count() - time_prev >= delay) {
-		time_prev += delay;
+}
 
-		// Banning disconnected players
-		std::set <int> banned;
-		for (auto id : IP_by_id) {
-			if (aux::get_milli_count() - time_by_id[id.first] >= disconnect_timeout)
-				banned.insert(id.first);
-		}
-		for (auto id : banned) {
-			//game.delete_player(id);
-			//IP_by_id.erase(IP_by_id.find(id));
-			//addresses.erase(IP_by_id[id]);
-			//network.del_address(IP_by_id[id]);
-		}
-		// Release next game step 
-		game.step(delay * 0.001);
-		// Send encoded info;
-		network.send(game.encode());
+void Control::inner_step(int time_time_delta) {
+	// Banning disconnected players
+	std::set <int> banned;
+	for (auto id : IP_by_id) {
+		if (aux::get_milli_count() - time_by_id[id.first] >= disconnect_timeout)
+			banned.insert(id.first);
 	}
+	for (auto id : banned) {
+		//game.delete_player(id);
+		//IP_by_id.erase(IP_by_id.find(id));
+		//addresses.erase(IP_by_id[id]);
+		//network.del_address(IP_by_id[id]);
+	}
+	// Release next game step 
+	game.step(delay * 0.001);
+	// Send encoded info;
+	network.send(game.encode());
 }

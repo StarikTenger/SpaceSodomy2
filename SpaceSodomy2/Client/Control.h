@@ -79,7 +79,8 @@ public:
 	// Get methods
 
 	// Func to call regulary
-	void step() override;
+	void outer_step() override;
+	void inner_step(int time_delta) override;
 	// Loading keys
 	int load_keys(std::string path);
 	// Config

@@ -19,7 +19,10 @@ protected:
 
 public:
 	virtual void load_config(std::string path) = 0; // loading configurations	
-	virtual void step() = 0;
+	virtual void outer_step() = 0;
+	virtual void inner_step(int time_delta) = 0;
+
 	int is_running();
+	void step();
 	void run();
 };

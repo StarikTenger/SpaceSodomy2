@@ -32,5 +32,6 @@ public:
 
 	void load_config(std::string path) override; // loading configurations
 	void receive();
-	void step() override;
+	void outer_step() override;
+	void inner_step(int time_time_delta) override;
 };
