@@ -17,7 +17,7 @@
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include <Control/Control.h>
 
-class ControlClient : public iControl {
+class ControlClient : public Control {
 private:
 	// Zoom velocity
 	float zoom_vel = 2;

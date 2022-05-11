@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "Control.h"
 
-void iControl::step() {
+void Control::step() {
 	outer_step();
 	// Check if the time for the next update has come
 	int time_current = aux::get_milli_count();
@@ -13,11 +13,11 @@ void iControl::step() {
 	}
 }
 
-int iControl::is_running() {
+int Control::is_running() {
 	return running;
 }
 
-void iControl::run() {
+void Control::run() {
 	while (is_running()) {
 		step();
 	}

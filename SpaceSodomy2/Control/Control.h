@@ -8,7 +8,7 @@
 #include <ctime>
 #include <AuxLib/AuxLib.h>
 
-class iControl {
+class Control {
 protected:
 	// 0 means the program is supposed to be stopped
 	int running = 1;

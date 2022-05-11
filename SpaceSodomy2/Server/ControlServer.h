@@ -13,7 +13,7 @@
 #include <Control/Control.h>
 #include "BotControl.h";
 
-class ControlServer : public iControl {
+class ControlServer : public Control {
 private:
 	// Init game & network
 	Game game;
