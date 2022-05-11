@@ -23,6 +23,8 @@ private:
 
 	std::vector <BotControl*> bots;
 
+	std::vector<std::string> bot_name_pull;
+
 	std::set <std::string> addresses; // IP addresses of active players
 
 	std::map <int, std::string> IP_by_id; // getting IP by id
@@ -34,6 +36,7 @@ private:
 	void parce_message(std::stringstream &message);
 	void load_config(std::string path); // loading configurations from .conf file
 	bool load_bots(std::string path);
+	bool load_names(std::string path);
 public:
 	Control();
 

@@ -30,6 +30,13 @@ void Control::load_config(std::string path) {
 			std::cout << "PARAMETERS loaded\n";
 		}
 
+		if (command == "BOT_NAMES") {
+			std::string name;
+			file >> name;
+			load_names(name);
+			std::cout << "BOT_NAMES loaded\n";
+		}
+
 		if (command == "BOT_LIST") {
 			std::string name;
 			file >> name;
@@ -49,6 +56,18 @@ Control::Control() {
 		"0" + std::to_string(dt->tm_mon + 1) : std::to_string(dt->tm_mon + 1)) + "." + std::to_string(dt->tm_year + 1900) +
 		"_" + std::to_string(dt->tm_hour) + "." + std::to_string(dt->tm_min) + ".rep");
 	game.set_time(&time_by_id);
+}
+
+bool Control::load_names(std::string path) {
+	std::ifstream file_input(path);
+	std::stringstream input = aux::comment(file_input);
+	while (!input.eof()) {
+		std::string name;
+		input >> name;
+		if (name != "")
+			bot_name_pull.push_back(name);
+	}
+	return true;
 }
 
 bool Control::load_bots(std::string path) {
@@ -87,12 +106,12 @@ bool Control::load_bots(std::string path) {
 				read_symbol("RIGHT_MODULE_NAME", equip.right_module_name);
 			}
 			if (name == "") {
-				std::ifstream file_input("names.conf");
-				std::stringstream input = aux::comment(file_input);
-				auto x = aux::random_int(1, 499);
-				for (int i = 0; i < x; i++)
-					input >> name;
-				name = "Bot_" + name;
+				std::string default_name = "Avdotiy";
+				if (!bot_name_pull.empty()) {
+					int x = aux::random_int(0, bot_name_pull.size());
+					default_name = bot_name_pull[x];
+				}
+				name = "Bot_" + default_name;
 			}
 			BotControl* bot = new BotControl(name, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
 			bot->set_equip(name, equip);
