@@ -151,11 +151,13 @@
   <ItemGroup>
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="GameEditor.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Control.h" />
     <ClInclude Include="GameEditor.h" />
+    <ClInclude Include="GUIManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
