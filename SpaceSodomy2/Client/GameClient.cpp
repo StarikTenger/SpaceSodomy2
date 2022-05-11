@@ -109,11 +109,10 @@ void GameClient::update_state(std::string source) {
 	clear();
 
 	// Creating stringstream
-	//std::cout << source << "\n";
 	std::stringstream stream;
 	stream << source;
 
-	// Pasrsing source
+	// Parsing source
 	std::string symbol;
 	int msg_size = aux::read_short(stream);
 	while (symbol = stream.get(), !stream.eof()) {
@@ -162,20 +161,17 @@ void GameClient::update_state(std::string source) {
 			is_alive = aux::read_int8(stream);
 			connection_time = aux::read_int(stream);
 
-			//std::cout << float(time_to_respawn) << " ";
 			// Creating player
 			Player* player = create_player(id);
 			player->set_color(color);
 			player->set_name(name);
 			player->set_hull_name(hull);
 			player->set_gun_name(gun);
-			//std::cout << gun << "\n";
 			player->set_deaths(deaths);
 			player->set_kills(kills);
 			player->set_is_alive(is_alive);
 			player->get_time_to_respawn()->set(float(time_to_respawn));
 			player->set_ping(aux::get_milli_count() - connection_time);
-			//std::cout << aux::get_milli_count() - connection_time << "\n";
 		}
 		// Ship
 		if (symbol == "S") {

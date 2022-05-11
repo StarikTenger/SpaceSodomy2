@@ -18,7 +18,7 @@ void Audio::load_sound(std::string name, std::string path_to_sound) {
 void Audio::load_music(std::string name, std::string path_to_music) {
 	sf::Music* music = new sf::Music();
 	if (!music->openFromFile(path_to_music)) {
-		std::cout << "Can't load soundtrack " << name << "\n";
+		std::cout << "Audio::load_music error: Can't load soundtrack " << name << "\n";
 		return; // error
 	}
 	soundtrack[name] = music;
@@ -50,7 +50,7 @@ double Audio::get_music_volume() {
 }
 
 void Audio::load_sounds(std::string path) {
-	std::cout << "Start loading\n";
+	std::cout << "Start loading sounds\n";
 	std::ifstream file(path);
 	std::stringstream loadedFile = aux::comment(file);
 	while (loadedFile) {
@@ -59,7 +59,7 @@ void Audio::load_sounds(std::string path) {
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_sound(name, path);
 	}
-	std::cout << "Finish loading\n";
+	std::cout << "Finish loading sounds\n";
 }
 
 void Audio::load_soundtrack(std::string path) {
@@ -96,7 +96,6 @@ void Audio::play(int id, std::string name, b2Vec2 pos, double z, double volume, 
 	sound->play();
 	if (!looped)
 		sound_timeouts.push({ -aux::get_milli_count() - sound->getBuffer()->getDuration().asMilliseconds(), id });
-	//std::cout << sound_timeouts.size() << sound_timeouts.top().first << " " << sound_timeouts.top().second << "\n";
 }
 
 void Audio::play(int id, std::string name, b2Vec2 pos, double volume, bool looped) {
@@ -114,7 +113,6 @@ void Audio::update_sound(int id, std::string name, b2Vec2 pos, double volume_mod
 	else {
 		if (!sounds.count(name))
 			return;
-		//std::cout << "NEW SOUND " << id << " " << name << "\n";
 		play(id, name, pos, sound_volume * activeSounds_mode[id], looped);
 	}
 	activeSounds[id]->setLoop(looped);
@@ -136,7 +134,7 @@ void Audio::stop_music(std::string name) {
 
 std::string Audio::get_music_by_number(int val) {
 	if (soundtrack.size() == 0) {
-		std::cout << "no music found\n";
+		std::cout << "Audio::get_music_by_number error: no music found\n";
 		return "";
 	}
 	val %= soundtrack.size();

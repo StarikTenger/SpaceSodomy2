@@ -227,7 +227,6 @@ int Control::get_is_running() {
 }
 
 void Control::step() {
-	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
 	if (reload) {
 		menu_processing.save_keys("keys.conf", menu_processing.keys_menu_vec);

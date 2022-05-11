@@ -13,6 +13,8 @@ void Control::load_config(std::string path) {
 			int port_;
 			file >> port_;
 			network.set_port(port_);
+			std::cout << "PORT set\n";
+
 		}
 
 		if (command == "MAP") {
@@ -121,7 +123,7 @@ bool Control::load_bots(std::string path) {
 	return true;
 }
 
-void  Control::parce_message(std::stringstream &message) {
+void  Control::parse_message(std::stringstream &message) {
 	// Received params
 	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
@@ -186,7 +188,7 @@ void Control::receive() {
 	message << network.get_last_message();
 	network.del_last_message();
 
-	parce_message(message);
+	parse_message(message);
 }
 
 void Control::step() {
@@ -212,7 +214,7 @@ void Control::step() {
 		for (int i = 0; i < bots.size(); i++) {
 			std::stringstream message;
 			message << bots[i]->get_message();
-			parce_message(message);
+			parse_message(message);
 		}
 		game.step(delay * 0.001);
 		// Send encoded info;

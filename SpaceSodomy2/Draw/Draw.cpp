@@ -12,7 +12,7 @@ void Draw::load_texture(std::string name, std::string path_to_texture) {
 	sf::Texture* tex = new sf::Texture();
 	tex->loadFromFile(path_to_texture);
 	if (!tex->getSize().x || !tex->getSize().y) {
-		std::cout << "Texture does not exist\n";
+		std::cout << "Draw::load_texture error: Texture does not exist\n";
 		delete tex;
 		return;
 	}
@@ -79,7 +79,7 @@ void Draw::fullscreen_toggle() {
 }
 
 void Draw::load_textures(std::string path) {
-	std::cout << "Start loading\n";
+	std::cout << "Start loading textures\n";
 	std::ifstream input_file(path);
 	auto file = (aux::comment(input_file));
 	while (file) {
@@ -88,11 +88,11 @@ void Draw::load_textures(std::string path) {
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_texture(name, path);
 	}
-	std::cout << "Finish loading\n";
+	std::cout << "Finish loading textures\n";
 }
 
 void Draw::load_fonts(std::string path) {
-	std::cout << "Start loading\n";
+	std::cout << "Start loading fonts\n";
 	std::ifstream input_file(path);
 	auto file = aux::comment(input_file);
 	while (file) {
@@ -101,11 +101,11 @@ void Draw::load_fonts(std::string path) {
 		std::cout << "loaded: " << name << " " << path << "\n";
 		load_font(name, path);
 	}
-	std::cout << "Finish loading\n";
+	std::cout << "Finish loading fonts\n";
 }
 
 void Draw::export_texture(std::string name, std::string path) {
-	std::cout << "Start exporting " + name + '\n';
+	std::cout << "Start exporting texture " + name + '\n';
 	sf::Image image = get_texture(name)->copyToImage();
 	image.saveToFile(path);
 	std::cout << "Finish exporting\n";

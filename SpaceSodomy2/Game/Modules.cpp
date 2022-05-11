@@ -80,7 +80,6 @@ RocketManager* Module::get_rocket_manager() {
 }
 void Module::set_rocket_manager(RocketManager* val) {
 	rocket_manager = val;
-	//std::cout << "set\n";
 }
 
 None_Module::None_Module(Module_Prototype* base) : Module(base)  {
@@ -117,7 +116,6 @@ void Shotgun_Module::activate() {
 	// Projectiles
 	ProjectileDef projectile_def;
 	float num = bullet_num;
-	//std::cout << num;
 	b2Vec2 impulse = {0,0};
 	for (float i =  -(num / 2) + 0.5; i <= num / 2 - b2_epsilon; i++) {		
 		float vel_val = velocity;

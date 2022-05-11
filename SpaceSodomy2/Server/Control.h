@@ -33,7 +33,7 @@ private:
 	std::map <int, int> token_by_id; // getting token by id
 	std::map <int, int> time_by_id; // getting last connection time by IP
 
-	void parce_message(std::stringstream &message);
+	void parse_message(std::stringstream &message);
 	void load_config(std::string path); // loading configurations from .conf file
 	bool load_bots(std::string path);
 	bool load_names(std::string path);
