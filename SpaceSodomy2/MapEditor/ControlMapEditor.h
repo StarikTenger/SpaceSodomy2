@@ -13,7 +13,7 @@
 #include "GameEditor.h"
 #include <Control/Control.h>
 
-class Control : public iControl {
+class ControlMapEditor : public iControl {
 private:
 	// Zoom velocity
 	float zoom_vel = 2;

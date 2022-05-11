@@ -149,13 +149,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="ControlMapEditor.cpp" />
     <ClCompile Include="GameEditor.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Control.h" />
+    <ClInclude Include="ControlMapEditor.h" />
     <ClInclude Include="GameEditor.h" />
     <ClInclude Include="GUIManager.h" />
   </ItemGroup>
