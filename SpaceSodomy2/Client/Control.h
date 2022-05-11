@@ -15,16 +15,10 @@
 #include <queue>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
+#include <Control/Control.h>
 
-class Control {
+class Control : public iControl {
 private:
-	// 0 means the program is supposed to be stopped
-	int is_running = 1;
-	// Period of drawing & sending in ms
-	int delay = 20;
-	// Last time of activity
-
-	int time_prev = 0;
 	// Zoom velocity
 	float zoom_vel = 2;
 	// Current player's commands
@@ -33,7 +27,7 @@ private:
 	ClientNetwork network;
 	// Contains game objects
 	GameClient game;
-	// Contains window 7 other drawing stuff
+	// Contains window & other drawing stuff
 	Draw draw;
 	// Contains audio
 	Audio audio;
@@ -83,13 +77,13 @@ public:
 	// Default constructor
 	Control();
 	// Get methods
-	int get_is_running();
+
 	// Func to call regulary
-	void step();
+	void step() override;
 	// Loading keys
 	int load_keys(std::string path);
 	// Config
-	void load_config(std::string path);
+	void load_config(std::string path) override;
 	void load_token(std::string path);
 	bool reload = 1; // need to reload configs
 };

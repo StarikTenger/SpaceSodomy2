@@ -23,7 +23,7 @@ void Control::process_events(sf::Window* window) {
 		gui.handleEvent(event);
 		switch (event.type) {
 		case sf::Event::Closed:
-			is_running = 1;
+			running = 1;
 			window->close();
 			break;
 		case sf::Event::MouseMoved:
@@ -222,10 +222,6 @@ Control::Control() {
 	load_token("token.conf");
 }
 
-int Control::get_is_running() {
-	return is_running;
-}
-
 void Control::step() {
 	//std::cout << replay.get_replay_frame()->get_change_vel() << " " << replay.get_replay_frame()->get() << "\n";
 	// load configs
@@ -300,7 +296,7 @@ void Control::step() {
 	}
 
 	if (draw.get_window() == nullptr || !draw.get_window()->isOpen())
-		is_running = 0;
+		running = 0;
 }
 
 int Control::load_keys(std::string path) {

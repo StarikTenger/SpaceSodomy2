@@ -107,8 +107,8 @@ void Control::step() {
 	// Receiving data
 	receive();
 	// Check if the time for the next update has come
-	if (aux::get_milli_count() - last_step_time >= delay) {
-		last_step_time += delay;
+	if (aux::get_milli_count() - time_prev >= delay) {
+		time_prev += delay;
 
 		// Banning disconnected players
 		std::set <int> banned;

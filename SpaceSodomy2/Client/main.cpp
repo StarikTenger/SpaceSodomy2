@@ -12,9 +12,6 @@ int main() {
 	// Init control
 	Control control;		
 	control.load_config("client_config.conf");
-
-	// Run control in loop
-	while (control.get_is_running()) {
-		control.step();
-	}
+	control.run();
+	
 }
