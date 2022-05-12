@@ -83,6 +83,7 @@ protected:
 	Effects_Prototype effect_params;
 	// Misc
 	std::map<std::string, float> params;
+	std::map<int, Ship*> ships_by_player_id;
 
 	// Path to the map
 	std::string map_path = "";
