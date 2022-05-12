@@ -136,16 +136,19 @@ void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
 		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + 16 * i) + "%")));
 		name->setSize(tgui::Layout2d("50%", "15%"));
 		name->setText(rating_table[i].get_name());
+		name->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 		auto kills = tgui::Label::create();
 		apply_label(&rating_table, kills, i);
 		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + 16 * i) + "%")));
 		kills->setSize(tgui::Layout2d("25%", "15%"));
 		kills->setText(std::to_string(rating_table[i].get_kills()));
+		kills->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 		auto deaths = tgui::Label::create();
 		apply_label(&rating_table, deaths, i);
 		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + 16 * i) + "%")));
 		deaths->setSize(tgui::Layout2d("25%", "15%"));
 		deaths->setText(std::to_string(rating_table[i].get_deaths()));
+		deaths->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 
 		gui.get<tgui::Group>("RatingTable")->add(name);
 		gui.get<tgui::Group>("RatingTable")->add(kills);
