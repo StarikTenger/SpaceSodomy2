@@ -532,3 +532,14 @@ std::string aux::censor_name(std::string str) {
 	return str;
 }
 
+bool aux::create_process(std::string proc_name) {
+	// TODO: i do not have an idea what si and pi parameters are 
+	// supposed to be, make sure the function is running correctly
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+	memset(&si, 0, sizeof(si));
+	char* char_array = new char(proc_name.size() + 1);
+	strcpy_s(char_array, proc_name.size() + 1, proc_name.c_str());
+	return CreateProcessA(char_array, 0, 0, 0, 0, 0, 0, 0, &si, &pi);
+}
+

@@ -137,4 +137,7 @@ public:
 
 	// To ban bad names, for exapmle, |_\/|_  C|\|
 	static std::string censor_name(std::string);
+
+	// Initiates windows process
+	bool create_process(std::string proc_name);
 };
