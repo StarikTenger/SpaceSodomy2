@@ -72,8 +72,10 @@ void Control::process_commands() {
 			command_module.set_command(CommandModule::SHOOT, 1);
 		if (key_by_name("BOOST"))
 			command_module.set_command(CommandModule::BOOST, 1);
-		if (key_by_name("RESPAWN"))
+		if (key_by_name("RESPAWN")) {
 			command_module.set_command(CommandModule::RESPAWN, 1);
+			note.play();
+		}
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
 		if (key_by_name("LEFT_MODULE"))
@@ -220,6 +222,8 @@ Control::Control() {
 	game.set_dt(delay * 0.001);
 	game.load_parameters("parameters.conf");
 	load_token("token.conf");
+
+	note = Notification(&gui, "Gradient.txt", & draw, &audio, "rocket");
 }
 
 int Control::get_is_running() {

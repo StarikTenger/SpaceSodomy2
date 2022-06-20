@@ -162,6 +162,9 @@ void EdgarBrain::attack(Ship* _ship, Ship* my_ship) {
 			command_module.set_command(CommandModule::SHOOT, 1);
 		}
 	}
+	if (my_ship->get_effects()->get_effect(Effects::BERSERK)->get_counter()->get() > b2_epsilon) {
+		command_module.set_command(CommandModule::SHOOT, 1);	
+	}
 }
 
 void EdgarBrain::shoot_laser(Ship* _ship, Ship* ship) {

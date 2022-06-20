@@ -15,6 +15,7 @@
 #include <queue>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
+#include "Notification.h"
 
 class Control {
 private:
@@ -79,6 +80,9 @@ private:
 
 	// FPS
 	std::queue<int> frame_marks;
+
+	// Notification
+	Notification note;
 public:
 	// Default constructor
 	Control();

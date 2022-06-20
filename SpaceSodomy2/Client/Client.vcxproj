@@ -165,6 +165,7 @@
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuProcessing.cpp" />
+    <ClCompile Include="Notification.cpp" />
     <ClCompile Include="Replay.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="KeybindingBox.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="MenuProcessing.h" />
+    <ClInclude Include="Notification.h" />
     <ClInclude Include="Replay.h" />
   </ItemGroup>
   <ItemGroup>
