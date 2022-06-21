@@ -532,7 +532,7 @@ std::string aux::censor_name(std::string str) {
 	return str;
 }
 
-void aux::Process::run() {
+void aux::Process::run(bool show) {
 	if (running) {
 		std::cerr << "Can't run process: The process is already running";
 	}
@@ -548,7 +548,7 @@ void aux::Process::run() {
 	lpExecInfo.lpVerb = NULL;
 	lpExecInfo.lpParameters = NULL;
 	lpExecInfo.lpDirectory = NULL;
-	lpExecInfo.nShow = SW_SHOWNORMAL;
+	lpExecInfo.nShow = show ? SW_SHOWNORMAL : SW_HIDE;
 	ShellExecuteEx(&lpExecInfo);
 }
 

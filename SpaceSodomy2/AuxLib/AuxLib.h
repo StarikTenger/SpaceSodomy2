@@ -150,7 +150,7 @@ public:
 	public:
 		Process(std::string proc_name) : proc_name(proc_name) {}
 		// Start process
-		void run();
+		void run(bool show = false);
 		// Close process
 		void close();
 		// If you want to change process name
