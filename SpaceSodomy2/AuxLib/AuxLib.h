@@ -10,7 +10,9 @@
 #include <sstream>
 #include <queue>
 #include <direct.h>
-#include <Windows.h>
+#include <windows.h>
+#include <shellapi.h>
+#pragma comment(lib, "SHELL32.LIB")
 
 class aux {
 public:
@@ -141,8 +143,8 @@ public:
 	// Initiates windows process
 	class Process {
 	private:
-		STARTUPINFOA startup_info;
-		PROCESS_INFORMATION process_info;
+		/*STARTUPINFOA startup_info;
+		PROCESS_INFORMATION process_info;*/
 		std::string proc_name;
 		bool running = 0;
 		//std::string working_directory; // TODO
@@ -155,8 +157,8 @@ public:
 		// If you want to change process name
 		void set_name(std::string _proc_name);
 		// Get info
-		STARTUPINFOA get_startup_info();
-		PROCESS_INFORMATION get_process_info();
+		/*STARTUPINFOA get_startup_info();
+		PROCESS_INFORMATION get_process_info();*/
 		// Check if process is running
 		bool is_running();
 	};
