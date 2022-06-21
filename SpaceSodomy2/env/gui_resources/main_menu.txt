@@ -32,7 +32,7 @@ Group.Group1 {
     Button.Singleplayer {
         Renderer = &1;
         Size = (100%, 20%);
-        Text = Singleplayer;
+        Text = "Create Game";
         TextSize = 13;
     }
 
@@ -64,7 +64,7 @@ Group.Group1 {
         Position = (0, 20%);
         Renderer = &1;
         Size = (100%, 20%);
-        Text = Multiplayer;
+        Text = "Join Game";
         TextSize = 13;
     }
 }

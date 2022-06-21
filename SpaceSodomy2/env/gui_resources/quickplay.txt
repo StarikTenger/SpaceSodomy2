@@ -153,7 +153,7 @@ Button.PlayButton {
     Position = (85%, 93%);
     Renderer = &1;
     Size = (15%, 7%);
-    Text = Play;
+    Text = Continue;
     TextSize = 13;
 }
 
@@ -162,6 +162,6 @@ Label.Label4 {
     Position = (25%, 10);
     Renderer = &3;
     Size = (50%, 55);
-    Text = "QUICK PLAY";
+    Text = "CREATE GAME";
     TextSize = 40;
 }
