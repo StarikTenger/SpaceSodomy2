@@ -137,4 +137,27 @@ public:
 
 	// To ban bad names, for exapmle, |_\/|_  C|\|
 	static std::string censor_name(std::string);
+
+	// Initiates windows process
+	class Process {
+	private:
+		STARTUPINFOA startup_info;
+		PROCESS_INFORMATION process_info;
+		std::string proc_name;
+		bool running = 0;
+		//std::string working_directory; // TODO
+	public:
+		Process(std::string proc_name) : proc_name(proc_name) {}
+		// Start process
+		void run();
+		// Close process
+		void close();
+		// If you want to change process name
+		void set_name(std::string _proc_name);
+		// Get info
+		STARTUPINFOA get_startup_info();
+		PROCESS_INFORMATION get_process_info();
+		// Check if process is running
+		bool is_running();
+	};
 };

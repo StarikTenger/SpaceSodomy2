@@ -532,3 +532,38 @@ std::string aux::censor_name(std::string str) {
 	return str;
 }
 
+void aux::Process::run() {
+	if (running) {
+		std::cerr << "Can't run process: The process is already running";
+	}
+	running = 1;
+	memset(&startup_info, 0, sizeof(startup_info));
+	char* char_array = new char(proc_name.size() + 1);
+	strcpy_s(char_array, proc_name.size() + 1, proc_name.c_str());
+	CreateProcessA(char_array, 0, 0, 0, 0, 0, 0, 0, &startup_info, &process_info);
+}
+
+void aux::Process::close() {
+	if (!running) {
+		std::cerr << "Can't close process: The process is not running";
+	}
+	running = 0;
+	CloseHandle(process_info.hThread);
+	TerminateProcess(process_info.hProcess, 0);
+}
+
+void aux::Process::set_name(std::string _proc_name) {
+	proc_name = _proc_name;
+}
+
+STARTUPINFOA aux::Process::get_startup_info() {
+	return startup_info;
+}
+
+PROCESS_INFORMATION aux::Process::get_process_info() {
+	return process_info;
+}
+
+bool aux::Process::is_running() {
+	return running;
+}
