@@ -143,8 +143,7 @@ public:
 	// Initiates windows process
 	class Process {
 	private:
-		/*STARTUPINFOA startup_info;
-		PROCESS_INFORMATION process_info;*/
+		SHELLEXECUTEINFO lpExecInfo{};
 		std::string proc_name;
 		bool running = 0;
 		//std::string working_directory; // TODO
