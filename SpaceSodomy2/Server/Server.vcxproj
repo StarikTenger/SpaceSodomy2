@@ -154,10 +154,12 @@
     <ClCompile Include="BotControl.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ServerConfigCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BotControl.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="ServerConfigCreator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
