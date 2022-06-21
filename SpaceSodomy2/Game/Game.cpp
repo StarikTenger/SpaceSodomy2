@@ -132,6 +132,7 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	auto ship = new Ship();
 	ships.insert(ship);
 	ship->set_id(player->get_id());
+	ships_by_player_id[player->get_id()] = ship;
 
 	// Create effects
 	Effects_Prototype effects_prototype(effect_params);
@@ -416,6 +417,7 @@ void Game::delete_command_module(CommandModule* _) {
 
 
 void Game::delete_ship(Ship* ship) {
+	ships_by_player_id.erase(ship->get_player()->get_id());
 	delete_body(ship->get_body());
 	delete_engine(ship->get_engine());
 	delete_active_module(ship->get_gun());
@@ -589,10 +591,14 @@ void Game::process_ships() {
 			player->add_death();
 			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
+
+				if (ship->get_damage_receiver()->get_last_hit() && ship->get_damage_receiver()->get_last_hit()->get_is_alive()) {
+					ships_by_player_id[ship->get_damage_receiver()->get_last_hit()->get_id()]->get_energy()->modify(params["energy_on_kill"]);
+
+				}
 			}
 			player->set_is_alive(0);
 
-			//auto trigger = [&]() {player->get_time_to_respawn()->set(3);};
 			player->get_time_to_respawn()->set(3);			// TODO: add respawn time to config
 
 			event_manager.create_event(EventDef(Event::DEATH, nullptr, ship->get_body()->GetPosition()));
