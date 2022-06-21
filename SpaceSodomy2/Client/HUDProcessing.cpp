@@ -131,21 +131,24 @@ void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
 		label->setTextSize(9 * scale);
 	};
 	for (int i = 0; i < rating_table.size(); i++) {
+		if (rating_table[i].get_name() != player_network->get_name() && i > 4)
+			continue;
+		int place = std::min(i, 5);
 		auto name = tgui::Label::create();
 		apply_label(&rating_table, name, i);
-		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + 16 * i) + "%")));
+		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + 16 * place) + "%")));
 		name->setSize(tgui::Layout2d("50%", "15%"));
-		name->setText(rating_table[i].get_name());
+		name->setText(std::to_string(i + 1) + "." + rating_table[i].get_name());
 		name->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 		auto kills = tgui::Label::create();
 		apply_label(&rating_table, kills, i);
-		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + 16 * i) + "%")));
+		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + 16 * place) + "%")));
 		kills->setSize(tgui::Layout2d("25%", "15%"));
 		kills->setText(std::to_string(rating_table[i].get_kills()));
 		kills->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 		auto deaths = tgui::Label::create();
 		apply_label(&rating_table, deaths, i);
-		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + 16 * i) + "%")));
+		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + 16 * place) + "%")));
 		deaths->setSize(tgui::Layout2d("25%", "15%"));
 		deaths->setText(std::to_string(rating_table[i].get_deaths()));
 		deaths->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
