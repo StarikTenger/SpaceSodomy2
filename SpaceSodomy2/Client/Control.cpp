@@ -222,6 +222,10 @@ Control::Control() {
 	load_token("token.conf");
 }
 
+Control::~Control() {
+	server.close();
+}
+
 int Control::get_is_running() {
 	return is_running;
 }

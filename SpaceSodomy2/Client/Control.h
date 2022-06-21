@@ -86,6 +86,8 @@ private:
 public:
 	// Default constructor
 	Control();
+	// Default destructor
+	~Control();
 	// Get methods
 	int get_is_running();
 	// Func to call regulary
