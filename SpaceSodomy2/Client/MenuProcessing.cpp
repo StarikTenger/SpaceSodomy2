@@ -26,11 +26,25 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	}
 	fout.close();
 }
-void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui) {
+void MenuProcessing::load_keys(std::string path,
+	std::vector<std::vector<std::string*>>* keys) {
+
 	int k = 0;
-	auto control_panel = gui.get<tgui::Panel>("ControlPanel");
+	auto controls_panel = _gui->get<tgui::ScrollablePanel>("ControlsPanel");
+
+	// scrollbar
+	auto scrollbar = tgui::ScrollbarRenderer(controls_panel->getRenderer()->getScrollbar());
+	scrollbar.setTrackColor("None");
+	scrollbar.setThumbColor("#448ACC");
+	scrollbar.setThumbColorHover("None");
+	scrollbar.setArrowColor("#448ACC");
+	scrollbar.setArrowBackgroundColor("None");
+	scrollbar.setArrowBackgroundColorHover("None");
+
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
+
+	// read keybinds from config
 	for (int i = 0; !config.eof(); i++) {
 		if (keys->size() == i)
 			keys->push_back(std::vector<std::string*>());
@@ -38,49 +52,68 @@ void MenuProcessing::load_keys(std::string path, std::vector<std::vector<std::st
 		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
 			if (j == 0) {
+
+				//name of the action
 				auto label = tgui::Label::create();
 				label->setText(cur_name);
+				label->getRenderer()->setTextColor("#448ACC");
 				auto size = tgui::Layout2d(
-					tgui::Layout("30%"),
-					tgui::Layout(20)
+					tgui::Layout("50%"),   //size of action name
+					tgui::Layout("7%")
 				);
 				label->setSize(size);
 				auto layout = tgui::Layout2d(
-					tgui::Layout(std::to_string(5) + "%"),
-					tgui::Layout(std::to_string(5 + 25 * i))
+					tgui::Layout(std::to_string(5) + "%"),    //position of action name
+					tgui::Layout(std::to_string(7 * i) + "%")
 				);
 				label->setPosition(layout);
-				control_panel->add(label);
+				controls_panel->add(label);
 			}
-			if (j == keys->operator[](i).size()) 
+
+			if (j == keys->operator[](i).size())
 				keys->operator[](i).push_back(new std::string(cur));
 			else
 				*(keys->operator[](i)[j]) = cur;
+
+			//keybinding box
 			auto keybinding = KeybindingBox::create();
+
+			//keybinding box visuals
+			keybinding->getRenderer()->setTexture("../textures/menu/ButtonMid.png");
+			keybinding->getRenderer()->setTextureHover("../textures/menu/ButtonMidHover.png");
+			keybinding->getRenderer()->setTextureFocused("../textures/menu/ButtonMidFocused.png");
+			keybinding->getRenderer()->setTextColor("#448ACC");
+			keybinding->getRenderer()->setTextColorFocused("#4BCC3D");
+			keybinding->getRenderer()->setCaretColor("None");
+			keybinding->setAlignment(tgui::EditBox::Alignment::Center);
+
+
 			keybinding->setText(cur);
 			auto size = tgui::Layout2d(
-				tgui::Layout("15%"),
-				tgui::Layout(20)
+				tgui::Layout("20%"),   //size of keybinding window
+				tgui::Layout("7%")
 			);
 			keybinding->setSize(size);
 			auto layout = tgui::Layout2d(
-				tgui::Layout(std::to_string(40 + j * 20) + "%"),
-				tgui::Layout(std::to_string(5 + 25 * i))
+				tgui::Layout(std::to_string(55 + j * 20) + "%"),    //position of keybinding window
+				tgui::Layout(std::to_string(7 * i) + "%")
 			);
 			keybinding->setPosition(layout);
-			control_panel->add(keybinding);
+			controls_panel->add(keybinding);
 			std::string name = "keybinding" + std::to_string(k);
 			keybinding->setWidgetName(name);
 			keybinding->keys = keys;
 			keybinding->reload = reload;
 			k++;
-			keybinding->onKeyPressed([=, &gui]() {
-				auto key = gui.get<KeybindingBox>(name)->keys->operator[](i)[j];
-				auto new_key = gui.get<KeybindingBox>(name)->getText().toStdString();
+
+			//key rebind
+			keybinding->onKeyPressed([=]() {
+				auto key = _gui->get<KeybindingBox>(name)->keys->operator[](i)[j];
+				auto new_key = _gui->get<KeybindingBox>(name)->getText().toStdString();
 				*key = new_key;
-				auto _reload = gui.get<KeybindingBox>(name)->reload;
+				auto _reload = _gui->get<KeybindingBox>(name)->reload;
 				*_reload = true;
-			});
+				});
 			config >> cur;
 		}
 	}
@@ -475,6 +508,96 @@ void MenuProcessing::randomise_bots(std::string path, int number) {
 	fout.close();
 }
 
+// Draws green selction box around settings buttons
+void MenuProcessing::reset_settings_textures(tgui::Gui& gui) {
+	auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+	auto controls_panel = gui.get<tgui::ScrollablePanel>("ControlsPanel");
+	auto audio_panel = gui.get<tgui::Group>("AudioPanel");
+	auto hud_panel = gui.get<tgui::Group>("HUDPanel");
+
+	auto audio_button = gui.get<tgui::ButtonBase>("Audio");
+	auto controls_button = gui.get<tgui::ButtonBase>("Controls");
+	auto hud_button = gui.get<tgui::ButtonBase>("HUD");
+
+	// Setting default texture
+	audio_button->getRenderer()->setTexture("../textures/menu/Buttontop.png");
+	controls_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
+	hud_button->getRenderer()->setTexture("../textures/menu/Buttonmid.png");
+	audio_button->getRenderer()->setTextColor("#448ACC");
+	controls_button->getRenderer()->setTextColor("#448ACC");
+	hud_button->getRenderer()->setTextColor("#448ACC");
+
+	// Choosing the right one
+	for (auto widget : settings_panel->getWidgets()) {
+		if (widget->isVisible()) {
+			if (widget == audio_panel) {
+				audio_button->getRenderer()->setTexture("../textures/menu/ButtonTopFocused.png");
+				audio_button->getRenderer()->setTextColor("#4BCC3D");
+			}
+			else if (widget == controls_panel) {
+				controls_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+				controls_button->getRenderer()->setTextColor("#4BCC3D");
+			}
+			else if (widget == hud_panel) {
+				hud_button->getRenderer()->setTexture("../textures/menu/ButtonMidFocused.png");
+				hud_button->getRenderer()->setTextColor("#4BCC3D");
+			}
+		}
+	}
+}
+
+void MenuProcessing::close_widgets(tgui::Container::Ptr container) {
+	auto widgets = container->getWidgets();
+	for (auto widget : widgets)
+		widget->setVisible(false);
+}
+
+void MenuProcessing::open_settings_menu(tgui::Gui& gui) {
+	// Open settings menu
+	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
+
+	auto close_groups = [](tgui::Gui& gui) {
+		auto wid = gui.getWidgets();
+		for (int i = 0; i < wid.size(); i++) {
+			wid[i]->setVisible(false);
+		}
+	};
+
+	// Open controls in settings menu
+	tgui::Button::Ptr controls = gui.get<tgui::Button>("Controls");
+	controls->onClick([=, &gui] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("ControlsPanel")->setVisible(true);
+		reset_settings_textures(gui);
+		});
+
+	// Open audio in settings menu
+	tgui::Button::Ptr audio = gui.get<tgui::Button>("Audio");
+	audio->onClick([=, &gui] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("AudioPanel")->setVisible(true);
+		reset_settings_textures(gui);
+		});
+
+	// Open hud in settings menu
+	tgui::Button::Ptr hud_button = gui.get<tgui::Button>("HUD");
+	hud_button->onClick([=, &gui] {
+		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
+		close_widgets(settings_panel);
+		_gui->get<tgui::Group>("HUDPanel")->setVisible(true);
+		reset_settings_textures(gui);
+		});
+
+	// Back-button in settings menu
+	tgui::Button::Ptr back = gui.get<tgui::Button>("Back");
+	back->onClick([=, &gui] {
+		close_groups(gui);
+		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
+		});
+}
+
 void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto load_widgets = [&gui](std::string file_name) {
 		auto ans = tgui::Group::create();
@@ -517,6 +640,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	tgui::Button::Ptr settings = gui.get<tgui::Button>("Settings");
 	settings->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
+		reset_settings_textures(gui);
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
 	auto singleplayer = gui.get<tgui::Button>("Singleplayer");
@@ -596,7 +720,8 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		replay->play_button(gui);
 	});
 	// Initializing control menu
-	tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
+	open_settings_menu(gui);
+	/*tgui::Button::Ptr control = gui.get<tgui::Button>("Control");
 	control->onClick([&gui] {
 		auto settings_panel = gui.get<tgui::Group>("SettingsPanel");
 		for (auto widget : settings_panel->getWidgets()) {
@@ -624,7 +749,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	back->onClick([&gui, &close_groups] {
 		close_groups(gui);
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
-	});
+	});*/
 	// Initializing multiplayer menu
 	init_multiplayer_menu("parameters.conf", gui);
 	gui.get<tgui::EditBox>("ServerIP")->onTextChange([=, &gui] {
@@ -658,7 +783,7 @@ void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2
 	load_HUD_settings("HUD_settings.conf", gui);
 	std::string ServerIP, Port, ID, Name;
 	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
-	load_keys("keys.conf", &keys_menu_vec, gui);
+	load_keys("keys.conf", &keys_menu_vec);
 }
 
 void MenuProcessing::step() {

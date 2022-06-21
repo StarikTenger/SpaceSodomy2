@@ -19,7 +19,7 @@ private:
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
 		std::string* id_, std::string* name_, tgui::Gui &gui);
-	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys, tgui::Gui& gui);
+	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);
@@ -27,6 +27,9 @@ private:
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
 	void change_server_configure(std::string position, std::string val);
 	void randomise_bots(std::string path, int number);
+	void reset_settings_textures(tgui::Gui& gui);
+	void open_settings_menu(tgui::Gui& gui);
+	void close_widgets(tgui::Container::Ptr container);
 	Draw* draw;
 	GameClient* game;
 	Replay* replay;
