@@ -540,8 +540,12 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
 	});
 	tgui::Button::Ptr play_button = quickplay_menu->get<tgui::Button>("PlayButton");
-	play_button->onClick([&gui, &close_groups] {
-		// TODO
+	play_button->onClick([=, &gui] {
+		aux::Process server("Server.exe");
+		server.run();
+		close_groups(gui);
+		gui.get<tgui::Group>("configuration.txt")->get<tgui::EditBox>("ServerIP")->setText("localhost");
+		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
 	});
 	tgui::ComboBox::Ptr map_selector = quickplay_menu->get<tgui::ComboBox>("MapBox");
 	map_selector->onItemSelect([=] {
