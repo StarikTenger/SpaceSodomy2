@@ -1,14 +1,11 @@
-BOT
-    BOT_TYPE EDGAR_BOT
-    GUN_NAME snipe
-    HULL_NAME heavy
-    LEFT_MODULE_NAME NONE
-    RIGHT_MODULE_NAME NONE
-END
+#include "ServerConfigCreator.h"
+
+void ServerConfigCreator::run() {
+	{write_config("bot_list.conf", R"(
 BOT
     BOT_TYPE EDGAR_BOT
     GUN_NAME heavy
-    HULL_NAME light
+    HULL_NAME heavy
     LEFT_MODULE_NAME NONE
     RIGHT_MODULE_NAME NONE
 END
@@ -20,3 +17,6 @@ BOT
     RIGHT_MODULE_NAME NONE
 END
 END
+
+		)"); }
+}
