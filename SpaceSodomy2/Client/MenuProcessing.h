@@ -25,6 +25,8 @@ private:
 	void load_sound(std::string path, tgui::Gui &gui);
 	void save_sound(std::string path);
 	void init_multiplayer_menu(std::string file_name, tgui::Gui& gui);
+	void change_server_configure(std::string position, std::string val);
+	void randomise_bots(std::string path, int number);
 	Draw* draw;
 	GameClient* game;
 	Replay* replay;

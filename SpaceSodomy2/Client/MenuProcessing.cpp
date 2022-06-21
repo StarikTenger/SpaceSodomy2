@@ -432,6 +432,49 @@ void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui
 	}
 }
 
+void MenuProcessing::change_server_configure(std::string position, std::string val) {
+	std::string path = "config.conf";
+	std::ifstream file_to_comment(path);
+	std::stringstream config = aux::comment(file_to_comment);
+	std::vector<std::pair<std::string, std::string>> vals;
+	while (!config.eof()) {
+		std::string cur1, cur2;
+		config >> cur1;
+		if (cur1 == "END")
+			break;
+		config >> cur2;
+		if (cur1 != position)
+			vals.push_back({ cur1, cur2 });
+		else
+			vals.push_back({ position, val });
+	}
+	std::ofstream fout;
+	fout.open(path);
+	for (int i = 0; i < vals.size(); i++) {
+		fout << vals[i].first << " " << vals[i].second << "\n";
+	}
+	fout << "END\n";
+	fout.close();
+}
+
+void MenuProcessing::randomise_bots(std::string path, int number) {
+	std::ofstream fout;
+	std::string gun_names[4] = { "default", "cascade", "snipe", "heavy" };
+	std::string hull_names[3] = { "default", "light", "heavy" };
+	fout.open(path);
+	for (int i = 0; i < number; i++) {
+		fout << "BOT\n";
+		fout << "    BOT_TYPE EDGAR_BOT\n";
+		fout << "    GUN_NAME " + gun_names[aux::random_int(0, 3)] << "\n";
+		fout << "    HULL_NAME " + hull_names[aux::random_int(0, 2)] << "\n";
+		fout << "    LEFT_MODULE_NAME NONE\n";
+		fout << "    RIGHT_MODULE_NAME NONE\n";
+		fout << "END\n";
+	}
+	fout << "END\n";
+	fout.close();
+}
+
 void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto load_widgets = [&gui](std::string file_name) {
 		auto ans = tgui::Group::create();
@@ -460,6 +503,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto main_menu = load_widgets("main_menu.txt");
 	main_menu->setVisible(true);
 	auto HUD = load_widgets("HUD.txt");
+	auto quickplay_menu = load_widgets("quickplay.txt");
 	auto settings_menu = load_widgets("settings.txt");
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
@@ -475,6 +519,11 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 		close_groups(gui);
 		gui.get<tgui::Group>("settings.txt")->setVisible(true);
 	});
+	auto singleplayer = gui.get<tgui::Button>("Singleplayer");
+	singleplayer->onClick([=, &gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("quickplay.txt")->setVisible(true);
+		});
 	auto multiplayer = gui.get<tgui::Button>("Multiplayer");
 	multiplayer->onClick([=, &gui, &close_groups] {
 		close_groups(gui);
@@ -484,6 +533,34 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	exit->onClick([=] {
 		draw->get_window()->close();
 	});
+	// Initizlizing quickplay menu
+	tgui::Button::Ptr back_button = quickplay_menu->get<tgui::Button>("BackButton");
+	back_button->onClick([&gui, &close_groups] {
+		close_groups(gui);
+		gui.get<tgui::Group>("main_menu.txt")->setVisible(true);
+	});
+	tgui::Button::Ptr play_button = quickplay_menu->get<tgui::Button>("PlayButton");
+	play_button->onClick([&gui, &close_groups] {
+		// TODO
+	});
+	tgui::ComboBox::Ptr map_selector = quickplay_menu->get<tgui::ComboBox>("MapBox");
+	map_selector->onItemSelect([=] {
+		std::string item = map_selector->getSelectedItem().toStdString();
+		std::transform(item.begin(), item.end(), item.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		change_server_configure("MAP", "maps/" + item + ".lvl");
+		});
+	tgui::ComboBox::Ptr game_mode_selector = quickplay_menu->get<tgui::ComboBox>("GameModeBox");
+	game_mode_selector->onItemSelect([=] {
+		std::string item = game_mode_selector->getSelectedItem().toStdString();
+		std::transform(item.begin(), item.end(), item.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		//change_server_configure("MAP", "maps/" + item + ".conf");
+		});
+	tgui::Slider::Ptr bot_slider = quickplay_menu->get<tgui::Slider>("BotSlider");
+	bot_slider->onValueChange([=] {
+		randomise_bots("bot_list.conf", bot_slider->getValue());
+		});
 	// Initializing replay menu
 	auto select_replay_button = gui.get<tgui::Button>("SelectReplay");
 	select_replay_button->onClick([=, &gui, &launch_replay] {

@@ -1,0 +1,167 @@
+Renderer.1 {
+    BackgroundColor = #F5F5F5;
+    BackgroundColorDisabled = #E6E6E6;
+    BackgroundColorDown = #EBEBEB;
+    BackgroundColorHover = white;
+    BorderColor = #3C3C3C;
+    BorderColorDisabled = #7D7D7D;
+    BorderColorDown = black;
+    BorderColorFocused = #1E1EB4;
+    BorderColorHover = black;
+    Borders = (1, 1, 1, 1);
+    TextColor = #3C3C3C;
+    TextColorDisabled = #7D7D7D;
+    TextColorDown = black;
+    TextColorHover = black;
+    Texture = None;
+    TextureDisabled = None;
+    TextureDown = None;
+    TextureDownFocused = None;
+    TextureDownHover = None;
+    TextureFocused = None;
+    TextureHover = None;
+}
+
+Renderer.2 {
+    ArrowBackgroundColor = #F5F5F5;
+    ArrowBackgroundColorHover = white;
+    ArrowColor = #3C3C3C;
+    ArrowColorHover = black;
+    BackgroundColor = #F5F5F5;
+    BorderColor = black;
+    Borders = (1, 1, 1, 1);
+    Padding = (0, 0, 0, 0);
+    TextColor = #3C3C3C;
+    TextureArrow = None;
+    TextureArrowDisabled = None;
+    TextureArrowHover = None;
+    TextureBackground = None;
+    TextureBackgroundDisabled = None;
+}
+
+Renderer.3 {
+    TextColor = rgba(255, 255, 255, 215);
+    TextureBackground = None;
+
+    Scrollbar {
+        ArrowBackgroundColor = rgba(160, 160, 160, 215);
+        ArrowBackgroundColorHover = rgba(170, 170, 170, 215);
+        ArrowColor = rgba(200, 200, 200, 215);
+        ArrowColorHover = rgba(225, 225, 225, 215);
+        ThumbColor = rgba(185, 185, 185, 215);
+        ThumbColorHover = rgba(195, 195, 195, 215);
+        TrackColor = rgba(160, 160, 160, 215);
+        TrackColorHover = rgba(170, 170, 170, 215);
+    }
+}
+
+Group.Group1 {
+    Position = (120, 100);
+    Size = (50%, 280);
+
+    Renderer {
+    }
+
+    ComboBox.MapBox {
+        ChangeItemOnScroll = false;
+        ExpandDirection = Down;
+        Items = [Rocks];
+        ItemsToDisplay = 0;
+        MaximumItems = 0;
+        Position = (0, 40);
+        Renderer = &2;
+        SelectedItemIndex = 0;
+        Size = (80%, 22);
+        TextSize = 13;
+    }
+
+    Label.Label1 {
+        AutoSize = true;
+        Position = (0, 10);
+        Renderer = &3;
+        Size = (63.4, 35);
+        Text = MAP;
+        TextSize = 26;
+    }
+
+    Label.Label2 {
+        AutoSize = true;
+        Position = (0, 80);
+        Renderer = &3;
+        Size = (173.4, 35);
+        Text = "GAME MODE";
+        TextSize = 26;
+    }
+
+    ComboBox.GameModeBox {
+        ChangeItemOnScroll = false;
+        ExpandDirection = Down;
+        Items = ["Death Match"];
+        ItemsToDisplay = 0;
+        MaximumItems = 0;
+        Position = (0, 110);
+        Renderer = &2;
+        SelectedItemIndex = 0;
+        Size = (80%, 22);
+        TextSize = 13;
+    }
+
+    Slider.BotSlider {
+        ChangeValueOnScroll = true;
+        InvertedDirection = false;
+        Maximum = 10;
+        Minimum = 0;
+        Position = (10, 200);
+        Size = (80%, 16);
+        Step = 1;
+        Value = 0;
+
+        Renderer {
+            BorderColor = #3C3C3C;
+            BorderColorHover = black;
+            Borders = (1, 1, 1, 1);
+            TextureThumb = None;
+            TextureThumbHover = None;
+            TextureTrack = None;
+            TextureTrackHover = None;
+            ThumbColor = #F5F5F5;
+            ThumbColorHover = white;
+            TrackColor = #F5F5F5;
+            TrackColorHover = white;
+        }
+    }
+
+    Label.Label3 {
+        AutoSize = true;
+        Position = (0, 160);
+        Renderer = &3;
+        Size = (76.4, 35);
+        Text = BOTS;
+        TextSize = 26;
+    }
+}
+
+Button.BackButton {
+    Position = (0, 93%);
+    Renderer = &1;
+    Size = (15%, 7%);
+    Text = Back;
+    TextSize = 13;
+}
+
+Button.PlayButton {
+    Position = (85%, 93%);
+    Renderer = &1;
+    Size = (15%, 7%);
+    Text = Play;
+    TextSize = 13;
+}
+
+Label.Label4 {
+    HorizontalAlignment = Center;
+    Position = (25%, 10);
+    Renderer = &3;
+    Size = (50%, 55);
+    Text = "QUICK PLAY";
+    TextSize = 40;
+}
