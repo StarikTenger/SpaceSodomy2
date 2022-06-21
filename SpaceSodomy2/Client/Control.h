@@ -79,6 +79,10 @@ private:
 
 	// FPS
 	std::queue<int> frame_marks;
+
+	// Local server
+	aux::Process server = aux::Process("Server.exe");
+
 public:
 	// Default constructor
 	Control();

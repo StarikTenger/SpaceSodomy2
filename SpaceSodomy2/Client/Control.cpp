@@ -207,7 +207,7 @@ Control::Control() {
 		key_names.insert({keyboard.names[i], i});
 	}
 	load_config("client_config.conf");
-	menu_processing.init(gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
+	menu_processing.init(&server, gui, &draw, &mouse_pos, &keyboard, &network, &game, &replay, &reload);
 	// Init hud
 	hud = HUDProcessing(gui, &draw, &mouse_pos, &keyboard, &game, &network, &frame_marks);
 	// Music name

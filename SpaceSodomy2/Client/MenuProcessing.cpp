@@ -541,11 +541,17 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	});
 	tgui::Button::Ptr play_button = quickplay_menu->get<tgui::Button>("PlayButton");
 	play_button->onClick([=, &gui] {
-		aux::Process server("Server.exe");
-		server.run();
-		close_groups(gui);
-		gui.get<tgui::Group>("configuration.txt")->get<tgui::EditBox>("ServerIP")->setText("localhost");
-		gui.get<tgui::Group>("configuration.txt")->setVisible(true);
+		if (!server->is_running()) {
+			play_button->setText("Terminate");
+			server->run();
+			close_groups(gui);
+			gui.get<tgui::Group>("configuration.txt")->get<tgui::EditBox>("ServerIP")->setText("localhost");
+			gui.get<tgui::Group>("configuration.txt")->setVisible(true);
+		}
+		else {
+			play_button->setText("Create");
+			server->close();
+		}
 	});
 	tgui::ComboBox::Ptr map_selector = quickplay_menu->get<tgui::ComboBox>("MapBox");
 	map_selector->onItemSelect([=] {
@@ -634,9 +640,10 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	});
 }
 
-void MenuProcessing::init(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_,
+void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2Vec2* mouse_pos_,
 	aux::Keyboard* keyboard_, ClientNetwork* network_,
 	GameClient* game_, Replay* replay_, bool* reload_) {
+	server = _server;
 	game = game_;
 	draw = draw_;
 	keyboard = keyboard_;

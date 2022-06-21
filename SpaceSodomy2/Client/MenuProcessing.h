@@ -35,6 +35,7 @@ private:
 	bool* reload;
 	int module_num = 1;
 	bool slider_changing = 0;
+	aux::Process* server;
 public:
 	MenuProcessing();
 	bool active = 1;
@@ -42,7 +43,7 @@ public:
 	int text_field_active = 0;
 	std::vector<std::vector<std::string*>> keys_menu_vec;
 	void save_keys(std::string path, std::vector<std::vector<std::string*>> keys);
-	void init(tgui::Gui& gui, Draw* draw, b2Vec2* mouse_pos_,
+	void init(aux::Process* _server, tgui::Gui& gui, Draw* draw, b2Vec2* mouse_pos_,
 		aux::Keyboard* keyboard_, ClientNetwork* network_,
 		GameClient* game_, Replay* replay_,
 		bool* reload_);
