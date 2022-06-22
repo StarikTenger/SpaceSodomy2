@@ -1,338 +1,414 @@
-Renderer.1 {
-    BackgroundColor = #F5F5F5;
-    BackgroundColorDisabled = #E6E6E6;
-    BackgroundColorDown = #EBEBEB;
-    BackgroundColorHover = white;
-    BorderColor = #3C3C3C;
-    BorderColorDisabled = #7D7D7D;
-    BorderColorDown = black;
-    BorderColorFocused = #1E1EB4;
-    BorderColorHover = black;
-    Borders = (1, 1, 1, 1);
-    TextColor = #3C3C3C;
-    TextColorDisabled = #7D7D7D;
-    TextColorDown = black;
-    TextColorHover = black;
-    Texture = None;
-    TextureDisabled = None;
-    TextureDown = None;
-    TextureDownFocused = None;
-    TextureDownHover = None;
-    TextureFocused = None;
-    TextureHover = None;
-}
-
-Renderer.2 {
-    BackgroundColor = transparent;
-    BorderColor = #3C3C3C;
-    Borders = (0, 0, 0, 0);
-    TextColor = #3C3C3C;
-    TextureBackground = None;
-}
-
-Renderer.3 {
-    BackgroundColor = white;
-    BorderColor = black;
-    TextureBackground = None;
-}
-
-Panel.Panel1 {
-    Position = (0, 10%);
-    Size = (25%, 80%);
+Panel.Background {
+    Position = (5%, 10%);
+    Size = (75%, 60%);
 
     Renderer {
-        BackgroundColor = white;
+        BackgroundColor = None;
         BorderColor = black;
-        TextureBackground = None;
+        Font = "../fonts/Square.ttf";
+        TextureBackground = "../textures/menu/ButtonMid.png" Smooth;
+        TransparentTexture = true;
     }
 
-    Button.Audio {
-        Renderer = &1;
-        Size = (100%, 10%);
-        Text = Audio;
-        TextSize = 13;
-    }
-
-    Button.Control {
-        Position = (0, 10%);
-        Renderer = &1;
-        Size = (100%, 10%);
-        Text = Control;
-        TextSize = 13;
-    }
-
-    Button.Back {
-        Position = (0, 30%);
-        Renderer = &1;
-        Size = (100%, 10%);
-        Text = Back;
-        TextSize = 13;
-    }
-
-    Button.GUI {
-        Position = (0, 20%);
-        Size = (100%, 10%);
-        Text = GUI;
-        TextSize = 13;
+    Panel.Category {
+        Position = (5%, 10%);
+        Size = (20%, 80%);
 
         Renderer {
-            BackgroundColor = #F5F5F5;
-            BackgroundColorDisabled = #E6E6E6;
-            BackgroundColorDown = #EBEBEB;
-            BackgroundColorHover = white;
-            BorderColor = #3C3C3C;
-            BorderColorDisabled = #7D7D7D;
-            BorderColorDown = black;
-            BorderColorFocused = #1E1EB4;
-            BorderColorHover = black;
-            Borders = (1, 1, 1, 1);
-            TextColor = #3C3C3C;
-            TextColorDisabled = #7D7D7D;
-            TextColorDown = black;
-            TextColorHover = black;
-            Texture = None;
-            TextureDisabled = None;
-            TextureDown = None;
-            TextureDownFocused = None;
-            TextureDownHover = None;
-            TextureFocused = None;
-            TextureHover = None;
-        }
-    }
-}
-
-ScrollablePanel.SettingsPanel {
-    ContentSize = (0, 0);
-    Position = (25%, 10%);
-    Renderer = &3;
-    Size = (50%, 80%);
-
-    ScrollablePanel.GUIPanel {
-        ContentSize = (0, 0);
-        Renderer = &3;
-        Size = (100%, 100%);
-
-        Label.Label4 {
-            HorizontalAlignment = Center;
-            Position = (5%, 15%);
-            Renderer = &2;
-            Size = (30%, 18);
-            Text = "Aim Opacity";
-            TextSize = 13;
+            BackgroundColor = None;
+            BorderColor = black;
+            TextureBackground = None;
+            TransparentTexture = false;
         }
 
-        Label.Label5 {
-            HorizontalAlignment = Center;
-            MaximumTextWidth = 120;
-            Position = (5%, 25%);
-            Renderer = &2;
-            Size = (30%, 18);
-            Text = "Network Infromation";
-            TextSize = 13;
-        }
-
-        Label.Label3 {
-            HorizontalAlignment = Center;
-            Position = (5%, 5%);
-            Size = (30%, 18);
-            Text = "Aim configuration";
-            TextSize = 13;
-
-            Renderer {
-                BackgroundColor = transparent;
-                BorderColor = #3C3C3C;
-                Borders = (0, 0, 0, 0);
-                TextColor = #3C3C3C;
-                TextureBackground = None;
-            }
-        }
-
-        Slider.AimConfiguration {
-            ChangeValueOnScroll = true;
-            InvertedDirection = false;
-            Maximum = 3;
-            Minimum = 0;
-            Position = (40%, 5%);
-            Size = (55%, 16);
-            Step = 1;
-            Value = 0;
-
-            Renderer {
-                BorderColor = #3C3C3C;
-                BorderColorHover = black;
-                Borders = (1, 1, 1, 1);
-                TextureThumb = None;
-                TextureThumbHover = None;
-                TextureTrack = None;
-                TextureTrackHover = None;
-                ThumbColor = #F5F5F5;
-                ThumbColorHover = white;
-                TrackColor = #F5F5F5;
-                TrackColorHover = white;
-            }
-        }
-
-        Slider.AimOpacity {
-            ChangeValueOnScroll = true;
-            InvertedDirection = false;
-            Maximum = 255;
-            Minimum = 0;
-            Position = (40%, 15%);
-            Size = (55%, 16);
-            Step = 1;
-            Value = 0;
-
-            Renderer {
-                BorderColor = #3C3C3C;
-                BorderColorHover = black;
-                Borders = (1, 1, 1, 1);
-                TextureThumb = None;
-                TextureThumbHover = None;
-                TextureTrack = None;
-                TextureTrackHover = None;
-                ThumbColor = #F5F5F5;
-                ThumbColorHover = white;
-                TrackColor = #F5F5F5;
-                TrackColorHover = white;
-            }
-        }
-
-        CheckBox.NetworkInformation {
-            Position = (40%, 25%);
-            Size = (18, 18);
+        Button.Audio {
+            Position = (3.5%, 0);
+            Size = (92%, 13%);
+            Text = Audio;
             TextSize = 13;
 
             Renderer {
                 BackgroundColor = #F5F5F5;
                 BackgroundColorDisabled = #E6E6E6;
+                BackgroundColorDown = #EBEBEB;
                 BackgroundColorHover = white;
                 BorderColor = #3C3C3C;
                 BorderColorDisabled = #7D7D7D;
+                BorderColorDown = black;
                 BorderColorFocused = #1E1EB4;
                 BorderColorHover = black;
-                Borders = (1, 1, 1, 1);
-                CheckColor = #3C3C3C;
-                CheckColorDisabled = #7D7D7D;
-                CheckColorHover = black;
-                TextColor = #3C3C3C;
-                TextColorDisabled = #7D7D7D;
-                TextColorHover = black;
-                TextDistanceRatio = 0.2;
-                TextureChecked = None;
-                TextureCheckedDisabled = None;
-                TextureCheckedFocused = None;
-                TextureCheckedHover = None;
-                TextureUnchecked = None;
-                TextureUncheckedDisabled = None;
-                TextureUncheckedFocused = None;
-                TextureUncheckedHover = None;
+                Borders = (0, 0, 0, 0);
+                TextColor = #448ACC;
+                TextColorDisabled = #448ACC;
+                TextColorDown = None;
+                TextColorFocused = None;
+                TextColorHover = None;
+                Texture = "../textures/menu/ButtonTop.png" Smooth;
+                TextureDisabled = None;
+                TextureDown = None;
+                TextureDownFocused = None;
+                TextureDownHover = None;
+                TextureFocused = "../textures/menu/ButtonTopFocused.png" Smooth;
+                TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
+            }
+        }
+
+        Button.Controls {
+            Position = (3.5%, 13%);
+            Size = (88.5%, 13%);
+            Text = Controls;
+            TextSize = 13;
+
+            Renderer {
+                BackgroundColor = #F5F5F5;
+                BackgroundColorDisabled = #E6E6E6;
+                BackgroundColorDown = #EBEBEB;
+                BackgroundColorHover = white;
+                BorderColor = #3C3C3C;
+                BorderColorDisabled = #7D7D7D;
+                BorderColorDown = black;
+                BorderColorFocused = #1E1EB4;
+                BorderColorHover = black;
+                Borders = (0, 0, 0, 0);
+                TextColor = #448ACC;
+                TextColorDisabled = #448ACC;
+                TextColorDown = None;
+                TextColorFocused = None;
+                TextColorHover = None;
+                Texture = "../textures/menu/ButtonMid.png" Smooth;
+                TextureDisabled = None;
+                TextureDown = None;
+                TextureDownFocused = None;
+                TextureDownHover = None;
+                TextureFocused = "../textures/menu/ButtonMidFocused.png" Smooth;
+                TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
+            }
+        }
+
+        Button.Back {
+            Position = (0, 39%);
+            Size = (92%, 13%);
+            Text = Back;
+            TextSize = 13;
+
+            Renderer {
+                BackgroundColor = #F5F5F5;
+                BackgroundColorDisabled = #E6E6E6;
+                BackgroundColorDown = #EBEBEB;
+                BackgroundColorHover = white;
+                BorderColor = #3C3C3C;
+                BorderColorDisabled = #7D7D7D;
+                BorderColorDown = black;
+                BorderColorFocused = #1E1EB4;
+                BorderColorHover = black;
+                Borders = (0, 0, 0, 0);
+                TextColor = #448ACC;
+                TextColorDisabled = #448ACC;
+                TextColorDown = None;
+                TextColorFocused = None;
+                TextColorHover = None;
+                Texture = "../textures/menu/ButtonTop.png" Smooth;
+                TextureDisabled = None;
+                TextureDown = None;
+                TextureDownFocused = None;
+                TextureDownHover = None;
+                TextureFocused = None;
+                TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
+            }
+        }
+
+        Button.HUD {
+            Position = (3.5%, 26%);
+            Size = (88.5%, 13%);
+            Text = HUD;
+            TextSize = 13;
+
+            Renderer {
+                BackgroundColor = #F5F5F5;
+                BackgroundColorDisabled = #E6E6E6;
+                BackgroundColorDown = #EBEBEB;
+                BackgroundColorHover = white;
+                BorderColor = #3C3C3C;
+                BorderColorDisabled = #7D7D7D;
+                BorderColorDown = black;
+                BorderColorFocused = #1E1EB4;
+                BorderColorHover = black;
+                Borders = (0, 0, 0, 0);
+                TextColor = #448ACC;
+                TextColorDisabled = #448ACC;
+                TextColorDown = None;
+                TextColorFocused = None;
+                TextColorHover = None;
+                Texture = "../textures/menu/ButtonMid.png" Smooth;
+                TextureDisabled = None;
+                TextureDown = None;
+                TextureDownFocused = None;
+                TextureDownHover = None;
+                TextureFocused = "../textures/menu/ButtonMidFocused.png" Smooth;
+                TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
             }
         }
     }
 
-    ScrollablePanel.AudioPanel {
+    ScrollablePanel.SettingsPanel {
         ContentSize = (0, 0);
-        Size = (100%, 100%);
-        Visible = false;
+        Position = (25%, 10%);
+        Size = (70%, 80%);
 
         Renderer {
-            BackgroundColor = white;
+            BackgroundColor = None;
             BorderColor = black;
             TextureBackground = None;
         }
 
-        Label.Label1 {
-            HorizontalAlignment = Center;
-            Position = (5%, 5%);
-            Size = (30%, 18);
-            Text = "Music volume";
-            TextSize = 13;
+        ScrollablePanel.HUDPanel {
+            ContentSize = (0, 0);
+            Size = (100%, 100%);
+            Visible = false;
 
             Renderer {
-                BackgroundColor = transparent;
-                BorderColor = #3C3C3C;
-                Borders = (0, 0, 0, 0);
-                TextColor = #3C3C3C;
+                BackgroundColor = None;
+                BorderColor = black;
                 TextureBackground = None;
             }
-        }
 
-        Slider.MusicSlider {
-            ChangeValueOnScroll = true;
-            InvertedDirection = false;
-            Maximum = 100;
-            Minimum = 0;
-            Position = (40%, 5%);
-            Size = (55%, 16);
-            Step = 1;
-            Value = 100;
+            Label.Label4 {
+                HorizontalAlignment = Center;
+                Position = (2%, 19%);
+                Size = (34%, 14%);
+                Text = "Aim Opacity";
+                TextSize = 13;
 
-            Renderer {
-                BorderColor = #3C3C3C;
-                BorderColorHover = black;
-                Borders = (1, 1, 1, 1);
-                TextureThumb = None;
-                TextureThumbHover = None;
-                TextureTrack = None;
-                TextureTrackHover = None;
-                ThumbColor = #F5F5F5;
-                ThumbColorHover = white;
-                TrackColor = #F5F5F5;
-                TrackColorHover = white;
+                Renderer {
+                    BackgroundColor = transparent;
+                    BorderColor = #3C3C3C;
+                    Borders = (0, 0, 0, 0);
+                    TextColor = #448ACC;
+                    TextureBackground = None;
+                }
+            }
+
+            Label.Label5 {
+                HorizontalAlignment = Center;
+                MaximumTextWidth = 120;
+                Position = (1%, 33%);
+                Size = (40%, 14%);
+                Text = "Network Infromation";
+                TextSize = 13;
+
+                Renderer {
+                    BackgroundColor = transparent;
+                    BorderColor = #3C3C3C;
+                    Borders = (0, 0, 0, 0);
+                    TextColor = #448ACC;
+                    TextureBackground = None;
+                }
+            }
+
+            Label.Label3 {
+                HorizontalAlignment = Center;
+                Position = (2%, 5%);
+                Size = (34%, 14%);
+                Text = "Aim configuration";
+                TextSize = 13;
+
+                Renderer {
+                    BackgroundColor = transparent;
+                    BorderColor = #3C3C3C;
+                    Borders = (0, 0, 0, 0);
+                    TextColor = #448ACC;
+                    TextureBackground = None;
+                }
+            }
+
+            Slider.AimConfiguration {
+                ChangeValueOnScroll = true;
+                InvertedDirection = false;
+                Maximum = 3;
+                Minimum = 0;
+                Position = (40%, 5%);
+                Size = (55%, 5%);
+                Step = 1;
+                Value = 0;
+
+                Renderer {
+                    BorderColor = #3C3C3C;
+                    BorderColorHover = black;
+                    Borders = (0, 0, 0, 0);
+                    TextureThumb = "../textures/menu/Thumb.png" Smooth;
+                    TextureThumbHover = None;
+                    TextureTrack = "../textures/menu/Slider.png" Smooth;
+                    TextureTrackHover = None;
+                    ThumbColor = #F5F5F5;
+                    ThumbColorHover = white;
+                    TrackColor = #F5F5F5;
+                    TrackColorHover = white;
+                    TransparentTexture = true;
+                }
+            }
+
+            Slider.AimOpacity {
+                ChangeValueOnScroll = true;
+                InvertedDirection = false;
+                Maximum = 255;
+                Minimum = 0;
+                Position = (40%, 19%);
+                Size = (55%, 5%);
+                Step = 1;
+                Value = 0;
+
+                Renderer {
+                    BorderColor = #3C3C3C;
+                    BorderColorHover = black;
+                    Borders = (0, 0, 0, 0);
+                    TextureThumb = "../textures/menu/Thumb.png" Smooth;
+                    TextureThumbHover = None;
+                    TextureTrack = "../textures/menu/Slider.png" Smooth;
+                    TextureTrackHover = None;
+                    ThumbColor = #F5F5F5;
+                    ThumbColorHover = white;
+                    TrackColor = #F5F5F5;
+                    TrackColorHover = white;
+                    TransparentTexture = true;
+                }
+            }
+
+            CheckBox.NetworkInformation {
+                Position = (45%, 33%);
+                Size = (height, 6%);
+                TextSize = 13;
+
+                Renderer {
+                    BackgroundColor = #F5F5F5;
+                    BackgroundColorDisabled = #E6E6E6;
+                    BackgroundColorHover = white;
+                    BorderColor = #3C3C3C;
+                    BorderColorDisabled = #7D7D7D;
+                    BorderColorFocused = #1E1EB4;
+                    BorderColorHover = black;
+                    Borders = (1, 1, 1, 1);
+                    CheckColor = #3C3C3C;
+                    CheckColorDisabled = #7D7D7D;
+                    CheckColorHover = black;
+                    TextColor = #3C3C3C;
+                    TextColorDisabled = #7D7D7D;
+                    TextColorHover = black;
+                    TextDistanceRatio = 0.2;
+                    TextureChecked = None;
+                    TextureCheckedDisabled = None;
+                    TextureCheckedFocused = None;
+                    TextureCheckedHover = None;
+                    TextureUnchecked = None;
+                    TextureUncheckedDisabled = None;
+                    TextureUncheckedFocused = None;
+                    TextureUncheckedHover = None;
+                }
             }
         }
 
-        Label.Label2 {
-            HorizontalAlignment = Center;
-            Position = (5%, 15%);
-            Size = (30%, 18);
-            Text = "Sound volume";
-            TextSize = 13;
+        ScrollablePanel.AudioPanel {
+            ContentSize = (0, 0);
+            Size = (100%, 100%);
 
             Renderer {
-                BackgroundColor = transparent;
-                BorderColor = #3C3C3C;
-                Borders = (0, 0, 0, 0);
-                TextColor = #3C3C3C;
+                BackgroundColor = None;
+                BorderColor = black;
                 TextureBackground = None;
             }
-        }
 
-        Slider.SoundSlider {
-            ChangeValueOnScroll = true;
-            InvertedDirection = false;
-            Maximum = 100;
-            Minimum = 0;
-            Position = (40%, 15%);
-            Size = (55%, 16);
-            Step = 1;
-            Value = 100;
+            Label.Label1 {
+                HorizontalAlignment = Center;
+                Position = (2%, 5%);
+                Size = (34%, 14%);
+                Text = "Music volume";
+                TextSize = 13;
 
-            Renderer {
-                BorderColor = #3C3C3C;
-                BorderColorHover = black;
-                Borders = (1, 1, 1, 1);
-                TextureThumb = None;
-                TextureThumbHover = None;
-                TextureTrack = None;
-                TextureTrackHover = None;
-                ThumbColor = #F5F5F5;
-                ThumbColorHover = white;
-                TrackColor = #F5F5F5;
-                TrackColorHover = white;
+                Renderer {
+                    BackgroundColor = transparent;
+                    BorderColor = #3C3C3C;
+                    Borders = (0, 0, 0, 0);
+                    TextColor = #448ACC;
+                    TextureBackground = None;
+                }
+            }
+
+            Slider.MusicSlider {
+                ChangeValueOnScroll = true;
+                InvertedDirection = false;
+                Maximum = 100;
+                Minimum = 0;
+                Position = (40%, 5%);
+                Size = (55%, 5%);
+                Step = 1;
+                Value = 100;
+
+                Renderer {
+                    BorderColor = #3C3C3C;
+                    BorderColorHover = black;
+                    Borders = (0, 0, 0, 0);
+                    TextureThumb = "../textures/menu/Thumb.png" Smooth;
+                    TextureThumbHover = None;
+                    TextureTrack = "../textures/menu/Slider.png" Smooth;
+                    TextureTrackHover = None;
+                    ThumbColor = #F5F5F5;
+                    ThumbColorHover = white;
+                    TrackColor = #F5F5F5;
+                    TrackColorHover = white;
+                }
+            }
+
+            Label.Label2 {
+                HorizontalAlignment = Center;
+                Position = (2%, 19%);
+                Size = (34%, 14%);
+                Text = "Sound volume";
+                TextSize = 13;
+
+                Renderer {
+                    BackgroundColor = transparent;
+                    BorderColor = #3C3C3C;
+                    Borders = (0, 0, 0, 0);
+                    TextColor = #448ACC;
+                    TextureBackground = None;
+                }
+            }
+
+            Slider.SoundSlider {
+                ChangeValueOnScroll = true;
+                InvertedDirection = false;
+                Maximum = 100;
+                Minimum = 0;
+                Position = (40%, 19%);
+                Size = (55%, 5%);
+                Step = 1;
+                Value = 100;
+
+                Renderer {
+                    BorderColor = #3C3C3C;
+                    BorderColorHover = black;
+                    Borders = (0, 0, 0, 0);
+                    TextureThumb = "../textures/menu/Thumb.png" Smooth;
+                    TextureThumbHover = None;
+                    TextureTrack = "../textures/menu/Slider.png" Smooth;
+                    TextureTrackHover = None;
+                    ThumbColor = #F5F5F5;
+                    ThumbColorHover = white;
+                    TrackColor = #F5F5F5;
+                    TrackColorHover = white;
+                }
             }
         }
-    }
 
-    ScrollablePanel.ControlPanel {
-        ContentSize = (0, 0);
-        Size = (100%, 100%);
-        Visible = false;
+        ScrollablePanel.ControlsPanel {
+            ContentSize = (0, 0);
+            Size = (100%, 100%);
+            Visible = false;
 
-        Renderer {
-            BackgroundColor = white;
-            BorderColor = black;
-            TextureBackground = None;
+            Renderer {
+                BackgroundColor = None;
+                BorderColor = black;
+                TextureBackground = None;
+            }
         }
     }
 }
