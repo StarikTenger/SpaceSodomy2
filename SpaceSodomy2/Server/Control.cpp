@@ -60,6 +60,14 @@ Control::Control() {
 	game.set_time(&time_by_id);
 }
 
+int Control::get_is_running() {
+	return is_running;
+}
+
+void Control::set_idle_timeout(int _idle_timeout) {
+	idle_timeout = _idle_timeout;
+}
+
 bool Control::load_names(std::string path) {
 	std::ifstream file_input(path);
 	std::stringstream input = aux::comment(file_input);
@@ -181,8 +189,13 @@ void  Control::parse_message(std::stringstream &message) {
 
 void Control::receive() {
 	network.receive();
+
+	// If no messages in queue
 	if (network.get_last_message() == "")
 		return;
+	// Connection happened, so update last_connection_time
+	last_connection_time = aux::get_milli_count();
+
 	// Splitting message
 	std::stringstream message;
 	message << network.get_last_message();
@@ -197,6 +210,12 @@ void Control::step() {
 	// Check if the time for the next update has come
 	if (aux::get_milli_count() - last_step_time >= delay) {
 		last_step_time += delay;
+
+		// If there is no network activity, shutdown server
+		if (idle_timeout && aux::get_milli_count() - last_connection_time > idle_timeout) {
+			std::cout << "connection lost\n";
+			is_running = 0;
+		}
 
 		// Banning disconnected players
 		std::set <int> banned;
