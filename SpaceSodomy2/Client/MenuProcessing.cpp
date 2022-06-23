@@ -667,7 +667,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	play_button->onClick([=, &gui] {
 		if (!server->is_running()) {
 			play_button->setText("Terminate");
-			server->run();
+			server->run("1000");
 			close_groups(gui);
 			gui.get<tgui::Group>("configuration.txt")->get<tgui::EditBox>("ServerIP")->setText("localhost");
 			gui.get<tgui::Group>("configuration.txt")->setVisible(true);
