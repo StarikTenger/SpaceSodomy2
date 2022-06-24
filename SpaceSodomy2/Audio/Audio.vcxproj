@@ -120,7 +120,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);C:\libraries\SFML-2.5.1\include;C:\libraries\box2d\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\x64\Release;C:\libraries\box2d\build\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\x64\Final;C:\libraries\box2d\build\x64\Debug;C:\libraries\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
