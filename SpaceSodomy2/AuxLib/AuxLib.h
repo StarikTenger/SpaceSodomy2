@@ -14,6 +14,12 @@
 #include <shellapi.h>
 #pragma comment(lib, "SHELL32.LIB")
 
+#ifdef FINAL
+#define DEBUG_PRINT(arg) {}
+#else
+#define DEBUG_PRINT(arg) {std::cout << arg << std::endl;}
+#endif
+
 class aux {
 public:
 	// Converts color from hsv to rgb

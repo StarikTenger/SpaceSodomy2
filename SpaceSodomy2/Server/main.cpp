@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	while (control.get_is_running()) {
+		DEBUG_PRINT("nigger")
 		control.step();
 	}
 
