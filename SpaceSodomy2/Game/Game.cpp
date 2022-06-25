@@ -859,6 +859,10 @@ void Game::apply_command(int id, int command, int val) {
 
 void Game::step(float _dt) {
 	dt = _dt;
+	if (game_mode.is_game_finished()) {
+		return;
+	}
+	game_mode.step();
 	time += dt;
 	process_physics();
 	process_players();

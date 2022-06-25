@@ -22,6 +22,7 @@
 #include "RocketBrain.h"
 #include "Forcefield.h"
 #include "GameReadable.h"
+#include "GameMode.h"
 
 
 class Game : public GameReadable {
@@ -65,6 +66,7 @@ protected:
 	BonusManager bonus_manager;
 	ModuleManager module_manager;
 	RocketManager rocket_manager;
+	GameMode game_mode = (*this);
 	
 	// b2World physics = b2World(b2Vec2_zero);
 

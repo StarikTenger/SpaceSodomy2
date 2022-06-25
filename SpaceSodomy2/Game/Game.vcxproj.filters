@@ -156,6 +156,9 @@
     <ClInclude Include="ShipBrain.h">
       <Filter>Header Files\Brains</Filter>
     </ClInclude>
+    <ClInclude Include="GameMode.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -256,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="ShipBrain.cpp">
       <Filter>Source Files\Brains</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMode.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

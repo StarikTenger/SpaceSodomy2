@@ -251,6 +251,7 @@
     <ClInclude Include="Forcefield.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameMode.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="GameReadable.h" />
     <ClInclude Include="Gun.h" />
@@ -288,6 +289,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Forcefield.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameMode.cpp" />
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="IdManager.cpp" />
