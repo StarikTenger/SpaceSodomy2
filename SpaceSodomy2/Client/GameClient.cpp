@@ -135,6 +135,10 @@ void GameClient::update_state(std::string source) {
 				load_thread.detach();
 			}
 		}
+		// Game finished
+		if (symbol == "F") {
+			//game_mode.
+		}
 		// Player
 		if (symbol == "P") {
 			// Id

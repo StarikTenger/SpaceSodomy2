@@ -829,6 +829,7 @@ b2Vec2 Game::get_beam_intersection(b2Vec2 start, float angle) {
 	return closest_intersection;
 }
 
+
 void Game::process_bonuses() {
 	std::deque<Bonus*> bonuses_to_delete;
 	// Pick up
@@ -1393,6 +1394,11 @@ std::string Game::encode() {
 	// Map path
 	message += "M" + map_path + " ";
 
+	// Game finished
+	if (game_mode.is_game_finished()) {
+		message += "F";
+	}
+
 	// Players (P)
 	for (auto player : players) {
 		message += "P";
@@ -1584,6 +1590,10 @@ void Game::delete_player(int id) {
 	// Deleting player
 	delete res.second;
 	players.erase(players.find(id));
+}
+
+bool Game::is_game_finished() {
+	return game_mode.is_game_finished();
 }
 
 Game::~Game() {

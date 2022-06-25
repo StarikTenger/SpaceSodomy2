@@ -179,6 +179,7 @@ public:
 	Player* player_by_id(int id);
 	// Deletes player
 	void delete_player(int id);
+	bool is_game_finished();
 	~Game();
 };
 

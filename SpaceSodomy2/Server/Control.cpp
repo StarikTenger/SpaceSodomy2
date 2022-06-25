@@ -235,6 +235,10 @@ void Control::step() {
 			message << bots[i]->get_message();
 			parse_message(message);
 		}
+		// Stop writing replay
+		if (game.is_game_finished()) {
+			network.stop_writing_replay();
+		}
 		game.step(delay * 0.001);
 		// Send encoded info;
 		network.send(game.encode());
