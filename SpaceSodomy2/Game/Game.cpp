@@ -1396,8 +1396,11 @@ std::string Game::encode() {
 
 	// Game finished
 	if (game_mode.is_game_finished()) {
-		message += "F";
+		message += "F ";
 	}
+
+	// Time left
+	message += "T" + aux::write_int(game_mode.get_time_left());
 
 	// Players (P)
 	for (auto player : players) {

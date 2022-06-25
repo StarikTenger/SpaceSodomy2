@@ -7,7 +7,7 @@ Renderer.2 {
     Borders = (0, 0, 0, 0);
     TextColor = white;
     TextOutlineColor = black;
-    TextOutlineThickness = 1;
+    TextOutlineThickness = 2;
     TextureBackground = None;
 }
 
@@ -22,7 +22,7 @@ Renderer.4 {
     Borders = (0, 0, 0, 0);
     TextColor = white;
     TextOutlineColor = black;
-    TextOutlineThickness = 2;
+    TextOutlineThickness = 1;
     TextureBackground = None;
 }
 
@@ -207,7 +207,7 @@ Group.InterfaceGroup {
     Label.HPBarVal {
         HorizontalAlignment = Center;
         Position = (40%, 18%);
-        Renderer = &2;
+        Renderer = &4;
         ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
@@ -217,7 +217,7 @@ Group.InterfaceGroup {
     Label.StaminaBarVal {
         HorizontalAlignment = Center;
         Position = (40%, 42%);
-        Renderer = &2;
+        Renderer = &4;
         ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
@@ -227,7 +227,7 @@ Group.InterfaceGroup {
     Label.EnergyBarVal {
         HorizontalAlignment = Center;
         Position = (40%, 64%);
-        Renderer = &2;
+        Renderer = &4;
         ScrollbarPolicy = Never;
         Size = (20%, 24%);
         Text = 0;
@@ -262,7 +262,7 @@ Group.NetworkInfo {
 
     Label.Label1 {
         HorizontalAlignment = Center;
-        Renderer = &4;
+        Renderer = &2;
         Size = (20%, 18);
         Text = "Ping:";
         TextSize = 13;
@@ -271,7 +271,7 @@ Group.NetworkInfo {
     Label.Ping {
         HorizontalAlignment = Center;
         Position = (20%, 0);
-        Renderer = &4;
+        Renderer = &2;
         Size = (20%, 18);
         Text = 0;
         TextSize = 13;
@@ -280,7 +280,7 @@ Group.NetworkInfo {
     Label.Label3 {
         HorizontalAlignment = Center;
         Position = (0, 20);
-        Renderer = &4;
+        Renderer = &2;
         Size = (20%, 18);
         Text = "FPS:";
         TextSize = 13;
@@ -289,7 +289,7 @@ Group.NetworkInfo {
     Label.FPS {
         HorizontalAlignment = Center;
         Position = (20%, 20);
-        Renderer = &4;
+        Renderer = &2;
         Size = (20%, 18);
         Text = 0;
         TextSize = 13;
@@ -300,4 +300,45 @@ Group.RatingTable {
     Position = (80%, 0);
     Renderer = &1;
     Size = (20%, 30%);
+}
+
+Group.TimeLeft {
+    Position = (40%, 0);
+    Renderer = &1;
+    Size = (20%, 18);
+
+    Label.Label2 {
+        HorizontalAlignment = Center;
+        Size = (92, 18);
+        Text = "Time left: ";
+        TextSize = 13;
+
+        Renderer {
+            BackgroundColor = transparent;
+            BorderColor = #3C3C3C;
+            Borders = (0, 0, 0, 0);
+            TextColor = white;
+            TextOutlineColor = black;
+            TextOutlineThickness = 2;
+            TextureBackground = None;
+        }
+    }
+
+    Label.TimeLeftValue {
+        HorizontalAlignment = Center;
+        Position = (92, 0);
+        Size = (20%, 18);
+        Text = 0;
+        TextSize = 13;
+
+        Renderer {
+            BackgroundColor = transparent;
+            BorderColor = #3C3C3C;
+            Borders = (0, 0, 0, 0);
+            TextColor = white;
+            TextOutlineColor = black;
+            TextOutlineThickness = 2;
+            TextureBackground = None;
+        }
+    }
 }

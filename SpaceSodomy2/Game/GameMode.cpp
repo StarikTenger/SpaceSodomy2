@@ -34,7 +34,7 @@ int GameMode::comp_players(Player* p1, Player* p2) {
 	return 0;
 }
 
-int GameMode::winner_id() {
+int GameMode::winner_id() { //TODO
 	int best_id = 0;
 	int best_score = 0;
 	for (const auto player_pair : game.players) {
@@ -42,10 +42,14 @@ int GameMode::winner_id() {
 		auto player = player_pair.second;
 
 		if (player->get_id() != -1 && player->get_kills() >= kills_to_win) {
-			message = player->get_name() + " wins";
-			return id;
+			
+			best_id = id;
 		}
 	}
 	return best_id;
+}
+
+int GameMode::get_time_left() {
+	return (int)(time_limit - game.time);
 }
 

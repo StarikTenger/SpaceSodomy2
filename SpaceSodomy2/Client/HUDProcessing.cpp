@@ -295,5 +295,6 @@ void HUDProcessing::step(tgui::Gui &gui) {
 				gui.get<tgui::Group>("NetworkInfo")->setVisible(false);
 		}
 	}
+	gui.get<tgui::Label>("TimeLeftValue")->setText(std::to_string(game->time_left / 60) + ":"  + std::to_string(game->time_left % 60));
 	table_step(gui, scale);
 }

@@ -139,6 +139,9 @@ void GameClient::update_state(std::string source) {
 		if (symbol == "F") {
 			//game_mode.
 		}
+		if (symbol == "T") {
+			time_left = aux::read_int(stream);
+		}
 		// Player
 		if (symbol == "P") {
 			// Id
