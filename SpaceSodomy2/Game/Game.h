@@ -35,7 +35,7 @@ protected:
 	//float time = 0;
 
 	// Objects' systems
-	std::map<int, Player*> players;
+	
 	std::map<int, int>* connection_time;
 	std::set<int> id_list;
 	// std::set<Ship*> ships;
