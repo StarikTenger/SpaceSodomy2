@@ -1400,8 +1400,11 @@ std::string Game::encode() {
 		message += "F ";
 	}
 
-	// Time left
+	// Time left (T)
 	message += "T" + aux::write_int(game_mode.get_time_left());
+
+	// Global vars (G)
+	message += "G" + aux::write_int8(char(is_friendly_fire));
 
 	// Players (P)
 	for (auto player : players) {

@@ -59,7 +59,7 @@ public:
 	void set_left_module(Module*);
 	void set_right_module(Module*);
 
-	bool is_visible();
+	bool is_visible_to_enemies();
 	bool is_boost_active();
 };
 

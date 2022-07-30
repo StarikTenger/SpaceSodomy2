@@ -102,7 +102,7 @@ bool Ship::is_boost_active() {
 		&& get_stamina()->get() > 0;
 }
 
-bool Ship::is_visible() {
+bool Ship::is_visible_to_enemies() {
 
 
 	if (effects->get_effect(Effects::INVISIBILITY)->get_counter()->get() < b2_epsilon) {

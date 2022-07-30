@@ -86,7 +86,7 @@ void GameDrawable::display(int id) {
 		float opacity = 1;
 		if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0) {
 			opacity = 0.3;  // TODO: configs
-			if (ship->is_visible()) {
+			if (ship->is_visible_to_enemies()) {
 				opacity = 0.7;
 			}
 		}
@@ -191,7 +191,7 @@ void GameDrawable::display(int id) {
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
 				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)
-					|| ship->is_visible()) {
+					|| ship->is_visible_to_enemies()) {
 					draw->image(textures[i], ship->get_body()->GetPosition(),
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
 					// Animation
