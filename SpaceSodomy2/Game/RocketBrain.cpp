@@ -49,7 +49,7 @@ void RocketBrain::compute_action() {
 }
 bool RocketBrain::is_targetable(Ship* ship) {
     return 
-        ship->get_player()->get_id() != rocket->get_player()->get_id() 
+        ship->get_player()->is_hostile_to(*rocket->get_player()) 
         && is_in_range(ship->get_body()->GetWorldPoint({ 0,0 }))
         && ship->is_visible();
 }

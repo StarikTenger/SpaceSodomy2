@@ -85,13 +85,14 @@ protected:
 	Effects_Prototype effect_params;
 	// Misc
 	std::map<std::string, float> params;
+	bool is_friendly_fire = false;
 	std::map<int, Ship*> ships_by_player_id;
 
 	// Path to the map
 	std::string map_path = "";
 
 	// Create functions
-	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
+	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	CommandModule*  create_command_module();
@@ -147,6 +148,11 @@ protected:
 	// Misc
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
+	// Calculates if agressor is hostile to target 
+	// Templates because agressor can be Ship, Projectile, Rocket, etc
+	template <class T, class U> bool is_hostile_to(T* agressor, U* target) { 
+		return agressor->get_player()->is_hostile_to(*target->get_player()) || (is_friendly_fire && agressor->get_player()->get_id() != target->get_player()->get_id());
+	}
 
 public:
 	GameReadable& get_readable();

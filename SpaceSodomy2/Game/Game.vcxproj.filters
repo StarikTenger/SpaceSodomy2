@@ -159,6 +159,9 @@
     <ClInclude Include="GameMode.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="iTeamMember.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

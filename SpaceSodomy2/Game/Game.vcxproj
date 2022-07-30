@@ -258,6 +258,7 @@
     <ClInclude Include="HullPrototype.h" />
     <ClInclude Include="IdManager.h" />
     <ClInclude Include="iId.h" />
+    <ClInclude Include="iTeamMember.h" />
     <ClInclude Include="Modules.h" />
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="pch.h" />

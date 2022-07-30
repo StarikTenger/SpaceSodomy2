@@ -4,10 +4,11 @@
 #include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
+#include "iTeamMember.h"
 #include <AuxLib/AuxLib.h>
 
 
-class Player : public iId {
+class Player : public iTeamMember {
 private:
 	int deaths = 0;
 	int kills = 0;

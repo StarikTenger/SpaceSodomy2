@@ -29,7 +29,7 @@ Game::Game() : GameReadable() {
 	//physics.SetContactFilter(&collision_filter);
 	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
-	wall_player = create_player(-1, sf::Color::White, "WALL");
+	wall_player = create_player(-1, -1, sf::Color::White, "WALL");
 	calc_intersection_ = [&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);};
 }
 
@@ -82,7 +82,7 @@ Gun* Game::create_gun(Gun_Prototype def) {
 	return gun;
 }
 
-Player* Game::create_player(int id, sf::Color color, std::string name) {
+Player* Game::create_player(int id, int team_id, sf::Color color, std::string name) {
 	auto player = new Player();
 	player->set_color(color);
 	player->set_name(name);
@@ -90,6 +90,7 @@ Player* Game::create_player(int id, sf::Color color, std::string name) {
 	player->set_time_to_respawn(create_counter(0, -1));
 	// Id
 	player->set_id(id);
+	player->set_team_id(team_id);
 	players[player->get_id()] = player;
 	return player;
 }
@@ -197,7 +198,6 @@ Ship* Game::create_ship(Player* player, b2Vec2 pos, float angle) {
 	Gun_Prototype gun_prototype;
 	if (guns.count(player->get_gun_name())) {
 		gun_prototype = guns[player->get_gun_name()];
-
 	}
 	auto gun = create_gun(gun_prototype);
 	gun->set(body, player);
@@ -529,7 +529,7 @@ void Game::process_ships() {
 		// Apply LASER
 		if (ship->get_effects()->get_effect(Effects::Types::LASER)->get_counter()->get() > 0) {
 			for (auto damage_receiver : damage_receivers) {
-				if (ship->get_player()->get_id() == damage_receiver->get_player()->get_id())
+				if ( !(is_hostile_to(ship, damage_receiver)))
 					continue;
 				float angle = ship->get_body()->GetAngle();
 				b2Vec2 pos = ship->get_body()->GetPosition();
@@ -550,7 +550,8 @@ void Game::process_ships() {
 		for (auto wall : walls) {
 			if (contact_table.check(ship->get_body(), wall->get_body())) {
 				if (wall->get_type() == Wall::SPIKED && 
-					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon) {
+					ship->get_effects()->get_effect(Effects::WALL_BURN)->get_counter()->get() < b2_epsilon 
+					&& wall_player->is_hostile_to(*ship->get_player())) {
 					ship->get_damage_receiver()->damage(params["wall_damage"], ship->get_damage_receiver()->get_last_hit());
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					if (ship->get_hp()->get() < b2_epsilon) {
@@ -578,7 +579,7 @@ void Game::process_ships() {
 			}
 			for (auto damage_receiver : damage_receivers) {
 				if (contact_table.check(ship->get_body(), damage_receiver->get_body()) &&
-					ship->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+					ship->get_player()->is_hostile_to(*damage_receiver->get_player())) {
 					ship->get_effects()->update(Effects::WALL_BURN, ship->get_effects()->get_effect(Effects::WALL_BURN)->get_param("duration"));
 					damage_receiver->damage(ship->get_effects()->get_effect(Effects::CHARGE)->get_param("damage"), ship->get_player());
 				}
@@ -589,12 +590,11 @@ void Game::process_ships() {
 			ships_to_delete.insert(ship);
 			auto player = ship->get_player();
 			player->add_death();
-			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit() != ship->get_player()) {
+			if (ship->get_damage_receiver()->get_last_hit() != nullptr && ship->get_damage_receiver()->get_last_hit()->is_hostile_to(*ship->get_player())) {
 				ship->get_damage_receiver()->get_last_hit()->add_kill();
 
 				if (ship->get_damage_receiver()->get_last_hit() && ship->get_damage_receiver()->get_last_hit()->get_is_alive()) {
 					ships_by_player_id[ship->get_damage_receiver()->get_last_hit()->get_id()]->get_energy()->modify(params["energy_on_kill"]);
-
 				}
 			}
 			player->set_is_alive(0);
@@ -622,7 +622,7 @@ void Game::process_projectiles() {
 		bool do_break = false;
 		for (auto damage_receiver : damage_receivers) {
 			if (contact_table.check(projectile->get_body(), damage_receiver->get_body()) &&
-				projectile->get_player()->get_id() != damage_receiver->get_player()->get_id()) {
+				is_hostile_to(projectile, damage_receiver)) {
 				damage_receiver->damage(projectile->get_damage(), projectile->get_player());
 				damage_receiver->apply_effects(projectile->get_effects_def());
 			}
@@ -1383,6 +1383,7 @@ bool Game::load_parameters(std::string path) {
 		std::cerr << "Game::load_parameters: unknown symbol " << symbol << "\n";
 		return false;
 	}
+	is_friendly_fire = params["friendly_fire "] > 0.5f; // TODO : fix parser
 	return true;
 }
 
@@ -1407,6 +1408,8 @@ std::string Game::encode() {
 		message += "P";
 		// Id
 		message += aux::write_int(player.first);
+		// Team Id
+		message += aux::write_int(player.second->get_team_id());
 		// Color
 		sf::Color color = player.second->get_color();
 		color.r = std::max(0, color.r - 1);
@@ -1542,7 +1545,7 @@ std::string Game::encode() {
 
 void Game::create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, color, name);
+	Player* player = create_player(id, id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	player->set_left_module_name(left_module);
