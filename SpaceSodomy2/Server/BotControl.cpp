@@ -1,7 +1,9 @@
 #include "BotControl.h"
 
-BotControl::BotControl(std::string bot_name, ShipBrain::Type type, const GameReadable& env) {
+BotControl::BotControl(std::string bot_name, std::string team_name, ShipBrain::Type type, const GameReadable& env) {
 	name = bot_name;
+	team_name_hint = team_name;
+
 	switch (type) {
 	case ShipBrain::Type::EDGAR_BRAIN:
 		brain = new EdgarBrain(cmd_module, env, id);
@@ -9,8 +11,9 @@ BotControl::BotControl(std::string bot_name, ShipBrain::Type type, const GameRea
 	}
 }
 
-void BotControl::set_equip(std::string bot_name, ShipBrain::Equip equipment) {
+void BotControl::set_equip(std::string bot_name, std::string team_name, ShipBrain::Equip equipment) {
 	name = bot_name;
+	team_name_hint = team_name;
 	brain->suggest_equip(equipment);
 }
 BotControl::~BotControl() {
@@ -40,7 +43,9 @@ std::string BotControl::get_message() {
 		std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
 		name + " " + 
+		team_name_hint + " " +
 		std::to_string(token) + " " +
 		message;
+
 	return msg;
 }

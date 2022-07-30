@@ -104,12 +104,14 @@ bool Control::load_bots(std::string path) {
 		if (symbol == "BOT") {
 			ShipBrain::Equip equip;
 			std::string name;
+			std::string team_name_hint = "any";
 
 			while (input >> symbol) {
 				if (symbol == "END")
 					break;
 				
 				read_symbol("NAME", name);
+				read_symbol("TEAM_NAME", team_name_hint);
 				read_symbol("GUN_NAME", equip.gun_name);
 				read_symbol("HULL_NAME", equip.hull_name);
 				read_symbol("LEFT_MODULE_NAME", equip.left_module_name);
@@ -123,8 +125,8 @@ bool Control::load_bots(std::string path) {
 				}
 				name = "Bot_" + default_name;
 			}
-			BotControl* bot = new BotControl(name, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
-			bot->set_equip(name, equip);
+			BotControl* bot = new BotControl(name, team_name_hint, ShipBrain::Type::EDGAR_BRAIN, game.get_readable());
+			bot->set_equip(name, team_name_hint, equip);
 			bots.push_back(bot);
 		};
 	}
@@ -133,16 +135,15 @@ bool Control::load_bots(std::string path) {
 
 void  Control::parse_message(std::stringstream &message) {
 	// Received params
-	std::string IP_address_, name_, gun_name, hull_name, left_module, right_module;
+	std::string IP_address_, name_, team_name_hint_, gun_name, hull_name, left_module, right_module;
 	int id_, token;
+	std::string time;
 
 	message >> IP_address_;
 	message >> id_;
-	{
-		std::string time;
-		message >> time; // discard
-	}
+	{	message >> time;    } // discard
 	message >> name_;
+	message >> team_name_hint_;
 	message >> token;
 	message >> gun_name;
 	message >> hull_name;
@@ -160,6 +161,8 @@ void  Control::parse_message(std::stringstream &message) {
 
 		PlayerDef def(id_, name_);
 		def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+		def.team_name_hint = team_name_hint_;
+		DEBUG_PRINT(team_name_hint_)
 		def.gun_name = gun_name;
 		def.hull_name = hull_name;
 		def.left_module_name = left_module;

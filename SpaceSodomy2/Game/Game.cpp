@@ -1545,9 +1545,9 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+void Game::create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
-	Player* player = create_player(id, id, color, name);
+	Player* player = create_player(id, team_id, color, name);
 	player->set_gun_name(gun_name);
 	player->set_hull_name(hull_name);
 	player->set_left_module_name(left_module);
@@ -1564,7 +1564,18 @@ bool Game::new_player(PlayerDef def) {
 	}
 	id_list.insert(def.id);
 
-	create_new_player(def.id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+	// TODO: remove garbage
+	int team_id = def.id;
+	if (def.team_name_hint == "blue") {
+		team_id = 1;
+		def.color = aux::from_hsv(aux::random_int(90, 150), 1, 1);
+	}
+	else if (def.team_name_hint == "red") {
+		team_id = 2;
+		def.color = aux::from_hsv((aux::random_int(-30, 30) + 360) % 360, 1, 1);
+	}
+
+	create_new_player(def.id, team_id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
 
 	return true;
 }

@@ -1,8 +1,8 @@
 #include "HUDProcessing.h"
 
 bool operator<(Player& a, Player& b) {
-	return (a.get_kills() > b.get_kills() ||
-		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
+	return ((a.get_kills() > b.get_kills() ||
+		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths())));
 }
 
 void HUDProcessing::get_buttons_names(tgui::Gui &gui, std::string path) {

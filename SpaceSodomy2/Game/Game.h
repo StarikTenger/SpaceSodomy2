@@ -179,7 +179,7 @@ public:
 	std::string encode();
 	// Creates new player
 protected:
-	void create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	void create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 public:
 	bool new_player(PlayerDef);

@@ -182,25 +182,29 @@ void MenuProcessing::save_sound(std::string path) {
 	fout.close();
 }
 
-void MenuProcessing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_) {
+void MenuProcessing::save_config(std::string path, std::string address_, int port_, int id_, std::string name_, std::string team_name) {
 	std::ofstream fout;
 	fout.open(path);
-	fout << address_ << " " << port_ << " " << id_ << " " << name_;
+	fout << address_ << " " << port_ << " " << id_ << " " << name_ << " " << team_name;
 	fout.close();
 }
 void MenuProcessing::load_config(std::string path, std::string* address_, std::string* port_,
-	std::string* id_, std::string* name_, tgui::Gui &gui) {
+	std::string* id_, std::string* name_, std::string* team_name_hint, tgui::Gui &gui) {
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
 	config >> *(address_);
 	config >> *(port_);
 	config >> *(id_);
 	config >> *(name_);
+	config >> *(team_name_hint);
+
+
 	gui.get<tgui::EditBox>("ServerIP")->setText(*address_);
 	gui.get<tgui::EditBox>("Name")->setText(*name_);
+	gui.get<tgui::EditBox>("TeamName")->setText(*team_name_hint); // TODO : add params
 	if ((*id_) == "0") {
 		*id_ = std::to_string(aux::random_int(1, 100000));
-		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_);
+		save_config(path, *address_, atoi(port_->c_str()), atoi(id_->c_str()), *name_, *team_name_hint); // TODO : add params
 	}
 }
 
@@ -754,12 +758,17 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	init_multiplayer_menu("parameters.conf", gui);
 	gui.get<tgui::EditBox>("ServerIP")->onTextChange([=, &gui] {
 		network->set_server(gui.get<tgui::EditBox>("ServerIP")->getText().toStdString());
-		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name(), network->get_team_name_hint());
 	});
 	gui.get<tgui::EditBox>("Name")->onTextChange([=, &gui] {
 		network->set_name(gui.get<tgui::EditBox>("Name")->getText().toStdString());
-		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name(), network->get_team_name_hint());
 	});
+	gui.get<tgui::EditBox>("TeamName")->onTextChange([=, &gui] {
+		network->set_team_name_hint(gui.get<tgui::EditBox>("TeamName")->getText().toStdString());
+		save_config("client_config.conf", network->get_serverIP(), network->get_port(), network->get_id(), network->get_name(), network->get_team_name_hint());
+	});
+
 	gui.get<tgui::Button>("Play")->onClick([=] {
 		toggle_active();
 	});
@@ -781,8 +790,8 @@ void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2
 	init_tgui(gui);
 	load_sound("sound_settings.conf", gui);
 	load_HUD_settings("HUD_settings.conf", gui);
-	std::string ServerIP, Port, ID, Name;
-	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
+	std::string ServerIP, Port, ID, Name, TeamName;
+	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, &TeamName, gui);
 	load_keys("keys.conf", &keys_menu_vec);
 }
 
