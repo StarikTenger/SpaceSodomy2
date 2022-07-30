@@ -29,7 +29,7 @@ Game::Game() : GameReadable() {
 	//physics.SetContactFilter(&collision_filter);
 	physics->SetContactListener(&contact_table);
 	contact_table.set_collision_filter(&collision_filter);
-	wall_player = create_player(-1, -1, sf::Color::White, "WALL");
+	wall_player = create_player(-1, environment_team_id, sf::Color::White, "WALL");
 	calc_intersection_ = [&](b2Vec2 _1, float _2) { return get_beam_intersection(_1, _2);};
 }
 
@@ -966,7 +966,6 @@ void Game::wipe_map() {
 		delete field;
 	}
 	forcefields = {};
-
 }
 
 bool Game::load_map(std::string path) {

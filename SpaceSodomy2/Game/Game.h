@@ -88,6 +88,8 @@ protected:
 	bool is_friendly_fire = false;
 	std::map<int, Ship*> ships_by_player_id;
 
+	inline const static int environment_team_id = -1;
+
 	// Path to the map
 	std::string map_path = "";
 

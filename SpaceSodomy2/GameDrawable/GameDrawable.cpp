@@ -31,6 +31,8 @@ void GameDrawable::set_gui(tgui::Gui* _gui) {
 void GameDrawable::display(int id) {
 	// Setting id
 	my_id = id;
+    int my_team_id = (player_by_id(id) ? player_by_id(id)->get_team_id() : environment_team_id);
+	
 
 	// Finding cam target
 	auto ship = get_ship(id);
@@ -101,7 +103,7 @@ void GameDrawable::display(int id) {
 
 		// HP_bar & name (others)
 		if (ship->get_player()->get_id() != id) {
-			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01) {
+			if (ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() < 0.01 || ship->get_player()->get_team_id() == my_team_id) {
 				// hp
 				{
 					auto shift = b2Vec2(0, 0) - 0.5 * aux::direction(draw->get_camera()->get_angle());
@@ -164,7 +166,7 @@ void GameDrawable::display(int id) {
 		// Hull
 		color.a *= opacity;
 		auto base_color = ship->get_player()->get_color();
-		if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
+		if (!(ship->get_player()->get_team_id() != my_team_id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0)) {
 			draw->image("ship_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius }, ship->get_body()->GetAngle());
 			draw->image("ship_colors_" + ship->get_player()->get_hull_name(), ship->get_body()->GetPosition(), { radius, radius },
 				ship->get_body()->GetAngle(), color);
@@ -190,7 +192,7 @@ void GameDrawable::display(int id) {
 		radius *= 2;
 		for (int i = 0; i < textures.size(); i++) {
 			if (ship->get_player()->get_command_module()->get_command(i)) {
-				if (!(ship->get_player()->get_id() != id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)
+				if (!(ship->get_player()->get_team_id() != my_team_id && ship->get_effects()->get_effect(Effects::INVISIBILITY)->get_counter()->get() > 0.01)
 					|| ship->is_visible_to_enemies()) {
 					draw->image(textures[i], ship->get_body()->GetPosition(),
 						{ radius, radius }, ship->get_body()->GetAngle(), color);
