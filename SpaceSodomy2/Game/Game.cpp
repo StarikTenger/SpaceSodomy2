@@ -1008,7 +1008,16 @@ bool Game::load_map(std::string path) {
 				std::cerr << "Game::load_map: unknown symbol " << symbol_1 << "\n";
 				return false;
 			}
-			create_forcefield(points, force)->set_id(forcefield_id);
+			auto ff = create_forcefield(points, force);
+			ff->set_id(forcefield_id);
+
+			float i_dunno = 0.3;
+			auto pts = ff->get_pts_for_grid(i_dunno);
+			DEBUG_PRINT("in grid: " << pts.size() << std::endl);
+			for (auto pt : pts) {
+				ffield_spawnpoint_grid.push_back(pt);
+			}
+
 			forcefield_id++;
 			continue;
 		}

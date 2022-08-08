@@ -82,6 +82,24 @@ void GameDrawable::display(int id) {
 			draw->thick_line(vertices[i] - size_x * vec_dir, vertices[i] + size_x * vec_dir, color, size_y);
 		}
 	}
+	// Forcefields
+	for (auto pt : ffield_spawnpoint_grid) {
+		if (aux::random_int(0, 19) != 0) {
+			continue;
+		}
+		float force_dir = aux::vec_to_angle(pt.force);
+		FloatAnimation::State beg, end;
+		beg.image = end.image = "particle_laser";
+		beg.angle = end.angle = force_dir;
+		
+		beg.pos = pt.pos;
+		end.pos = pt.pos + b2Vec2({pt.force.x * 0.3f, pt.force.y * 0.3f});
+		beg.color = end.color = sf::Color::White;
+		end.color.a = 0;
+		beg.scale = { 0.1f, 0.1f };
+		end.scale = { 0.3f, 0.1f };
+		draw->create_animation(FloatAnimation("particle_laser", beg, end, 0.3f));
+	}
 
 	// Ships
 	for (auto ship : ships) {

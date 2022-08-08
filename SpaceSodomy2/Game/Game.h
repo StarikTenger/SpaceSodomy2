@@ -54,9 +54,11 @@ protected:
 	std::set<RocketBrain*> rocket_brains;
 	//std::set<Forcefield*> forcefields;
 	
-	// Walls
-	// std::set<Wall*> walls;
+	// Wall draw assist
 	b2Vec2 lower_left_corner, upper_right_corner;
+	std::vector<Forcefield::Point> ffield_spawnpoint_grid; // iterate over it to hit approx random points in forcefields;
+	
+	// Environment kill counter
 	Player* wall_player = nullptr; // id = -1;
 
 	// Managers
