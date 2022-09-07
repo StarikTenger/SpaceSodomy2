@@ -19,7 +19,7 @@ private:
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
 		std::string* id_, std::string* name_, tgui::Gui &gui);
-	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys);
+	void load_keys(std::string path, std::string names_path, std::vector<std::vector<std::string*>>* keys);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);

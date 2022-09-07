@@ -26,7 +26,7 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	}
 	fout.close();
 }
-void MenuProcessing::load_keys(std::string path,
+void MenuProcessing::load_keys(std::string path, std::string names_path,
 	std::vector<std::vector<std::string*>>* keys) {
 
 	int k = 0;
@@ -43,32 +43,66 @@ void MenuProcessing::load_keys(std::string path,
 
 	std::ifstream file_to_comment(path);
 	std::stringstream config = aux::comment(file_to_comment);
+	std::ifstream _file_to_comment(names_path);
+	std::stringstream names_config = aux::comment(_file_to_comment);
 
 	// read keybinds from config
+	std::map<std::string, int> names_coordinates;
+	for (int i = 0; !names_config.eof(); i++) {
+		std::string cur_name, cur, name = "";
+		names_config >> cur_name >> cur;
+		if (cur_name == "") {
+			break;
+		}
+		while (cur != "END") {
+			name += cur + " ";
+			names_config >> cur;
+		}
+		//name of the action
+		auto label = tgui::Label::create();
+		label->setText(name);
+		label->getRenderer()->setTextColor("#448ACC");
+		if (cur_name == "GROUP") 
+			label->getRenderer()->setTextColor("#4BCC3D");
+		auto size = tgui::Layout2d(
+			tgui::Layout("50%"),   //size of action name
+			tgui::Layout("7%")
+		);
+		label->setSize(size);
+		auto layout = tgui::Layout2d(
+			tgui::Layout(std::to_string(5) + "%"),    //position of action name
+			tgui::Layout(std::to_string(7 * i) + "%")
+		);
+		label->setPosition(layout);
+		controls_panel->add(label);
+		if (cur_name != "GROUP") {
+			names_coordinates[cur_name] = i;
+		}
+	}
 	for (int i = 0; !config.eof(); i++) {
 		if (keys->size() == i)
 			keys->push_back(std::vector<std::string*>());
 		std::string cur, cur_name;
 		config >> cur_name >> cur;
 		for (int j = 0; !config.eof() && (cur != "END"); j++) {
-			if (j == 0) {
+			//if (j == 0) {
 
-				//name of the action
-				auto label = tgui::Label::create();
-				label->setText(cur_name);
-				label->getRenderer()->setTextColor("#448ACC");
-				auto size = tgui::Layout2d(
-					tgui::Layout("50%"),   //size of action name
-					tgui::Layout("7%")
-				);
-				label->setSize(size);
-				auto layout = tgui::Layout2d(
-					tgui::Layout(std::to_string(5) + "%"),    //position of action name
-					tgui::Layout(std::to_string(7 * i) + "%")
-				);
-				label->setPosition(layout);
-				controls_panel->add(label);
-			}
+			//	//name of the action
+			//	auto label = tgui::Label::create();
+			//	label->setText(cur_name);
+			//	label->getRenderer()->setTextColor("#448ACC");
+			//	auto size = tgui::Layout2d(
+			//		tgui::Layout("50%"),   //size of action name
+			//		tgui::Layout("7%")
+			//	);
+			//	label->setSize(size);
+			//	auto layout = tgui::Layout2d(
+			//		tgui::Layout(std::to_string(5) + "%"),    //position of action name
+			//		tgui::Layout(std::to_string(7 * i) + "%")
+			//	);
+			//	label->setPosition(layout);
+			//	controls_panel->add(label);
+			//}
 
 			if (j == keys->operator[](i).size())
 				keys->operator[](i).push_back(new std::string(cur));
@@ -96,7 +130,7 @@ void MenuProcessing::load_keys(std::string path,
 			keybinding->setSize(size);
 			auto layout = tgui::Layout2d(
 				tgui::Layout(std::to_string(55 + j * 20) + "%"),    //position of keybinding window
-				tgui::Layout(std::to_string(7 * i) + "%")
+				tgui::Layout(std::to_string(7 * names_coordinates[cur_name]) + "%")
 			);
 			keybinding->setPosition(layout);
 			controls_panel->add(keybinding);
@@ -783,7 +817,7 @@ void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2
 	load_HUD_settings("HUD_settings.conf", gui);
 	std::string ServerIP, Port, ID, Name;
 	load_config("client_config.conf", &ServerIP, &Port, &ID, &Name, gui);
-	load_keys("keys.conf", &keys_menu_vec);
+	load_keys("keys.conf", "human_keys.conf", &keys_menu_vec);
 }
 
 void MenuProcessing::step() {
