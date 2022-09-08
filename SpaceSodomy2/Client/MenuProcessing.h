@@ -18,8 +18,7 @@ private:
 	void init_tgui(tgui::Gui& gui);
 	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_, std::string team_name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
-		std::string* id_, std::string* name_, std::string* team_name_hint, tgui::Gui &gui);
-	void load_keys(std::string path, std::vector<std::vector<std::string*>>* keys);
+	void load_keys(std::string path, std::string names_path, std::vector<std::vector<std::string*>>* keys);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);
 	void load_sound(std::string path, tgui::Gui &gui);
