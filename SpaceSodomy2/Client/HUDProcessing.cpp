@@ -203,21 +203,40 @@ void HUDProcessing::step(tgui::Gui &gui) {
 	gui.get<tgui::Label>("RightModuleTip")->setTextSize(12.5 * scale);
 	//auto text_style = gui.get<tgui::Label>("RightModuleTip")->getRenderer()->getTextStyle
 	if (game->get_ship(player_network->get_id()) != nullptr) {
+		float mod = abs(sin(float(aux::get_milli_count()) / 500));
 		// HP bar processing
 		auto HP_bar = gui.get<tgui::ProgressBar>("HPBar");
 		HP_bar->setMaximum(game->get_ship(player_network->get_id())->get_hp()->get_max());
 		HP_bar->setValue(game->get_ship(player_network->get_id())->get_hp()->get());
 		gui.get<tgui::Label>("HPBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_hp()->get())));
+		if (int(game->get_ship(player_network->get_id())->get_hp()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_hp()->get()) {
+			HP_bar->setInheritedOpacity(mod);
+		}
+		else {
+			HP_bar->setInheritedOpacity(1);
+		}
 		// stamina bar processing
 		auto stamina_bar = gui.get<tgui::ProgressBar>("StaminaBar");
 		stamina_bar->setMaximum(game->get_ship(player_network->get_id())->get_stamina()->get_max());
 		stamina_bar->setValue(game->get_ship(player_network->get_id())->get_stamina()->get());
 		gui.get<tgui::Label>("StaminaBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_stamina()->get())));
+		if (int(game->get_ship(player_network->get_id())->get_stamina()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_stamina()->get()) {
+			stamina_bar->setInheritedOpacity(mod);
+		}
+		else {
+			stamina_bar->setInheritedOpacity(1);
+		}
 		// energy bar processing
 		auto energy_bar = gui.get<tgui::ProgressBar>("EnergyBar");
 		energy_bar->setMaximum(game->get_ship(player_network->get_id())->get_energy()->get_max());
 		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
 		gui.get<tgui::Label>("EnergyBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
+		if (int(game->get_ship(player_network->get_id())->get_energy()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_energy()->get()) {
+			energy_bar->setInheritedOpacity(mod);
+		}
+		else {
+			energy_bar->setInheritedOpacity(1);
+		}
 
 		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
 		if (bonus_texture_name != bonus_icon_name) {
