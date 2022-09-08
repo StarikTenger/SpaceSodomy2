@@ -11,6 +11,7 @@ private:
 
 	b2Vec2 origin_pos;
 	b2Vec2 box_size;
+
 public:
 	// Constructor
 	Forcefield() = default;
@@ -22,10 +23,13 @@ public:
 	void set(b2World*, std::vector<b2Vec2>, b2Vec2 force);
 	bool apply(b2Body*, float dt);
 
-	// Initializes params for drawing
-	void init_drawing(float wall_width);
-
 	b2Vec2 get_origin_pos();
 	b2Vec2 get_box_size();
+
+	struct Point {
+		b2Vec2 force;
+		b2Vec2 pos;
+	};
+	std::vector<Forcefield::Point> get_pts_for_grid(float step);
 };
 

@@ -241,7 +241,7 @@ Ship* EdgarBrain::get_enemy(Ship* my_ship) {
 	
 
 	for (auto ship : environment.ships) {
-		if (ship->get_player()->get_id() != my_ship->get_player()->get_id() && ship->is_visible()) {
+		if (my_ship->get_player()->is_hostile_to(*ship->get_player()) && ship->is_visible_to_enemies()) {
 			auto cur_dist = b2Distance(ship->get_body()->GetPosition(), my_ship->get_body()->GetPosition());
 			if (cur_dist < dist && is_target_visible(my_ship, ship->get_body())) {
 				dist = cur_dist;
@@ -302,7 +302,7 @@ void EdgarBrain::compute_action() {
 
 
 
-				if (bullet->get_player()->get_id() != my_ship->get_player()->get_id()
+				if (bullet->get_player()->is_hostile_to(*my_ship->get_player())
 					&& b2Distance(bullet_->GetPosition(), ship_->GetPosition()) < bullet_r + ship_r + 0.5f) {
 					command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
 					break;

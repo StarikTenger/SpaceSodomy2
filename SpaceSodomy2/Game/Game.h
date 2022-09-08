@@ -22,6 +22,7 @@
 #include "RocketBrain.h"
 #include "Forcefield.h"
 #include "GameReadable.h"
+#include "GameMode.h"
 
 
 class Game : public GameReadable {
@@ -35,7 +36,7 @@ protected:
 	//float time = 0;
 
 	// Objects' systems
-	std::map<int, Player*> players;
+	
 	std::map<int, int>* connection_time;
 	std::set<int> id_list;
 	// std::set<Ship*> ships;
@@ -53,9 +54,11 @@ protected:
 	std::set<RocketBrain*> rocket_brains;
 	//std::set<Forcefield*> forcefields;
 	
-	// Walls
-	// std::set<Wall*> walls;
+	// Wall draw assist
 	b2Vec2 lower_left_corner, upper_right_corner;
+	std::vector<Forcefield::Point> ffield_spawnpoint_grid; // iterate over it to hit approx random points in forcefields;
+	
+	// Environment kill counter
 	Player* wall_player = nullptr; // id = -1;
 
 	// Managers
@@ -65,6 +68,7 @@ protected:
 	BonusManager bonus_manager;
 	ModuleManager module_manager;
 	RocketManager rocket_manager;
+	GameMode game_mode = (*this);
 	
 	// b2World physics = b2World(b2Vec2_zero);
 
@@ -83,13 +87,16 @@ protected:
 	Effects_Prototype effect_params;
 	// Misc
 	std::map<std::string, float> params;
+	bool is_friendly_fire = false;
 	std::map<int, Ship*> ships_by_player_id;
+
+	inline const static int environment_team_id = -1;
 
 	// Path to the map
 	std::string map_path = "";
 
 	// Create functions
-	Player*          create_player(int id, sf::Color color = {}, std::string name = "_");
+	Player*          create_player(int id, int team_id, sf::Color color = {}, std::string name = "_");
 	b2Body*          create_round_body(b2Vec2 pos, float angle, float radius, float mass);
 	Gun*             create_gun(Gun_Prototype);
 	CommandModule*  create_command_module();
@@ -145,6 +152,11 @@ protected:
 	// Misc
 	// Calculates where beam intersects walls
 	b2Vec2 get_beam_intersection(b2Vec2 start, float angle);
+	// Calculates if agressor is hostile to target 
+	// Templates because agressor can be Ship, Projectile, Rocket, etc
+	template <class T, class U> bool is_hostile_to(T* agressor, U* target) { 
+		return agressor->get_player()->is_hostile_to(*target->get_player()) || (is_friendly_fire && agressor->get_player()->get_id() != target->get_player()->get_id());
+	}
 
 public:
 	GameReadable& get_readable();
@@ -169,7 +181,7 @@ public:
 	std::string encode();
 	// Creates new player
 protected:
-	void create_new_player(int id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	void create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 public:
 	bool new_player(PlayerDef);
@@ -177,6 +189,7 @@ public:
 	Player* player_by_id(int id);
 	// Deletes player
 	void delete_player(int id);
+	bool is_game_finished();
 	~Game();
 };
 

@@ -81,11 +81,17 @@ private:
 	// FPS
 	std::queue<int> frame_marks;
 
+	// Local server
+	aux::Process server = aux::Process("Server.exe");
+
+
 	// Notification
 	Notification note;
 public:
 	// Default constructor
 	Control();
+	// Default destructor
+	~Control();
 	// Get methods
 	int get_is_running();
 	// Func to call regulary

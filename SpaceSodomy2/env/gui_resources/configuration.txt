@@ -129,6 +129,14 @@ Group.MultiplayerSettings {
         TextSize = 13;
     }
 
+    EditBox.TeamName {
+        Position = (30%, 50);
+        Renderer = &5;
+        Size = (70%, 22);
+        Text = Name;
+        TextSize = 13;
+    }
+
     Button.Play {
         Position = (0, 70);
         Text = Play;

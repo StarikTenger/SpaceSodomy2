@@ -8,25 +8,26 @@ Renderer.1 {
     BorderColorDown = black;
     BorderColorFocused = #1E1EB4;
     BorderColorHover = black;
-    Borders = (1, 1, 1, 1);
-    TextColor = #3C3C3C;
-    TextColorDisabled = #7D7D7D;
-    TextColorDown = black;
-    TextColorHover = black;
-    Texture = None;
+    Borders = (0, 0, 0, 0);
+    TextColor = #448ACC;
+    TextColorDisabled = #448ACC;
+    TextColorDown = None;
+    TextColorHover = None;
+    Texture = "../textures/menu/ButtonMid.png" Smooth;
     TextureDisabled = None;
     TextureDown = None;
     TextureDownFocused = None;
     TextureDownHover = None;
     TextureFocused = None;
-    TextureHover = None;
+    TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
 }
 
 Renderer.2 {
-    TextColor = white;
-    TextOutlineColor = black;
-    TextOutlineThickness = 1;
-    TextureBackground = None;
+        BackgroundColor = transparent;
+        BorderColor = #3C3C3C;
+        Borders = (0, 0, 0, 0);
+        TextColor = #448ACC;
+	TextureBackground = None;
 
     Scrollbar {
         TextureArrowDown = "themes/Black.png" Part(0, 0, 20, 20) Middle(0, 1, 20, 19) Smooth;
@@ -53,15 +54,16 @@ Slider.ReplaySlider {
     Renderer {
         BorderColor = #3C3C3C;
         BorderColorHover = black;
-        Borders = (1, 1, 1, 1);
-        TextureThumb = None;
+        Borders = (0, 0, 0, 0);
+        TextureThumb = "../textures/menu/Thumb.png" Smooth;
         TextureThumbHover = None;
-        TextureTrack = None;
+        TextureTrack = "../textures/menu/Slider.png" Smooth;
         TextureTrackHover = None;
         ThumbColor = #F5F5F5;
         ThumbColorHover = white;
         TrackColor = #F5F5F5;
         TrackColorHover = white;
+        TransparentTexture = true;
     }
 }
 

@@ -1,8 +1,8 @@
 #include "HUDProcessing.h"
 
 bool operator<(Player& a, Player& b) {
-	return (a.get_kills() > b.get_kills() ||
-		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
+	return ((a.get_kills() > b.get_kills() ||
+		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths())));
 }
 
 void HUDProcessing::get_buttons_names(tgui::Gui &gui, std::string path) {
@@ -115,6 +115,7 @@ void HUDProcessing::redraw_shadow(tgui::CanvasSFML::Ptr canvas, tgui::Picture::P
 }
 
 void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
+	// Init player array and fill it with players, than sort
 	std::vector<Player> rating_table;
 	for (auto player : *game->get_players()) {
 		if (player.second == nullptr)
@@ -123,33 +124,50 @@ void HUDProcessing::table_step(tgui::Gui &gui, float scale) {
 	}
 	sort(rating_table.begin(), rating_table.end());
 
+	// Clean up rating table
 	gui.get<tgui::Group>("RatingTable")->removeAllWidgets();
+
+	// Applies scale & design to label text
 	auto apply_label = [=](std::vector<Player> *rating_table, tgui::Label::Ptr& label, int num) {
 		label->getRenderer()->setTextOutlineColor("black");
 		label->getRenderer()->setTextOutlineThickness(2);
 		label->getRenderer()->setTextColor(rating_table->operator[](num).get_color());
-		label->setTextSize(9 * scale);
+		label->setTextSize(7 * scale);
+		label->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
 	};
+
+	// Fill table with labels
+	int players_to_display = 5; // How many players (excluding you) we want to see in the table
+	int line_interval = 12; // Interval between neighbor lines
 	for (int i = 0; i < rating_table.size(); i++) {
+		// Check for players_to_display
+		if (rating_table[i].get_name() != player_network->get_name() && i > players_to_display - 1)
+			continue;
+		// Line in wich label is displayed
+		int line_number = std::min(i, players_to_display);
+
+		// Create name label
 		auto name = tgui::Label::create();
 		apply_label(&rating_table, name, i);
-		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + 16 * i) + "%")));
+		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + line_interval * line_number) + "%")));
 		name->setSize(tgui::Layout2d("50%", "15%"));
-		name->setText(rating_table[i].get_name());
-		name->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+		name->setText(std::to_string(i + 1) + "." + rating_table[i].get_name());
+
+		// Create kills label
 		auto kills = tgui::Label::create();
 		apply_label(&rating_table, kills, i);
-		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + 16 * i) + "%")));
+		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + line_interval * line_number) + "%")));
 		kills->setSize(tgui::Layout2d("25%", "15%"));
 		kills->setText(std::to_string(rating_table[i].get_kills()));
-		kills->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+
+		// Create deaths label
 		auto deaths = tgui::Label::create();
 		apply_label(&rating_table, deaths, i);
-		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + 16 * i) + "%")));
+		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + line_interval * line_number) + "%")));
 		deaths->setSize(tgui::Layout2d("25%", "15%"));
 		deaths->setText(std::to_string(rating_table[i].get_deaths()));
-		deaths->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
-
+		
+		// Add labels to table
 		gui.get<tgui::Group>("RatingTable")->add(name);
 		gui.get<tgui::Group>("RatingTable")->add(kills);
 		gui.get<tgui::Group>("RatingTable")->add(deaths);
@@ -232,6 +250,7 @@ void HUDProcessing::step(tgui::Gui &gui) {
 			reload_icons = 0;
 			auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
 			auto gun_texture = draw->get_texture(gun_texture_name);
+			DEBUG_PRINT(game->player_by_id(player_network->get_id())->get_gun_name() + "\"");
 			gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
 
 			auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
@@ -277,5 +296,6 @@ void HUDProcessing::step(tgui::Gui &gui) {
 				gui.get<tgui::Group>("NetworkInfo")->setVisible(false);
 		}
 	}
+	gui.get<tgui::Label>("TimeLeftValue")->setText(std::to_string(game->time_left / 60) + ":"  + std::to_string(game->time_left % 60));
 	table_step(gui, scale);
 }

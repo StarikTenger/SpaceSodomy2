@@ -1,70 +1,163 @@
-Renderer.1 {
-    BackgroundColor = #F5F5F5;
-    BackgroundColorDisabled = #E6E6E6;
-    BackgroundColorDown = #EBEBEB;
-    BackgroundColorHover = white;
-    BorderColor = #3C3C3C;
-    BorderColorDisabled = #7D7D7D;
-    BorderColorDown = black;
-    BorderColorFocused = #1E1EB4;
-    BorderColorHover = black;
-    Borders = (1, 1, 1, 1);
-    TextColor = #3C3C3C;
-    TextColorDisabled = #7D7D7D;
-    TextColorDown = black;
-    TextColorHover = black;
-    Texture = None;
-    TextureDisabled = None;
-    TextureDown = None;
-    TextureDownFocused = None;
-    TextureDownHover = None;
-    TextureFocused = None;
-    TextureHover = None;
-}
-
 Group.Group1 {
-    Position = (0%, 50%);
+    Position = (5%, 45%);
     Size = (30%, 50%);
 
     Renderer {
+        Font = "../fonts/Square.ttf";
     }
 
     Button.Singleplayer {
-        Renderer = &1;
-        Size = (100%, 20%);
+        Position = (3.5%, 0);
+        Size = (92%, 20%);
         Text = Singleplayer;
         TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (0, 0, 0, 0);
+            TextColor = #448ACC;
+            TextColorDisabled = #448ACC;
+            TextColorDown = None;
+            TextColorHover = None;
+            Texture = "../textures/menu/ButtonTop.png" Smooth;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = "../textures/menu/ButtonTopHover.png" Smooth;
+        }
     }
 
     Button.Settings {
-        Position = (0, 40%);
-        Renderer = &1;
-        Size = (100%, 20%);
+        Position = (3.5%, 40%);
+        Size = (88.5%, 20%);
         Text = Settings;
         TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (0, 0, 0, 0);
+            TextColor = #448ACC;
+            TextColorDisabled = #448ACC;
+            TextColorDown = None;
+            TextColorHover = None;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
+        }
     }
 
     Button.Replay {
-        Position = (0, 60%);
-        Renderer = &1;
-        Size = (100%, 20%);
+        Position = (3.5%, 60%);
+        Size = (88.5%, 20%);
         Text = Replay;
         TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (0, 0, 0, 0);
+            TextColor = #448ACC;
+            TextColorDisabled = #448ACC;
+            TextColorDown = None;
+            TextColorHover = None;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
+        }
     }
 
     Button.Exit {
-        Position = (0, 80%);
-        Renderer = &1;
-        Size = (100%, 20%);
+        Position = (0%, 80%);
+        Size = (92%, 20%);
         Text = Exit;
         TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (0, 0, 0, 0);
+            TextColor = #448ACC;
+            TextColorDisabled = #448ACC;
+            TextColorDown = None;
+            TextColorHover = None;
+            Texture = "../textures/menu/ButtonTop.png" Smooth;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = "../textures/menu/ButtonExit.png" Smooth;
+        }
     }
 
     Button.Multiplayer {
-        Position = (0, 20%);
-        Renderer = &1;
-        Size = (100%, 20%);
+        Position = (3.5%, 20%);
+        Size = (88.5%, 20%);
         Text = Multiplayer;
         TextSize = 13;
+
+        Renderer {
+            BackgroundColor = #F5F5F5;
+            BackgroundColorDisabled = #E6E6E6;
+            BackgroundColorDown = #EBEBEB;
+            BackgroundColorHover = white;
+            BorderColor = #3C3C3C;
+            BorderColorDisabled = #7D7D7D;
+            BorderColorDown = black;
+            BorderColorFocused = #1E1EB4;
+            BorderColorHover = black;
+            Borders = (0, 0, 0, 0);
+            TextColor = #448ACC;
+            TextColorDisabled = #448ACC;
+            TextColorDown = None;
+            TextColorHover = None;
+            Texture = "../textures/menu/ButtonMid.png" Smooth;
+            TextureDisabled = None;
+            TextureDown = None;
+            TextureDownFocused = None;
+            TextureDownHover = None;
+            TextureFocused = None;
+            TextureHover = "../textures/menu/ButtonMidHover.png" Smooth;
+        }
     }
 }

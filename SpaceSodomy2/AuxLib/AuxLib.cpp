@@ -532,3 +532,42 @@ std::string aux::censor_name(std::string str) {
 	return str;
 }
 
+void aux::Process::run(std::string parameters, bool show) {
+	if (running) {
+		std::cerr << "Can't run process: The process is already running";
+	}
+	running = 1;
+
+	std::wstring stemp = std::wstring(proc_name.begin(), proc_name.end());
+	std::wstring stemp_params = std::wstring(parameters.begin(), parameters.end());
+
+
+	lpExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	lpExecInfo.lpFile = stemp.c_str();
+	lpExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	lpExecInfo.hwnd = NULL;
+	lpExecInfo.lpVerb = NULL;
+	lpExecInfo.lpParameters = stemp_params.c_str();;
+	lpExecInfo.lpDirectory = NULL;
+	lpExecInfo.nShow = show ? SW_SHOWNORMAL : SW_HIDE;
+	ShellExecuteEx(&lpExecInfo);
+}
+
+void aux::Process::close() {
+	if (!running) {
+		std::cerr << "Can't close process: The process is not running";
+	}
+	if (lpExecInfo.hProcess) {
+		running = 0;
+		TerminateProcess(lpExecInfo.hProcess, 0);
+		CloseHandle(lpExecInfo.hProcess);
+	}
+}
+
+void aux::Process::set_name(std::string _proc_name) {
+	proc_name = _proc_name;
+}
+
+bool aux::Process::is_running() {
+	return running;
+}

@@ -14,12 +14,16 @@
 
 class Control {
 private:
+	// 0 means the program is supposed to be stopped
+	int is_running = 1;
 	// Init game & network
 	Game game;
 	ServerNetwork network;
 	int delay = 20; // delay between game updates
 	int disconnect_timeout = 1000; // time for reconnection
 	int last_step_time = aux::get_milli_count(); // last step time
+	int idle_timeout = 0; // If there is no activity for this time, server stops. If 0, server runs forever
+	int last_connection_time = aux::get_milli_count(); // Time, when last connection occured
 
 	std::vector <BotControl*> bots;
 
@@ -39,7 +43,8 @@ private:
 	bool load_names(std::string path);
 public:
 	Control();
-
+	int get_is_running();
+	void set_idle_timeout(int _idle_timeout);
 	void receive();
 	void step();
 };
