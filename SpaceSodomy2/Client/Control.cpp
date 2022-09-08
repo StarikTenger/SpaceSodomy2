@@ -72,7 +72,7 @@ void Control::process_commands() {
 			command_module.set_command(CommandModule::SHOOT, 1);
 		if (key_by_name("BOOST"))
 			command_module.set_command(CommandModule::BOOST, 1);
-		if (key_by_name("RESPAWN"))
+		if (key_by_name("RESPAWN") && !menu_processing.active)
 			command_module.set_command(CommandModule::RESPAWN, 1);
 		if (key_by_name("BONUS_ACTIVATION"))
 			command_module.set_command(CommandModule::BONUS_ACTIVATION, 1);
