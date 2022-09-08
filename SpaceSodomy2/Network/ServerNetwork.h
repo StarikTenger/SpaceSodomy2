@@ -28,6 +28,7 @@ private:
 	std::deque<std::string> messages; // deque of received messages
 	std::string replay_path;
 	std::ofstream fout;
+	bool write_replay = true; // Shall it write replay
 public:
 	ServerNetwork();
 	ServerNetwork(int port_);
@@ -39,6 +40,7 @@ public:
 	void del_last_message(); // delete message on the top of deque (last message)
 	void clear_messages(); // delete all messages from deque
 	void del_address(std::string address_); // delete address from set
+	void stop_writing_replay();
 
 	void receive(); // push new message to the top of deque
 	void send(std::string message); // sending message to all players

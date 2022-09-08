@@ -20,7 +20,8 @@ private:
 	sf::UdpSocket socket;
 	sf::UdpSocket socket_receiving;
 	int id = 1; // player id
-	std::string name = "UnknownPlayer";
+	std::string name = "UnknownPlayer"; // player name
+	std::string team_name_hint = "any"; // hint to the server (may be rejected)
 	int token = 0;
 
 public:
@@ -31,15 +32,17 @@ public:
 	void set_server(std::string serverIP_ = "localhost"); // setting a new server IP address
 	void set_id(int id_ = 1); // setting a new id for player
 	void set_name(std::string name_ = "UnknownPlayer"); // setting a new name for player
+	void set_team_name_hint(std::string name_ = "any"); // setting a new team name hint for player
 	void set_token(int token_);
 
 	int get_port(); // getting sending port
 	std::string get_serverIP(); // getting server IP address
 	int get_id(); // getting player id
 	std::string get_name(); // getting player name
+	std::string get_team_name_hint(); // getting player team name hint
 	int get_token(); // getting player token
 
-	// Sends data in format: "PlayerId LocalTime PlayerName # data"
+	// Sends data in format: "PlayerId LocalTime PlayerName TeamNameHint # data"
 	void send(std::string data);
 	// Retruns received string
 	void receive(); 

@@ -31,7 +31,17 @@ void ClientNetwork::set_id(int id_) {
 }
 
 void ClientNetwork::set_name(std::string name_) {
+	if (name_.find(' ')) {
+		name = "fuck_you";
+	}
 	name = name_;
+}
+
+void ClientNetwork::set_team_name_hint(std::string _) {
+	if (_.find(' ')) {
+		team_name_hint = "any";
+	}
+	team_name_hint = _;
 }
 
 void ClientNetwork::set_token(int token_) {
@@ -54,6 +64,12 @@ int ClientNetwork::get_id() {
 std::string ClientNetwork::get_name() {
 	return name;
 }
+
+std::string ClientNetwork::get_team_name_hint() {
+	return team_name_hint;
+}
+
+
 int ClientNetwork::get_token() {
 	return token;
 }
@@ -62,7 +78,7 @@ void ClientNetwork::send(std::string data) {
 	// Client message constructor
 	data = std::to_string(id) + " " +
 		std::to_string(aux::get_milli_count()) + " " +
-		name + " " + std::to_string(token) + " " +
+		name + " " + team_name_hint + " " + std::to_string(token) + " " +
 		data;
 	// Sending
 	auto func = [](sf::UdpSocket* socket, std::string data,

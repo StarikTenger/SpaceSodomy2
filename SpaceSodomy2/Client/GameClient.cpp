@@ -135,12 +135,22 @@ void GameClient::update_state(std::string source) {
 				load_thread.detach();
 			}
 		}
+		// Game finished
+		if (symbol == "F") {
+			//game_mode.
+		}
+		if (symbol == "G") {
+			is_friendly_fire = aux::read_int8(stream);
+		}
+		if (symbol == "T") {
+			time_left = aux::read_int(stream);
+		}
 		// Player
 		if (symbol == "P") {
 			// Id
 			//stream.get();
-			int id;
-			id = aux::read_int(stream);
+			int id = aux::read_int(stream);
+			int team_id = aux::read_int(stream);
 			// Color
 			sf::Color color;
 			int r = aux::read_int8(stream), g = aux::read_int8(stream), b = aux::read_int8(stream);
@@ -162,7 +172,7 @@ void GameClient::update_state(std::string source) {
 			connection_time = aux::read_int(stream);
 
 			// Creating player
-			Player* player = create_player(id);
+			Player* player = create_player(id, team_id);
 			player->set_color(color);
 			player->set_name(name);
 			player->set_hull_name(hull);

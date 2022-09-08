@@ -4,10 +4,11 @@
 #include "CommandModule.h"
 #include "Counter.h"
 #include "iId.h"
+#include "iTeamMember.h"
 #include <AuxLib/AuxLib.h>
 
 
-class Player : public iId {
+class Player : public iTeamMember {
 private:
 	int deaths = 0;
 	int kills = 0;
@@ -59,6 +60,7 @@ struct PlayerDef {
 	int id;
 	//Player::Type type;
 	std::string name;
+	std::string team_name_hint = "any";
 	sf::Color color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 	std::string gun_name = "default";
 	std::string hull_name = "default";

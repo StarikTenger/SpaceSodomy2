@@ -1,8 +1,8 @@
 #include "HUDProcessing.h"
 
 bool operator<(Player& a, Player& b) {
-	return (a.get_kills() > b.get_kills() ||
-		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths()));
+	return ((a.get_kills() > b.get_kills() ||
+		(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths())));
 }
 
 void HUDProcessing::get_buttons_names(tgui::Gui &gui, std::string path) {
@@ -250,6 +250,7 @@ void HUDProcessing::step(tgui::Gui &gui) {
 			reload_icons = 0;
 			auto gun_texture_name = game->player_by_id(player_network->get_id())->get_gun_name() + "-gun";
 			auto gun_texture = draw->get_texture(gun_texture_name);
+			DEBUG_PRINT(game->player_by_id(player_network->get_id())->get_gun_name() + "\"");
 			gui.get<tgui::Picture>("GunImage")->getRenderer()->setTexture(*gun_texture);
 
 			auto left_module_texture_name = Module::get_name_by_type(game->get_ship(player_network->get_id())->get_left_module()->get_type()) + "-module";
@@ -295,5 +296,6 @@ void HUDProcessing::step(tgui::Gui &gui) {
 				gui.get<tgui::Group>("NetworkInfo")->setVisible(false);
 		}
 	}
+	gui.get<tgui::Label>("TimeLeftValue")->setText(std::to_string(game->time_left / 60) + ":"  + std::to_string(game->time_left % 60));
 	table_step(gui, scale);
 }

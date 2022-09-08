@@ -16,9 +16,8 @@ private:
 	ClientNetwork* network;
 	std::map<int, std::pair<int, int>> id_to_keyit;
 	void init_tgui(tgui::Gui& gui);
-	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_);
+	void save_config(std::string path, std::string address_, int port_, int id_, std::string name_, std::string team_name_);
 	void load_config(std::string path, std::string* address_, std::string* port_,
-		std::string* id_, std::string* name_, tgui::Gui &gui);
 	void load_keys(std::string path, std::string names_path, std::vector<std::vector<std::string*>>* keys);
 	void load_HUD_settings(std::string path, tgui::Gui &gui);
 	void save_HUD_settings(std::string path);

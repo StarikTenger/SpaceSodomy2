@@ -1,9 +1,11 @@
 #pragma once
 #include <set>
+#include <map>
 #include <box2d/box2d.h>
 #include <functional>
 
 
+class Player;
 class Ship;
 class Engine;
 class ActiveModule;
@@ -27,7 +29,7 @@ public:
 	float dt = 0.02;
 	float time = 0;
 
-
+	std::map<int, Player*> players;
     std::set<Ship*> ships;
 	std::set<Engine*> engines;
 	std::set<CommandModule*> command_modules;

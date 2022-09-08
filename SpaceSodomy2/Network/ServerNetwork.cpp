@@ -47,6 +47,10 @@ void ServerNetwork::del_address(std::string address_) {
 	addresses.erase(IPconvert[address_]);
 }
 
+void ServerNetwork::stop_writing_replay() {
+	write_replay = false;
+}
+
 void ServerNetwork::receive() {
 	// Receiving
 	socket.receive(buffer, sizeof(buffer), received, sender, port);
@@ -65,7 +69,7 @@ void ServerNetwork::receive() {
 }
 
 void ServerNetwork::send(std::string message) {
-	if (replay_path != "") {
+	if (write_replay && replay_path != "") {
 		if (!fout.is_open())
 			fout.open(replay_path, std::ios::binary);
 		fout << message;
