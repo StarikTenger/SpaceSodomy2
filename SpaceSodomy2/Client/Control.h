@@ -15,6 +15,7 @@
 #include <queue>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
+#include <Game/Trigger.h>
 
 class Control {
 private:
@@ -82,6 +83,8 @@ private:
 
 	// Local server
 	aux::Process server = aux::Process("Server.exe");
+
+	Trigger* trigger;
 
 public:
 	// Default constructor

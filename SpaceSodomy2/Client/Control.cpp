@@ -220,6 +220,10 @@ Control::Control() {
 	game.set_dt(delay * 0.001);
 	game.load_parameters("parameters.conf");
 	load_token("token.conf");
+
+	trigger = new Trigger(b2Vec2(0, 0), 5.0, game.get_readable());
+	trigger->add_id(network.get_id());
+	trigger->set_function([](Ship*) { std::cout << "triggered\n"; });
 }
 
 Control::~Control() {
@@ -243,6 +247,7 @@ void Control::step() {
 	int time_current = aux::get_milli_count();
 	int time_delta = time_current - time_prev;
 	if (time_delta >= delay) {
+		trigger->step();
 		time_prev = time_current;
 		// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
 		game.set_dt(time_delta * 0.001);
