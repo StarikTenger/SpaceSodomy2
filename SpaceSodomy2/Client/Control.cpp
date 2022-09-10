@@ -262,6 +262,8 @@ void Control::step() {
 			float rot_mod = abs(sin(float(aux::get_milli_count()) / 2000));
 			name->setRotation((rot_mod - 0.5) * 25.0, tgui::Vector2f(0.5, 0.5));
 			name->getRenderer()->setTextColor(tgui::Color(abs(1.0 - mod) * 255, mod * 255, abs(0.5 - mod) * 255, 255));
+			name->setText(menu_processing.mvp);
+
 			/*auto label = gui.get<tgui::Label>("MVPLabel");
 			label->getRenderer()->setTextColor(tgui::Color(mod * 255, abs(0.5 - mod) * 255, abs(1.0 - mod) * 255, 255));*/
 		}

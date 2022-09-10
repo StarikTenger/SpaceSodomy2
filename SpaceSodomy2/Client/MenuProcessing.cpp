@@ -51,6 +51,9 @@ void MenuProcessing::update_rating_table() {
 		return ((a.get_kills() > b.get_kills() ||
 			(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths())));
 		});
+	if (!rating_table.empty()) {
+		mvp = rating_table[0].get_name();
+	}
 
 	// Clean up rating table
 	auto scroll_val = _gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->getVerticalScrollbarValue();

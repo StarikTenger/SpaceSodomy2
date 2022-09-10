@@ -54,6 +54,7 @@ public:
 		aux::Keyboard* keyboard_, ClientNetwork* network_,
 		GameClient* game_, Replay* replay_,
 		bool* reload_);
+	std::string mvp = "Player";
 	void open_rating_table();
 	void close_rating_table();
 	void step();

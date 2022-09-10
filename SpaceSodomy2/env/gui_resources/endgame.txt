@@ -1,5 +1,5 @@
 Group.mvp {
-    Size = (100%, 15%);
+    Size = (100%, 20%);
 
     Renderer {
     }
