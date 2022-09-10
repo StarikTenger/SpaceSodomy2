@@ -1,5 +1,5 @@
 Group.mvp {
-    Size = (100%, 20%);
+    Size = (100%, 25%);
 
     Renderer {
     }
@@ -8,7 +8,7 @@ Group.mvp {
         HorizontalAlignment = Center;
         Position = (0, -10);
         ScrollbarPolicy = Never;
-        Size = (100%, 50%);
+        Size = (100%, 40%);
         Text = MVP;
         TextSize = 65;
 
@@ -25,7 +25,7 @@ Group.mvp {
 
     Label.MVPplayer {
         HorizontalAlignment = Center;
-        Position = (40%, 60%);
+        Position = (40%, 40%);
         ScrollbarPolicy = Never;
         Size = (20%, 40%);
         Text = Player;
