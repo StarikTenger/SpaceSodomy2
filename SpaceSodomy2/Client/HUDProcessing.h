@@ -27,6 +27,8 @@ private:
 	std::string bonus_icon_name = "";
 
 	void redraw_shadow(tgui::CanvasSFML::Ptr canvas, tgui::Picture::Ptr pic);
+
+	sf::Color hcolor, ecolor, scolor;
 public:
 	float interface_scale = 3;
 

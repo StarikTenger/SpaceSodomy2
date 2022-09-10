@@ -186,6 +186,9 @@ HUDProcessing::HUDProcessing(tgui::Gui &gui, Draw* draw_, b2Vec2* mouse_pos_, au
 	draw = draw_;
 	mouse_pos = mouse_pos_;
 	keyboard = keyboard_;
+	hcolor = gui.get<tgui::ProgressBar>("HPBar")->getRenderer()->getFillColor();
+	scolor = gui.get<tgui::ProgressBar>("StaminaBar")->getRenderer()->getFillColor();
+	ecolor = gui.get<tgui::ProgressBar>("EnergyBar")->getRenderer()->getFillColor();
 }
 
 void HUDProcessing::step(tgui::Gui &gui) {
@@ -210,10 +213,14 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		HP_bar->setValue(game->get_ship(player_network->get_id())->get_hp()->get());
 		gui.get<tgui::Label>("HPBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_hp()->get())));
 		if (int(game->get_ship(player_network->get_id())->get_hp()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_hp()->get()) {
-			HP_bar->setInheritedOpacity(mod);
+			//HP_bar->setInheritedOpacity(mod);
+			HP_bar->getRenderer()->setFillColor(
+				tgui::Color(hcolor.r * (1.0 - mod) + 255.0 * mod, hcolor.g * (1.0 - mod) + 255.0 * mod,
+					hcolor.b * (1.0 - mod) + 255.0 * mod, hcolor.a));
 		}
 		else {
-			HP_bar->setInheritedOpacity(1);
+			//HP_bar->setInheritedOpacity(1);
+			HP_bar->getRenderer()->setFillColor(tgui::Color(hcolor.r, hcolor.g, hcolor.b, hcolor.a));
 		}
 		// stamina bar processing
 		auto stamina_bar = gui.get<tgui::ProgressBar>("StaminaBar");
@@ -221,10 +228,15 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		stamina_bar->setValue(game->get_ship(player_network->get_id())->get_stamina()->get());
 		gui.get<tgui::Label>("StaminaBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_stamina()->get())));
 		if (int(game->get_ship(player_network->get_id())->get_stamina()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_stamina()->get()) {
-			stamina_bar->setInheritedOpacity(mod);
+			//stamina_bar->setInheritedOpacity(mod);
+			stamina_bar->getRenderer()->setFillColor(
+				tgui::Color(scolor.r * (1.0 - mod) + 255.0 * mod, scolor.g * (1.0 - mod) + 255.0 * mod,
+					scolor.b * (1.0 - mod) + 255.0 * mod, scolor.a));
 		}
 		else {
-			stamina_bar->setInheritedOpacity(1);
+			//stamina_bar->setInheritedOpacity(1);
+			stamina_bar->getRenderer()->setFillColor(
+				tgui::Color(scolor.r, scolor.g, scolor.b, scolor.a));
 		}
 		// energy bar processing
 		auto energy_bar = gui.get<tgui::ProgressBar>("EnergyBar");
@@ -232,10 +244,15 @@ void HUDProcessing::step(tgui::Gui &gui) {
 		energy_bar->setValue(game->get_ship(player_network->get_id())->get_energy()->get());
 		gui.get<tgui::Label>("EnergyBarVal")->setText(std::to_string(int(game->get_ship(player_network->get_id())->get_energy()->get())));
 		if (int(game->get_ship(player_network->get_id())->get_energy()->get_max() * 0.3) >= game->get_ship(player_network->get_id())->get_energy()->get()) {
-			energy_bar->setInheritedOpacity(mod);
+			//energy_bar->setInheritedOpacity(mod);
+			energy_bar->getRenderer()->setFillColor(
+				tgui::Color(ecolor.r * (1.0 - mod) + 255.0 * mod, ecolor.g * (1.0 - mod) + 255.0 * mod,
+					ecolor.b * (1.0 - mod) + 255.0 * mod, ecolor.a));
 		}
 		else {
-			energy_bar->setInheritedOpacity(1);
+			//energy_bar->setInheritedOpacity(1);
+			energy_bar->getRenderer()->setFillColor(
+				tgui::Color(ecolor.r, ecolor.g, ecolor.b, ecolor.a));
 		}
 
 		auto bonus_texture_name = game->get_bonus_texture_name(game->get_ship(player_network->get_id())->get_bonus_slot()->get_current_bonus());
