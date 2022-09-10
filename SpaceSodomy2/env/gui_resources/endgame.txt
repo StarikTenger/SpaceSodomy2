@@ -1,0 +1,44 @@
+Group.mvp {
+    Size = (100%, 15%);
+
+    Renderer {
+    }
+
+    Label.MVPLabel {
+        HorizontalAlignment = Center;
+        Position = (0, -10);
+        ScrollbarPolicy = Never;
+        Size = (100%, 50%);
+        Text = MVP;
+        TextSize = 65;
+
+        Renderer {
+            BackgroundColor = transparent;
+            BorderColor = white;
+            Borders = (0, 0, 0, 0);
+            Font = "Square.ttf";
+            TextColor = white;
+            TextStyle = Bold;
+            TextureBackground = None;
+        }
+    }
+
+    Label.MVPplayer {
+        HorizontalAlignment = Center;
+        Position = (40%, 60%);
+        ScrollbarPolicy = Never;
+        Size = (20%, 40%);
+        Text = Player;
+        TextSize = 40;
+        VerticalAlignment = Center;
+
+        Renderer {
+            BackgroundColor = transparent;
+            BorderColor = #3C3C3C;
+            Borders = (0, 0, 0, 0);
+            Font = "Square.ttf";
+            TextColor = #3C3C3C;
+            TextureBackground = None;
+        }
+    }
+}

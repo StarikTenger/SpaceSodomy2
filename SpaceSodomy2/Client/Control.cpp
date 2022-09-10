@@ -250,6 +250,22 @@ void Control::step() {
 	int time_current = aux::get_milli_count();
 	int time_delta = time_current - time_prev;
 	if (time_delta >= delay) {
+		if (game.is_game_finished()) {
+			menu_processing.open_rating_table();
+			gui.get<tgui::Group>("rating_table.txt")->setPosition(tgui::Layout2d("0", "10%"));
+			gui.get<tgui::Group>("HUD.txt")->setVisible(false);
+			gui.get<tgui::Group>("endgame.txt")->setVisible(true);
+			float mod = abs(sin(float(aux::get_milli_count()) / 1000));
+			auto name = gui.get<tgui::Label>("MVPplayer");
+			name->setVerticalAlignment(tgui::Label::VerticalAlignment::Center);
+			name->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
+			float rot_mod = abs(sin(float(aux::get_milli_count()) / 2000));
+			name->setRotation((rot_mod - 0.5) * 25.0, tgui::Vector2f(0.5, 0.5));
+			name->getRenderer()->setTextColor(tgui::Color(abs(1.0 - mod) * 255, mod * 255, abs(0.5 - mod) * 255, 255));
+			/*auto label = gui.get<tgui::Label>("MVPLabel");
+			label->getRenderer()->setTextColor(tgui::Color(mod * 255, abs(0.5 - mod) * 255, abs(1.0 - mod) * 255, 255));*/
+		}
+
 		time_prev = time_current;
 		// Set game dt for inner use (for replay) TODO: specific mode for real-time sync
 		game.set_dt(time_delta * 0.001);

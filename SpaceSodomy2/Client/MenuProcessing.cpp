@@ -751,6 +751,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	auto rating_table = load_widgets("rating_table.txt");
+	auto endgame = load_widgets("endgame.txt");
 	// Initializing main menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
