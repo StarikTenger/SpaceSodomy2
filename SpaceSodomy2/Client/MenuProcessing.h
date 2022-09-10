@@ -7,6 +7,7 @@
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include "KeybindingBox.h"
+#include <algorithm>
 
 class MenuProcessing {
 private:
@@ -31,6 +32,8 @@ private:
 	void reset_settings_textures(tgui::Gui& gui);
 	void open_settings_menu(tgui::Gui& gui);
 	void close_widgets(tgui::Container::Ptr container);
+	void load_rating_table();
+	void update_rating_table();
 	Draw* draw;
 	GameClient* game;
 	Replay* replay;
@@ -51,6 +54,8 @@ public:
 		aux::Keyboard* keyboard_, ClientNetwork* network_,
 		GameClient* game_, Replay* replay_,
 		bool* reload_);
+	void open_rating_table();
+	void close_rating_table();
 	void step();
 };
 

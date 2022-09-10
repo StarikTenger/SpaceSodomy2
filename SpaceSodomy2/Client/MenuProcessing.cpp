@@ -26,6 +26,88 @@ void MenuProcessing::save_keys(std::string path, std::vector<std::vector<std::st
 	}
 	fout.close();
 }
+
+void MenuProcessing::load_rating_table() {
+	auto rtable = _gui->get<tgui::ScrollablePanel>("GlobalRatingTable");
+	_gui->get<tgui::Panel>("GlobalRatingPanel")->setVisible(false);
+	// scrollbar
+	auto scrollbar = tgui::ScrollbarRenderer(rtable->getRenderer()->getScrollbar());
+	scrollbar.setTrackColor("None");
+	scrollbar.setThumbColor("#448ACC");
+	scrollbar.setThumbColorHover("None");
+	scrollbar.setArrowColor("#448ACC");
+	scrollbar.setArrowBackgroundColor("None");
+	scrollbar.setArrowBackgroundColorHover("None");
+}
+
+void MenuProcessing::update_rating_table() {
+	std::vector<Player> rating_table;
+	for (auto player : *game->get_players()) {
+		if (player.second == nullptr)
+			continue;
+		rating_table.push_back(*player.second);
+	}
+	sort(rating_table.begin(), rating_table.end(), [](Player& a, Player& b) {
+		return ((a.get_kills() > b.get_kills() ||
+			(a.get_kills() == b.get_kills() && a.get_deaths() < b.get_deaths())));
+		});
+
+	// Clean up rating table
+	auto scroll_val = _gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->getVerticalScrollbarValue();
+	_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->removeAllWidgets();
+
+	// Applies scale & design to label text
+	auto apply_label = [=](std::vector<Player>* rating_table, tgui::Label::Ptr& label, int num) {
+		label->getRenderer()->setTextOutlineColor("black");
+		label->getRenderer()->setTextOutlineThickness(2);
+		label->getRenderer()->setTextColor(rating_table->operator[](num).get_color());
+		label->setTextSize(15);
+		label->setScrollbarPolicy(tgui::Scrollbar::Policy::Never);
+	};
+
+	// Fill table with labels
+	int line_interval = 12; // Interval between neighbor lines
+	for (int i = 0; i < rating_table.size(); i++) {
+		// Create name label
+		auto name = tgui::Label::create();
+		apply_label(&rating_table, name, i);
+		name->setPosition(tgui::Layout2d(0, tgui::String(std::to_string(5 + line_interval * i) + "%")));
+		name->setSize(tgui::Layout2d("50%", "15%"));
+		name->setText(std::to_string(i + 1) + "." + rating_table[i].get_name());
+
+		// Create kills label
+		auto kills = tgui::Label::create();
+		apply_label(&rating_table, kills, i);
+		kills->setPosition(tgui::Layout2d("50%", tgui::String(std::to_string(5 + line_interval * i) + "%")));
+		kills->setSize(tgui::Layout2d("25%", "15%"));
+		kills->setText(std::to_string(rating_table[i].get_kills()));
+
+		// Create deaths label
+		auto deaths = tgui::Label::create();
+		apply_label(&rating_table, deaths, i);
+		deaths->setPosition(tgui::Layout2d("75%", tgui::String(std::to_string(5 + line_interval * i) + "%")));
+		deaths->setSize(tgui::Layout2d("25%", "15%"));
+		deaths->setText(std::to_string(rating_table[i].get_deaths()));
+
+		// Add labels to table
+		_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->add(name);
+		_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->add(kills);
+		_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->add(deaths);
+	}
+	_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->setVerticalScrollbarValue(scroll_val);
+}
+
+void MenuProcessing::open_rating_table() {
+	_gui->get<tgui::Group>("rating_table.txt")->setVisible(true);
+	_gui->get<tgui::Panel>("GlobalRatingPanel")->setVisible(true);
+	_gui->get<tgui::ScrollablePanel>("GlobalRatingTable")->setVisible(true);
+	update_rating_table();
+}
+
+void  MenuProcessing::close_rating_table() {
+	_gui->get<tgui::Group>("rating_table.txt")->setVisible(false);
+}
+
 void MenuProcessing::load_keys(std::string path, std::string names_path,
 	std::vector<std::vector<std::string*>>* keys) {
 
@@ -668,6 +750,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto settings_menu = load_widgets("settings.txt");
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
+	auto rating_table = load_widgets("rating_table.txt");
 	// Initializing main menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
@@ -695,6 +778,8 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	exit->onClick([=] {
 		draw->get_window()->close();
 	});
+	// Initizlizing rating table
+	load_rating_table();
 	// Initizlizing quickplay menu
 	tgui::Button::Ptr back_button = quickplay_menu->get<tgui::Button>("BackButton");
 	back_button->onClick([&gui, &close_groups] {

@@ -80,6 +80,13 @@ void Control::process_commands() {
 			command_module.set_command(CommandModule::LEFT_MODULE, 1);
 		if (key_by_name("RIGHT_MODULE"))
 			command_module.set_command(CommandModule::RIGHT_MODULE, 1);
+		if (key_by_name("RATING_TABLE")) {
+			menu_processing.open_rating_table();
+		}
+		else
+		{
+			menu_processing.close_rating_table();
+		}
 	}
 	if (key_by_name("FULLSCREEN")) {
 		draw.fullscreen_toggle();

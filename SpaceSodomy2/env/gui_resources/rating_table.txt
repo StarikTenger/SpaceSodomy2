@@ -1,0 +1,25 @@
+Panel.GlobalRatingPanel {
+    Position = (25%, 15%);
+    Size = (50%, 70%);
+
+    Renderer {
+        BackgroundColor = white;
+        BorderColor = black;
+        TextureBackground = "../textures/menu/Buttonmid.png" NoSmooth;
+        TransparentTexture = false;
+    }
+
+    ScrollablePanel.GlobalRatingTable {
+        ContentSize = (0, 0);
+        HorizontalScrollbarPolicy = Never;
+        Position = (3%, 3%);
+        Size = (94%, 94%);
+
+        Renderer {
+            BackgroundColor = #FFFFFF00;
+            BorderColor = black;
+            TextureBackground = None;
+            TransparentTexture = false;
+        }
+    }
+}
