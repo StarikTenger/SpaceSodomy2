@@ -22,11 +22,13 @@ void Trigger::step() {
 	for (auto i = ids.begin(); i != ids.end(); i++) {
 		for (auto it = game.ships.begin(); it != game.ships.end(); it++) {
 			auto ship = *it;
-			if (ship->get_id() == *i && (ship->get_body()->GetPosition() - center).Length() < radius) {
-				trigger_action(ship);
-			}
-			else {
-				std::cout << (ship->get_body()->GetPosition() - center).Length() << "\n";
+			if (ship->get_id() == *i) {
+				if ((ship->get_body()->GetPosition() - center).Length() < radius) {
+					trigger_action(ship);
+				}
+				else {
+					std::cout << (ship->get_body()->GetPosition() - center).Length() << "\n";
+				}
 			}
 		}
 	}
