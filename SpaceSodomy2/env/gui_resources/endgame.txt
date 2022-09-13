@@ -42,3 +42,12 @@ Group.mvp {
         }
     }
 }
+
+Picture.EndgameBack {
+    Size = (128, 128);
+
+    Renderer {
+        Texture = "../textures/menu/arrow_left_curve.png" Smooth;
+        TransparentTexture = false;
+    }
+}

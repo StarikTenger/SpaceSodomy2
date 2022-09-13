@@ -250,7 +250,8 @@ void Control::step() {
 	int time_current = aux::get_milli_count();
 	int time_delta = time_current - time_prev;
 	if (time_delta >= delay) {
-		if (game.is_game_finished()) {
+		std::cout << menu_processing.endgame << "\n";
+		if (menu_processing.endgame == 1) {
 			menu_processing.open_rating_table();
 			gui.get<tgui::Group>("rating_table.txt")->setPosition(tgui::Layout2d("0", "10%"));
 			gui.get<tgui::Group>("HUD.txt")->setVisible(false);
@@ -263,9 +264,14 @@ void Control::step() {
 			name->setRotation((rot_mod - 0.5) * 25.0, tgui::Vector2f(0.5, 0.5));
 			name->getRenderer()->setTextColor(tgui::Color(abs(1.0 - mod) * 255, mod * 255, abs(0.5 - mod) * 255, 255));
 			name->setText(menu_processing.mvp);
-
-			/*auto label = gui.get<tgui::Label>("MVPLabel");
-			label->getRenderer()->setTextColor(tgui::Color(mod * 255, abs(0.5 - mod) * 255, abs(1.0 - mod) * 255, 255));*/
+		}
+		if (menu_processing.endgame == 2) {
+			std::cout << "out\n";
+			menu_processing.close_rating_table();
+			if (!menu_processing.active)
+				menu_processing.toggle_active();
+			gui.get<tgui::Group>("endgame.txt")->setVisible(false);
+			menu_processing.endgame = 3;
 		}
 
 		time_prev = time_current;

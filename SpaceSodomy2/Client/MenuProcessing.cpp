@@ -339,6 +339,10 @@ void MenuProcessing::toggle_active() {
 	text_field_active = active;
 }
 
+void MenuProcessing::set_endgame(int val) {
+	endgame = val;
+}
+
 void MenuProcessing::init_multiplayer_menu(std::string file_name, tgui::Gui& gui) {
 	auto conf = gui.get<tgui::Group>("configuration.txt");
 
@@ -754,7 +758,7 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	auto configuration_menu = load_widgets("configuration.txt");
 	auto replay_menu = load_widgets("replay.txt");
 	auto rating_table = load_widgets("rating_table.txt");
-	auto endgame = load_widgets("endgame.txt");
+	auto endgame_group = load_widgets("endgame.txt");
 	// Initializing main menu
 	tgui::Button::Ptr replayButton = gui.get<tgui::Button>("Replay");
 	replayButton->onClick([=, &gui, &close_groups] {
@@ -782,9 +786,13 @@ void MenuProcessing::init_tgui(tgui::Gui& gui) {
 	exit->onClick([=] {
 		draw->get_window()->close();
 	});
-	// Initizlizing rating table
+	// Initializing endgame;
+	endgame_group->get<tgui::Picture>("EndgameBack")->onClick([=]() {
+		set_endgame(2);
+	});
+	// Initializing rating table
 	load_rating_table();
-	// Initizlizing quickplay menu
+	// Initializing quickplay menu
 	tgui::Button::Ptr back_button = quickplay_menu->get<tgui::Button>("BackButton");
 	back_button->onClick([&gui, &close_groups] {
 		close_groups(gui);
@@ -920,6 +928,10 @@ void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2
 
 void MenuProcessing::step() {
 	replay->step(game->get_dt());
+
+	if (endgame == 0 && game->is_game_finished()) {
+		endgame = 1;
+	}
 	
 	if (replay->get_replay_active()) {
 		int cur_time = replay->get_seconds();
