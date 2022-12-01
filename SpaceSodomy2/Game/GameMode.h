@@ -6,7 +6,7 @@
 class GameMode {
 private:
 	int kills_to_win = 100;
-	int time_limit = 60* 60; // Ten minutes
+	int time_limit = 60* 60; // Sixty minutes
 	const GameReadable& game;
 	std::string message = ""; // Message shown when game is over
 public:

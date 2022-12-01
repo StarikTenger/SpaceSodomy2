@@ -250,7 +250,6 @@ void Control::step() {
 	int time_current = aux::get_milli_count();
 	int time_delta = time_current - time_prev;
 	if (time_delta >= delay) {
-		std::cout << menu_processing.endgame << "\n";
 		if (menu_processing.endgame == 1) {
 			menu_processing.open_rating_table();
 			gui.get<tgui::Group>("rating_table.txt")->setPosition(tgui::Layout2d("0", "10%"));

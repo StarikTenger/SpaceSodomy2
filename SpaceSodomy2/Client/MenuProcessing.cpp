@@ -929,9 +929,15 @@ void MenuProcessing::init(aux::Process* _server, tgui::Gui& gui, Draw* draw_, b2
 void MenuProcessing::step() {
 	replay->step(game->get_dt());
 
-	if (endgame == 0 && game->is_game_finished()) {
+	auto time_backup = game->time;
+	game->time = 0;
+	if (endgame == 0 && (game->time_left <= 0 || game->is_game_finished())) {
 		endgame = 1;
 	}
+	if (endgame == 3 && !(game->time_left <= 0 || game->is_game_finished())) {
+		endgame = 0;
+	}
+	game->time = time_backup;
 	
 	if (replay->get_replay_active()) {
 		int cur_time = replay->get_seconds();

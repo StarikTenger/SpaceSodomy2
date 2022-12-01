@@ -24,7 +24,7 @@ private:
 					CommandModule::ENGINE_LIN_RIGHT
 	};
 public:
-	int time_left = 0;
+	int time_left = 1;
 	// Get methods
 	std::string get_gun_name();
 	std::string get_hull_name();
