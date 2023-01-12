@@ -9,6 +9,7 @@
 
 
 class Player : public iTeamMember {
+public:
 private:
 	int deaths = 0;
 	int kills = 0;
@@ -69,3 +70,4 @@ struct PlayerDef {
 
 	PlayerDef(int _id, std::string _name) : id(_id), name(_name) {};
 };
+

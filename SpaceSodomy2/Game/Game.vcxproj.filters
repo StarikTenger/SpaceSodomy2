@@ -162,6 +162,9 @@
     <ClInclude Include="iTeamMember.h">
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerRepr.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

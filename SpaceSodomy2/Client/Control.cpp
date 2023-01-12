@@ -176,6 +176,7 @@ std::string Control::commands_to_string() {
 	message += game.get_left_module_name() + " ";
 	message += game.get_right_module_name() + " ";
 	message += "#";
+	//DEBUG_PRINT(command_module.get_command(CommandModule::RESPAWN) << "respawn??")
 	for (int i = 0; i < CommandModule::COMMAND_COUNT; i++) {
 		if (command_module.get_command(i))
 			message += "1";

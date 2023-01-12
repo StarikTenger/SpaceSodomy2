@@ -402,6 +402,12 @@ void Game::delete_projectile(Projectile* projectile) {
 void Game::delete_engine(Engine* engine) {
 	engines.erase(engine);
 	delete engine;
+} 
+void Game::delete_player(Player* player) {
+	delete_command_module(player->get_command_module());
+	delete_counter(player->get_time_to_respawn());
+	players.erase(player->get_id());
+	delete player;
 }
 
 void Game::delete_active_module(ActiveModule* active_module) {
@@ -495,6 +501,11 @@ void Game::process_players() {
 	// Creating ships
 	for (auto player_pair : players) {
 		auto player = player_pair.second;
+		//if (player->get_name() == "DEBUG") {
+		//	DEBUG_PRINT(player->get_is_alive());
+		//	DEBUG_PRINT(player->get_time_to_respawn()->get());
+		//	DEBUG_PRINT(player->get_command_module()->get_command(CommandModule::RESPAWN));
+		//}
 		if (!player->get_is_alive() && player->get_time_to_respawn()->get() < 0 
 			&& player->get_command_module()->get_command(CommandModule::RESPAWN) 
 			/*&& player->get_id() != -1*/) { // The player is not the wall
@@ -1554,7 +1565,7 @@ std::string Game::encode() {
 	return ans;
 }
 
-void Game::create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+Player* Game::create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 	std::string left_module, std::string right_module) {
 	Player* player = create_player(id, team_id, color, name);
 	player->set_gun_name(gun_name);
@@ -1564,32 +1575,8 @@ void Game::create_new_player(int id, int team_id, sf::Color color, std::string n
 	players[id] = player;
 	player->set_is_alive(0);
 	player->get_time_to_respawn()->set(3);
+	return player;
 }
-
-bool Game::new_player(PlayerDef def) {
-	if (id_list.count(def.id)) {
-		std::cerr << "Game::new_player error: id collision with player.name = " << def.name << "\n";
-		return false;
-	}
-	id_list.insert(def.id);
-
-	// TODO: remove garbage
-	int team_id = def.id;
-	if (def.team_name_hint == "blue") {
-		team_id = 1;
-		def.color = aux::from_hsv(aux::random_int(90, 150), 1, 1);
-	}
-	else if (def.team_name_hint == "red") {
-		team_id = 2;
-		def.color = aux::from_hsv((aux::random_int(-30, 30) + 360) % 360, 1, 1);
-	}
-
-	create_new_player(def.id, team_id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-
-	return true;
-}
-
-
 
 Player* Game::player_by_id(int id) {
 	if (!players.count(id))
@@ -1597,13 +1584,16 @@ Player* Game::player_by_id(int id) {
 	return players[id];
 }
 
-void Game::delete_player(int id) {
+void Game::clear_player(int id) {
+	id_list.erase(id);
+	delete player_reprs[id];
+	player_reprs.erase(id);
 
 	if (players.count(id) == 0) {
 		return;
 	}
 
-	// Deleting ship
+	// Deleting ships
 	std::deque<Ship*> ships_to_delete;
 
 	for (auto ship : ships)
@@ -1614,10 +1604,62 @@ void Game::delete_player(int id) {
 		delete_ship(ship);
 	auto res = *players.find(id);
 
+	delete_player(res.second);
+}
 
-	// Deleting player
-	delete res.second;
-	players.erase(players.find(id));
+PlayerHandle Game::new_player__by_handle(PlayerDef def) {
+	PlayerHandle res;
+	res.game = this;
+
+	if (id_list.count(def.id)) {
+		std::cerr << "Game::new_player__by_handle error: id collision with player.name = " << def.name << "\n";
+		return res;
+	}
+	id_list.insert(def.id);
+	
+	player_reprs[def.id] = new PlayerRepr(def);
+	res.repr = player_reprs[def.id];
+	return res;
+}
+
+PlayerHandle Game::player_by_id__by_handle(int id) {
+	PlayerHandle res;
+	res.game = this;
+	res.repr = player_reprs[id];
+	return res;
+}
+
+void PlayerHandle::delete_player() {
+	game->clear_player(repr->player->get_id());
+}
+void PlayerHandle::apply_command(int command, int val) {
+	if (repr->stage == WAITING_IN_LOBBY && command == CommandModule::RESPAWN && val) {
+		PlayerDef def = repr->def_to_apply_next;
+
+		// TODO: team manager
+		int team_id = def.id;
+		auto player = game->create_new_player(def.id, team_id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+		DEBUG_PRINT("player: " << def.name << " created")
+		repr->stage = PLAYING;
+		repr->player = player;
+	}
+	if (repr->stage == PLAYING) {
+		repr->player->get_command_module()->set_command(command, val);
+	}
+}
+void PlayerHandle::apply_def() {
+	PlayerDef& def = repr->def_to_apply_next;
+
+	if (repr->stage == PLAYING) {
+		repr->player->set_name(def.name);
+	}
+	if (repr->stage == PLAYING && !repr->player->get_is_alive()) {
+		Player* player = repr->player;
+		player->set_gun_name(def.gun_name);
+		player->set_hull_name(def.hull_name);
+		player->set_left_module_name(def.left_module_name);
+		player->set_right_module_name(def.right_module_name);
+	}
 }
 
 bool Game::is_game_finished() {
@@ -1627,3 +1669,4 @@ bool Game::is_game_finished() {
 Game::~Game() {
 	wipe_map();
 }
+

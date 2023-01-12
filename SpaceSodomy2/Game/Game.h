@@ -23,6 +23,7 @@
 #include "Forcefield.h"
 #include "GameReadable.h"
 #include "GameMode.h"
+#include "PlayerRepr.h"
 
 
 class Game : public GameReadable {
@@ -53,6 +54,7 @@ protected:
 	//std::set<Rocket*> rockets;
 	std::set<RocketBrain*> rocket_brains;
 	//std::set<Forcefield*> forcefields;
+	std::map<int, PlayerRepr*> player_reprs;
 	
 	// Wall draw assist
 	b2Vec2 lower_left_corner, upper_right_corner;
@@ -122,6 +124,7 @@ protected:
 	void delete_active_module(ActiveModule*);
 	void delete_command_module(CommandModule*);
 	void delete_ship(Ship*);
+	void delete_player(Player*);
 	void delete_damage_receiver(DamageReceiver*);
 	void delete_counter(Counter*);
 	void delete_event(Event*);
@@ -157,7 +160,7 @@ protected:
 	template <class T, class U> bool is_hostile_to(T* agressor, U* target) { 
 		return agressor->get_player()->is_hostile_to(*target->get_player()) || (is_friendly_fire && agressor->get_player()->get_id() != target->get_player()->get_id());
 	}
-
+	friend PlayerHandle;
 public:
 	GameReadable& get_readable();
 
@@ -181,14 +184,21 @@ public:
 	std::string encode();
 	// Creates new player
 protected:
-	void create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
+	Player* create_new_player(int id, int team_id, sf::Color color, std::string name, std::string gun_name, std::string hull_name,
 		std::string left_module, std::string right_module);
 public:
-	bool new_player(PlayerDef);
 	// Gets player by id
 	Player* player_by_id(int id);
 	// Deletes player
-	void delete_player(int id);
+	void clear_player(int id);
+
+	//
+	// new interface: now the connected human is represented by a PlayerHandle. 
+	// PlayerHandles and Player* ptrs are not the same
+	 PlayerHandle new_player__by_handle(PlayerDef);
+	 PlayerHandle player_by_id__by_handle(int id);
+
+
 	bool is_game_finished();
 	~Game();
 };

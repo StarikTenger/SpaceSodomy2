@@ -263,6 +263,7 @@
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerRepr.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileDef.h" />
     <ClInclude Include="ProjectileManager.h" />

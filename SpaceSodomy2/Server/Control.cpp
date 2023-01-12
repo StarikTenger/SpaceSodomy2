@@ -149,6 +149,15 @@ void  Control::parse_message(std::stringstream &message) {
 	message >> hull_name;
 	message >> left_module >> right_module;
 
+	PlayerDef def(id_, name_);
+	def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+	def.team_name_hint = team_name_hint_;
+	def.gun_name = gun_name;
+	def.hull_name = hull_name;
+	def.left_module_name = left_module;
+	def.right_module_name = right_module;
+
+
 
 	// Adding a new player to the base & to the game 
 	if (!addresses.count(IP_address_) && (!token_by_id[id_] || (token == token_by_id[id_]))) {
@@ -159,15 +168,7 @@ void  Control::parse_message(std::stringstream &message) {
 		time_by_id[id_] = aux::get_milli_count();
 
 
-		PlayerDef def(id_, name_);
-		def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
-		def.team_name_hint = team_name_hint_;
-		DEBUG_PRINT(team_name_hint_)
-		def.gun_name = gun_name;
-		def.hull_name = hull_name;
-		def.left_module_name = left_module;
-		def.right_module_name = right_module;
-		game.new_player(def);
+		game.new_player__by_handle(def);
 	}
 
 	// Applying commands
@@ -177,15 +178,12 @@ void  Control::parse_message(std::stringstream &message) {
 		time_by_id[id_] = aux::get_milli_count();
 		std::string command_string;
 		message >> command_string;
-		game.player_by_id(id_)->set_name(name_);
-		if (!game.player_by_id(id_)->get_is_alive()) {
-			game.player_by_id(id_)->set_gun_name(gun_name);
-			game.player_by_id(id_)->set_hull_name(hull_name);
-			game.player_by_id(id_)->set_left_module_name(left_module);
-			game.player_by_id(id_)->set_right_module_name(right_module);
-		}
+
+		auto player_handle = game.player_by_id__by_handle(id_);
+
+		player_handle.update_def(def);
 		for (int i = 1; i < command_string.size(); i++) {
-			game.apply_command(id_, i - 1, command_string[i] == '1');
+			player_handle.apply_command(i - 1, command_string[i] == '1');
 		}
 	}
 }
@@ -227,7 +225,7 @@ void Control::step() {
 				banned.insert(id.first);
 		}
 		for (auto id : banned) {
-			//game.delete_player(id);
+			//game.clear_player(id);
 			//IP_by_id.erase(IP_by_id.find(id));
 			//addresses.erase(IP_by_id[id]);
 			//network.del_address(IP_by_id[id]);
