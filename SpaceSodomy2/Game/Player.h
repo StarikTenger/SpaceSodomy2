@@ -57,17 +57,30 @@ public:
 	void add_kill();
 };
 
-struct PlayerDef {
+struct PlayerDefHint {
 	int id;
 	//Player::Type type;
 	std::string name;
 	std::string team_name_hint = "any";
+	std::string gun_name = "default";
+	std::string hull_name = "default";
+	std::string left_module_name = "NONE";
+	std::string right_module_name = "NONE";
+
+	PlayerDefHint(int _id, std::string _name) : id(_id), name(_name) {};
+};
+
+struct PlayerDef {
+	int id;
+	//Player::Type type;
+	std::string name;
+	int team_id;
 	sf::Color color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
 	std::string gun_name = "default";
 	std::string hull_name = "default";
 	std::string left_module_name = "NONE";
 	std::string right_module_name = "NONE";
 
-	PlayerDef(int _id, std::string _name) : id(_id), name(_name) {};
+	PlayerDef(int _id, std::string _name, int _team_id) : id(_id), name(_name), team_id(_team_id) {};
 };
 

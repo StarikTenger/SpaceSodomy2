@@ -149,8 +149,7 @@ void  Control::parse_message(std::stringstream &message) {
 	message >> hull_name;
 	message >> left_module >> right_module;
 
-	PlayerDef def(id_, name_);
-	def.color = aux::from_hsv(aux::random_int(0, 360), 1, 1);
+	PlayerDefHint def(id_, name_);
 	def.team_name_hint = team_name_hint_;
 	def.gun_name = gun_name;
 	def.hull_name = hull_name;

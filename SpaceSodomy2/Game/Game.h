@@ -24,7 +24,7 @@
 #include "GameReadable.h"
 #include "GameMode.h"
 #include "PlayerRepr.h"
-
+#include "TeamManager.h"
 
 class Game : public GameReadable {
 protected:
@@ -71,6 +71,7 @@ protected:
 	ModuleManager module_manager;
 	RocketManager rocket_manager;
 	GameMode game_mode = (*this);
+	TeamManager* team_manager = new FFATeamManager(12);
 	
 	// b2World physics = b2World(b2Vec2_zero);
 
@@ -195,7 +196,7 @@ public:
 	//
 	// new interface: now the connected human is represented by a PlayerHandle. 
 	// PlayerHandles and Player* ptrs are not the same
-	 PlayerHandle new_player__by_handle(PlayerDef);
+	 PlayerHandle new_player__by_handle(PlayerDefHint);
 	 PlayerHandle player_by_id__by_handle(int id);
 
 

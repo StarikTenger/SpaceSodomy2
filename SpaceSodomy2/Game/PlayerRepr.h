@@ -19,9 +19,9 @@ public:
 //
 struct PlayerRepr : public PlayerProcessingStage {
 	STAGE stage = WAITING_IN_LOBBY;
-	PlayerDef def_to_apply_next;
+	PlayerDefHint def_to_apply_next;
 	Player* player = nullptr;
-	PlayerRepr(PlayerDef def) : stage(WAITING_IN_LOBBY), def_to_apply_next(def) {}
+	PlayerRepr(PlayerDefHint def) : stage(WAITING_IN_LOBBY), def_to_apply_next(def) {}
 };
 
 // Stores a ptr to a player and the game he is in
@@ -45,7 +45,7 @@ public:
 	void delete_player();
 
 	// will update as soon as possible (after next death)
-	void update_def(const PlayerDef def) { repr->def_to_apply_next = def; apply_def(); }
+	void update_def(const PlayerDefHint def) { repr->def_to_apply_next = def; apply_def(); }
 	void apply_def();
 };
 

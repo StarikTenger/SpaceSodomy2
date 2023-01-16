@@ -969,6 +969,7 @@ void Game::clear() {
 
 void Game::wipe_map() {
 	clear();
+	delete team_manager;
 	for (auto wall : walls) {
 		delete wall;
 	}
@@ -1224,6 +1225,26 @@ bool Game::load_parameters(std::string path) {
 				input >> temp;
 				std::cout << "Parameter " << symbol << " set to " << temp << " in PARAMETERS \n";
 				params[symbol] = temp;
+			}
+			continue;
+		}
+		if (symbol == "GAME_MODE") {
+			int max_players = 12;
+
+			while (input >> symbol) {
+				DEBUG_PRINT("GAME_MODE " << symbol)
+				if (symbol == "END") {
+					break;
+				}
+				if (symbol == "MAX_PLAYERS") {
+					input >> max_players;
+					continue;
+				}
+				if (symbol == "FFA") {
+					delete team_manager;
+					team_manager = new FFATeamManager(max_players);
+					continue;
+				}
 			}
 			continue;
 		}
@@ -1607,7 +1628,7 @@ void Game::clear_player(int id) {
 	delete_player(res.second);
 }
 
-PlayerHandle Game::new_player__by_handle(PlayerDef def) {
+PlayerHandle Game::new_player__by_handle(PlayerDefHint def) {
 	PlayerHandle res;
 	res.game = this;
 
@@ -1634,12 +1655,22 @@ void PlayerHandle::delete_player() {
 }
 void PlayerHandle::apply_command(int command, int val) {
 	if (repr->stage == WAITING_IN_LOBBY && command == CommandModule::RESPAWN && val) {
-		PlayerDef def = repr->def_to_apply_next;
+		PlayerDefHint def = repr->def_to_apply_next;
 
 		// TODO: team manager
-		int team_id = def.id;
-		auto player = game->create_new_player(def.id, team_id, def.color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
-		DEBUG_PRINT("player: " << def.name << " created")
+
+		auto maybe_team_params = game->team_manager->assign_team(def.id, def.team_name_hint);
+		if (!maybe_team_params) {
+			DEBUG_PRINT("player: " << def.name << " not created!");
+			return;
+		}
+		auto team_params = maybe_team_params.value();
+
+		Player* player = game->create_new_player(def.id, team_params.team_id, team_params.team_color, def.name, def.gun_name, def.hull_name, def.left_module_name, def.right_module_name);
+		DEBUG_PRINT("player: " << def.name << " created");
+		DEBUG_PRINT(player->get_id() << " "  << player->get_color().r <<" "<< player->get_color().r <<" "<< player->get_color().r);
+		DEBUG_PRINT(def.hull_name);
+
 		repr->stage = PLAYING;
 		repr->player = player;
 	}
@@ -1648,7 +1679,7 @@ void PlayerHandle::apply_command(int command, int val) {
 	}
 }
 void PlayerHandle::apply_def() {
-	PlayerDef& def = repr->def_to_apply_next;
+	PlayerDefHint& def = repr->def_to_apply_next;
 
 	if (repr->stage == PLAYING) {
 		repr->player->set_name(def.name);
